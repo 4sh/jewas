@@ -20,6 +20,11 @@ public class RestServer {
 		return this;
 	}
 
+    public RestServer stop() {
+        connector.stop();
+        return this;
+    }
+
 
 	public RestServer bind(int port) {
 		connector.bind(port);

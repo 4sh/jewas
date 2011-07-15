@@ -16,7 +16,8 @@ import jewas.http.RequestHandler;
 public class NettyHttpConnector implements HttpConnector {
 	private SocketAddress address;
 	private List<RequestHandler> handlers = new CopyOnWriteArrayList<RequestHandler>();
-	
+	private ServerBootstrap bootstrap = null;
+
 	@Override
 	public void addHandler(RequestHandler requestHandler) {
 		handlers.add(requestHandler);
@@ -29,7 +30,7 @@ public class NettyHttpConnector implements HttpConnector {
 
 	@Override
 	public void start() {
-		ServerBootstrap bootstrap = new ServerBootstrap(
+		bootstrap = new ServerBootstrap(
 				new NioServerSocketChannelFactory(
 						Executors.newCachedThreadPool(),
 						Executors.newCachedThreadPool()));
@@ -47,5 +48,12 @@ public class NettyHttpConnector implements HttpConnector {
 		// Bind and start to accept incoming connections.
 		bootstrap.bind(address);
 	}
+
+    @Override
+    public void stop(){
+        bootstrap.releaseExternalResources();
+    }
+
+
 
 }
