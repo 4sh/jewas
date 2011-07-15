@@ -1,0 +1,16 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile (
+            [group: "org.jboss.netty", name: 'netty', version: '3.2.4.Final', transitive: false]
+    )
+    testCompile (
+            [group: 'us.monoid.web', name: 'resty', version: '0.2.0', transitive: true],
+            [group: 'junit', name: 'junit', version: '4.8.2', transitive: true]
+    )
+}
