@@ -5,12 +5,46 @@ repositories {
     mavenCentral()
 }
 
+
 dependencies {
     compile (
-            [group: "org.jboss.netty", name: 'netty', version: '3.2.4.Final', transitive: false]
+            // TODO: when released, prefer depending on a released netty version instead
+            // of git cloning it into libs/netty
+            // Note: the dependency is still there since we need netty 3.2.4 transitive deps
+            // to compile checkouted sources
+            [group: "org.jboss.netty", name: 'netty', version: '3.2.4.Final', transitive: true],
+            // TODO: Dependencies extracted from netty's pom.xml since these dependencies
+            // are optional (and thus, not retrieved via the transitive dependencies mecanism)
+            // These dependencies should be removed when we will gather the netty-4.0.0.jar file
+            [group: 'javax.servlet', name: 'servlet-api', version: '2.5', transitive: true],
+            [group: 'org.rxtx', name: 'rxtx', version: '2.1.7', transitive: true],
+            [group: 'com.google.protobuf', name: 'protobuf-java', version: '2.3.0', transitive: true],
+            [group: 'org.apache.felix', name: 'org.osgi.core', version: '1.4.0', transitive: true],
+            [group: 'org.apache.felix', name: 'org.osgi.compendium', version: '1.4.0', transitive: true],
+            [group: 'org.slf4j', name: 'slf4j-api', version: '1.6.1', transitive: true],
+            [group: 'commons-logging', name: 'commons-logging', version: '1.1.1', transitive: true],
+            [group: 'org.jboss.logging', name: 'jboss-logging-spi', version: '2.1.2.GA', transitive: true],
+            [group: 'log4j', name: 'log4j', version: '1.2.16', transitive: true]
     )
     testCompile (
             [group: 'us.monoid.web', name: 'resty', version: '0.2.0', transitive: true],
             [group: 'junit', name: 'junit', version: '4.8.2', transitive: true]
     )
+}
+
+
+// This task will be useless when we will depend on netty 4.0.0 released version
+task init_sources {
+    description = "Initialize needed sources to compile into workspace"
+    def checkoutNetty = "git clone git@github.com:4sh/netty.git libs/netty/"
+    def proc = checkoutNetty.execute()
+}
+
+// This sourceSet will be useless when we will depend on netty 4.0.0 released version
+sourceSets {
+    nettySrc {
+        java {
+            srcDir "libs/netty"
+        }
+    }
 }
