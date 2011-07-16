@@ -1,5 +1,8 @@
 package jewas.http;
 
+import com.jayway.restassured.RestAssured;
+import com.jayway.restassured.specification.RequestSpecification;
+import com.jayway.restassured.specification.ResponseSpecification;
 import jewas.http.connector.netty.NettyHttpConnector;
 import jewas.test.util.RestServerFactory;
 import static org.hamcrest.CoreMatchers.is;
@@ -7,9 +10,10 @@ import org.junit.After;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
+import static com.jayway.restassured.RestAssured.*;
+import static com.jayway.restassured.matcher.RestAssuredMatchers.*;
 import org.junit.Before;
 import org.junit.Test;
-import us.monoid.web.Resty;
 
 import java.io.IOException;
 
@@ -33,6 +37,7 @@ public class RestServerTest {
         // Restserver without any route
         restServer = RestServerFactory.createRestServer(SERVER_PORT);
         restServer.start();
+        RestAssured.port = SERVER_PORT;
     }
 
     @After
@@ -66,5 +71,10 @@ public class RestServerTest {
         }catch(Exception e){
             // It's ok if an exception is thrown ...
         }
+    }
+
+    @Test
+    public void shouldUnregisteredRouteReturns404() throws IOException {
+        expect().statusCode(404).when().get("/unregisteredRoute");
     }
 }

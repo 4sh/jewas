@@ -11,4 +11,5 @@ public interface HttpRequest {
 	public JsonResponse respondJson();
 	
 	public HttpRequest addContentHandler(ContentHandler h);
+	public void respondError(HttpStatus status);
 }

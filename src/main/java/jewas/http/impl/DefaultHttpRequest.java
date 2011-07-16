@@ -9,6 +9,7 @@ import jewas.http.Headers;
 import jewas.http.HttpMethod;
 import jewas.http.HttpRequest;
 import jewas.http.HttpResponse;
+import jewas.http.HttpStatus;
 import jewas.http.JsonResponse;
 import jewas.http.Parameters;
 
@@ -63,6 +64,11 @@ public final class DefaultHttpRequest implements HttpRequest {
 	@Override
 	public JsonResponse respondJson() {
 		return new JsonResponse(response());
+	}
+
+	@Override
+	public void respondError(HttpStatus status) {
+		response().status(status).content("");
 	}
 
 	private HttpResponse response() {
