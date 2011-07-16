@@ -68,7 +68,9 @@ public final class DefaultHttpRequest implements HttpRequest {
 
 	@Override
 	public void respondError(HttpStatus status) {
-		response().status(status).content("");
+        // TODO: improve this error handling
+        // For example, by giving, in dev mode, every available routes
+		response().status(status).content("No route found for your path <"+this.path()+">");
 	}
 
 	private HttpResponse response() {
