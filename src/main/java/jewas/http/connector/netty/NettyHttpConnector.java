@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 
+import jewas.http.AddressAlreadyInUseException;
 import org.jboss.netty.bootstrap.ServerBootstrap;
+import org.jboss.netty.channel.ChannelException;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 
 import jewas.http.HttpConnector;
@@ -14,7 +16,7 @@ import jewas.http.HttpRequest;
 import jewas.http.RequestHandler;
 
 public class NettyHttpConnector implements HttpConnector {
-	private SocketAddress address;
+	private InetSocketAddress address;
 	private List<RequestHandler> handlers = new CopyOnWriteArrayList<RequestHandler>();
 	private ServerBootstrap bootstrap = null;
 
@@ -46,7 +48,12 @@ public class NettyHttpConnector implements HttpConnector {
 		}));
 
 		// Bind and start to accept incoming connections.
-		bootstrap.bind(address);
+        try {
+		    bootstrap.bind(address);
+        }catch(ChannelException e){
+            throw new AddressAlreadyInUseException("Netty server", address.getPort(), e);
+        }
+
 	}
 
     @Override

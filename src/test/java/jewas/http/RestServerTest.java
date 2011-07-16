@@ -68,7 +68,7 @@ public class RestServerTest {
             RestServer newRestServerInstance = RestServerFactory.createRestServer(SERVER_PORT);
             newRestServerInstance.start();
             fail("2 instances on the same port should be forbidden !");
-        }catch(Exception e){
+        }catch(AddressAlreadyInUseException e){
             // It's ok if an exception is thrown ...
         }
     }
