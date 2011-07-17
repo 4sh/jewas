@@ -1,21 +1,15 @@
 package jewas.http;
 
 import com.jayway.restassured.RestAssured;
-import com.jayway.restassured.specification.RequestSpecification;
-import com.jayway.restassured.specification.ResponseSpecification;
-import jewas.http.connector.netty.NettyHttpConnector;
 import jewas.test.util.RestServerFactory;
-import static org.hamcrest.CoreMatchers.is;
 import org.junit.After;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
-
-import static com.jayway.restassured.RestAssured.*;
-import static com.jayway.restassured.matcher.RestAssuredMatchers.*;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+
+import static com.jayway.restassured.RestAssured.expect;
+import static org.junit.Assert.fail;
 
 /**
  * Created by IntelliJ IDEA.
