@@ -1,3 +1,6 @@
 /.gradle
 /build
 /libs/netty
+/jewas.iml
+/jewas.ipr
+/jewas.iws
