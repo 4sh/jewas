@@ -1,14 +1,19 @@
 package jewas.http;
 
 import com.jayway.restassured.RestAssured;
+import jewas.test.fakeapp.routes.SimpleJSONFileRoute;
 import jewas.test.util.RestServerFactory;
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.core.Is;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
 
 import static com.jayway.restassured.RestAssured.expect;
+import static com.jayway.restassured.RestAssured.given;
 import static org.junit.Assert.fail;
 
 /**
@@ -30,6 +35,7 @@ public class RestServerTest {
     public void startServer(){
         // Restserver without any route
         restServer = RestServerFactory.createRestServer(SERVER_PORT);
+        restServer.addRoutes(new SimpleJSONFileRoute());
         restServer.start();
         RestAssured.port = SERVER_PORT;
     }
@@ -70,5 +76,27 @@ public class RestServerTest {
     @Test
     public void shouldUnregisteredRouteReturns404() throws IOException {
         expect().statusCode(404).when().get("/unregisteredRoute");
+    }
+
+    @Ignore("Fix implementation of JSON rendering before !")
+    @Test
+    public void shouldRenderingJSONWithGETParameterIsOk() {
+        given().
+                param("stringToConvert", "foo").
+        expect().
+                body("convertedString", CoreMatchers.is(CoreMatchers.equalTo("FOO"))).
+        when().
+                get("/toUpperCase");
+
+    }
+
+    @Ignore("Fix implementation of JSON rendering before !")
+    @Test
+    public void shouldRenderingJSONWithURLParameterIsOk() {
+        expect().
+                body("convertedString", CoreMatchers.is(CoreMatchers.equalTo("FOO"))).
+        when().
+                get("/toUpperCase/foo");
+
     }
 }
