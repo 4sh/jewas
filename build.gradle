@@ -1,0 +1,43 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+
+repositories {
+    mavenCentral()
+    mavenRepo urls: "http://oss.sonatype.org/content/repositories/releases/"
+}
+
+
+dependencies {
+    compile (
+            [group: 'org.elasticsearch', name: 'elasticsearch', version: '0.16.2']
+    )
+    testCompile (
+            [group: 'junit', name: 'junit', version: '4.8.2', transitive: true],
+            [group: 'com.jayway.restassured', name: 'rest-assured', version: '1.2.1']
+    )
+}
+
+configurations {
+    intTestCompile{ extendsFrom testCompile }
+    intTestRuntime{ extendsFrom intTestCompile, runtime }
+}
+
+
+sourceSets {
+    intTest {
+        compileClasspath = sourceSets.main.classes + configurations.intTestCompile
+        runtimeClasspath = classes + sourceSets.main.classes + configurations.intTestRuntime
+        java {
+            srcDir "src/integration-test/java"
+        }
+        resources {
+            srcDir "src/integration-test/resources"
+        }
+
+    }
+}
+
+task intTest(type: Test) {
+    testClassesDir = sourceSets.intTest.classesDir
+    classpath = sourceSets.intTest.runtimeClasspath
+}
