@@ -8,6 +8,7 @@ repositories {
 
 dependencies {
     compile (
+            [group: "freemarker", name: 'freemarker', version: '2.3.9', transitive: true],
             // TODO: when released, prefer depending on a released netty version instead
             // of git cloning it into libs/netty
             // Note: the dependency is still there since we need netty 3.2.4 transitive deps

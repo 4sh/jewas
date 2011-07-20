@@ -1,15 +1,10 @@
 package jewas.http.connector.netty;
 
-import static org.jboss.netty.handler.codec.http.HttpHeaders.is100ContinueExpected;
-import static org.jboss.netty.handler.codec.http.HttpHeaders.Names.CONTENT_TYPE;
-import static org.jboss.netty.handler.codec.http.HttpResponseStatus.CONTINUE;
-import static org.jboss.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 import jewas.http.ContentType;
 import jewas.http.HttpMethod;
 import jewas.http.HttpStatus;
 import jewas.http.RequestHandler;
 import jewas.http.impl.DefaultHttpRequest;
-
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.ChannelFuture;
@@ -24,6 +19,11 @@ import org.jboss.netty.handler.codec.http.HttpRequest;
 import org.jboss.netty.handler.codec.http.HttpResponse;
 import org.jboss.netty.handler.codec.http.HttpResponseStatus;
 import org.jboss.netty.util.CharsetUtil;
+
+import static org.jboss.netty.handler.codec.http.HttpHeaders.Names.CONTENT_TYPE;
+import static org.jboss.netty.handler.codec.http.HttpHeaders.is100ContinueExpected;
+import static org.jboss.netty.handler.codec.http.HttpResponseStatus.CONTINUE;
+import static org.jboss.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
 public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
 
@@ -66,13 +66,18 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
 						
 						@Override
 						public jewas.http.HttpResponse content(String content) {
-							nettyResponse.setContent(ChannelBuffers.copiedBuffer(content, CharsetUtil.UTF_8));
-							
+							return content(content.getBytes(CharsetUtil.UTF_8));
+						}
+
+                        @Override
+                        public jewas.http.HttpResponse content(byte[] content) {
+                            nettyResponse.setContent(ChannelBuffers.copiedBuffer(content));
+
 							ChannelFuture future = e.getChannel().write(nettyResponse);
 							future.addListener(ChannelFutureListener.CLOSE);
 							return this;
-						}
-					});
+                        }
+                    });
             handler.onRequest(this.request);
 
 

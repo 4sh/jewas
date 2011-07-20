@@ -9,7 +9,9 @@ public interface HttpRequest {
 	public String path();
 	public Parameters parameters();
 	public JsonResponse respondJson();
-	
+	public HtmlResponse respondHtml();
+    public FileResponse respondFile();
+
 	public HttpRequest addContentHandler(ContentHandler h);
 	public void respondError(HttpStatus status);
 }

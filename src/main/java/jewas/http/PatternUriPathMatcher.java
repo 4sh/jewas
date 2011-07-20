@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 
 public class PatternUriPathMatcher implements UriPathMatcher {
-	private final static Pattern GROUP_PATTERN = Pattern.compile("\\[(\\w+)\\]");
+	private final static Pattern GROUP_PATTERN = Pattern.compile("\\[([\\w\\.\\_\\-\\d]+)\\]");
 	private final Pattern pattern;
 	private final List<String> groupNames = new ArrayList<String>();
 	
@@ -18,7 +18,7 @@ public class PatternUriPathMatcher implements UriPathMatcher {
 		StringBuffer sb = new StringBuffer();
 		Matcher m = GROUP_PATTERN.matcher(pattern);
 		while (m.find()) {
-			m.appendReplacement(sb, "(\\\\w+)");
+			m.appendReplacement(sb, "([\\\\w\\\\.\\\\_\\\\-\\\\d]+)");
 			groupNames.add(m.group(1));
 		}
 		m.appendTail(sb);

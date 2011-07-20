@@ -1,18 +1,24 @@
 package jewas.http;
 
 import com.jayway.restassured.RestAssured;
+import com.jayway.restassured.response.Response;
+import jewas.configuration.JewasConfiguration;
 import jewas.test.fakeapp.routes.SimpleJSONFileRoute;
+import jewas.test.fakeapp.routes.StaticResourceRoute;
 import jewas.test.util.RestServerFactory;
+import jewas.util.FileUtil;
+import junit.framework.Assert;
 import org.hamcrest.CoreMatchers;
-import org.hamcrest.core.Is;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.io.File;
 import java.io.IOException;
 
 import static com.jayway.restassured.RestAssured.expect;
+import static com.jayway.restassured.RestAssured.get;
 import static com.jayway.restassured.RestAssured.given;
 import static org.junit.Assert.fail;
 
@@ -36,6 +42,7 @@ public class RestServerTest {
         // Restserver without any route
         restServer = RestServerFactory.createRestServer(SERVER_PORT);
         restServer.addRoutes(new SimpleJSONFileRoute());
+        restServer.addRoutes(new StaticResourceRoute());
         restServer.start();
         RestAssured.port = SERVER_PORT;
     }
@@ -98,5 +105,27 @@ public class RestServerTest {
         when().
                 get("/toUpperCase/foo");
 
+    }
+
+    @Test
+    public void shouldReturnStaticResourceWithGETParameterIsOk() {
+        System.setProperty(JewasConfiguration.APPLICATION_CONFIGURATION_FILE_PATH_KEY, "jewas/configuration/jewasForHttp.conf");
+        Response response = get("/public/test.js");
+
+        byte[] result = response.getBody().asByteArray();
+        byte[] expected = new byte[0];
+
+        try {
+            expected = FileUtil.getBytesFromFile(new File(RestServerTest.class.getClassLoader().getResource("jewas/http/staticResources/test.js").getPath()));
+        } catch (IOException e) {
+            e.getMessage();
+            Assert.assertTrue(e.getMessage(), false);
+        }
+        
+        Assert.assertEquals(response.getBody().asString(), expected.length, result.length);
+
+        for (int i = 0; i < result.length; i++) {
+            Assert.assertEquals(result[i], expected[i]);
+        }
     }
 }

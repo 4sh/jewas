@@ -1,20 +1,21 @@
 package jewas.http.impl;
 
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import jewas.http.ContentHandler;
+import jewas.http.FileResponse;
 import jewas.http.Headers;
+import jewas.http.HtmlResponse;
 import jewas.http.HttpMethod;
 import jewas.http.HttpRequest;
 import jewas.http.HttpResponse;
 import jewas.http.HttpStatus;
 import jewas.http.JsonResponse;
 import jewas.http.Parameters;
-
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.handler.codec.http.QueryStringDecoder;
+
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public final class DefaultHttpRequest implements HttpRequest {
 	private final HttpMethod method;
@@ -60,13 +61,24 @@ public final class DefaultHttpRequest implements HttpRequest {
 			h.onContentAvailable(this, content);
 		}
 	}
-	
+
+     // TODO: Why not having a method renderJson(object) like in Play!
 	@Override
 	public JsonResponse respondJson() {
 		return new JsonResponse(response());
 	}
 
-	@Override
+    @Override
+    public HtmlResponse respondHtml() {
+        return new HtmlResponse(response());
+    }
+
+    @Override
+    public FileResponse respondFile() {
+        return new FileResponse(response());  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
 	public void respondError(HttpStatus status) {
         // TODO: improve this error handling
         // For example, by giving, in dev mode, every available routes
