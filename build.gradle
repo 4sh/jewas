@@ -41,3 +41,9 @@ task intTest(type: Test) {
     testClassesDir = sourceSets.intTest.classesDir
     classpath = sourceSets.intTest.runtimeClasspath
 }
+
+task initializeIntTestContext << {
+    ant.echo "TODO: unzip & start elastic search here !"
+}
+
+intTestClasses.dependsOn initializeIntTestContext
