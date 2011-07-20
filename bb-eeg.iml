@@ -7,6 +7,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/resources" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/integration-test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/integration-test/resources" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/.gradle" />
       <excludeFolder url="file://$MODULE_DIR$/build" />
     </content>
@@ -16,55 +17,55 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/cache/org.elasticsearch/elasticsearch/jars/elasticsearch-0.16.2.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/cache/org.elasticsearch/elasticsearch/jars/elasticsearch-0.17.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/cache/org.elasticsearch/elasticsearch/sources/elasticsearch-0.16.2-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/cache/org.elasticsearch/elasticsearch/sources/elasticsearch-0.17.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/cache/org.apache.lucene/lucene-core/jars/lucene-core-3.1.0.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/cache/org.apache.lucene/lucene-memory/jars/lucene-memory-3.3.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/cache/org.apache.lucene/lucene-core/sources/lucene-core-3.1.0-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/cache/org.apache.lucene/lucene-memory/sources/lucene-memory-3.3.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/cache/org.apache.lucene/lucene-highlighter/jars/lucene-highlighter-3.1.0.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/cache/org.apache.lucene/lucene-core/jars/lucene-core-3.3.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/cache/org.apache.lucene/lucene-highlighter/sources/lucene-highlighter-3.1.0-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/cache/org.apache.lucene/lucene-core/sources/lucene-core-3.3.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/cache/org.apache.lucene/lucene-memory/jars/lucene-memory-3.1.0.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/cache/org.apache.lucene/lucene-analyzers/jars/lucene-analyzers-3.3.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/cache/org.apache.lucene/lucene-memory/sources/lucene-memory-3.1.0-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/cache/org.apache.lucene/lucene-analyzers/sources/lucene-analyzers-3.3.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/cache/org.apache.lucene/lucene-queries/jars/lucene-queries-3.1.0.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/cache/org.apache.lucene/lucene-queries/jars/lucene-queries-3.3.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/cache/org.apache.lucene/lucene-queries/sources/lucene-queries-3.1.0-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/cache/org.apache.lucene/lucene-queries/sources/lucene-queries-3.3.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -80,11 +81,11 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/cache/org.apache.lucene/lucene-analyzers/jars/lucene-analyzers-3.1.0.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/cache/org.apache.lucene/lucene-highlighter/jars/lucene-highlighter-3.3.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/cache/org.apache.lucene/lucene-analyzers/sources/lucene-analyzers-3.1.0-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/cache/org.apache.lucene/lucene-highlighter/sources/lucene-highlighter-3.3.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
