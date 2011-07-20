@@ -58,3 +58,11 @@ sourceSets {
     }
 }
 
+sonar {
+    serverUrl = "http://sonar.4sh.fr"
+
+    globalProperty "sonar.jdbc.url", "jdbc:mysql://sonar:3306/sonar"
+    globalProperty "sonar.jdbc.driverClassName", "com.mysql.jdbc.Driver"
+    globalProperty "sonar.jdbc.username", "sonar"
+    globalProperty "sonar.jdbc.password", "4SHsoar"
+}
