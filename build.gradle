@@ -2,6 +2,13 @@ apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'sonar'
 
+// For cobertura
+def cobSerFile = "${project.buildDir}/reports/tests/cobertura.ser"
+def srcOriginal = "${sourceSets.main.classesDir}"
+def srcCopy = "${srcOriginal}-copy"
+def COVERAGE_SYS_PROPERTY = "test.coverage.activated"
+
+
 repositories {
     mavenCentral()
 }
@@ -36,6 +43,7 @@ dependencies {
             [group: 'junit', name: 'junit', version: '4.8.2', transitive: true],
             [group: 'com.jayway.restassured', name: 'rest-assured', version: '1.2.1']
     )
+    testRuntime 'net.sourceforge.cobertura:cobertura:1.9.3'
 }
 
 // This task will be useless when we will depend on netty 4.0.0 released version
@@ -55,6 +63,56 @@ sourceSets {
     main {
         compileClasspath = sourceSets.nettySrc.classes + configurations.compile
         runtimeClasspath = classes + sourceSets.nettySrc.classes + configurations.runtime
+    }
+}
+
+// For cobertura ...
+gradle.taskGraph.beforeTask { task ->
+    if ("true".equals(System.getProperty(COVERAGE_SYS_PROPERTY)) && task == test) {
+        ant {
+            // delete data file for cobertura, otherwise coverage would be added
+            delete(file: cobSerFile, failonerror: false)
+            // delete copy of original classes
+            delete(dir: srcCopy, failonerror: false)
+            // import cobertura task, so it is available in the script
+            taskdef(resource: 'tasks.properties', classpath: configurations.testRuntime.asPath)
+            // create copy (backup) of original class files
+            copy(todir: srcCopy) {
+                fileset(dir: srcOriginal)
+            }
+            // instrument the relevant classes in-place
+            'cobertura-instrument'(datafile: cobSerFile) {
+                fileset(dir: srcOriginal,
+                        includes: "jewas/**/*.class",
+                        excludes: "**/*Test.class")
+            }
+        }
+    }
+}
+
+gradle.taskGraph.afterTask { task ->
+    if ("true".equals(System.getProperty(COVERAGE_SYS_PROPERTY)) && task == test) {
+        if (new File(srcCopy).exists()) {
+            // replace instrumented classes with backup copy again
+            ant {
+                delete(file: srcOriginal)
+                move(file: srcCopy,
+                        tofile: srcOriginal)
+            }
+            // create cobertura reports
+            ant.'cobertura-report'(destdir: "${project.buildDirName}/reports/tests/",
+                    format: 'xml', srcdir: "src/main/java", datafile: cobSerFile)
+        }
+    }
+}
+
+test {
+    // For cobertura
+    if ("true".equals(System.getProperty(COVERAGE_SYS_PROPERTY))) {
+        ignoreFailures = true
+        options {
+            jvmArgs << "-Dnet.sourceforge.cobertura.datafile=${cobSerFile}"
+        }
     }
 }
 
