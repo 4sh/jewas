@@ -1,5 +1,6 @@
 package jewas.util.file;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -60,7 +61,8 @@ public class Files {
         long length = file.length();
 
         if (length > Integer.MAX_VALUE) {
-            // File is too large
+            is.close();
+            throw new IOException("The file to load is too large.");
         }
 
         // Create the byte array to hold the data
@@ -76,6 +78,7 @@ public class Files {
 
         // Ensure all the bytes have been read in
         if (offset < bytes.length) {
+            is.close();
             throw new IOException("Could not completely read file " + file.getName());
         }
 
@@ -83,5 +86,30 @@ public class Files {
         is.close();
 
         return bytes;
+    }
+
+    /**
+     * Get the string that correspond to the content of the given file.
+     * @param file the {@link File}
+     * @return the string that correspond to the content of the given file.
+     */
+    public static String getStringFromFile(File file) {
+        if (file == null || !file.canRead()) {
+            return "";
+        }
+
+        byte[] buffer = new byte[(int) file.length()];
+        BufferedInputStream f = null;
+
+        try {
+            f = new BufferedInputStream(new FileInputStream(file));
+            f.read(buffer);
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+        } finally {
+            if (f != null) try { f.close(); } catch (IOException ignored) { }
+        }
+        
+        return new String(buffer);
     }
 }
