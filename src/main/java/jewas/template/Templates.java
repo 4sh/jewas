@@ -22,7 +22,7 @@ public class Templates {
     /**
      * The template folder path.
      */
-    protected static String templatesPath;
+    private static String templatesPath;
 
     /**
      * Init the configuration of FreeMarker.
