@@ -39,14 +39,12 @@ public class Properties<T> {
 	}
 
 	private static boolean isGetter(Method m) {
-		return m.isAccessible() 
-				&& m.getParameterTypes().length == 0 
+		return m.getParameterTypes().length == 0
 				&& m.getReturnType() != Void.class;
 	}
 	
 	private static boolean isSetter(Method m) {
-		return m.isAccessible() 
-				&& m.getParameterTypes().length == 1 
+		return m.getParameterTypes().length == 1
 				&& m.getReturnType() == m.getDeclaringClass();
 	}
 	

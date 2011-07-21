@@ -11,7 +11,7 @@ import jewas.http.*;
 public class SimpleJSONFileRoute extends AbstractRoute {
 
     public SimpleJSONFileRoute(){
-        super(HttpMethodMatcher.GET, new PatternUriPathMatcher("/toUpperCase/[stringToConvert]"));
+        super(HttpMethodMatcher.GET, new PatternUriPathMatcher("/root/toUpperCase/[stringToConvert]"));
     }
 
     public static class QueryObject {

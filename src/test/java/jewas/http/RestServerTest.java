@@ -9,6 +9,7 @@ import jewas.test.util.RestServerFactory;
 import jewas.util.file.Files;
 import junit.framework.Assert;
 import org.hamcrest.CoreMatchers;
+import org.hamcrest.core.Is;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -84,7 +85,6 @@ public class RestServerTest {
         expect().statusCode(404).when().get("/unregisteredRoute");
     }
 
-    @Ignore("Fix implementation of JSON rendering before !")
     @Test
     public void shouldRenderingJSONWithGETParameterIsOk() {
         given().
@@ -92,21 +92,44 @@ public class RestServerTest {
         expect().
                 body("convertedString", CoreMatchers.is(CoreMatchers.equalTo("FOO"))).
         when().
-                get("/toUpperCase");
+                get("/root/toUpperCase/");
 
     }
 
-    @Ignore("Fix implementation of JSON rendering before !")
     @Test
     public void shouldRenderingJSONWithURLParameterIsOk() {
         expect().
                 body("convertedString", CoreMatchers.is(CoreMatchers.equalTo("FOO"))).
         when().
-                get("/toUpperCase/foo");
+                get("/root/toUpperCase/foo");
 
+    }
+    
+    @Test
+    public void shouldMatchTheRouteWithTrailingSlash() {
+         given().
+                param("stringToConvert", "foo").
+         expect().
+                statusCode(200).when().get("/root/toUpperCase/////");
     }
 
     @Test
+    public void shouldMatchTheRouteWithoutParamWithTrailingSlash() {
+          given().
+              param("stringToConvert", "foo").
+          expect().
+              statusCode(200).when().get("/root/toUpperCase/");
+    }
+
+     @Test
+    public void shouldMatchTheRouteWithoutParamAndTrailingSlash() {
+          given().
+              param("stringToConvert", "foo").
+          expect().
+              statusCode(200).when().get("/root/toUpperCase");
+    }
+    
+     @Test
     public void shouldReturnStaticResourceWithGETParameterIsOk() {
         System.setProperty(JewasConfiguration.APPLICATION_CONFIGURATION_FILE_PATH_KEY, "jewas/configuration/jewasForHttp.conf");
         Response response = get("/public/test.js");
@@ -127,4 +150,5 @@ public class RestServerTest {
             Assert.assertEquals(result[i], expected[i]);
         }
     }
+    
 }
