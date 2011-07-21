@@ -53,6 +53,12 @@ task init_sources {
     def proc = checkoutNetty.execute()
 }
 
+
+task clean_netty_sources << {
+    ant.delete(dir: "libs/netty/", failonerror: false)
+}
+clean.dependsOn clean_netty_sources
+
 // This sourceSet will be useless when we will depend on netty 4.0.0 released version
 sourceSets {
     nettySrc {
