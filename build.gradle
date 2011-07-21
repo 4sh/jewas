@@ -71,6 +71,10 @@ sourceSets {
         compileClasspath = sourceSets.nettySrc.classes + configurations.compile
         runtimeClasspath = classes + sourceSets.nettySrc.classes + configurations.runtime
     }
+    test {
+        compileClasspath = sourceSets.nettySrc.classes + sourceSets.main.classes + configurations.testCompile
+        runtimeClasspath = classes + sourceSets.nettySrc.classes + sourceSets.main.classes + configurations.testRuntime
+    }
 }
 
 // For cobertura ...
