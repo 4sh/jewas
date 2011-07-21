@@ -6,8 +6,8 @@ import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import jewas.configuration.JewasConfiguration;
+import jewas.util.file.Files;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -35,8 +35,7 @@ public class Templates {
         cfg = new Configuration();
 
         try {
-            // TODO: Use our own File API
-            cfg.setDirectoryForTemplateLoading(new File(Templates.class.getClassLoader().getResource(templatesPath).getPath()));
+            cfg.setDirectoryForTemplateLoading(Files.getFileFromPath(templatesPath));
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }

@@ -1,8 +1,9 @@
 package jewas.http;
 
 import jewas.configuration.JewasConfiguration;
+import jewas.util.file.Files;
 
-import java.io.File;
+import java.io.FileNotFoundException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -20,7 +21,10 @@ public class StaticResources {
     public static void loadStaticFile(HttpRequest request, String path) {
         String staticResourcesPath = JewasConfiguration.getStaticResourcesPath();
 
-        // TODO: Use our own File API
-        request.respondFile().file(new File(StaticResources.class.getClassLoader().getResource(staticResourcesPath + path).getPath()));
+        try {
+            request.respondFile().file(Files.getFileFromPath(staticResourcesPath + path));
+        } catch (FileNotFoundException e) {
+            System.err.println(e.getMessage());
+        }
     }
 }

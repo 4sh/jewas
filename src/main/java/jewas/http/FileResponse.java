@@ -1,12 +1,10 @@
 package jewas.http;
 
 
-import jewas.util.FileUtil;
+import jewas.util.file.Files;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
 public class FileResponse {
 	private HttpResponse httpResponse;
@@ -23,7 +21,7 @@ public class FileResponse {
         byte[] content = new byte[0];
 
         try {
-            content = FileUtil.getBytesFromFile(file);
+            content = Files.getBytesFromFile(file);
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }

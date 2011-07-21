@@ -1,6 +1,7 @@
 package jewas.configuration;
 
-import java.io.File;
+import jewas.util.file.Files;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
@@ -60,8 +61,7 @@ public class JewasConfiguration {
         }
 
         try {
-            // TODO: Use our own File API
-            properties.load(new FileInputStream(new File(JewasConfiguration.class.getClassLoader().getResource(path).getPath())));
+            properties.load(new FileInputStream(Files.getFileFromPath(path)));
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }

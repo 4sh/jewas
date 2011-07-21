@@ -6,7 +6,7 @@ import jewas.configuration.JewasConfiguration;
 import jewas.test.fakeapp.routes.SimpleJSONFileRoute;
 import jewas.test.fakeapp.routes.StaticResourceRoute;
 import jewas.test.util.RestServerFactory;
-import jewas.util.FileUtil;
+import jewas.util.file.Files;
 import junit.framework.Assert;
 import org.hamcrest.CoreMatchers;
 import org.junit.After;
@@ -14,7 +14,6 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.io.File;
 import java.io.IOException;
 
 import static com.jayway.restassured.RestAssured.expect;
@@ -116,7 +115,7 @@ public class RestServerTest {
         byte[] expected = new byte[0];
 
         try {
-            expected = FileUtil.getBytesFromFile(new File(RestServerTest.class.getClassLoader().getResource("jewas/http/staticResources/test.js").getPath()));
+            expected = Files.getBytesFromFile(Files.getFileFromPath("jewas/http/staticResources/test.js"));
         } catch (IOException e) {
             e.getMessage();
             Assert.assertTrue(e.getMessage(), false);
