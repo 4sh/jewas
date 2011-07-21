@@ -47,7 +47,7 @@ dependencies {
 }
 
 // This task will be useless when we will depend on netty 4.0.0 released version
-task init_sources {
+task init_cloned_sources << {
     description = "Initialize needed sources to compile into workspace"
     def checkoutNetty = "git clone git@github.com:4sh/netty.git libs/netty/"
     def proc = checkoutNetty.execute()
@@ -64,7 +64,7 @@ clean.dependsOn clean_netty_sources
 sourceSets {
     nettySrc {
         java {
-            srcDir "libs/netty/src/main/java"
+            srcDirs("libs/netty/src/main/java")
         }
     }
     main {
