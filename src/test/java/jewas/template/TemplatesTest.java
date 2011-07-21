@@ -1,5 +1,6 @@
 package jewas.template;
 
+import jewas.configuration.JewasConfiguration;
 import junit.framework.Assert;
 import org.junit.Test;
 
@@ -17,7 +18,9 @@ public class TemplatesTest {
 
     @Test
     public void testTemplateWithParams() {
-        TemplatesInstanceForTest templates = new TemplatesInstanceForTest();
+        //TemplatesInstanceForTest templates = new TemplatesInstanceForTest();
+
+        System.setProperty(JewasConfiguration.APPLICATION_CONFIGURATION_FILE_PATH_KEY, "jewas/configuration/jewasForTemplate.conf");
 
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("user", "JewasUser");
@@ -29,9 +32,9 @@ public class TemplatesTest {
                 "</body>\n" +
                 "</html>";
 
-        String result = TemplatesInstanceForTest.process("testTemplateWithParams.ftl", params);
+        String result = Templates.process("testTemplateWithParams.ftl", params);
 
         Assert.assertNotNull(result);
-        Assert.assertFalse(expected.equals(result));
+        Assert.assertEquals(expected, result);
     }
 }
