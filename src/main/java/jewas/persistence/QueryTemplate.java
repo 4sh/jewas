@@ -44,7 +44,7 @@ public class QueryTemplate<T> {
         }
     }
 
-    public void selectObjectsInto(final List<T> objects, final String sql, final QueryContext context) {
+    public void selectObjectsAndFill(final List<T> objects, final String sql, final QueryContext context) {
         // TODO: check @NonNull of objects with a specialized framework like CheckerFramework or Intellij implem ?
 
         execute(new InConnectionCallback<T>() {
@@ -74,7 +74,7 @@ public class QueryTemplate<T> {
 
     public T selectObject(String sql, QueryContext context) {
         List<T> unaryList = new ArrayList<T>(1);
-        selectObjectsInto(unaryList, sql, context);
+        selectObjectsAndFill(unaryList, sql, context);
 
         // TODO: assert unaryList.size()==1
 

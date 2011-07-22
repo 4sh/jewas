@@ -92,7 +92,7 @@ public class DBAccessTest {
         QueryTemplate<TestEntry> template = createQueryTemplate();
 
         List<TestEntry> allEntries = new ArrayList<TestEntry>();
-        template.selectObjectsInto(allEntries, "select * from test", new QueryContext());
+        template.selectObjectsAndFill(allEntries, "select * from test", new QueryContext());
         assertThat(allEntries.size(), is(equalTo(3)));
     }
 
