@@ -19,24 +19,48 @@ public abstract class JewasConfiguration {
     private static final String TEMPLATE_PATH_KEY = "templates.path";
 
     /**
+     * The default value of the template folder.
+     */
+    private static final String TEMPLATE_PATH_DEFAULT_VALUE = "templates/";
+
+    /**
      * The key to use in the application configuration file to define the static resources folder.
      */
     private static final String STATIC_RESOURCES_PATH_KEY = "static.resources.path";
 
     /**
+     * The default value of the static resources folder.
+     */
+    private static final String STATIC_RESOURCES_DEFAULT_VALUE = "public/";
+
+    /**
      * The delegate to use to get the properties.
      */
     protected static JewasConfigurationDelegate delegate =
-            new DefaultJewasConfigurationDelegate(APPLICATION_CONFIGURATION_FILE_PATH);;
+            new DefaultJewasConfigurationDelegate(APPLICATION_CONFIGURATION_FILE_PATH);
+
+    /**
+     * Get the value of the given key if defined, else the default value.
+     * @param key the key
+     * @param defaultValue the default value
+     * @return the value of the given key if defined, else the default value.
+     */
+    private static String getValueOfKeyOrDefaultValue(String key, String defaultValue) {
+        String value = delegate.getProperties().getProperty(key);
+
+        if (value == null) {
+            value = defaultValue;
+        }
+
+        return value;
+    }
 
     /**
      *
      * @return the path of the templates folder.
      */
     public static String getTemplatesPath() {
-        String path =  delegate.getProperties().getProperty(TEMPLATE_PATH_KEY);
-
-        return path;
+        return getValueOfKeyOrDefaultValue(TEMPLATE_PATH_KEY, TEMPLATE_PATH_DEFAULT_VALUE);
     }
 
     /**
@@ -44,8 +68,6 @@ public abstract class JewasConfiguration {
      * @return the path of the static resources folder.
      */
     public static String getStaticResourcesPath() {
-        String path =  delegate.getProperties().getProperty(STATIC_RESOURCES_PATH_KEY);
-
-        return path;
+        return getValueOfKeyOrDefaultValue(STATIC_RESOURCES_PATH_KEY, STATIC_RESOURCES_DEFAULT_VALUE);
     }
 }
