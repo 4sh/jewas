@@ -42,6 +42,7 @@ public class H2UseIntegrationTest {
         String s = "DROP TABLE test";
         Statement sst = con.createStatement();
         sst.executeUpdate(s);
+        con.close();
     }
 
     @Test
