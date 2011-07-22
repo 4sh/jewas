@@ -1,6 +1,6 @@
 package jewas.template;
 
-import jewas.configuration.JewasConfiguration;
+import configuration.JewasConfigurationForTest;
 import jewas.util.file.Files;
 import junit.framework.Assert;
 import org.junit.Test;
@@ -22,7 +22,9 @@ public class TemplatesTest {
     public void testTemplateWithParams() throws FileNotFoundException {
         //TemplatesInstanceForTest templates = new TemplatesInstanceForTest();
 
-        System.setProperty(JewasConfiguration.APPLICATION_CONFIGURATION_FILE_PATH_KEY, "jewas/configuration/jewasForTemplate.conf");
+       // System.setProperty(JewasConfiguration.APPLICATION_CONFIGURATION_FILE_PATH_KEY, "jewas/configuration/jewasForTemplate.conf");
+
+        JewasConfigurationForTest.override("jewas/configuration/jewasForTemplate.conf");
 
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("user", "JewasUser");
@@ -34,5 +36,8 @@ public class TemplatesTest {
 
         Assert.assertNotNull(result);
         Assert.assertEquals(expected, result);
+
+        JewasConfigurationForTest.clean();
+
     }
 }

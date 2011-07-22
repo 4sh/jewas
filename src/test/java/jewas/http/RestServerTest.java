@@ -2,17 +2,15 @@ package jewas.http;
 
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.response.Response;
-import jewas.configuration.JewasConfiguration;
+import configuration.JewasConfigurationForTest;
 import jewas.test.fakeapp.routes.SimpleJSONFileRoute;
 import jewas.test.fakeapp.routes.StaticResourceRoute;
 import jewas.test.util.RestServerFactory;
 import jewas.util.file.Files;
 import junit.framework.Assert;
 import org.hamcrest.CoreMatchers;
-import org.hamcrest.core.Is;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -131,7 +129,8 @@ public class RestServerTest {
     
      @Test
     public void shouldReturnStaticResourceWithGETParameterIsOk() {
-        System.setProperty(JewasConfiguration.APPLICATION_CONFIGURATION_FILE_PATH_KEY, "jewas/configuration/jewasForHttp.conf");
+        //System.setProperty(JewasConfiguration.APPLICATION_CONFIGURATION_FILE_PATH_KEY, "jewas/configuration/jewasForHttp.conf");
+         JewasConfigurationForTest.override("jewas/configuration/jewasForHttp.conf");
         Response response = get("/public/test.js");
 
         byte[] result = response.getBody().asByteArray();
@@ -149,6 +148,8 @@ public class RestServerTest {
         for (int i = 0; i < result.length; i++) {
             Assert.assertEquals(result[i], expected[i]);
         }
+
+         JewasConfigurationForTest.clean();
     }
     
 }
