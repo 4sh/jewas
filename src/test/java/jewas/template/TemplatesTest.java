@@ -19,11 +19,7 @@ import java.util.Map;
 public class TemplatesTest {
 
     @Test
-    public void testTemplateWithParams() throws FileNotFoundException {
-        //TemplatesInstanceForTest templates = new TemplatesInstanceForTest();
-
-       // System.setProperty(JewasConfiguration.APPLICATION_CONFIGURATION_FILE_PATH_KEY, "jewas/configuration/jewasForTemplate.conf");
-
+    public void shouldProcessATemplateWithGivenParameters() throws FileNotFoundException {
         JewasConfigurationForTest.override("jewas/configuration/jewasForTemplate.conf");
 
         Map<String, Object> params = new HashMap<String, Object>();
