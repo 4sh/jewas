@@ -17,6 +17,7 @@ repositories {
 dependencies {
     compile(
             [group: "freemarker", name: 'freemarker', version: '2.3.9', transitive: true],
+            //[group: "com.google.guava", name: 'guava', version: 'r09', transitive: true],
             // TODO: when released, prefer depending on a released netty version instead
             // of git cloning it into libs/netty
             // Note: the dependency is still there since we need netty 3.2.4 transitive deps
@@ -41,7 +42,9 @@ dependencies {
     )
     testCompile(
             [group: 'junit', name: 'junit', version: '4.8.2', transitive: true],
-            [group: 'com.jayway.restassured', name: 'rest-assured', version: '1.2.1']
+            [group: 'com.jayway.restassured', name: 'rest-assured', version: '1.2.1'],
+            [group: 'commons-dbcp', name: 'commons-dbcp', version: '1.4'],
+            [group: 'com.h2database', name: 'h2', version: '1.3.158']
     )
     testRuntime 'net.sourceforge.cobertura:cobertura:1.9.3'
 }
