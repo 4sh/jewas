@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 
 public class PatternUriPathMatcher implements UriPathMatcher {
-	private final static Pattern GROUP_PATTERN = Pattern.compile("/\\[([\\w\\.\\_\\-\\d]+)\\]");
+	private final static Pattern GROUP_PATTERN = Pattern.compile("/\\[([^\\]]+)\\]");
 	private final Pattern pattern;
 	private final List<String> groupNames = new ArrayList<String>();
 	
