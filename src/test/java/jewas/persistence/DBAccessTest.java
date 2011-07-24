@@ -1,5 +1,8 @@
 package jewas.persistence;
 
+import jewas.persistence.sqlparam.SqlParameters;
+import jewas.persistence.sqlparam.ValuedType;
+import jewas.persistence.sqlparam.ValuedTypes;
 import jewas.persistence.util.JDBCUtils;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.junit.AfterClass;
@@ -105,6 +108,42 @@ public class DBAccessTest {
         assertThat(entry.age(), is(equalTo(10)));
         assertThat(entry.name(), is(equalTo("bar")));
         assertThat(entry.lastName(), is(equalTo("BAR")));
+    }
+
+    @Test
+    public void shouldPerformASelectWithMultipleQueryParameters() {
+        QueryTemplate<TestEntry> template = createQueryTemplate();
+
+        List<TestEntry> entries = new ArrayList<TestEntry>();
+        template.selectObjectsAndFill(entries, "select ${fieldId}, ${fieldName}, ${fieldLastName}, ${age} from test where ${fieldId} > ${minId} and ${fieldId} in (${idWhiteList})",
+                new QueryContext().queryParameters(
+                        SqlParameters.madeOf().sql("fieldId", "id").sql("fieldName", "name")
+                                .sql("fieldLastName", "last_name").sql("age", "age").integer("minId", Integer.valueOf(0))
+                                .<ValuedType.IntegerValuedType>array("idWhiteList", ValuedTypes.integer(2), ValuedTypes.integer(4))
+                                .andThatsAll()
+                )
+        );
+
+        assertThat(entries.size(), is(equalTo(1)));
+        assertThat(entries.get(0).id(), is(equalTo(2)));
+    }
+
+    @Test
+    public void shouldPerformOptionalQueryParameter() {
+        QueryTemplate<TestEntry> template = createQueryTemplate();
+
+        List<TestEntry> entries = new ArrayList<TestEntry>();
+        template.selectObjectsAndFill(entries, "select id, name, last_name, age from test ${optionalFiltering}",
+                new QueryContext().queryParameters(
+                        SqlParameters.madeOf().sql("optionalFiltering", "where id > 0 and id in (${idWhiteList})")
+                                .<ValuedType.IntegerValuedType>array("idWhiteList", ValuedTypes.integer(2), ValuedTypes.integer(4))
+                                .andThatsAll()
+                )
+        );
+
+        assertThat(entries.size(), is(equalTo(1)));
+        assertThat(entries.get(0).id(), is(equalTo(2)));
+
     }
 
     private static QueryTemplate<TestEntry> createQueryTemplate() {

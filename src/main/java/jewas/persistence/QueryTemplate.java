@@ -52,10 +52,9 @@ public class QueryTemplate<T> {
             public void doInConnection(Connection connection) {
                 PreparedStatement ps = null;
                 try {
-                    ps = connection.prepareStatement(sql);
+                    String computedSql = context.compute(sql);
 
-                    // TODO fill preparedStatement with QueryContext !
-                    // context.setValues(ps);
+                    ps = connection.prepareStatement(computedSql);
 
                     ResultSet rs = ps.executeQuery();
                     while (rs.next()) {
