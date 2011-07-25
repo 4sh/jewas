@@ -7,6 +7,7 @@ def cobSerFile = "${project.buildDir}/reports/tests/cobertura.ser"
 def srcOriginal = "${sourceSets.main.classesDir}"
 def srcCopy = "${srcOriginal}-copy"
 def COVERAGE_SYS_PROPERTY = "test.coverage.activated"
+def SKIP_CLEAN_OF_NETTY_SRC = "clean.skip.nettySrc"
 
 
 repositories {
@@ -61,7 +62,10 @@ compileJava.dependsOn init_cloned_sources
 
 
 task clean_netty_sources << {
-    ant.delete(dir: "libs/netty/", failonerror: false)
+    // Just for jenkins because, for now, git clone doesn't work :(
+    if (!"true".equals(System.getProperty(SKIP_CLEAN_OF_NETTY_SRC))) {
+        ant.delete(dir: "libs/netty/", failonerror: false)
+    }
     ant.delete(dir: sourceSets.nettySrc.classesDir, failonerror: false)
 }
 clean.dependsOn clean_netty_sources
