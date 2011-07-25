@@ -8,10 +8,10 @@ import java.util.Date;
 /**
  * @author fcamblor
  */
-public abstract class ValuedType {
-    protected Object underlyingValue = null;
+public abstract class ValuedType<T> {
+    protected T underlyingValue = null;
 
-    protected ValuedType(Object underlyingValue) {
+    protected ValuedType(T underlyingValue) {
         this.underlyingValue = underlyingValue;
     }
 
@@ -32,89 +32,77 @@ public abstract class ValuedType {
 
     // ValuedType implementations...
 
-    public static class DateValuedType extends ValuedType {
+    public static class DateValuedType extends ValuedType<Date> {
         private static final DateFormat QUERY_VALUE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd");
-        private Date date;
 
         // TODO: pass the resulting date format to the constructor ?
         // Is there a standardized jdbc date format type ???
         public DateValuedType(Date date) {
             super(date);
-            this.date = date;
         }
 
         protected String toNonNullQueryValue() {
-            return quotedString(QUERY_VALUE_FORMATTER.format(date));
+            return quotedString(QUERY_VALUE_FORMATTER.format(underlyingValue));
         }
     }
 
-    public static class StringValuedType extends ValuedType {
-        private String str;
+    public static class StringValuedType extends ValuedType<String> {
 
         public StringValuedType(String str) {
             super(str);
-            this.str = str;
         }
 
         protected String toNonNullQueryValue() {
-            return quotedString(str);
+            return quotedString(underlyingValue);
         }
     }
 
-    public static class SqlValuedType extends ValuedType {
-        private String sql;
+    public static class SqlValuedType extends ValuedType<String> {
 
         public SqlValuedType(String sql) {
             super(sql);
-            this.sql = sql;
         }
 
         protected String toNonNullQueryValue() {
-            return sql;
+            return underlyingValue;
         }
     }
 
-    public static class IntegerValuedType extends ValuedType {
-        private Integer integer;
+    public static class IntegerValuedType extends ValuedType<Integer> {
 
         public IntegerValuedType(Integer integer) {
             super(integer);
-            this.integer = integer;
         }
 
         protected String toNonNullQueryValue() {
-            return integer.toString();
+            return underlyingValue.toString();
         }
     }
 
-    public static class DecimalValuedType extends ValuedType {
-        private BigDecimal decimalNumber;
+    public static class DecimalValuedType extends ValuedType<BigDecimal> {
 
         public DecimalValuedType(BigDecimal decimalNumber) {
             super(decimalNumber);
-            this.decimalNumber = decimalNumber;
         }
 
         protected String toNonNullQueryValue() {
-            return decimalNumber.toString();
+            return underlyingValue.toString();
         }
     }
 
-    public static class ArrayValuedType<T extends ValuedType> extends ValuedType {
-        private T[] array;
+    public static class ArrayValuedType<V extends ValuedType> extends ValuedType<V[]> {
 
-        public ArrayValuedType(T[] array) {
+        public ArrayValuedType(V[] array) {
             super(array);
-            this.array = array;
         }
 
         protected String toNonNullQueryValue() {
             StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < array.length - 1; i++) {
-                sb.append(array[i].queryValue()).append(",");
+            for (int i = 0; i < underlyingValue.length - 1; i++) {
+                sb.append(underlyingValue[i].queryValue()).append(",");
             }
-            if (array.length != 0) {
-                sb.append(array[array.length - 1].queryValue());
+            if (underlyingValue.length != 0) {
+                sb.append(underlyingValue[underlyingValue.length - 1].queryValue());
             }
             return sb.toString();
         }
