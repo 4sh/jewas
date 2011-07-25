@@ -62,6 +62,7 @@ compileJava.dependsOn init_cloned_sources
 
 task clean_netty_sources << {
     ant.delete(dir: "libs/netty/", failonerror: false)
+    ant.delete(dir: sourceSets.nettySrc.classesDir, failonerror: false)
 }
 clean.dependsOn clean_netty_sources
 
