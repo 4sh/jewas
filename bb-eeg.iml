@@ -358,6 +358,7 @@
         </SOURCES>
       </library>
     </orderEntry>
+    <orderEntry type="module" module-name="jewas" />
   </component>
 </module>
 
