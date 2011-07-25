@@ -7,7 +7,6 @@ import jewas.reflection.Properties;
 import jewas.reflection.Property;
 import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
-import sun.java2d.SunGraphicsEnvironment;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -63,6 +62,7 @@ public class Json {
         if (Strings.isNullOrEmptyString(jsonString)) {
             return Objects.NULL;
         } else {
+            //noinspection unchecked
             return gson.create().fromJson(jsonString, clazz);
         }
     }
