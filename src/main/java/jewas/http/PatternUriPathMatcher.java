@@ -1,37 +1,32 @@
 package jewas.http;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
 public class PatternUriPathMatcher implements UriPathMatcher {
-	private final static Pattern GROUP_PATTERN = Pattern.compile("/\\[([^\\]]+)\\]");
-	private final Pattern pattern;
-	private final List<String> groupNames = new ArrayList<String>();
-	
-	public PatternUriPathMatcher(String pattern) {
-		StringBuffer sb = new StringBuffer();
-		Matcher m = GROUP_PATTERN.matcher(pattern);
-        int counter = 1;
+    private final static Pattern GROUP_PATTERN = Pattern.compile("/\\[([^\\]]+)\\]");
+    private final Pattern pattern;
+    private final List<String> groupNames = new ArrayList<String>();
 
-		while (m.find()) {
-            if (m.groupCount() == counter) {
+    public PatternUriPathMatcher(String pattern) {
+        StringBuffer sb = new StringBuffer();
+        Matcher m = GROUP_PATTERN.matcher(pattern);
+
+        while (m.find()) {
+            if (m.end() == pattern.length()) {
                 m.appendReplacement(sb, "(?:/([\\\\w\\\\.\\\\_\\\\-\\\\d/]+))?");
             } else {
                 m.appendReplacement(sb, "(?:/([\\\\w\\\\.\\\\_\\\\-\\\\d]+))?");
             }
             groupNames.add(m.group(1));
-		}
-		m.appendTail(sb);
-		
-		this.pattern = Pattern.compile(sb.toString());
-	}
-    
+        }
+        m.appendTail(sb);
+
+        this.pattern = Pattern.compile(sb.toString());
+    }
+
     @Override
     public Parameters match(String path) {
         Matcher m = pattern.matcher(path);
