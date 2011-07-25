@@ -17,6 +17,8 @@ repositories {
 dependencies {
     compile(
             [group: "freemarker", name: 'freemarker', version: '2.3.9', transitive: true],
+            [group: 'com.google.code.gson', name: 'gson', version: '1.7.1', transitive: true],
+            [group: 'joda-time', name: 'joda-time', version: '1.6.2', transitive: true],
             //[group: "com.google.guava", name: 'guava', version: 'r09', transitive: true],
             // TODO: when released, prefer depending on a released netty version instead
             // of git cloning it into libs/netty

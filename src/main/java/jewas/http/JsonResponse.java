@@ -14,7 +14,7 @@ public class JsonResponse {
 		httpResponse
 			.status(HttpStatus.OK)
 			.contentType(new ContentType("application/json"));
-		httpResponse.content(Json.toJsonString(o));	
+		httpResponse.content(Json.instance().toJsonString(o));
 	}
 
 }

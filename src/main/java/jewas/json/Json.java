@@ -1,19 +1,48 @@
 package jewas.json;
 
+import com.google.gson.*;
 import jewas.lang.Objects;
+import jewas.lang.Strings;
 import jewas.reflection.Properties;
 import jewas.reflection.Property;
+import org.joda.time.DateMidnight;
+import org.joda.time.DateTime;
+import sun.java2d.SunGraphicsEnvironment;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 
 /**
  * Utility class used for JSON from/to conversions.
  */
 public class Json {
+
+    public static final String DATE_FORMAT = "yyyy-MM-dd";
+    public static final String DATE_TIME_FORMAT = DATE_FORMAT + " HH:mm:ss";
+    private static Json instance = null;
+
+    private GsonBuilder gson = new GsonBuilder();
+
+    private Json() {
+        gson.registerTypeAdapter(DateTime.class, new DateTimeSerializer());
+        gson.registerTypeAdapter(DateTime.class, new DateTimeDeserializer());
+        gson.registerTypeAdapter(DateMidnight.class, new DateMidnightSerializer());
+        gson.registerTypeAdapter(DateMidnight.class, new DateMidnightDeserializer());
+    }
+
+    public static Json instance() {
+        if (instance == null) {
+            instance = new Json();
+        }
+        return instance;
+    }
 
     /**
      * Converts an object into a JSON object.
@@ -21,99 +50,60 @@ public class Json {
      * @param sourceObject the Java object to convert in JSON object
      * @return a JSON string representation of the conversion.
      */
-    public static String toJsonString(Object sourceObject) {
+    public String toJsonString(Object sourceObject) {
+
         if (Objects.isNull(sourceObject)) {
             return "{}";
         } else {
-            StringBuilder json = new StringBuilder("{");
-            Properties<?> props = Properties.properties(sourceObject.getClass());
-            int i = 0;
-            for (Property p : props.asList()) {
-                json.append('"')
-                        .append(p.name())
-                        .append('"')
-                        .append(":");
-                //noinspection unchecked
-                json.append(getJsonValue(p.get(sourceObject)));
-                if (!isLastElement(props.asList().size(), i)) {
-                    json.append(",");
-                }
-                i++;
-            }
-            json.append("}");
-            return json.toString();
+             return gson.create().toJson(sourceObject);
         }
     }
 
-    /**
-     * Test whether the given <code>elementIndex</code> is the last element of the given <code>collectionSize</code>
-     *
-     * @param collectionSize the total size of the collection
-     * @param elementIndex   the index to test
-     * @return <code>true</code> if the given element index is the last for the given collection size.
-     */
-    private static boolean isLastElement(int collectionSize, int elementIndex) {
-        return elementIndex == collectionSize - 1;
-    }
-
-    /**
-     * Convert the given object into its JSON representation.
-     *
-     * @param o the object to convert.
-     * @return a JSON string representation of the given object.
-     */
-    private static String getJsonValue(Object o) {
-        if (o == null) {
-            return "null";
-        }
-        Class clazz = o.getClass();
-        if (String.class.equals(clazz)) {
-            return "\"" + o + "\"";
-        } else if (o instanceof Collection) {
-            return getJsonArray(((Collection) o).toArray());
-        } else if (clazz.isArray()) {
-            return getJsonArray((Object[]) o);
-        } else if (isWrapperType(clazz) || clazz.isPrimitive() || clazz.equals(BigDecimal.class)) {
-            return String.valueOf(o);
+    public Object fromJsonString(String jsonString, Class clazz) {
+        if (Strings.isNullOrEmptyString(jsonString)) {
+            return Objects.NULL;
         } else {
-            return toJsonString(o);
+            return gson.create().fromJson(jsonString, clazz);
         }
     }
 
-    /**
-     * Convert the given array into a JSON array.
-     *
-     * @param array the array to convert in JSON.
-     * @return a string representing the JSON conversion result.
-     */
-    private static String getJsonArray(Object[] array) {
-        StringBuilder json = new StringBuilder("[");
-        int i = 0;
-        for (Object item : array) {
-            json.append(getJsonValue(item));
-            if (!isLastElement(array.length, i)) {
-                json.append(",");
+    private class DateTimeSerializer implements JsonSerializer<DateTime> {
+
+        public JsonElement serialize(DateTime src, Type typeOfSrc, JsonSerializationContext context) {
+            return new JsonPrimitive(new SimpleDateFormat(DATE_TIME_FORMAT).format(src.toDate()));
+        }
+    }
+
+    private class DateMidnightSerializer implements JsonSerializer<DateMidnight> {
+
+        public JsonElement serialize(DateMidnight src, Type typeOfSrc, JsonSerializationContext context) {
+            return new JsonPrimitive(new SimpleDateFormat(DATE_FORMAT).format(src.toDate()));
+        }
+    }
+
+    private class DateTimeDeserializer implements JsonDeserializer<DateTime> {
+
+        public DateTime deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+                throws JsonParseException {
+            try {
+                Date date = new SimpleDateFormat(DATE_TIME_FORMAT).parse(json.getAsJsonPrimitive().getAsString());
+                return new DateTime(date);
+            } catch (ParseException e) {
+                throw new JsonParseException(e);
             }
-            i++;
         }
-        json.append("]");
-        return json.toString();
     }
 
-    /**
-     * Test whether the given class is a wrapper for a Java primitive type.
-     *
-     * @param clazz the class to test
-     * @return <code>true</code> the given class is a wrapper for a Java primitive type
-     */
-    public static boolean isWrapperType(Class clazz) {
-        return clazz.equals(Boolean.class) ||
-                clazz.equals(Integer.class) ||
-                clazz.equals(Character.class) ||
-                clazz.equals(Byte.class) ||
-                clazz.equals(Short.class) ||
-                clazz.equals(Double.class) ||
-                clazz.equals(Long.class) ||
-                clazz.equals(Float.class);
+      private class DateMidnightDeserializer implements JsonDeserializer<DateMidnight> {
+
+        public DateMidnight deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+                throws JsonParseException {
+            try {
+                Date date = new SimpleDateFormat(DATE_FORMAT).parse(json.getAsJsonPrimitive().getAsString());
+                return new DateMidnight(date);
+            } catch (ParseException e) {
+                throw new JsonParseException(e);
+            }
+        }
     }
 }
