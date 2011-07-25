@@ -1,5 +1,6 @@
 package fr.fsh.bbeeg;
 
+import fr.fsh.bbeeg.routes.GetDashboardRoute;
 import jewas.http.HttpRequest;
 import jewas.http.RequestHandler;
 import jewas.http.RestServer;
@@ -18,7 +19,8 @@ public class Main {
     public static void main(String[] args) {
         final RestServer rs = new RestServer(new NettyHttpConnector())
                 .addRoutes(
-                        new StaticResourceRoute()
+                        new StaticResourceRoute(),
+                        new GetDashboardRoute()
                 );
         rs.addHandler(new RequestHandler() {
             @Override

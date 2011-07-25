@@ -1,0 +1,27 @@
+body {
+    margin: 0px;
+}
+
+#header {
+    display: block;
+}
+
+#footer {
+    display: block;
+}
+
+.inlinedLeftGroup {
+    display: block;
+    left: 0px;
+    position: absolute;
+}
+
+.inlinedRightGroup {
+    display: block;
+    right: 0px;
+    position: absolute;
+}
+
+.inlinedBlock {
+    display: inline-block;
+}
