@@ -19,8 +19,13 @@ public abstract class ValuedType {
         if (underlyingValue == null) {
             return "NULL";
         } else {
+            // FIXME: avoid SQL injections here ...
             return toNonNullQueryValue();
         }
+    }
+
+    protected static String quotedString(String str) {
+        return String.format("\"%s\"", str.replaceAll("\"", "\\\\\""));
     }
 
     protected abstract String toNonNullQueryValue();
@@ -31,13 +36,15 @@ public abstract class ValuedType {
         private static final DateFormat QUERY_VALUE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd");
         private Date date;
 
+        // TODO: pass the resulting date format to the constructor ?
+        // Is there a standardized jdbc date format type ???
         public DateValuedType(Date date) {
             super(date);
             this.date = date;
         }
 
         protected String toNonNullQueryValue() {
-            return QUERY_VALUE_FORMATTER.format(date);
+            return quotedString(QUERY_VALUE_FORMATTER.format(date));
         }
     }
 
@@ -50,7 +57,7 @@ public abstract class ValuedType {
         }
 
         protected String toNonNullQueryValue() {
-            return str;
+            return quotedString(str);
         }
     }
 
