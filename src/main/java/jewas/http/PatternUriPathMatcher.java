@@ -17,9 +17,15 @@ public class PatternUriPathMatcher implements UriPathMatcher {
 	public PatternUriPathMatcher(String pattern) {
 		StringBuffer sb = new StringBuffer();
 		Matcher m = GROUP_PATTERN.matcher(pattern);
+        int counter = 1;
+
 		while (m.find()) {
-			m.appendReplacement(sb, "(?:/([\\\\w\\\\.\\\\_\\\\-\\\\d]+))?");
-			groupNames.add(m.group(1));
+            if (m.groupCount() == counter) {
+                m.appendReplacement(sb, "(?:/([\\\\w\\\\.\\\\_\\\\-\\\\d/]+))?");
+            } else {
+                m.appendReplacement(sb, "(?:/([\\\\w\\\\.\\\\_\\\\-\\\\d]+))?");
+            }
+            groupNames.add(m.group(1));
 		}
 		m.appendTail(sb);
 		
