@@ -1,11 +1,6 @@
 package jewas.routes;
 
-import jewas.http.AbstractRoute;
-import jewas.http.HttpMethodMatcher;
-import jewas.http.HttpRequest;
-import jewas.http.Parameters;
-import jewas.http.PatternUriPathMatcher;
-import jewas.http.RequestHandler;
+import jewas.http.*;
 import jewas.http.impl.StaticResourceRequestHandler;
 
 /**
@@ -16,12 +11,11 @@ import jewas.http.impl.StaticResourceRequestHandler;
  */
 public class StaticResourceRoute extends AbstractRoute {
 
-    public StaticResourceRoute(){
+    public StaticResourceRoute() {
         super(HttpMethodMatcher.GET, new PatternUriPathMatcher("/public/[path]"));
     }
 
 
-    @Override
     protected RequestHandler onMatch(HttpRequest request, Parameters parameters) {
         return new StaticResourceRequestHandler(parameters.val("path"));
     }
