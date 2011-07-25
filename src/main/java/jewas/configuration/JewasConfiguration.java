@@ -11,7 +11,7 @@ public abstract class JewasConfiguration {
     /**
      * The default application configuration file path to use.
      */
-    private static final String APPLICATION_CONFIGURATION_FILE_PATH = "/conf/jewas.conf";
+    private static final String APPLICATION_CONFIGURATION_FILE_PATH = "conf/jewas.conf";
 
     /**
      * The key to use in the application configuration file to define the template folder.
