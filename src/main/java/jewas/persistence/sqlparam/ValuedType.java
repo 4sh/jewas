@@ -36,7 +36,7 @@ public abstract class ValuedType {
             this.date = date;
         }
 
-        public String toNonNullQueryValue() {
+        protected String toNonNullQueryValue() {
             return QUERY_VALUE_FORMATTER.format(date);
         }
     }
@@ -49,7 +49,7 @@ public abstract class ValuedType {
             this.str = str;
         }
 
-        public String toNonNullQueryValue() {
+        protected String toNonNullQueryValue() {
             return str;
         }
     }
@@ -62,7 +62,7 @@ public abstract class ValuedType {
             this.sql = sql;
         }
 
-        public String toNonNullQueryValue() {
+        protected String toNonNullQueryValue() {
             return sql;
         }
     }
@@ -75,7 +75,7 @@ public abstract class ValuedType {
             this.integer = integer;
         }
 
-        public String toNonNullQueryValue() {
+        protected String toNonNullQueryValue() {
             return integer.toString();
         }
     }
@@ -88,7 +88,7 @@ public abstract class ValuedType {
             this.decimalNumber = decimalNumber;
         }
 
-        public String toNonNullQueryValue() {
+        protected String toNonNullQueryValue() {
             return decimalNumber.toString();
         }
     }
@@ -101,7 +101,7 @@ public abstract class ValuedType {
             this.array = array;
         }
 
-        public String toNonNullQueryValue() {
+        protected String toNonNullQueryValue() {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < array.length - 1; i++) {
                 sb.append(array[i].queryValue()).append(",");
