@@ -1,4 +1,4 @@
-package configuration;
+package jewas.configuration;
 
 import jewas.configuration.JewasConfigurationDelegate;
 import jewas.util.file.Files;

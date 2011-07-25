@@ -1,4 +1,4 @@
-package configuration;
+package jewas.configuration;
 
 /**
  * Created by IntelliJ IDEA.

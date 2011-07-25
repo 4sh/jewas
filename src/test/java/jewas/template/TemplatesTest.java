@@ -1,6 +1,6 @@
 package jewas.template;
 
-import configuration.JewasConfigurationForTest;
+import jewas.configuration.JewasConfigurationForTest;
 import jewas.util.file.Files;
 import junit.framework.Assert;
 import org.junit.Test;

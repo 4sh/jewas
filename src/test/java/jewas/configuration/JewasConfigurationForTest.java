@@ -1,6 +1,4 @@
-package configuration;
-
-import jewas.configuration.JewasConfiguration;
+package jewas.configuration;
 
 /**
  * Created by IntelliJ IDEA.

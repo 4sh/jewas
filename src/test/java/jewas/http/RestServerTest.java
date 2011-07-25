@@ -2,7 +2,7 @@ package jewas.http;
 
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.response.Response;
-import configuration.JewasConfigurationForTest;
+import jewas.configuration.JewasConfigurationForTest;
 import jewas.test.fakeapp.routes.SimpleJSONFileRoute;
 import jewas.test.fakeapp.routes.StaticResourceRoute;
 import jewas.test.util.RestServerFactory;
