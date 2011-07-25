@@ -88,32 +88,31 @@ sourceSets {
 }
 
 // For cobertura ...
-gradle.taskGraph.beforeTask { task ->
-    if ("true".equals(System.getProperty(COVERAGE_SYS_PROPERTY)) && task == test) {
-        ant {
-            // delete data file for cobertura, otherwise coverage would be added
-            delete(file: cobSerFile, failonerror: false)
-            // delete copy of original classes
-            delete(dir: srcCopy, failonerror: false)
-            // import cobertura task, so it is available in the script
-            taskdef(resource: 'tasks.properties', classpath: configurations.testRuntime.asPath)
-            // create copy (backup) of original class files
-            copy(todir: srcCopy) {
-                fileset(dir: srcOriginal)
-            }
-            // instrument the relevant classes in-place
-            'cobertura-instrument'(datafile: cobSerFile) {
-                fileset(dir: srcOriginal,
-                        includes: "jewas/**/*.class",
-                        excludes: "**/*Test.class")
+if ("true".equals(System.getProperty(COVERAGE_SYS_PROPERTY))) {
+    gradle.taskGraph.beforeTask { task ->
+        if (task == test) {
+            ant {
+                // delete data file for cobertura, otherwise coverage would be added
+                delete(file: cobSerFile, failonerror: false)
+                // delete copy of original classes
+                delete(dir: srcCopy, failonerror: false)
+                // import cobertura task, so it is available in the script
+                taskdef(resource: 'tasks.properties', classpath: configurations.testRuntime.asPath)
+                // create copy (backup) of original class files
+                copy(todir: srcCopy) {
+                    fileset(dir: srcOriginal)
+                }
+                // instrument the relevant classes in-place
+                'cobertura-instrument'(datafile: cobSerFile) {
+                    fileset(dir: srcOriginal,
+                            includes: "**/*.class")
+                }
             }
         }
     }
-}
 
-gradle.taskGraph.afterTask { task ->
-    if ("true".equals(System.getProperty(COVERAGE_SYS_PROPERTY)) && task == test) {
-        if (new File(srcCopy).exists()) {
+    gradle.taskGraph.afterTask { task ->
+        if (task == test && new File(srcCopy).exists()) {
             // replace instrumented classes with backup copy again
             ant {
                 delete(file: srcOriginal)
@@ -125,15 +124,10 @@ gradle.taskGraph.afterTask { task ->
                     format: 'xml', srcdir: "src/main/java", datafile: cobSerFile)
         }
     }
-}
 
-test {
-    // For cobertura
-    if ("true".equals(System.getProperty(COVERAGE_SYS_PROPERTY))) {
+    test {
         ignoreFailures = true
-        options {
-            jvmArgs << "-Dnet.sourceforge.cobertura.datafile=${cobSerFile}"
-        }
+        systemProperties["net.sourceforge.cobertura.datafile"] = cobSerFile
     }
 }
 
