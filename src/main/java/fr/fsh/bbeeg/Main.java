@@ -2,6 +2,7 @@ package fr.fsh.bbeeg;
 
 import fr.fsh.bbeeg.routes.GetDashboardRoute;
 import fr.fsh.bbeeg.routes.GetSearchRoute;
+import fr.fsh.bbeeg.routes.GetSimpleSearchContent;
 import jewas.http.RestServer;
 import jewas.http.RestServerFactory;
 import jewas.routes.StaticResourceRoute;
@@ -15,6 +16,7 @@ public class Main {
         rs.addRoutes(
                 new StaticResourceRoute(),
                 new GetDashboardRoute(),
+                new GetSimpleSearchContent(),
                 new GetSearchRoute()
         ).start();
         System.out.println("Ready, if you are");
