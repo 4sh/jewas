@@ -33,4 +33,10 @@ public class PatternUriMatcherTest {
         assertThat(params.val("param2"), is(equalTo("val2/val3/val4")));
     }
 
+    @Test
+    public void shouldNonParameterizedUncompleteRouteNotMatch() {
+        Parameters params = new PatternUriPathMatcher("/content/search").match("/content/search.html");
+        assertThat(params, is(nullValue()));
+    }
+
 }
