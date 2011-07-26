@@ -5,11 +5,12 @@ import jewas.template.Templates;
 
 /**
  * @author fcamblor
+ *         FIXME: rename this class because it is ambiguous with GetSimpleSearchContent
  */
 public class GetSearchRoute extends AbstractRoute {
 
     public GetSearchRoute() {
-        super(HttpMethodMatcher.GET, new PatternUriPathMatcher("/search.html"));
+        super(HttpMethodMatcher.GET, new PatternUriPathMatcher("/content/search.html"));
     }
 
     protected RequestHandler onMatch(HttpRequest request, Parameters parameters) {
