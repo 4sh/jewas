@@ -1,12 +1,18 @@
-<#macro mainTemplate title scripts>
+<#macro mainTemplate title scripts stylesheets>
     <!DOCTYPE html>
     <html>
     <head>
+        <meta charset="UTF-8">
         <link rel="stylesheet" href="public/css/bbeeg.css"/>
-        <script type="application/javascript" src="public/js/jquery.js"></script>
+        <#list stylesheets as stylesheet>
+            <link rel="stylesheet" href=${stylesheet}/>
+        </#list>
+
+        <script type="application/javascript" src="public/js/jquery/jquery.js"></script>
+        <script type="application/javascript" src="public/js/jquery/jquery.tmpl.js"></script>
 
         <#list scripts as script>
-            <script type="application/javascript" src=${x}></script>
+            <script type="application/javascript" src=${script}></script>
         </#list>
 
         <title>${title}</title>
@@ -23,12 +29,12 @@
             </ul>
         </div>
 
-        <div>
+        <div id="mainContent">
             <#nested>
         </div>
 
 
-        <div id="footer"/>
+        <div id="footer">Ici un pied de page</div>
     </body>
     </html>
 </#macro>
