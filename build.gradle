@@ -1,5 +1,12 @@
 apply plugin: 'java'
 apply plugin: 'idea'
+apply plugin: 'sonar'
+
+// For cobertura
+def cobSerFile = "${project.buildDir}/reports/tests/cobertura.ser"
+def srcOriginal = "${sourceSets.main.classesDir}"
+def srcCopy = "${srcOriginal}-copy"
+def COVERAGE_SYS_PROPERTY = "test.coverage.activated"
 
 
 repositories {
@@ -26,6 +33,7 @@ dependencies {
             [group: 'junit', name: 'junit', version: '4.8.2', transitive: true],
             [group: 'com.jayway.restassured', name: 'rest-assured', version: '1.2.1']
     )
+    testRuntime 'net.sourceforge.cobertura:cobertura:1.9.4.1'
 }
 
 configurations {
@@ -56,5 +64,57 @@ task intTest(type: Test) {
 task initializeIntTestContext << {
     ant.echo "TODO: unzip & start elastic search here !"
 }
-
 intTestClasses.dependsOn initializeIntTestContext
+
+// For cobertura ...
+if ("true".equals(System.getProperty(COVERAGE_SYS_PROPERTY))) {
+    gradle.taskGraph.beforeTask { task ->
+        if (task == test) {
+            ant {
+                // delete data file for cobertura, otherwise coverage would be added
+                delete(file: cobSerFile, failonerror: false)
+                // delete copy of original classes
+                delete(dir: srcCopy, failonerror: false)
+                // import cobertura task, so it is available in the script
+                taskdef(resource: 'tasks.properties', classpath: configurations.testRuntime.asPath)
+                // create copy (backup) of original class files
+                copy(todir: srcCopy) {
+                    fileset(dir: srcOriginal)
+                }
+                // instrument the relevant classes in-place
+                'cobertura-instrument'(datafile: cobSerFile) {
+                    fileset(dir: srcOriginal,
+                            includes: "**/*.class")
+                }
+            }
+        }
+    }
+
+    gradle.taskGraph.afterTask { task ->
+        if (task == test && new File(srcCopy).exists()) {
+            // replace instrumented classes with backup copy again
+            ant {
+                delete(file: srcOriginal)
+                move(file: srcCopy,
+                        tofile: srcOriginal)
+            }
+            // create cobertura reports
+            ant.'cobertura-report'(destdir: "${project.buildDirName}/reports/tests/",
+                    format: 'xml', srcdir: "src/main/java", datafile: cobSerFile)
+        }
+    }
+
+    test {
+        ignoreFailures = true
+        systemProperties["net.sourceforge.cobertura.datafile"] = cobSerFile
+    }
+}
+
+sonar {
+    serverUrl = "http://sonar.4sh.fr"
+
+    globalProperty "sonar.jdbc.url", "jdbc:mysql://sonar:3306/sonar"
+    globalProperty "sonar.jdbc.driverClassName", "com.mysql.jdbc.Driver"
+    globalProperty "sonar.jdbc.username", "sonar"
+    globalProperty "sonar.jdbc.password", "4SHsoar"
+}
