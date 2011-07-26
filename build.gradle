@@ -10,8 +10,26 @@ def COVERAGE_SYS_PROPERTY = "test.coverage.activated"
 def SKIP_CLEAN_OF_NETTY_SRC = "clean.skip.nettySrc"
 
 
+group = "fr.4sh.jewas"
+version = "0.1-SNAPSHOT"
+
 repositories {
     mavenCentral()
+    // For installing jewas into the local gradle repository...
+    add(new org.apache.ivy.plugins.resolver.FileSystemResolver()) {
+        name = 'local'
+        addIvyPattern "${gradle.gradleUserHomeDir}/local-repo/[organisation]/[module]/[revision]/ivy-[revision].xml"
+        addArtifactPattern "${gradle.gradleUserHomeDir}/local-repo/[organisation]/[module]/[revision]/[module]-[revision](-[classifier]).[ext]"
+        descriptor = 'optional'
+        checkmodified = true
+        m2compatible = true
+    }
+}
+
+// Allows to deploy artefacts into local repository
+task publishLocalArchives(type: Upload) {
+    repositories.add(project.repositories.local)
+    configuration = configurations.archives
 }
 
 
