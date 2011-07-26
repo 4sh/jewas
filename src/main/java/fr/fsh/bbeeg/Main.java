@@ -1,10 +1,9 @@
 package fr.fsh.bbeeg;
 
-import fr.fsh.bbeeg.routes.GetDashboardRoute;
-import fr.fsh.bbeeg.routes.GetSearchRoute;
 import fr.fsh.bbeeg.routes.GetSimpleSearchContent;
 import jewas.http.RestServer;
 import jewas.http.RestServerFactory;
+import jewas.routes.SimpleHtmlRoute;
 import jewas.routes.StaticResourceRoute;
 
 /**
@@ -15,9 +14,9 @@ public class Main {
         final RestServer rs = RestServerFactory.createRestServer(8086);
         rs.addRoutes(
                 new StaticResourceRoute(),
-                new GetDashboardRoute(),
+                new SimpleHtmlRoute("/dashboard", "dashboard/dashboard.ftl"),
                 new GetSimpleSearchContent(),
-                new GetSearchRoute()
+                new SimpleHtmlRoute("/content/search.html", "search/search.ftl")
         ).start();
         System.out.println("Ready, if you are");
     }
