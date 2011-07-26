@@ -23,7 +23,7 @@ public class Main {
                 .addRoutes(
                         new StaticResourceRoute(),
                         new GetDashboardRoute(),
-                        new GetSearchRoute()
+                        new GetSearchRoute(),
                         new GetLastAddedContentRoute()
                 );
         rs.addHandler(new RequestHandler() {
