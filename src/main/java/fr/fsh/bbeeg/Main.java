@@ -1,6 +1,7 @@
 package fr.fsh.bbeeg;
 
 import fr.fsh.bbeeg.routes.GetDashboardRoute;
+import fr.fsh.bbeeg.routes.GetSearchRoute;
 import jewas.http.HttpRequest;
 import jewas.http.RequestHandler;
 import jewas.http.RestServer;
@@ -20,7 +21,8 @@ public class Main {
         final RestServer rs = new RestServer(new NettyHttpConnector())
                 .addRoutes(
                         new StaticResourceRoute(),
-                        new GetDashboardRoute()
+                        new GetDashboardRoute(),
+                        new GetSearchRoute()
                 );
         rs.addHandler(new RequestHandler() {
             @Override
