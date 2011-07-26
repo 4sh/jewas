@@ -1,26 +1,36 @@
 apply plugin: 'java'
 apply plugin: 'idea'
 
+
 repositories {
     mavenCentral()
     mavenRepo urls: "http://oss.sonatype.org/content/repositories/releases/"
+    // For installing jewas into the local gradle repository...
+    add(new org.apache.ivy.plugins.resolver.FileSystemResolver()) {
+        name = 'local'
+        addIvyPattern "${gradle.gradleUserHomeDir}/local-repo/[organisation]/[module]/[revision]/ivy-[revision].xml"
+        addArtifactPattern "${gradle.gradleUserHomeDir}/local-repo/[organisation]/[module]/[revision]/[module]-[revision](-[classifier]).[ext]"
+        descriptor = 'optional'
+        checkmodified = true
+        m2compatible = true
+    }
 }
 
-
 dependencies {
-    compile (
+    compile(
             [group: 'org.elasticsearch', name: 'elasticsearch', version: '0.17.0'],
-            [group: 'com.h2database', name: 'h2', version: '1.3.158']
+            [group: 'com.h2database', name: 'h2', version: '1.3.158'],
+            [group: 'fr.4sh.jewas', name: 'jewas', version: '0.1-SNAPSHOT']
     )
-    testCompile (
+    testCompile(
             [group: 'junit', name: 'junit', version: '4.8.2', transitive: true],
             [group: 'com.jayway.restassured', name: 'rest-assured', version: '1.2.1']
     )
 }
 
 configurations {
-    intTestCompile{ extendsFrom testCompile }
-    intTestRuntime{ extendsFrom intTestCompile, runtime }
+    intTestCompile { extendsFrom testCompile }
+    intTestRuntime { extendsFrom intTestCompile, runtime }
 }
 
 
