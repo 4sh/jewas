@@ -2,6 +2,7 @@ package fr.fsh.bbeeg;
 
 import fr.fsh.bbeeg.routes.GetDashboardRoute;
 import fr.fsh.bbeeg.routes.GetSearchRoute;
+import fr.fsh.bbeeg.routes.GetLastAddedContentRoute;
 import jewas.http.HttpRequest;
 import jewas.http.RequestHandler;
 import jewas.http.RestServer;
@@ -23,6 +24,7 @@ public class Main {
                         new StaticResourceRoute(),
                         new GetDashboardRoute(),
                         new GetSearchRoute()
+                        new GetLastAddedContentRoute()
                 );
         rs.addHandler(new RequestHandler() {
             @Override

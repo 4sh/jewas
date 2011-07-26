@@ -1,0 +1,16 @@
+.tab-container{
+
+}
+
+.tab-menu {
+
+}
+
+.tab-item {
+    display: inline-block;
+}
+
+.tab-content{
+    border-style: solid;
+    border-width: thin;
+}

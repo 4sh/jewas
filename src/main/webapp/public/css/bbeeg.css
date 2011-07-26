@@ -1,27 +1,95 @@
+html {
+    height: 100%;
+}
+
 body {
-    margin: 0px;
+    margin: auto;
+    width: 1024px;
+    height: 100%;
+    background-color: #547DBB;
 }
 
 #header {
-    display: block;
+    top: 0px;
+    background-color: #416D99;
 }
 
 #footer {
-    display: block;
+    bottom:0px;
+    background-color: #CDCDCD;
 }
 
 .inlinedLeftGroup {
-    display: block;
-    left: 0px;
-    position: absolute;
+    display: inline-block;
+    vertical-align: top;
+    padding: 0;
+    margin: 0;
 }
 
 .inlinedRightGroup {
-    display: block;
+    display: inline-block;
+    vertical-align: top;
     right: 0px;
-    position: absolute;
+    float: right;
+    padding: 0;
+    margin: 0;
 }
 
 .inlinedBlock {
     display: inline-block;
+    vertical-align: top;
+    padding: 0 5px;
+}
+
+#header, #header .inlinedLeftGroup, #header .inlinedRightGroup, #header .inlinedBlock {
+height: 20px;
+}
+
+
+#header .inlinedBlock {
+    background-color: #A8DD15;
+}
+
+#mainContent {
+    background-color: #E4F2FE;
+}
+
+.dashboard-group {
+    display: inline-block;
+    vertical-align: top;
+    width: 240px;
+}
+
+#user-informations {
+    display: inline-block;
+    vertical-align: top;
+    width: 750px;
+}
+
+#plateform-informations {
+    display: inline-block;
+    vertical-align: top;
+    width: 240px;
+}
+
+/* *************** Style for tabs *************** */
+.tab-container{
+
+}
+
+.tab-menu {
+
+}
+
+.tab-item {
+    padding: 0 5px;
+    background-color: #416D99;
+}
+
+.tab-content {
+    padding: 5px;
+}
+
+.tab-selected {
+    background-color: #A8DD15;
 }
