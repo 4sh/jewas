@@ -1,4 +1,4 @@
-<#assign compressedJS = "true">
+<#assign compressedJS = "false">
 
 <#macro mainTemplate title scripts stylesheets>
 <!DOCTYPE html>
@@ -26,7 +26,7 @@
     <!-- FIXME : use min jquery template -->
     <script type="application/javascript" src="public/js/jquery/jquery.tmpl.js"></script>
     <#list scripts as script>
-        <script type="application/javascript" src=${script}></script>
+        <script type="application/javascript" src="${script}"></script>
     </#list>
 
     <title>${title}</title>
