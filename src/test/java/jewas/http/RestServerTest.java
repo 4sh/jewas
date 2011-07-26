@@ -5,7 +5,6 @@ import com.jayway.restassured.response.Response;
 import jewas.configuration.JewasConfigurationForTest;
 import jewas.test.fakeapp.routes.SimpleJSONFileRoute;
 import jewas.test.fakeapp.routes.StaticResourceRoute;
-import jewas.test.util.RestServerFactory;
 import jewas.util.file.Files;
 import junit.framework.Assert;
 import org.hamcrest.CoreMatchers;
@@ -15,10 +14,8 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-import static com.jayway.restassured.RestAssured.expect;
-import static com.jayway.restassured.RestAssured.get;
-import static com.jayway.restassured.RestAssured.given;
-import static org.junit.Assert.fail;
+import static com.jayway.restassured.RestAssured.*;
+import static org.junit.Assert.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -32,11 +29,11 @@ public class RestServerTest {
 
     private RestServer restServer = null;
 
-    public RestServerTest(){
+    public RestServerTest() {
     }
 
     @Before
-    public void startServer(){
+    public void startServer() {
         // Restserver without any route
         restServer = RestServerFactory.createRestServer(SERVER_PORT);
         restServer.addRoutes(new SimpleJSONFileRoute());
@@ -46,14 +43,14 @@ public class RestServerTest {
     }
 
     @After
-    public void stopServer(){
+    public void stopServer() {
         restServer.stop();
         restServer = null;
     }
 
 
     @Test
-    public void shouldAllowToStopThenRestartANewInstance(){
+    public void shouldAllowToStopThenRestartANewInstance() {
         // Stopping current running rest server instance
         restServer.stop();
 
@@ -68,12 +65,12 @@ public class RestServerTest {
     }
 
     @Test
-    public void shouldNotAllowToStart2InstancesOnTheSamePort(){
+    public void shouldNotAllowToStart2InstancesOnTheSamePort() {
         try {
             RestServer newRestServerInstance = RestServerFactory.createRestServer(SERVER_PORT);
             newRestServerInstance.start();
             fail("2 instances on the same port should be forbidden !");
-        }catch(AddressAlreadyInUseException e){
+        } catch (AddressAlreadyInUseException e) {
             // It's ok if an exception is thrown ...
         }
     }
@@ -87,9 +84,9 @@ public class RestServerTest {
     public void shouldRenderingJSONWithGETParameterIsOk() {
         given().
                 param("stringToConvert", "foo").
-        expect().
+                expect().
                 body("convertedString", CoreMatchers.is(CoreMatchers.equalTo("FOO"))).
-        when().
+                when().
                 get("/root/toUpperCase/");
 
     }
@@ -98,39 +95,39 @@ public class RestServerTest {
     public void shouldRenderingJSONWithURLParameterIsOk() {
         expect().
                 body("convertedString", CoreMatchers.is(CoreMatchers.equalTo("FOO"))).
-        when().
+                when().
                 get("/root/toUpperCase/foo");
 
     }
-    
+
     @Test
     public void shouldMatchTheRouteWithTrailingSlash() {
-         given().
+        given().
                 param("stringToConvert", "foo").
-         expect().
+                expect().
                 statusCode(200).when().get("/root/toUpperCase/////");
     }
 
     @Test
     public void shouldMatchTheRouteWithoutParamWithTrailingSlash() {
-          given().
-              param("stringToConvert", "foo").
-          expect().
-              statusCode(200).when().get("/root/toUpperCase/");
+        given().
+                param("stringToConvert", "foo").
+                expect().
+                statusCode(200).when().get("/root/toUpperCase/");
     }
 
-     @Test
+    @Test
     public void shouldMatchTheRouteWithoutParamAndTrailingSlash() {
-          given().
-              param("stringToConvert", "foo").
-          expect().
-              statusCode(200).when().get("/root/toUpperCase");
+        given().
+                param("stringToConvert", "foo").
+                expect().
+                statusCode(200).when().get("/root/toUpperCase");
     }
-    
-     @Test
+
+    @Test
     public void shouldReturnStaticResourceWithGETParameterIsOk() {
         //System.setProperty(JewasConfiguration.APPLICATION_CONFIGURATION_FILE_PATH_KEY, "jewas/configuration/jewasForHttp.conf");
-         JewasConfigurationForTest.override("jewas/configuration/jewasForHttp.conf");
+        JewasConfigurationForTest.override("jewas/configuration/jewasForHttp.conf");
         Response response = get("/public/test.js");
 
         byte[] result = response.getBody().asByteArray();
@@ -142,14 +139,14 @@ public class RestServerTest {
             e.getMessage();
             Assert.assertTrue(e.getMessage(), false);
         }
-        
+
         Assert.assertEquals(response.getBody().asString(), expected.length, result.length);
 
         for (int i = 0; i < result.length; i++) {
             Assert.assertEquals(result[i], expected[i]);
         }
 
-         JewasConfigurationForTest.clean();
+        JewasConfigurationForTest.clean();
     }
-    
+
 }

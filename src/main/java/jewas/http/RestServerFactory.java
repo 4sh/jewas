@@ -1,6 +1,5 @@
-package jewas.test.util;
+package jewas.http;
 
-import jewas.http.*;
 import jewas.http.connector.netty.NettyHttpConnector;
 
 /**
@@ -14,9 +13,10 @@ public class RestServerFactory {
     /**
      * Create a new rest server with a default behaviour
      * browsing every routes
+     *
      * @param portNumber Port number the rest server will be listening to
      */
-    public static RestServer createRestServer(int portNumber){
+    public static RestServer createRestServer(int portNumber) {
 
         final RestServer rs = new RestServer(new NettyHttpConnector());
         rs.addHandler(new RequestHandler() {
