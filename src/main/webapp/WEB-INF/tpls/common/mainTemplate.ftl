@@ -1,6 +1,6 @@
 <#assign compressedJS = "false">
 
-<#macro mainTemplate title scripts stylesheets>
+<#macro mainTemplate title="" scripts=[] stylesheets=[]>
 <!DOCTYPE html>
 <html>
 <head>

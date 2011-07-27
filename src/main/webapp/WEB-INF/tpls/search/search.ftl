@@ -6,7 +6,7 @@
         <#assign chosenJS = "/public/js/chosen/chosen.jquery.js">
 </#if>
 
-<@mainTemplate title="Ecran d'accueil" scripts=[chosenJS, "/public/js/bbeeg/search/search.js"] stylesheets=[]>
+<@mainTemplate title="Ecran d'accueil" scripts=[chosenJS, "/public/js/bbeeg/search/search.js"]>
 <script>
     $(function() {
         $("#searchComponent").accordion();
