@@ -1,6 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'sonar'
+apply plugin: 'maven'
 
 // For cobertura
 def cobSerFile = "${project.buildDir}/reports/tests/cobertura.ser"
