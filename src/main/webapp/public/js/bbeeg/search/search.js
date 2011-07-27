@@ -37,12 +37,14 @@ function SearchQuery() {
 }
 SearchQuery.registerClickableForSimpleSearch = function(clickableElement, uniqueSearchField, resultElement) {
     clickableElement.click(function() {
-        new SearchQuery().simpleContentSearch(uniqueSearchField, resultElement);
+        SearchQuery.INSTANCE.simpleContentSearch(uniqueSearchField, resultElement);
     });
 };
 SearchQuery.registerClickableForAdvancedSearch = function(clickableElement /*, TODO */, resultElement) {
     clickableElement.click(function() {
-        new SearchQuery().advancedContentSearch(resultElement);
+        SearchQuery.INSTANCE.advancedContentSearch(resultElement);
     });
 };
+// Can't do this privately (and overall, "uniquely") in JS ... too bad :(
+SearchQuery.INSTANCE = new SearchQuery();
 
