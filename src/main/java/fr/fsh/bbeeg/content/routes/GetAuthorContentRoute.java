@@ -19,10 +19,10 @@ import java.util.List;
  * Time: 14:55
  * To change this template use File | Settings | File Templates.
  */
-public class GetLastViewedContentRoute extends AbstractRoute {
+public class GetAuthorContentRoute extends AbstractRoute {
 
-    public GetLastViewedContentRoute(){
-        super(HttpMethodMatcher.GET, new PatternUriPathMatcher("/content/lastViewed"));
+    public GetAuthorContentRoute(){
+        super(HttpMethodMatcher.GET, new PatternUriPathMatcher("/content/author/[ordering]/[number]"));
     }
 
     public class ResultObject {
@@ -43,7 +43,7 @@ public class GetLastViewedContentRoute extends AbstractRoute {
                 List<ResultObject> list = new ArrayList<ResultObject>();
 
                 for (int i = 0; i < qo.number(); i++) {
-                    list.add(new ResultObject("Item" + i));
+                    list.add(new ResultObject("Auteur" + i));
                 }
 
                 request.respondJson().object(Json.instance().toJsonString(list));
