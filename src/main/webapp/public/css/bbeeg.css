@@ -1,3 +1,4 @@
+/* *************** Main style *************** */
 html {
     height: 100%;
 }
@@ -11,7 +12,7 @@ body {
 
 #header {
     top: 0px;
-    background-color: #416D99;
+    background-color: #CDCDCD;
 }
 
 #footer {
@@ -42,17 +43,23 @@ body {
 }
 
 #header, #header .inlinedLeftGroup, #header .inlinedRightGroup, #header .inlinedBlock {
-height: 20px;
+    height: 20px;
 }
 
 
 #header .inlinedBlock {
+    background-color: #416D99;
+}
+
+#header .menu-item-selected {
     background-color: #A8DD15;
 }
 
 #mainContent {
-    background-color: #E4F2FE;
+    background-color: #FFFFFF;
 }
+
+/* *************** Custom style for each content *************** */
 
 .dashboard-group {
     display: inline-block;
@@ -72,7 +79,7 @@ height: 20px;
     width: 240px;
 }
 
-/* *************** Style for tabs *************** */
+/* *************** Custom style for tabs *************** */
 .tab-container{
 
 }
