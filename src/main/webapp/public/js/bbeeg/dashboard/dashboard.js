@@ -10,21 +10,21 @@ function success(data, container) {
 
 function createLastAdded(container) {
     $.getJSON(
-        '/content/lastAdded?number=5',
+        '/content/added/last?number=5',
         function (data) {success(data, container);}
     );
 }
 
 function createLastViewed(container) {
     $.getJSON(
-        '/content/lastViewed?number=6',
+        '/content/viewed/last?number=6',
         function (data) {success(data, container);}
     );
 }
 
 function createMostPopular(container) {
     $.getJSON(
-        '/content/mostPopular?number=7',
+        '/content/popular?number=7',
         function (data) {success(data, container);}
     );
 }
@@ -33,11 +33,11 @@ function createMostPopular(container) {
 function loadLastConnectionDate() {
     $.getJSON(
         '/user/lastConnectionDate',
-        function (data) {$('#lastConnectionDate').append(data)}
+        function (data) {$('#lastConnectionDate').append("Dernière date de connexion : " + data)}
     );
 }
 
-function createMyContents() {
+function loadMyContents() {
     var tabContainer = new TabContainer('myContents');
 
     tabContainer.addTab('Nouveaux', createLastAdded);
@@ -47,9 +47,34 @@ function createMyContents() {
     $("#user-contents").append(tabContainer.htmlElement());
 }
 
+function loadTotalNumberOfContents() {
+    $.getJSON(
+        '/content/total',
+        function (data) {$('#totalNumberOfContent').append(jQuery.parseJSON(data).number + " contenus sont disponibles actuellement sur la plateforme.")}
+    );
+}
+
+function loadLastAuthors() {
+    $.getJSON(
+        '/content/author/last?number=5',
+        function success(data) {
+            var container = $("#lastAuthors");
+            container.children().remove();
+
+            $.each( jQuery.parseJSON(data),
+                function (key, val) {
+                    $("#authorItemTemplate").tmpl(val).appendTo(container);
+                }
+            );
+        }
+    );
+}
+
 $(
     function() {
         loadLastConnectionDate();
-        createMyContents();
+        loadMyContents();
+        loadTotalNumberOfContents();
+        loadLastAuthors();
     }
 );
