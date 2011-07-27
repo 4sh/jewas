@@ -50,7 +50,7 @@
 </div>
 
 
-<div id="footer"/>
+<div id="footer">Ici un pied de page</div>
 </body>
 </html>
 </#macro>
