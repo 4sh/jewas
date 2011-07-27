@@ -17,14 +17,16 @@
                 src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
         <script type="application/javascript"
                 src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js"></script>
+        <script type="application/javascript"
+                src="http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
         <#else>
             <script type="application/javascript"
                     src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js"></script>
             <script type="application/javascript"
                     src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.js"></script>
+            <script type="application/javascript"
+                    src="http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.js"></script>
     </#if>
-    <!-- FIXME : use min jquery template -->
-    <script type="application/javascript" src="public/js/jquery/jquery.tmpl.js"></script>
     <#list scripts as script>
         <script type="application/javascript" src="${script}"></script>
     </#list>
