@@ -1,4 +1,4 @@
-package fr.fsh.bbeeg.routes;
+package fr.fsh.bbeeg.content.routes;
 
 import fr.fsh.bbeeg.content.resources.ContentSearchResult;
 import jewas.http.*;

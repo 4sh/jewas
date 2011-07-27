@@ -1,4 +1,4 @@
-package fr.fsh.bbeeg.queryObjects.content;
+package fr.fsh.bbeeg.content.resources;
 
 /**
  * Created by IntelliJ IDEA.

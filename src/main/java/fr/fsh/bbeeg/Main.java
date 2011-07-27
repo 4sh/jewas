@@ -1,13 +1,13 @@
 package fr.fsh.bbeeg;
 
-import fr.fsh.bbeeg.routes.GetDashboardRoute;
-import fr.fsh.bbeeg.routes.GetSearchRoute;
-import fr.fsh.bbeeg.routes.GetLastAddedContentRoute;
-import jewas.http.HttpRequest;
-import jewas.http.RequestHandler;
+import fr.fsh.bbeeg.content.routes.GetLastAddedContentRoute;
+import fr.fsh.bbeeg.content.routes.GetLastViewedContentRoute;
+import fr.fsh.bbeeg.content.routes.GetMostPopularContentRoute;
+import fr.fsh.bbeeg.content.routes.GetSimpleSearchContent;
+import fr.fsh.bbeeg.user.routes.GetLastConnectionDateRoute;
 import jewas.http.RestServer;
-import jewas.http.Route;
-import jewas.http.connector.netty.NettyHttpConnector;
+import jewas.http.RestServerFactory;
+import jewas.routes.SimpleHtmlRoute;
 import jewas.routes.StaticResourceRoute;
 
 /**
@@ -24,7 +24,7 @@ public class Main {
                 new StaticResourceRoute(),
                 new SimpleHtmlRoute("/dashboard/dashboard.html", "dashboard/dashboard.ftl"),
                 new GetSimpleSearchContent(),
-                new SimpleHtmlRoute("/content/search.html", "searh/search.ftl"),
+                new SimpleHtmlRoute("/content/search.html", "search/search.ftl"),
                 new GetLastAddedContentRoute(),
                 new GetLastViewedContentRoute(),
                 new GetMostPopularContentRoute(),
