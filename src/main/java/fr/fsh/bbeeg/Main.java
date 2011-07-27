@@ -36,7 +36,7 @@ public class Main {
                 new GetAuthorContentRoute(),
                 new GetPopularDomainRoute()
         ).start();
-        System.out.println("Ready, if you are");
+        System.out.println("Ready, if you dare");
     }
 
 }
