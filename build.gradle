@@ -1,6 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'sonar'
+apply plugin: 'maven'
 
 // For cobertura
 def cobSerFile = "${project.buildDir}/reports/tests/cobertura.ser"
@@ -12,15 +13,7 @@ def COVERAGE_SYS_PROPERTY = "test.coverage.activated"
 repositories {
     mavenCentral()
     mavenRepo urls: "http://oss.sonatype.org/content/repositories/releases/"
-    // For installing jewas into the local gradle repository...
-    add(new org.apache.ivy.plugins.resolver.FileSystemResolver()) {
-        name = 'local'
-        addIvyPattern "${gradle.gradleUserHomeDir}/local-repo/[organisation]/[module]/[revision]/ivy-[revision].xml"
-        addArtifactPattern "${gradle.gradleUserHomeDir}/local-repo/[organisation]/[module]/[revision]/[module]-[revision](-[classifier]).[ext]"
-        descriptor = 'optional'
-        checkmodified = true
-        m2compatible = true
-    }
+    mavenRepo urls: 'file://' + new File(System.getProperty('user.home'), '.m2/repository').absolutePath
 }
 
 dependencies {
@@ -52,7 +45,6 @@ sourceSets {
         resources {
             srcDir "src/integration-test/resources"
         }
-
     }
 }
 
