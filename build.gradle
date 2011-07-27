@@ -9,6 +9,8 @@ def srcOriginal = "${sourceSets.main.classesDir}"
 def srcCopy = "${srcOriginal}-copy"
 def COVERAGE_SYS_PROPERTY = "test.coverage.activated"
 
+group = "fr.4sh.bbeeg"
+version = "0.1-SNAPSHOT"
 
 repositories {
     mavenCentral()
