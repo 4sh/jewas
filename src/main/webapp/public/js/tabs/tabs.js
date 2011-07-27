@@ -11,11 +11,9 @@ function TabContainer(id) {
         $(tab).addClass("tab-item").click(
             function () {
                 if (!$(this).hasClass("tab-selected")) {
-                    function (result) {
-                        $(menu).children(".tab-selected").removeClass("tab-selected");
-                        $(this).addClass("tab-selected");
-                        loadContent(content);
-                    }
+                    $(menu).children(".tab-selected").removeClass("tab-selected");
+                    $(this).addClass("tab-selected");
+                    loadContent(content);
                 }
             }
         );

@@ -1,50 +1,55 @@
+function success(data, container) {
+    $(container).children().remove();
 
-
-function createLastAdded(container) {
-    $.getJSON('/content/lastAdded',
-        function(data){
-
-            $.each( jQuery.parseJSON(data),
-                    function (key, val) {
-                        $("#lastAddedItemTemplate").tmpl(val).appendTo(container);
-                        console.log(container);
-                    }
-            );
+    $.each( jQuery.parseJSON(data),
+        function (key, val) {
+            $("#contentItemTemplate").tmpl(val).appendTo(container);
         }
     );
 }
 
+function createLastAdded(container) {
+    $.getJSON(
+        '/content/lastAdded?number=5',
+        function (data) {success(data, container);}
+    );
+}
+
 function createLastViewed(container) {
-    $.ajax({
-        url: "/content/lastViewed?number=5", // TODO: create the route
-        success: function(data){
-            // TODO: get the jquery template
-        }
-    });
+    $.getJSON(
+        '/content/lastViewed?number=6',
+        function (data) {success(data, container);}
+    );
 }
 
 function createMostPopular(container) {
-    $.ajax({
-        url: "/content/popular?number=5", // TODO: create the route
-        success: function(data){
-            // TODO: get the jquery template
-        }
-    });
+    $.getJSON(
+        '/content/mostPopular?number=7',
+        function (data) {success(data, container);}
+    );
 }
 
 
-function createMyContents() {
-    var tabContainer = new TabContainer('dfdf');
+function loadLastConnectionDate() {
+    $.getJSON(
+        '/user/lastConnectionDate',
+        function (data) {$('#lastConnectionDate').append(data)}
+    );
+}
 
-    tabContainer.addTab('Les derniers ajoutés', createLastAdded);
-    tabContainer.addTab('Les derniers consultés', createLastViewed);
-    tabContainer.addTab('Les plus populaires', createMostPopular);
+function createMyContents() {
+    var tabContainer = new TabContainer('myContents');
+
+    tabContainer.addTab('Nouveaux', createLastAdded);
+    tabContainer.addTab('Consultés', createLastViewed);
+    tabContainer.addTab('Populaires', createMostPopular);
 
     $("#user-contents").append(tabContainer.htmlElement());
 }
 
 $(
     function() {
+        loadLastConnectionDate();
         createMyContents();
     }
 );

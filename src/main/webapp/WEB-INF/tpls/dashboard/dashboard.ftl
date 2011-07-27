@@ -1,10 +1,10 @@
 <#include "../common/mainTemplate.ftl">
 
 <@mainTemplate title="Ecran d'accueil" scripts=["public/js/tabs/tabs.js", "public/js/bbeeg/dashboard/dashboard.js"] stylesheets=["public/css/tabs/tabs.css"]>
-    <script id="lastAddedItemTemplate" type="text/html">
+    <script id="contentItemTemplate" type="text/html">
         <div> <p> {{= name}} </p> </div>
     </script>
-        
+
     <div id="user-informations">
         <p id="lastConnectionDate"> Dernière date de connexion : </p>
 
