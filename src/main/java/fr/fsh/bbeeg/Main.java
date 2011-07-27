@@ -1,9 +1,11 @@
 package fr.fsh.bbeeg;
 
-import fr.fsh.bbeeg.content.routes.GetLastAddedContentRoute;
-import fr.fsh.bbeeg.content.routes.GetLastViewedContentRoute;
-import fr.fsh.bbeeg.content.routes.GetMostPopularContentRoute;
+import fr.fsh.bbeeg.content.routes.GetAddedContentRoute;
+import fr.fsh.bbeeg.content.routes.GetAuthorContentRoute;
+import fr.fsh.bbeeg.content.routes.GetViewedContentRoute;
+import fr.fsh.bbeeg.content.routes.GetPopularContentRoute;
 import fr.fsh.bbeeg.content.routes.GetSimpleSearchContent;
+import fr.fsh.bbeeg.content.routes.GetTotalNumberOfContentRoute;
 import fr.fsh.bbeeg.user.routes.GetLastConnectionDateRoute;
 import jewas.http.RestServer;
 import jewas.http.RestServerFactory;
@@ -25,10 +27,12 @@ public class Main {
                 new SimpleHtmlRoute("/dashboard/dashboard.html", "dashboard/dashboard.ftl"),
                 new GetSimpleSearchContent(),
                 new SimpleHtmlRoute("/content/search.html", "search/search.ftl"),
-                new GetLastAddedContentRoute(),
-                new GetLastViewedContentRoute(),
-                new GetMostPopularContentRoute(),
-                new GetLastConnectionDateRoute()
+                new GetAddedContentRoute(),
+                new GetViewedContentRoute(),
+                new GetPopularContentRoute(),
+                new GetLastConnectionDateRoute(),
+                new GetTotalNumberOfContentRoute(),
+                new GetAuthorContentRoute()
         ).start();
         System.out.println("Ready, if you are");
     }

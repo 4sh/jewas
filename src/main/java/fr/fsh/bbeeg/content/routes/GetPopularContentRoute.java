@@ -19,10 +19,10 @@ import java.util.List;
  * Time: 14:55
  * To change this template use File | Settings | File Templates.
  */
-public class GetMostPopularContentRoute extends AbstractRoute {
+public class GetPopularContentRoute extends AbstractRoute {
 
-    public GetMostPopularContentRoute(){
-        super(HttpMethodMatcher.GET, new PatternUriPathMatcher("/content/mostPopular"));
+    public GetPopularContentRoute(){
+        super(HttpMethodMatcher.GET, new PatternUriPathMatcher("/content/popular/[number]"));
     }
 
     public class ResultObject {

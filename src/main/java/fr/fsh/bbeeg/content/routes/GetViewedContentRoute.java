@@ -19,10 +19,10 @@ import java.util.List;
  * Time: 14:55
  * To change this template use File | Settings | File Templates.
  */
-public class GetLastAddedContentRoute extends AbstractRoute {
+public class GetViewedContentRoute extends AbstractRoute {
 
-    public GetLastAddedContentRoute(){
-        super(HttpMethodMatcher.GET, new PatternUriPathMatcher("/content/lastAdded"));
+    public GetViewedContentRoute(){
+        super(HttpMethodMatcher.GET, new PatternUriPathMatcher("/content/viewed/[ordering]/[number]"));
     }
 
     public class ResultObject {
