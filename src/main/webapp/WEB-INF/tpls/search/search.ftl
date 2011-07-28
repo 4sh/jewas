@@ -38,26 +38,60 @@ scripts=[chosenJS, "/public/js/bbeeg/search/search.js"]>
         <input id="advancedSearchButton" type="submit" value="Rechercher"/></div>
 </div>
 
-<div id="searchResultsComponent">
+<div id="searchResultsComponent" style="margin-top: 10px;" class="ui-widget">
     No results found yet !
 </div>
 
 <script id="contentResult" type="text/x-jquery-tmpl">
+    <h3 style="color: #eb8f00;" class="ui-widget">Résultats de la recherche</h3>
+
     <div id="contentResults">
         {{tmpl(results) "#contentLineResult"}}
     </div>
     <button id="searchNext">Résultats suivants</button>
 </script>
-<script id="contentLineResult" type="text/x-jquery-tmpl">
+<
+script
+id = "contentLineResult"
+type = "text/x-jquery-tmpl" >
     <!-- Yeah I know css direct in html is weird... will externalize this in css after sandboxing -->
-    <div class="contentResult" style="margin: 10px;">
-        <div style="width: 200px; float:left;">{{= title}}</div>
-        <div style="witdh: 400px; float:left;">{{= author}}</div>
-        <div
-                style="width: 300px; float:left;">{{= lastModificationDate}}
-        </div>
-        <div style="clear: both; width: 800px; font-style: italic;">{{= description}}</div>
-    </div>
-</script>
+        < div
+class = "contentResult"
+style = "margin: 10px;" >
+        < div
+style = "width: 400px; float:left;"
+class = "ui-widget ui-helper-reset" > {
+{
+    = title
+}
+}<
+/div>
+< div
+style = "width: 90px; float:left;"
+class = "ui-widget ui-helper-reset" > {
+{
+    = author
+}
+}<
+/div>
+< div
+style = "width: 200px; float:left;"
+class = "ui-widget ui-helper-reset" > {
+{
+    = creationDate
+}
+}
+<
+/div>
+< div
+style = "clear: both; width: 800px; font-style: italic;"
+class = "ui-widget ui-helper-reset" > {
+{
+    = description
+}
+}<
+/div>
+< /div>
+        </script>
 
 </@mainTemplate>
