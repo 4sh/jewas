@@ -6,7 +6,8 @@
                  "/public/js/jqcloud/jqcloud-0.2.1.js",
                  "/public/js/bbeeg/dashboard/dashboard.js"]
         stylesheets=["/public/css/tabs/tabs.css",
-                     "/public/css/jqcloud/jqcloud.css"]>
+                     "/public/css/jqcloud/jqcloud.css",
+                     "/public/css/bbeeg/dashboard.css"]>
     <script id="contentItemTemplate" type="text/html">
         <div> <p> {{= name}} </p> </div>
     </script>

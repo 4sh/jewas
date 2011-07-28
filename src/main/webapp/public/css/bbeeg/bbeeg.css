@@ -71,46 +71,6 @@ body > #container {
     padding-bottom: 20px;          /* Needed for a sticky footer */
 }
 
-/* *************** Custom style for each content *************** */
-
-#user-informations {
-    display: inline-block;
-    vertical-align: top;
-    width: 750px;
-}
-
-#dashboard {
-}
-
-.dashboard-group {
-    display: inline-block;
-    vertical-align: top;
-    width: 240px;
-    margin: auto;
-}
-
-#general-informations {
-    display: inline-block;
-    vertical-align: top;
-    width: 240px;
-    right: 0px;
-    float: right;
-}
-
-#general-informations > div {
-    width: 239px;
-    padding-left: 5px;
-    border: 1px solid #ccc;
-}
-
-#plateform-informations {
-    margin-bottom: 5px;
-}
-
-#domainCloud {
-    height: 240px;
-}
-
 /* *************** Custom style for tabs *************** */
 .tab-container{
 

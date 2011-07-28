@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
 
-    <link rel="stylesheet" href="/public/css/bbeeg.css"/>
+    <link rel="stylesheet" href="/public/css/bbeeg/bbeeg.css"/>
     <link rel="stylesheet"
           href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/themes/ui-lightness/jquery-ui.css"/>
 
