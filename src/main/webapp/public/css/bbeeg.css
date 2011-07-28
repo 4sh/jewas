@@ -73,22 +73,31 @@ body > #container {
 
 /* *************** Custom style for each content *************** */
 
-.dashboard-group {
-    display: inline-block;
-    vertical-align: top;
-    width: 240px;
-}
-
 #user-informations {
     display: inline-block;
     vertical-align: top;
     width: 750px;
 }
 
+#dashboard {
+}
+
+.dashboard-group {
+    display: inline-block;
+    vertical-align: top;
+    width: 240px;
+    margin: auto;
+}
+
 #plateform-informations {
     display: inline-block;
     vertical-align: top;
     width: 240px;
+    border-style: solid;
+    border-width: thin;
+    right: 0px;
+    float: right;
+    padding-left: 5px;
 }
 
 /* *************** Custom style for tabs *************** */
