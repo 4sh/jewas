@@ -1,25 +1,35 @@
 $(
     function() {
-        var mainMenu = $("#mainMenu");
+        var applicationMenu = $("#applicationMenu");
+        var configurationMenu = $("#configurationMenu");
+
+        /* This function is used to load a item menu. It select the menu and load it's content. */
+        var loadMenuItem = function (menuItemElement, url) {
+            if (!$(menuItemElement).hasClass("menu-item-selected")) {
+                applicationMenu.children(".menu-item-selected").removeClass("menu-item-selected");
+                configurationMenu.children(".menu-item-selected").removeClass("menu-item-selected");
+                $(menuItemElement).addClass("menu-item-selected");
+                window.location = url;
+            }
+        };
 
         $("#dashboardMenuItem").click(
             function () {
-                if (!$(this).hasClass("menu-item-selected")) {
-                    mainMenu.children(".menu-item-selected").removeClass("menu-item-selected");
-                    $(this).addClass("menu-item-selected");
-                    window.location = "/dashboard/dashboard.html";
-                }
+                loadMenuItem(this, "/dashboard/dashboard.html");
             }
         );
 
         $("#searchMenuItem").click(
             function () {
-                if (!$(this).hasClass("menu-item-selected")) {
-                    mainMenu.children(".menu-item-selected").removeClass("menu-item-selected");
-                    $(this).addClass("menu-item-selected");
-                    window.location = "/content/search.html";
-                }
+                loadMenuItem(this, "/content/search.html");
             }
         );
+
+        $("#profileMenuItem").click(
+            function () {
+                loadMenuItem(this, "/user/profile.html");
+            }
+        );
+
     }
 );

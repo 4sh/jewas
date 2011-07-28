@@ -41,7 +41,7 @@
 <body>
     <div id="container">
         <div id="header">
-            <ul id="mainMenu" class="inlined-left-group">
+            <ul id="applicationMenu" class="inlined-left-group">
                 <#if selectedMenuItem == "dashboard">
                     <li id="dashboardMenuItem" class="inlined-block menu-item-selected">Accueil</li>
                 <#else>
@@ -55,8 +55,12 @@
                 </#if>
             </ul>
 
-            <ul class="inlined-right-group">
-                <li class="inlined-block">Profil</li>
+            <ul id="configurationMenu" class="inlined-right-group">
+                <#if selectedMenuItem == "profile">
+                    <li id="profileMenuItem" class="inlined-block  menu-item-selected">Profil</li>
+                <#else>
+                    <li id="profileMenuItem" class="inlined-block">Profil</li>
+                </#if>
             </ul>
         </div>
 
