@@ -62,7 +62,7 @@ function loadLastAuthors() {
 }
 
 function loadDomains() {
-$.getJSON(
+    $.getJSON(
         '/domain/popular?number=20',
         function success(data) {
             var container = $("#domainCloud");
@@ -70,7 +70,6 @@ $.getJSON(
             container.jQCloud(jQuery.parseJSON(data));
         }
     );
-
 }
 
 $(
