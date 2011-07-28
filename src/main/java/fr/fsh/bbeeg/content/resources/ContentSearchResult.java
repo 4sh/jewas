@@ -18,6 +18,7 @@ public class ContentSearchResult {
     private Date lastModificationDate;
     // TODO: replace this with an enum type ???
     private String mediaType;
+    private String description;
 
     public ContentSearchResult title(String _title) {
         this.title = _title;
@@ -98,5 +99,14 @@ public class ContentSearchResult {
 
     public String id() {
         return this.id;
+    }
+
+    public ContentSearchResult description(String _description) {
+        this.description = _description;
+        return this;
+    }
+
+    public String description() {
+        return this.description;
     }
 }
