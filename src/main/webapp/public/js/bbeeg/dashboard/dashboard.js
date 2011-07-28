@@ -1,11 +1,7 @@
 function success(data, container) {
     $(container).children().remove();
 
-    $.each( jQuery.parseJSON(data),
-        function (key, val) {
-            $("#contentItemTemplate").tmpl(val).appendTo(container);
-        }
-    );
+    $("#contentItemTemplate").tmpl(jQuery.parseJSON(data)).appendTo(container);
 }
 
 function createLastAdded(container) {
@@ -60,12 +56,7 @@ function loadLastAuthors() {
         function success(data) {
             var container = $("#lastAuthors");
             container.children().remove();
-
-            $.each( jQuery.parseJSON(data),
-                function (key, val) {
-                    $("#authorItemTemplate").tmpl(val).appendTo(container);
-                }
-            );
+            $("#authorItemTemplate").tmpl(jQuery.parseJSON(data)).appendTo(container);
         }
     );
 }
