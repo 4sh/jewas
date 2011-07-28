@@ -22,13 +22,20 @@ public class GetLastConnectionDateRoute extends AbstractRoute {
         super(HttpMethodMatcher.GET, new PatternUriPathMatcher("/user/lastConnectionDate"));
     }
 
+    public class ResultObject {
+        public DateMidnight date;
+
+        public ResultObject(DateMidnight date) {
+            this.date = date;
+        }
+    }
 
     @Override
     protected RequestHandler onMatch(HttpRequest request, Parameters parameters) {
         return new RequestHandler() {
             @Override
             public void onRequest(HttpRequest request) {
-                request.respondJson().object(Json.instance().toJsonString(new DateMidnight()));
+                request.respondJson().object(Json.instance().toJsonString(new ResultObject(new DateMidnight())));
             }
         };
     }

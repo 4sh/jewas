@@ -29,7 +29,7 @@ function createMostPopular(container) {
 function loadLastConnectionDate() {
     $.getJSON(
         '/user/lastConnectionDate',
-        function (data) {$('#lastConnectionDate').append("Dernière date de connexion : " + data)}
+        function (data) {$('#lastConnectionDate').append("Dernière date de connexion : " + jQuery.parseJSON(data).date)}
     );
 }
 
