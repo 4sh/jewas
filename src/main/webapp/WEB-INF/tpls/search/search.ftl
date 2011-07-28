@@ -12,16 +12,23 @@
 <script>
     $(function() {
         $("#searchComponent").accordion();
-        SearchQuery.registerClickableForSimpleSearch($("#simpleSearchButton"), $("#simpleSearchQuery"), $("#searchResultsComponent"));
-        SearchQuery.registerClickableForAdvancedSearch($("#advancedSearchButton"), /*$("#simpleSearchQuery")[0], */$("#searchResultsComponent"));
+        SearchQuery.registerSearch(
+                new SearchQuery.SearchContext().targetForm($("#simpleSearchForm"))
+                        .resultElement($("#searchResultsComponent"))
+                        .resultTemplate($("#contentResult"))
+        );
     });
 </script>
 
 <div id="searchComponent">
     <h3><a href="#">Recherche simple</a></h3>
 
-    <div>Recherche : <input id="simpleSearchQuery" type="text" name="query"/>
-        <input id="simpleSearchButton" type="submit" value="Rechercher"/></div>
+    <div>
+        <form action="/content/search" id="simpleSearchForm">
+            <label for="simpleSearchQuery">Recherche</label> : <input id="simpleSearchQuery" type="text" name="query"/>
+            <input id="simpleSearchButton" type="submit" value="Rechercher"/>
+        </form>
+    </div>
     <h3><a href="#">Recherche avancée</a></h3>
 
     <div>Blah blah blah
@@ -31,4 +38,18 @@
 <div id="searchResultsComponent">
     No results found yet !
 </div>
+
+<script id="contentResult" type="text/x-jquery-tmpl">
+    <div class="contentResults">
+        {{tmpl(results) "#contentLineResult"}}
+    </div>
+</script>
+<script id="contentLineResult" type="text/x-jquery-tmpl">
+    <div class="contentResult">
+        <span style="width: 200px">{{= title}}</span><span style="witdh: 400px">{{= author}}</span><span
+            style="width: 300px">{{= lastModificationDate}}</span>
+        <span style="clear: both; width: 800px;">{{= description}}</span>
+    </div>
+</script>
+
 </@mainTemplate>

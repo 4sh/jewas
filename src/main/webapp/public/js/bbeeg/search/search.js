@@ -1,50 +1,95 @@
+/**
+ * This class needs following scripts to work properly :
+ * - jquery
+ */
+
 function SearchQuery() {
 
     (function() {
     }).call(this);
 
-    this.simpleContentSearch = function(uniqueSearchField, resultElement) {
-        return search("/content/search", { q: uniqueSearchField.val() }, resultElement);
-    };
-
-    this.advancedContentSearch = function(resultElement/* TODO */) {
-        alert('Not yet implemented :-)');
-    };
-
     /**
      * Will perform a search and return a ContentSearchResult[]
-     * @param resourceUrl REST URL returning an array of search results
-     * @param parameters Query parameters given to the resourceUrl
+     * @param searchContext Information on searchContext
      */
-    function search(resourceUrl, parameters, resultElement) {
-        $.get(resourceUrl, parameters, function(data) {
-            displayInto(resultElement, data);
+    this.contentSearch = function(searchContext) {
+        $.get(searchContext.targetForm().attr('action'), searchContext.targetForm().serialize(), function(data) {
+            // Boxing results array into a container, in order to not iterate on the root template
+            var templateParams = { results: data };
+            // If we are in append mode, resultTemplate should be directly the template where we will iterate over
+            /*
+             if(searchContext.appendResults()){
+             templateParams = data;
+             }*/
+            useTemplateInto(searchContext.resultTemplate(), templateParams, searchContext.resultElement()/*, searchContext.appendResults()*/);
         }, "json");
     }
 
-    ;
+        ;
 
-    function displayInto(resultElement, results) {
-        // TODO: refactor this...
-        $('<ul>').appendTo(resultElement);
-        $.each(results, function(index, res) {
-            $('<li>' + res.title + '</li>').appendTo(resultElement);
-        });
-        $('</ul>').appendTo(resultElement);
+    function useTemplateInto(template, parameters, elementWhereTemplateIsApplied/*, append*/) {
+        var html = template.tmpl(parameters);
+        /*if(append){
+         html.appendTo(elementWhereTemplateIsApplied);
+         } else {*/
+        elementWhereTemplateIsApplied.html(html);
+        //}
     }
 
     ;
 }
-SearchQuery.registerClickableForSimpleSearch = function(clickableElement, uniqueSearchField, resultElement) {
-    clickableElement.click(function() {
-        SearchQuery.INSTANCE.simpleContentSearch(uniqueSearchField, resultElement);
+SearchQuery.registerSearch = function(searchContext) {
+    searchContext.targetForm().submit(function() {
+        SearchQuery.INSTANCE.contentSearch(searchContext);
+        return false; // Ensuring form is not really submitted
     });
 };
-SearchQuery.registerClickableForAdvancedSearch = function(clickableElement /*, TODO */, resultElement) {
-    clickableElement.click(function() {
-        SearchQuery.INSTANCE.advancedContentSearch(resultElement);
-    });
-};
+/*
+ SearchQuery.registerClickableForContentSearch = function(clickableElement, searchContext) {
+ searchContext.targetForm().click(function() {
+ SearchQuery.INSTANCE.contentSearch(searchContext);
+ });
+ };
+ */
+// Inner class SearchContext
+SearchQuery.SearchContext = function() {
+    function SearchContextConstructor() {
+        var _resultElement;
+        this.resultElement = function(__resultElement) {
+            if (__resultElement == null) {
+                return _resultElement;
+            } else {
+                _resultElement = __resultElement;
+                return this;
+            }
+        };
+        var _targetForm;
+        this.targetForm = function(__targetForm) {
+            if (__targetForm == null) {
+                return _targetForm;
+            } else {
+                _targetForm = __targetForm;
+                return this;
+            }
+        };
+        var _resultTemplate;
+        this.resultTemplate = function(__resultTemplate) {
+            if (__resultTemplate == null) {
+                return _resultTemplate;
+            } else {
+                _resultTemplate = __resultTemplate;
+                return this;
+            }
+        };
+        /*
+         var _appendResults;
+         this.appendResults = function(__appendResults){ if(__appendResults==null){ return _appendResults; } else { _appendResults = __appendResults; return this; } };
+         */
+    }
+
+    return SearchContextConstructor;
+}();
+// SearchQuery singleton instance
 // Can't do this privately (and overall, "uniquely") in JS ... too bad :(
 SearchQuery.INSTANCE = new SearchQuery();
 
