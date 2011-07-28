@@ -61,11 +61,24 @@ function loadLastAuthors() {
     );
 }
 
+function loadDomains() {
+$.getJSON(
+        '/domain/popular?number=20',
+        function success(data) {
+            var container = $("#domainCloud");
+            container.children().remove();
+            container.jQCloud(jQuery.parseJSON(data));
+        }
+    );
+
+}
+
 $(
     function() {
         loadLastConnectionDate();
         loadMyContents();
         loadTotalNumberOfContents();
         loadLastAuthors();
+        loadDomains();
     }
 );

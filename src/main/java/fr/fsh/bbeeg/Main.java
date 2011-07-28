@@ -6,6 +6,7 @@ import fr.fsh.bbeeg.content.routes.GetViewedContentRoute;
 import fr.fsh.bbeeg.content.routes.GetPopularContentRoute;
 import fr.fsh.bbeeg.content.routes.GetSimpleSearchContent;
 import fr.fsh.bbeeg.content.routes.GetTotalNumberOfContentRoute;
+import fr.fsh.bbeeg.domain.routes.GetPopularDomainRoute;
 import fr.fsh.bbeeg.user.routes.GetLastConnectionDateRoute;
 import jewas.http.RestServer;
 import jewas.http.RestServerFactory;
@@ -32,7 +33,8 @@ public class Main {
                 new GetPopularContentRoute(),
                 new GetLastConnectionDateRoute(),
                 new GetTotalNumberOfContentRoute(),
-                new GetAuthorContentRoute()
+                new GetAuthorContentRoute(),
+                new GetPopularDomainRoute()
         ).start();
         System.out.println("Ready, if you are");
     }

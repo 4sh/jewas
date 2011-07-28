@@ -89,15 +89,26 @@ body > #container {
     margin: auto;
 }
 
-#plateform-informations {
+#general-informations {
     display: inline-block;
     vertical-align: top;
     width: 240px;
-    border-style: solid;
-    border-width: thin;
     right: 0px;
     float: right;
+}
+
+#general-informations > div {
+    width: 239px;
     padding-left: 5px;
+    border: 1px solid #ccc;
+}
+
+#plateform-informations {
+    margin-bottom: 5px;
+}
+
+#domainCloud {
+    height: 240px;
 }
 
 /* *************** Custom style for tabs *************** */
