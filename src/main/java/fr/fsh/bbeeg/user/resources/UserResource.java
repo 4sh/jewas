@@ -10,4 +10,11 @@ public class UserResource {
     public static DateResultObject getLastConnectionDate() {
         return new DateResultObject(new DateMidnight());
     }
+
+    public static User getUserInformations() {
+        User user = new User();
+        user.name("Bob").surname("Sponge").email("pacific_33@sea.gl")
+                .lastConnectionDate(new DateMidnight());
+        return user;
+    }
 }
