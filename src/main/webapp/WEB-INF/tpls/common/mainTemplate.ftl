@@ -40,29 +40,28 @@
 </head>
 <body>
     <div id="header">
-        <ul id="mainMenu" class="inlinedLeftGroup">
+        <ul id="mainMenu" class="inlined-left-group">
             <#if selectedMenuItem == "dashboard">
-                <li id="dashboardMenuItem" class="inlinedBlock menu-item-selected">Accueil</li>
+                <li id="dashboardMenuItem" class="inlined-block menu-item-selected">Accueil</li>
             <#else>
-                <li id="dashboardMenuItem" class="inlinedBlock">Accueil</li>
+                <li id="dashboardMenuItem" class="inlined-block">Accueil</li>
             </#if>
 
             <#if selectedMenuItem == "search">
-                <li id="searchMenuItem" class="inlinedBlock menu-item-selected">Recherche</li>
+                <li id="searchMenuItem" class="inlined-block menu-item-selected">Recherche</li>
             <#else>
-                <li id="searchMenuItem" class="inlinedBlock">Recherche</li>
+                <li id="searchMenuItem" class="inlined-block">Recherche</li>
             </#if>
         </ul>
 
-        <ul class="inlinedRightGroup">
-            <li class="inlinedBlock">Profil</li>
+        <ul class="inlined-right-group">
+            <li class="inlined-block">Profil</li>
         </ul>
     </div>
 
     <div id="mainContent">
         <#nested>
     </div>
-
 
     <div id="footer">Ici un pied de page</div>
 </body>
