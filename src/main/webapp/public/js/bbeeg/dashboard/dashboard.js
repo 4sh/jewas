@@ -10,21 +10,21 @@ function success(data, container) {
 
 function createLastAdded(container) {
     $.getJSON(
-        '/content/added/last?number=50',
+        '/content/added/last?number=5',
         function (data) {success(data, container);}
     );
 }
 
 function createLastViewed(container) {
     $.getJSON(
-        '/content/viewed/last?number=6',
+        '/content/viewed/last?number=5',
         function (data) {success(data, container);}
     );
 }
 
 function createMostPopular(container) {
     $.getJSON(
-        '/content/popular?number=7',
+        '/content/popular?number=5',
         function (data) {success(data, container);}
     );
 }
