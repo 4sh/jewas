@@ -39,30 +39,31 @@
     <title>${title}</title>
 </head>
 <body>
-    <div id="header">
-        <ul id="mainMenu" class="inlined-left-group">
-            <#if selectedMenuItem == "dashboard">
-                <li id="dashboardMenuItem" class="inlined-block menu-item-selected">Accueil</li>
-            <#else>
-                <li id="dashboardMenuItem" class="inlined-block">Accueil</li>
-            </#if>
+    <div id="container">
+        <div id="header">
+            <ul id="mainMenu" class="inlined-left-group">
+                <#if selectedMenuItem == "dashboard">
+                    <li id="dashboardMenuItem" class="inlined-block menu-item-selected">Accueil</li>
+                <#else>
+                    <li id="dashboardMenuItem" class="inlined-block">Accueil</li>
+                </#if>
 
-            <#if selectedMenuItem == "search">
-                <li id="searchMenuItem" class="inlined-block menu-item-selected">Recherche</li>
-            <#else>
-                <li id="searchMenuItem" class="inlined-block">Recherche</li>
-            </#if>
-        </ul>
+                <#if selectedMenuItem == "search">
+                    <li id="searchMenuItem" class="inlined-block menu-item-selected">Recherche</li>
+                <#else>
+                    <li id="searchMenuItem" class="inlined-block">Recherche</li>
+                </#if>
+            </ul>
 
-        <ul class="inlined-right-group">
-            <li class="inlined-block">Profil</li>
-        </ul>
+            <ul class="inlined-right-group">
+                <li class="inlined-block">Profil</li>
+            </ul>
+        </div>
+
+        <div id="mainContent">
+            <#nested>
+        </div>
     </div>
-
-    <div id="mainContent">
-        <#nested>
-    </div>
-
     <div id="footer">Ici un pied de page</div>
 </body>
 </html>

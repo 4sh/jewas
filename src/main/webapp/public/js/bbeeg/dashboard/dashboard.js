@@ -10,7 +10,7 @@ function success(data, container) {
 
 function createLastAdded(container) {
     $.getJSON(
-        '/content/added/last?number=5',
+        '/content/added/last?number=50',
         function (data) {success(data, container);}
     );
 }
