@@ -9,7 +9,7 @@
                      "/public/css/jqcloud/jqcloud.css",
                      "/public/css/bbeeg/dashboard.css"]>
     <script id="contentItemTemplate" type="text/html">
-        <div> <p> {{= name}} </p> </div>
+        <div> <p> {{= title}} </p> </div>
     </script>
 
     <script id="authorItemTemplate" type="text/html">

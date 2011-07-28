@@ -1,4 +1,4 @@
-package fr.fsh.bbeeg.content.resources;
+package fr.fsh.bbeeg.common.resources;
 
 /**
  * Created by IntelliJ IDEA.
@@ -7,7 +7,7 @@ package fr.fsh.bbeeg.content.resources;
  * Time: 15:54
  * To change this template use File | Settings | File Templates.
  */
-public class ContentQueryObject {
+public class LimitedOrderedQueryObject {
     private String ordering;
     private Integer number;
 
@@ -15,7 +15,7 @@ public class ContentQueryObject {
         return (number ==  null)? 5 : number;
     }
 
-    public ContentQueryObject number(Integer number) {
+    public LimitedOrderedQueryObject number(Integer number) {
         this.number = number;
         return this;
     }
@@ -24,7 +24,7 @@ public class ContentQueryObject {
         return ordering;
     }
 
-    public ContentQueryObject ordering(String ordering) {
+    public LimitedOrderedQueryObject ordering(String ordering) {
         this.ordering = ordering;
         return this;
     }

@@ -45,8 +45,8 @@ function loadMyContents() {
 
 function loadTotalNumberOfContents() {
     $.getJSON(
-        '/content/total',
-        function (data) {$('#totalNumberOfContent').append(jQuery.parseJSON(data).number + " contenus sont disponibles actuellement sur la plateforme.")}
+        '/content/count',
+        function (data) {$('#totalNumberOfContent').append(jQuery.parseJSON(data).count + " contenus sont disponibles actuellement sur la plateforme.")}
     );
 }
 

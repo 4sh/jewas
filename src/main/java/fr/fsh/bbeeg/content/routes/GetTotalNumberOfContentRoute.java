@@ -1,5 +1,6 @@
 package fr.fsh.bbeeg.content.routes;
 
+import fr.fsh.bbeeg.content.resources.ContentResource;
 import jewas.http.AbstractRoute;
 import jewas.http.HttpMethodMatcher;
 import jewas.http.HttpRequest;
@@ -18,15 +19,7 @@ import jewas.json.Json;
 public class GetTotalNumberOfContentRoute extends AbstractRoute {
 
     public GetTotalNumberOfContentRoute(){
-        super(HttpMethodMatcher.GET, new PatternUriPathMatcher("/content/total"));
-    }
-
-    public class ResultObject {
-        public Integer number;
-
-        public ResultObject(Integer number) {
-            this.number = number;
-        }
+        super(HttpMethodMatcher.GET, new PatternUriPathMatcher("/content/count"));
     }
 
     @Override
@@ -34,7 +27,7 @@ public class GetTotalNumberOfContentRoute extends AbstractRoute {
         return new RequestHandler() {
             @Override
             public void onRequest(HttpRequest request) {
-                request.respondJson().object(Json.instance().toJsonString(new ResultObject(367)));
+                request.respondJson().object(Json.instance().toJsonString(ContentResource.getContentCount()));
             }
         };
     }
