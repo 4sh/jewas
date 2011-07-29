@@ -53,10 +53,17 @@ public class ContentResource {
 
     public static List<Author> getAuthor(LimitedOrderedQueryObject loqo) {
         List<Author> list = new ArrayList<Author>();
+        int count;
 
-        for (int i = 0; i < loqo.number(); i++) {
+        if ("all".equals(loqo.ordering())) {
+            count = 25;
+        } else {
+            count = loqo.number();
+        }
+
+        for (int i = 0; i < count; i++) {
             Author author = new Author();
-            author.name("Auteur "+i);
+            author.id(new Long(i)).name("Auteur "+i);
             list.add(author);
         }
 

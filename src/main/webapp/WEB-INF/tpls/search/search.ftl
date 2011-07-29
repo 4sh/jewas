@@ -8,9 +8,21 @@
 
 <@mainTemplate title="Ecran d'accueil" selectedMenuItem="search" scripts=[chosenJS, "/public/js/bbeeg/search/search.js"] stylesheets=["/public/css/chosen/chosen.css"]>
 
+<script id="authorItemTemplate" type="text/html">
+    <option value="{{= id}}"> {{= name}} </option>
+</script>
 
 <script>
-
+    function loadAuthors() {
+        $.getJSON(
+            '/content/author/all',
+            function success(data) {
+                var container = $("#adSearchAuthor");
+                container.children().remove();
+                $("#authorItemTemplate").tmpl(data).appendTo(container);
+            }
+        );
+    }
 
     $(function() {
         $("#searchComponent").accordion({
@@ -44,7 +56,7 @@
                         .selectorWhereResultsWillBeAppended("#contentResults")
         );
 
-
+        loadAuthors();
     });
 </script>
 
