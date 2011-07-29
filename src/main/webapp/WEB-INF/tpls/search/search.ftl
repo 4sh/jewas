@@ -6,12 +6,12 @@
         <#assign chosenJS = "/public/js/chosen/chosen.jquery.js">
 </#if>
 
-<@mainTemplate title="Ecran d'accueil"
-selectedMenuItem="search"
-scripts=[chosenJS, "/public/js/bbeeg/search/search.js"]>
+<@mainTemplate title="Ecran d'accueil" selectedMenuItem="search" scripts=[chosenJS, "/public/js/bbeeg/search/search.js"] stylesheets=["/public/css/chosen.css"]>
 <script>
     $(function() {
         $("#searchComponent").accordion();
+        $("#adSearchDate").datepicker();
+        $("#adSearchType").chosen();
         SearchQuery.bindSearchToForm(
                 new SearchQuery.SearchContext().targetForm($("#simpleSearchForm"))
                         .resultElement($("#searchResultsComponent"))
@@ -34,14 +34,32 @@ scripts=[chosenJS, "/public/js/bbeeg/search/search.js"]>
     </div>
     <h3><a href="#">Recherche avancée</a></h3>
 
-    <div>Blah blah blah
-        <input id="advancedSearchButton" type="submit" value="Rechercher"/></div>
+    <div>
+        <form action="/content/advancedSearch" id="advancedSearchForm">
+            <div style="display:block;"><label for="adSearchDate">Date de création</label> : <input type="text"
+                                                                                                    id="adSearchDate"
+                                                                                                    name="date"/></div>
+            <div style="width: 600px; display:block;">
+                <label for="adSearchType">Types de contenu</label> :
+                <select id="adSearchType" class="chzn-select side-by-side clearfix" multiple style="width: 350px">
+                    <option value="doc">Document</option>
+                    <option value="img">Images</option>
+                    <option value="aud">Audio</option>
+                    <option value="txt">Texte simple</option>
+                    <option value="eeg">EEG Vidéo</option>
+                    <option value="vid">Vidéo</option>
+                </select>
+            </div>
+            <div style="display:block;"><label for="adSearchAuthor">Auteur</label> : <select
+                    id="adSearchAuthor"></select></div>
+            <input id="advancedSearchButton" type="submit" value="Rechercher"/>
+        </form>
+    </div>
 </div>
 
 <div id="searchResultsComponent" style="margin-top: 10px;" class="ui-widget">
     No results found yet !
 </div>
-
 <script id="contentResult" type="text/x-jquery-tmpl">
     <h3 style="color: #eb8f00;" class="ui-widget">Résultats de la recherche</h3>
 
@@ -80,8 +98,7 @@ class = "ui-widget ui-helper-reset" > {
 {
     = creationDate
 }
-}
-<
+}<
 /div>
 < div
 style = "clear: both; width: 800px; font-style: italic;"
