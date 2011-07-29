@@ -3,19 +3,12 @@ package jewas.json;
 import com.google.gson.*;
 import jewas.lang.Objects;
 import jewas.lang.Strings;
-import jewas.reflection.Properties;
-import jewas.reflection.Property;
 import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.Field;
 import java.lang.reflect.Type;
-import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
 
 /**
@@ -46,15 +39,22 @@ public class Json {
     /**
      * Converts an object into a JSON object.
      *
-     * @param sourceObject the Java object to convert in JSON object
+     * @param sourceObject      the Java object to convert in JSON object
+     * @param parameterizedType A TypeToken instance if sourceObject is a parameterizedType
+     *                          Can be null.
      * @return a JSON string representation of the conversion.
+     * @see com.google.gson.reflect.TypeToken
      */
-    public String toJsonString(Object sourceObject) {
+    public String toJsonString(Object sourceObject, Type parameterizedType) {
 
         if (Objects.isNull(sourceObject)) {
             return "{}";
         } else {
-             return gson.create().toJson(sourceObject);
+            if (parameterizedType == null) {
+                return gson.create().toJson(sourceObject);
+            } else {
+                return gson.create().toJson(sourceObject, parameterizedType);
+            }
         }
     }
 
@@ -94,7 +94,7 @@ public class Json {
         }
     }
 
-      private class DateMidnightDeserializer implements JsonDeserializer<DateMidnight> {
+    private class DateMidnightDeserializer implements JsonDeserializer<DateMidnight> {
 
         public DateMidnight deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
                 throws JsonParseException {

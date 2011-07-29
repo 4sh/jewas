@@ -1,7 +1,7 @@
 package jewas.json;
 
 import com.google.gson.Gson;
-import org.junit.Ignore;
+import com.google.gson.reflect.TypeToken;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -22,16 +22,21 @@ public class JSonTest {
     }
 
     public static class SimpleClass {
+
         public String a;
 
         public SimpleClass(String _a) {
             this.a = _a;
         }
+
     }
 
-    @Ignore("Until Issue 350 in GSon is fixed (see http://code.google.com/p/google-gson/issues/detail?id=350)")
+    public static class MyEnclosingObject {
+        public MyObject<SimpleClass> myObj;
+    }
+
     @Test
-    public void shouldFooSerializationBeOk() {
+    public void shouldMyObjectSerializationBeOk() {
         MyObject o = new MyObject<SimpleClass>();
         o.baz = "baz"; // works
         o.bar = new ArrayList<String>();
@@ -40,6 +45,23 @@ public class JSonTest {
         o.foo = new ArrayList<SimpleClass>();
         o.foo.add(new SimpleClass("val1"));
         o.foo.add(new SimpleClass("val2")); // doesn't work
-        assertThat(new Gson().toJson(o), is(equalTo("{\"foo\":[{\"a\":\"val1\"},{\"a\":\"val2\"}],\"bar\":[\"val1\",\"val2\"],\"baz\":\"baz\"}")));
+        assertThat(new Gson().toJson(o, new TypeToken<MyObject<SimpleClass>>() {
+        }.getType()), is(equalTo("{\"foo\":[{\"a\":\"val1\"},{\"a\":\"val2\"}],\"bar\":[\"val1\",\"val2\"],\"baz\":\"baz\"}")));
+    }
+
+    @Test
+    public void shouldMyEnclosingObjectSerializationBeOk() {
+        MyObject o = new MyObject<SimpleClass>();
+        o.baz = "baz"; // works
+        o.bar = new ArrayList<String>();
+        o.bar.add("val1");
+        o.bar.add("val2"); // works
+        o.foo = new ArrayList<SimpleClass>();
+        o.foo.add(new SimpleClass("val1"));
+        o.foo.add(new SimpleClass("val2")); // doesn't work
+
+        MyEnclosingObject enclosingObj = new MyEnclosingObject();
+        enclosingObj.myObj = o;
+        assertThat(new Gson().toJson(enclosingObj), is(equalTo("{\"myObj\":{\"foo\":[{\"a\":\"val1\"},{\"a\":\"val2\"}],\"bar\":[\"val1\",\"val2\"],\"baz\":\"baz\"}}")));
     }
 }
