@@ -40,17 +40,19 @@
                                                                                                     id="adSearchDate"
                                                                                                     name="date"/></div>
             <div style="width: 600px; display:block;">
-                <label for="adSearchType">Types de contenu</label> :
-                <select id="adSearchType" class="chzn-select side-by-side clearfix" multiple style="width: 350px">
-                    <option value="doc">Document</option>
-                    <option value="img">Images</option>
-                    <option value="aud">Audio</option>
-                    <option value="txt">Texte simple</option>
-                    <option value="eeg">EEG Vidéo</option>
-                    <option value="vid">Vidéo</option>
-                </select>
+                <div style="float:left"><label for="adSearchType">Types de contenu</label> :</div>
+                <div style="float:left">
+                    <select id="adSearchType" class="chzn-select side-by-side clearfix" multiple style="width: 350px">
+                        <option value="doc">Document</option>
+                        <option value="img">Images</option>
+                        <option value="aud">Audio</option>
+                        <option value="txt">Texte simple</option>
+                        <option value="eeg">EEG Vidéo</option>
+                        <option value="vid">Vidéo</option>
+                    </select>
+                </div>
             </div>
-            <div style="display:block;"><label for="adSearchAuthor">Auteur</label> : <select
+            <div style="display:block; clear: both;"><label for="adSearchAuthor">Auteur</label> : <select
                     id="adSearchAuthor"></select></div>
             <input id="advancedSearchButton" type="submit" value="Rechercher"/>
         </form>
