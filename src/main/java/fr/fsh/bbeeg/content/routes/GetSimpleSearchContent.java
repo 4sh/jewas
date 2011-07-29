@@ -21,6 +21,7 @@ public class GetSimpleSearchContent extends AbstractRoute {
     public static class SearchQueryObject {
         private String query;
         private Integer startingOffset = -1;
+        private Integer numberOfContents = Integer.valueOf(10);
 
         public SearchQueryObject query(String _query) {
             this.query = _query;
@@ -39,6 +40,15 @@ public class GetSimpleSearchContent extends AbstractRoute {
         public Integer startingOffset() {
             return this.startingOffset;
         }
+
+        public SearchQueryObject numberOfContents(Integer _numberOfContents){
+            this.numberOfContents = _numberOfContents;
+            return this;
+        }
+
+        public Integer numberOfContents(){
+            return this.numberOfContents;
+        }
     }
 
     protected RequestHandler onMatch(HttpRequest request, Parameters parameters) {
@@ -54,21 +64,15 @@ public class GetSimpleSearchContent extends AbstractRoute {
                     offset = query.startingOffset();
                 }
 
-                results.add(new ContentSearchResult().id(String.valueOf(offset))
-                        .author("fcamblor")
-                        .title("Contenu " + offset)
-                        .creationDate(new Date())
-                        .mediaType("audio")
-                        .description("blablabla"));
-                offset++;
-
-                results.add(new ContentSearchResult().id(String.valueOf(offset))
-                        .author("fcamblor")
-                        .title("Contenu " + offset)
-                        .creationDate(new Date())
-                        .mediaType("audio")
-                        .description("blablabla"));
-                offset++;
+                for(int i=0; i<query.numberOfContents(); i++){
+                    results.add(new ContentSearchResult().id(String.valueOf(offset))
+                            .author("fcamblor")
+                            .title("Contenu " + offset)
+                            .creationDate(new Date())
+                            .mediaType("audio")
+                            .description("blablabla"));
+                    offset++;
+                }
 
                 if (query.query().contains("easterEgg")) {
                     results.add(new ContentSearchResult().id(String.valueOf(offset))
