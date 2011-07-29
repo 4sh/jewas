@@ -68,47 +68,14 @@
     </div>
     <button id="searchNext">Résultats suivants</button>
 </script>
-<
-script
-id = "contentLineResult"
-type = "text/x-jquery-tmpl" >
+<script id="contentLineResult" type="text/x-jquery-tmpl">
     <!-- Yeah I know css direct in html is weird... will externalize this in css after sandboxing -->
-        < div
-class = "contentResult"
-style = "margin: 10px;" >
-        < div
-style = "width: 400px; float:left;"
-class = "ui-widget ui-helper-reset" > {
-{
-    = title
-}
-}<
-/div>
-< div
-style = "width: 90px; float:left;"
-class = "ui-widget ui-helper-reset" > {
-{
-    = author
-}
-}<
-/div>
-< div
-style = "width: 200px; float:left;"
-class = "ui-widget ui-helper-reset" > {
-{
-    = creationDate
-}
-}<
-/div>
-< div
-style = "clear: both; width: 800px; font-style: italic;"
-class = "ui-widget ui-helper-reset" > {
-{
-    = description
-}
-}<
-/div>
-< /div>
-        </script>
+    <div class="contentResult" style="margin: 10px;">
+        <div style="width: 400px; float:left;" class="ui-widget ui-helper-reset">{{= title}}</div>
+        <div style="width: 90px; float:left;" class="ui-widget ui-helper-reset">{{= author}}</div>
+        <div style="width: 200px; float:left;" class="ui-widget ui-helper-reset">{{= creationDate}}</div>
+        <div style="clear: both; width: 800px; font-style: italic;" class="ui-widget ui-helper-reset">{{= description}}</div>
+    </div>
+</script>
 
 </@mainTemplate>
