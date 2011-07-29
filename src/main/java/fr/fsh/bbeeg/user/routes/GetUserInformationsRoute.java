@@ -2,7 +2,6 @@ package fr.fsh.bbeeg.user.routes;
 
 import fr.fsh.bbeeg.user.resources.UserResource;
 import jewas.http.*;
-import jewas.json.Json;
 
 /**
  * @author driccio
@@ -17,7 +16,7 @@ public class GetUserInformationsRoute extends AbstractRoute {
         return new RequestHandler() {
             @Override
             public void onRequest(HttpRequest request) {
-                request.respondJson().object(Json.instance().toJsonString(UserResource.getUserInformations()));
+                request.respondJson().object(UserResource.getUserInformations());
             }
         };
     }
