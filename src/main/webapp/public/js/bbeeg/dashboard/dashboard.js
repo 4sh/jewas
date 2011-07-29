@@ -1,7 +1,7 @@
 function success(data, container) {
     $(container).children().remove();
 
-    $("#contentItemTemplate").tmpl(jQuery.parseJSON(data)).appendTo(container);
+    $("#contentItemTemplate").tmpl(data).appendTo(container);
 }
 
 function createLastAdded(container) {
@@ -29,7 +29,7 @@ function createMostPopular(container) {
 function loadLastConnectionDate() {
     $.getJSON(
         '/user/lastConnectionDate',
-        function (data) {$('#lastConnectionDate').append("Dernière date de connexion : " + jQuery.parseJSON(data).date)}
+        function (data) {$('#lastConnectionDate').append("Dernière date de connexion : " + data.date)}
     );
 }
 
@@ -46,7 +46,7 @@ function loadMyContents() {
 function loadTotalNumberOfContents() {
     $.getJSON(
         '/content/count',
-        function (data) {$('#totalNumberOfContent').append(jQuery.parseJSON(data).count + " contenus sont disponibles actuellement sur la plateforme.")}
+        function (data) {$('#totalNumberOfContent').append(data.count + " contenus sont disponibles actuellement sur la plateforme.")}
     );
 }
 
@@ -56,7 +56,7 @@ function loadLastAuthors() {
         function success(data) {
             var container = $("#lastAuthors");
             container.children().remove();
-            $("#authorItemTemplate").tmpl(jQuery.parseJSON(data)).appendTo(container);
+            $("#authorItemTemplate").tmpl(data).appendTo(container);
         }
     );
 }
@@ -67,7 +67,7 @@ function loadDomains() {
         function success(data) {
             var container = $("#domainCloud");
             container.children().remove();
-            container.jQCloud(jQuery.parseJSON(data));
+            container.jQCloud(data);
         }
     );
 }
