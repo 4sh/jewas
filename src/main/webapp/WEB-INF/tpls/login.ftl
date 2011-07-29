@@ -18,9 +18,7 @@
                     url: '/connection',
                     dataType: 'json',
                     data: $('#loginForm').serialize(),
-                    success: function success(data) {
-                                var response = data;
-
+                    success: function success(response) {
                                 if (response.status === "SUCCESS") {
                                     window.location = response.object.url;
                                 } else {

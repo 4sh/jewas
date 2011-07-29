@@ -1,4 +1,4 @@
-#user-informations {
+#userInformations {
     display: inline-block;
     vertical-align: top;
     width: 750px;
@@ -11,10 +11,10 @@
     display: inline-block;
     vertical-align: top;
     width: 240px;
-    margin: auto;
+    margin-left: 6px;
 }
 
-#general-informations {
+#generalInformations {
     display: inline-block;
     vertical-align: top;
     width: 240px;
@@ -22,14 +22,14 @@
     float: right;
 }
 
-#general-informations > div {
+#generalInformations > div {
     width: 239px;
-    padding-left: 5px;
-    border: 1px solid #ccc;
+    margin-bottom: 10px;
+    /*padding-left: 5px;*/
+    /*border: 1px solid #ccc;*/
 }
 
-#plateform-informations {
-    margin-bottom: 5px;
+#plateformInformations {
 }
 
 #domainCloud {

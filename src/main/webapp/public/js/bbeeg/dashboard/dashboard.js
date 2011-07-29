@@ -36,9 +36,9 @@ function loadLastConnectionDate() {
 function loadMyContents() {
     var tabContainer = new TabContainer('myContents');
 
-    tabContainer.addTab('Nouveaux', createLastAdded);
-    tabContainer.addTab('Consultés', createLastViewed);
-    tabContainer.addTab('Populaires', createMostPopular);
+    tabContainer.addTab('New', createLastAdded);
+    tabContainer.addTab('Viewed', createLastViewed);
+    tabContainer.addTab('Popular', createMostPopular);
 
     $("#user-contents").append(tabContainer.htmlElement());
 }
@@ -72,6 +72,24 @@ function loadDomains() {
     );
 }
 
+function buildPanels() {
+    $('#myContentsPanel').panel({
+        'collapsible':false
+    });
+    $('#myLessonsPanel').panel({
+        'collapsible':false
+    });
+    $('#myTestsPanel').panel({
+        'collapsible':false
+    });
+    $('#plateformInformationsPanel').panel({
+        'collapsible':false
+    });
+    $('#domainsPanel').panel({
+        'collapsible':false
+    });
+}
+
 $(
     function() {
         loadLastConnectionDate();
@@ -79,5 +97,6 @@ $(
         loadTotalNumberOfContents();
         loadLastAuthors();
         loadDomains();
+        buildPanels();
     }
 );

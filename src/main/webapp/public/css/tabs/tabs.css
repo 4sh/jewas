@@ -3,14 +3,14 @@
 }
 
 .tab-menu {
-
+    background-color: #DDDDDD;
 }
 
 .tab-item {
     display: inline-block;
+    cursor: pointer;
+    cursor: hand;
 }
 
 .tab-content{
-    border-style: solid;
-    border-width: thin;
 }

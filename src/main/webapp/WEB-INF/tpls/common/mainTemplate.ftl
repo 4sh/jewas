@@ -1,5 +1,13 @@
 <#assign compressedJS = "false">
 
+<#macro menuItem title="" id="" selected="false">
+    <#if selected == "true">
+        <li id="${id}" class="inlined-block menu-item-selected"> <span class="menu-item-title">${title}</span> <span class="selection-indicator"/></li>
+    <#else>
+        <li id="${id}" class="inlined-block"><span class="menu-item-title">${title}</span></li>
+    </#if>
+</#macro>
+
 <#macro mainTemplate title="" selectedMenuItem="dashboard" scripts=[] stylesheets=[]>
 <!DOCTYPE html>
 <html>
@@ -43,23 +51,23 @@
         <div id="header">
             <ul id="applicationMenu" class="inlined-left-group">
                 <#if selectedMenuItem == "dashboard">
-                    <li id="dashboardMenuItem" class="inlined-block menu-item-selected">Accueil</li>
+                    <@menuItem id="dashboardMenuItem" title="Accueil" selected="true"/>
                 <#else>
-                    <li id="dashboardMenuItem" class="inlined-block">Accueil</li>
+                    <@menuItem id="dashboardMenuItem" title="Accueil" selected="false"/>
                 </#if>
 
                 <#if selectedMenuItem == "search">
-                    <li id="searchMenuItem" class="inlined-block menu-item-selected">Recherche</li>
+                    <@menuItem id="searchMenuItem" title="Recherche" selected="true"/>
                 <#else>
-                    <li id="searchMenuItem" class="inlined-block">Recherche</li>
+                    <@menuItem id="searchMenuItem" title="Recherche" selected="false"/>
                 </#if>
             </ul>
 
             <ul id="configurationMenu" class="inlined-right-group">
                 <#if selectedMenuItem == "profile">
-                    <li id="profileMenuItem" class="inlined-block  menu-item-selected">Profil</li>
+                    <@menuItem id="profileMenuItem" title="Profil" selected="true"/>
                 <#else>
-                    <li id="profileMenuItem" class="inlined-block">Profil</li>
+                    <@menuItem id="profileMenuItem" title="Profil" selected="false"/>
                 </#if>
             </ul>
         </div>
@@ -68,7 +76,7 @@
             <#nested>
         </div>
     </div>
-    <div id="footer">Ici un pied de page</div>
+    <div id="footer"> Plateforme d'eLearning BB-EEG </div>
 </body>
 </html>
 </#macro>

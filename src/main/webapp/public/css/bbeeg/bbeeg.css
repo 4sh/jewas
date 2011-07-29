@@ -7,6 +7,7 @@ body {
     margin: auto;
     width: 1024px;
     background-color: #EEEEEE;
+    font-family: arial,sans-serif;
 }
 
 /* Container is needed for a sticky footer */
@@ -18,7 +19,7 @@ body > #container {
 
 #header {
     top: 0px;
-    background-color: #322D43;
+    background-color: #000000;
 }
 
 #footer {
@@ -28,7 +29,8 @@ body > #container {
     height: 20px;          /* Needed for a sticky footer */
     margin-top: -20px;     /* Needed for a sticky footer */
     width: 1024px;
-    background-color: #CDCDCD;
+    background-color: #000000;
+    color: #FFFFFF;
 }
 
 .inlined-left-group {
@@ -50,19 +52,35 @@ body > #container {
 .inlined-block {
     display: inline-block;
     vertical-align: top;
-    padding: 0 5px;
 }
 
 #header, #header .inlined-leftGroup, #header .inlined-rightGroup, #header .inlined-block {
-    height: 20px;
+    height: 28px;           /* 25px + 3px (border-top thickness of selection-indicator) */
 }
 
 #header .inlined-block {
-    background-color: #F6B31E;
+    color: #CCCCCC;
 }
 
 #header .menu-item-selected {
-    background-color: #F86031;
+    font-weight: bold;
+    color: #FFFFFF;
+}
+
+.menu-item-title {
+    padding: 0 5px;
+    height: 25px;
+    line-height: 25px;
+    display: block;
+    cursor: pointer;
+    cursor: hand;
+}
+
+.selection-indicator {
+    border-top: 3px solid;
+    border-top-color: #DD4B39!important;
+    display: block;
+    bottom: 0px;
 }
 
 #mainContent {
