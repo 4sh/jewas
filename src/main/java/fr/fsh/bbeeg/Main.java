@@ -7,6 +7,7 @@ import fr.fsh.bbeeg.content.routes.GetPopularContentRoute;
 import fr.fsh.bbeeg.content.routes.GetSimpleSearchContent;
 import fr.fsh.bbeeg.content.routes.GetTotalNumberOfContentRoute;
 import fr.fsh.bbeeg.domain.routes.GetPopularDomainRoute;
+import fr.fsh.bbeeg.security.routes.PostConnectionRoute;
 import fr.fsh.bbeeg.user.routes.GetLastConnectionDateRoute;
 import fr.fsh.bbeeg.user.routes.GetUserInformationsRoute;
 import jewas.http.RestServer;
@@ -37,7 +38,9 @@ public class Main {
                 new GetAuthorContentRoute(),
                 new GetPopularDomainRoute(),
                 new SimpleHtmlRoute("/user/profile.html", "user/profile.ftl"),
-                new GetUserInformationsRoute()
+                new GetUserInformationsRoute(),
+                new SimpleHtmlRoute("/login.html", "login.ftl"),
+                new PostConnectionRoute()
         ).start();
         System.out.println("Ready, if you dare");
     }
