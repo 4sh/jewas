@@ -7,8 +7,7 @@ import java.util.List;
  */
 public class SearchInfo<T> {
 
-    //private List<T> results;
-    private List results;
+    private List<T> results;
     private long serverTimestamp;
     private long endingOffset;
 
@@ -22,7 +21,7 @@ public class SearchInfo<T> {
         return this;
     }
 
-    public List/*<T>*/ results() {
+    public List<T> results() {
         return this.results;
     }
 

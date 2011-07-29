@@ -1,14 +1,12 @@
 package fr.fsh.bbeeg.content.routes;
 
+import com.google.gson.reflect.TypeToken;
+import fr.fsh.bbeeg.common.resources.Author;
 import fr.fsh.bbeeg.common.resources.LimitedOrderedQueryObject;
 import fr.fsh.bbeeg.content.resources.ContentResource;
-import jewas.http.AbstractRoute;
-import jewas.http.HttpMethodMatcher;
-import jewas.http.HttpRequest;
-import jewas.http.Parameters;
-import jewas.http.PatternUriPathMatcher;
-import jewas.http.RequestHandler;
-import jewas.json.Json;
+import jewas.http.*;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,7 +28,7 @@ public class GetAuthorContentRoute extends AbstractRoute {
         return new RequestHandler() {
             @Override
             public void onRequest(HttpRequest request) {
-                request.respondJson().object(Json.instance().toJsonString(ContentResource.getAuthor(qo)));
+                request.respondJson().object(ContentResource.getAuthor(qo), new TypeToken<List<Author>>(){}.getType());
             }
         };
     }

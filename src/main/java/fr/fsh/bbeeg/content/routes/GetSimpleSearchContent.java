@@ -1,5 +1,6 @@
 package fr.fsh.bbeeg.content.routes;
 
+import com.google.gson.reflect.TypeToken;
 import fr.fsh.bbeeg.common.resources.SearchInfo;
 import fr.fsh.bbeeg.content.resources.ContentSearchResult;
 import jewas.http.*;
@@ -79,9 +80,9 @@ public class GetSimpleSearchContent extends AbstractRoute {
                     offset++;
                 }
 
-                SearchInfo infos = new SearchInfo().results(results).endingOffset(offset - 1);
+                SearchInfo<ContentSearchResult> infos = new SearchInfo<ContentSearchResult>().results(results).endingOffset(offset - 1);
 
-                request.respondJson().object(infos);
+                request.respondJson().object(infos, new TypeToken<SearchInfo<ContentSearchResult>>(){}.getType());
             }
         };
     }

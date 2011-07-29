@@ -1,14 +1,12 @@
 package fr.fsh.bbeeg.domain.routes;
 
+import com.google.gson.reflect.TypeToken;
 import fr.fsh.bbeeg.common.resources.LimitedOrderedQueryObject;
 import fr.fsh.bbeeg.domain.resources.DomainResource;
-import jewas.http.AbstractRoute;
-import jewas.http.HttpMethodMatcher;
-import jewas.http.HttpRequest;
-import jewas.http.Parameters;
-import jewas.http.PatternUriPathMatcher;
-import jewas.http.RequestHandler;
-import jewas.json.Json;
+import fr.fsh.bbeeg.domain.resources.DomainSearchResult;
+import jewas.http.*;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,7 +28,7 @@ public class GetPopularDomainRoute extends AbstractRoute {
         return new RequestHandler() {
             @Override
             public void onRequest(HttpRequest request) {
-                request.respondJson().object(Json.instance().toJsonString(DomainResource.getPopularDomain(qo)));
+                request.respondJson().object(DomainResource.getPopularDomain(qo), new TypeToken<List<DomainSearchResult>>(){}.getType());
             }
         };
     }
