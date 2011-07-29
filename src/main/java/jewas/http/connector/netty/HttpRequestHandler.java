@@ -77,6 +77,12 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
 							future.addListener(ChannelFutureListener.CLOSE);
 							return this;
                         }
+
+                        @Override
+                        public jewas.http.HttpResponse addHeader(String header, Object value) {
+                            nettyResponse.addHeader(header, value);
+                            return this;
+                        }
                     });
             handler.onRequest(this.request);
 

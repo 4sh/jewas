@@ -10,6 +10,7 @@ import jewas.http.HttpResponse;
 import jewas.http.HttpStatus;
 import jewas.http.JsonResponse;
 import jewas.http.Parameters;
+import jewas.http.RedirectResponse;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.handler.codec.http.QueryStringDecoder;
 
@@ -76,6 +77,11 @@ public final class DefaultHttpRequest implements HttpRequest {
     @Override
     public FileResponse respondFile() {
         return new FileResponse(response());  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public RedirectResponse redirect() {
+        return new RedirectResponse(response());  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override

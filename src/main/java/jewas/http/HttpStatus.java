@@ -1,7 +1,7 @@
 package jewas.http;
 
 public enum HttpStatus {
-	OK(200), NOT_FOUND(404);
+	OK(200), NOT_FOUND(404), SEE_OTHER(303);
 	
 	private int code;
 

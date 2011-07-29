@@ -11,6 +11,7 @@ public interface HttpRequest {
 	public JsonResponse respondJson();
 	public HtmlResponse respondHtml();
     public FileResponse respondFile();
+    public RedirectResponse redirect();
 
 	public HttpRequest addContentHandler(ContentHandler h);
 	public void respondError(HttpStatus status);

@@ -5,4 +5,5 @@ public interface HttpResponse {
 	HttpResponse contentType(ContentType contentType);
 	HttpResponse content(String content);
     HttpResponse content(byte[] content);
+    HttpResponse addHeader(String header, Object value);
 }
