@@ -7,13 +7,33 @@
 </#if>
 
 <@mainTemplate title="Ecran d'accueil" selectedMenuItem="search" scripts=[chosenJS, "/public/js/bbeeg/search/search.js"] stylesheets=["/public/css/chosen/chosen.css"]>
+
+
 <script>
+
+
     $(function() {
         $("#searchComponent").accordion({
             autoHeight: false,
             navigation: true
         });
-        $("#adSearchDate").datepicker();
+        //$("#adSearchDate").datepicker();
+        var dates = $( "#from, #to" ).datepicker({
+			defaultDate: "",
+            dateFormat: "dd-mm-yy",
+			changeMonth: true,
+			numberOfMonths: 1,
+			onSelect: function( selectedDate ) {
+				var option = this.id == "from" ? "minDate" : "maxDate",
+					instance = $( this ).data( "datepicker" ),
+					date = $.datepicker.parseDate(
+						instance.settings.dateFormat ||
+						$.datepicker._defaults.dateFormat,
+						selectedDate, instance.settings );
+				dates.not( this ).datepicker( "option", option, date );
+			}
+		});
+
         $("#adSearchType").chosen();
         SearchQuery.bindSearchToForm(
                 new SearchQuery.SearchContext().targetForm($("#simpleSearchForm"))
@@ -23,6 +43,8 @@
                         .selectorForClickableOfSearchNext("#searchNext")
                         .selectorWhereResultsWillBeAppended("#contentResults")
         );
+
+
     });
 </script>
 
@@ -39,9 +61,15 @@
 
     <div>
         <form action="/content/advancedSearch" id="advancedSearchForm">
-            <div style="display:block;"><label for="adSearchDate">Date de création</label> : <input type="text"
-                                                                                                    id="adSearchDate"
-                                                                                                    name="date"/></div>
+            <div style="display:block;">
+                <!--<label for="adSearchDate">Date de création :</label>-->
+                <!--<input type="text" id="adSearchDate" name="date"/>-->
+                <label for="from">Date de création : Entre</label>
+                <input type="text" id="from" name="from"/>
+                <label for="to">et</label>
+                <input type="text" id="to" name="to"/>
+            </div>
+
             <div style="width: 600px; display:block;">
                 <div style="float:left"><label for="adSearchType">Types de contenu</label> :</div>
                 <div style="float:left">
