@@ -2,6 +2,7 @@ package fr.fsh.bbeeg;
 
 import fr.fsh.bbeeg.content.routes.GetAddedContentRoute;
 import fr.fsh.bbeeg.content.routes.GetAuthorContentRoute;
+import fr.fsh.bbeeg.content.routes.GetContentTypeRoute;
 import fr.fsh.bbeeg.content.routes.GetViewedContentRoute;
 import fr.fsh.bbeeg.content.routes.GetPopularContentRoute;
 import fr.fsh.bbeeg.content.routes.GetSimpleSearchContent;
@@ -40,7 +41,8 @@ public class Main {
                 new SimpleHtmlRoute("/user/profile.html", "user/profile.ftl"),
                 new GetUserInformationsRoute(),
                 new SimpleHtmlRoute("/login.html", "login.ftl"),
-                new PostConnectionRoute()
+                new PostConnectionRoute(),
+                new GetContentTypeRoute()
         ).start();
         System.out.println("Ready, if you dare");
     }

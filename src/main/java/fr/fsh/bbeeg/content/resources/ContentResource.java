@@ -63,8 +63,27 @@ public class ContentResource {
 
         for (int i = 0; i < count; i++) {
             Author author = new Author();
-            author.id(new Long(i)).name("Auteur "+i);
+            author.id(new Long(i)).name("Auteur " + i);
             list.add(author);
+        }
+
+        return list;
+    }
+
+    public static List<ContentType> getContentType(LimitedOrderedQueryObject loqo) {
+        List<ContentType> list = new ArrayList<ContentType>();
+        int count;
+
+        if ("all".equals(loqo.ordering())) {
+            count = 18;
+        } else {
+            count = loqo.number();
+        }
+
+        for (int i = 0; i < count; i++) {
+            ContentType type = new ContentType();
+            type.id(new Long(i)).title("Type " + i);
+            list.add(type);
         }
 
         return list;

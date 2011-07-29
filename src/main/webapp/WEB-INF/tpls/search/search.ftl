@@ -12,6 +12,10 @@
     <option value="{{= id}}"> {{= name}} </option>
 </script>
 
+<script id="contentTypeItemTemplate" type="text/html">
+    <option value="{{= id}}"> {{= title}} </option>
+</script>
+
 <script>
     function loadAuthors() {
         $.getJSON(
@@ -24,7 +28,23 @@
         );
     }
 
+    function loadContentTypes() {
+        $.getJSON(
+            '/content/type/all',
+            function success(data) {
+                var container = $("#adSearchType");
+                container.children().remove();
+                $("#contentTypeItemTemplate").tmpl(data).appendTo(container);
+                $("#adSearchType").chosen();
+            }
+        );
+    }
+
+
     $(function() {
+        loadAuthors();
+        loadContentTypes();
+
         $("#searchComponent").accordion({
             autoHeight: false,
             navigation: true
@@ -46,7 +66,6 @@
 			}
 		});
 
-        $("#adSearchType").chosen();
         SearchQuery.bindSearchToForm(
                 new SearchQuery.SearchContext().targetForm($("#simpleSearchForm"))
                         .resultElement($("#searchResultsComponent"))
@@ -55,8 +74,6 @@
                         .selectorForClickableOfSearchNext("#searchNext")
                         .selectorWhereResultsWillBeAppended("#contentResults")
         );
-
-        loadAuthors();
     });
 </script>
 
@@ -86,12 +103,6 @@
                 <div style="float:left"><label for="adSearchType">Types de contenu</label> :</div>
                 <div style="float:left">
                     <select id="adSearchType" class="chzn-select side-by-side clearfix" multiple style="width: 350px">
-                        <option value="doc">Document</option>
-                        <option value="img">Images</option>
-                        <option value="aud">Audio</option>
-                        <option value="txt">Texte simple</option>
-                        <option value="eeg">EEG Vidéo</option>
-                        <option value="vid">Vidéo</option>
                     </select>
                 </div>
             </div>
