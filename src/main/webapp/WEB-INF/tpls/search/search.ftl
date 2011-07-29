@@ -9,7 +9,10 @@
 <@mainTemplate title="Ecran d'accueil" selectedMenuItem="search" scripts=[chosenJS, "/public/js/bbeeg/search/search.js"] stylesheets=["/public/css/chosen.css"]>
 <script>
     $(function() {
-        $("#searchComponent").accordion();
+        $("#searchComponent").accordion({
+            autoHeight: false,
+            navigation: true
+        });
         $("#adSearchDate").datepicker();
         $("#adSearchType").chosen();
         SearchQuery.bindSearchToForm(
