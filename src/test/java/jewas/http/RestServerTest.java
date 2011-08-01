@@ -15,6 +15,7 @@ import org.junit.Test;
 import java.io.IOException;
 
 import static com.jayway.restassured.RestAssured.*;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 /**
@@ -122,6 +123,24 @@ public class RestServerTest {
                 param("stringToConvert", "foo").
                 expect().
                 statusCode(200).when().get("/root/toUpperCase");
+    }
+
+    @Test
+    public void shouldUrlWithInlinedInterrogationPointParametersBeStripped(){
+        expect()
+                .statusCode(200)
+                .body("convertedString", is(equalTo("FOO")))
+                .when()
+                .get("/root/toUpperCase?stringToConvert=foo");
+    }
+
+    @Test
+    public void shouldUrlWithInlinedCommaParametersBeStripped(){
+        expect()
+                .statusCode(200)
+                .body("convertedString", is(equalTo("FOO")))
+                .when()
+                .get("/root/toUpperCase;stringToConvert=foo");
     }
 
     @Test
