@@ -11,25 +11,109 @@ function ChainedSelect(_configuration){
                addSelectedElement($(this));
            });
         });
+
+        // Initializing select menu with first ajax url contents
+        updateSelectContentDependingOn(-1, null);
     };
+
+    function removeValue(valueToDelete, fullTargetFieldValue){
+        var result = "";
+
+        // Looking for valueToDelete
+        var values = fullTargetFieldValue.split(ChainedSelect.HIERARCHY_SEPARATOR);
+        for(var i=0; i<values.length && values[i] != valueToDelete; i++){
+            if(i != 0){
+                result += ChainedSelect.HIERARCHY_SEPARATOR;
+            }
+            result += values[i];
+        }
+
+        return result;
+    }
+
+    function removeLastValue(fullTargetFieldValue){
+        var values = fullTargetFieldValue.split(ChainedSelect.HIERARCHY_SEPARATOR);
+        if(values.length == 1){
+            return "";
+        } else {
+            return fullTargetFieldValue.substring(0,
+                fullTargetFieldValue.length - ChainedSelect.HIERARCHY_SEPARATOR.length - values[values.length-1].length);
+        }
+    }
 
     function addSelectedElement(selectedOption){
         // Updating targetFieldValue
         var targetFieldValue = configuration.targetFieldForSelectedOption().val();
         var currentDepth = 0;
         if(targetFieldValue != ""){
-            targetFieldValue += "||";
-            currentDepth = targetFieldValue.split("||").length-1;
+            targetFieldValue += ChainedSelect.HIERARCHY_SEPARATOR;
+            currentDepth = targetFieldValue.split(ChainedSelect.HIERARCHY_SEPARATOR).length-1;
         }
         targetFieldValue += selectedOption.val();
         configuration.targetFieldForSelectedOption().val(targetFieldValue);
 
         // Updating displaySelectionTarget
-        var itemHtml = configuration.templateForDisplaySelectionItem().tmpl({ label: selectedOption.text() });
+        var itemHtml = configuration.templateForDisplaySelectionItem().tmpl({ value: selectedOption.val(), label: selectedOption.text() });
         $(itemHtml).appendTo(configuration.displaySelectionTarget());
+        // Updating click event on closing links
+        $(configuration.selectorForClosingLinkInDisplaySelectionItemTemplate(), configuration.displaySelectionTarget()).each(function(){
+            // Unbinding previously affected click event
+            $(this).unbind("click");
 
+            // Re-binding click event
+            var hyperlink = $(this);
+            $(this).click(function(){
+                // For the moment, we will hardcode that we need templateForDisplaySelectionItem() to begin with
+                // a <li> tag ..
+
+                // Updating targetFieldValue
+                // It's not perfect to put select value in hyperlink's name but heh .. doesn't have a better idea for
+                // the moment to keep things "templatable"
+                var valueToDelete = hyperlink.attr('name');
+                var newTargetFieldValue = removeValue(valueToDelete, configuration.targetFieldForSelectedOption().val());
+                // Deleting last value since we will "re-add" it just after via addSelectedElement()
+                newTargetFieldValue = removeLastValue(newTargetFieldValue);
+                configuration.targetFieldForSelectedOption().val(newTargetFieldValue);
+
+                var currentLiTag = hyperlink.parents('li').first();
+
+                // Deleting every <li> tag after current <li> tag
+                $("~li", currentLiTag).remove();
+
+                var previousLi = currentLiTag.prev();
+                // Deleting current <li> tag
+                currentLiTag.remove();
+
+                // Displaying select menu
+                configuration.selectMenuContainer().show();
+
+                // Deleting previous <li> tag since we will "re-add" it just after via a addSelectedElement()
+                if(previousLi.length != 0){
+                    // Ugly code here with hardcoded things :(
+                    var previousLabel = $("span", previousLi).text();
+                    var previousValue = $("a", previousLi).attr('name');
+
+                    previousLi.remove();
+
+                    // Building & re-adding the previously deleted option
+                    var selectElement = $("select", configuration.selectMenuContainer()).first();
+                    selectElement.empty();
+                    var fakeSelectedElement = $('<option></option>').val(previousValue).html(previousLabel);
+                    selectElement.append(fakeSelectedElement);
+                    fakeSelectedElement = $("option", selectElement).first();
+                    addSelectedElement(fakeSelectedElement);
+                } else {
+                    updateSelectContentDependingOn(-1, null);
+                }
+            });
+        });
+
+        updateSelectContentDependingOn(currentDepth, selectedOption);
+    }
+
+    function updateSelectContentDependingOn(currentDepth, selectedOption){
         // Updating select content
-        var selectElement = selectedOption.parents('select').first();
+        var selectElement = $("select", configuration.selectMenuContainer()).first();
         selectElement.empty(); // Resetting select content
         // Updating select content only if we aren't on the last depth
         var ajaxUrlToCall = configuration.resolveAjaxUrlForOptionSelectedHandler().call(configuration, currentDepth+1, selectedOption);
@@ -66,9 +150,13 @@ ChainedSelect.Configuration = function(){
         // The méthod should return null if we are on the last depth
         var _resolveAjaxUrlForOptionSelectedHandler = function(depth, selectedOption){
             if(depth < this.ajaxUrlsPerDepth().length){
-                return this.ajaxUrlsPerDepth()[depth]
-                    .replace(ChainedSelect.Configuration.VALUE_REGEX, selectedOption.val())
-                    .replace(ChainedSelect.Configuration.LABEL_REGEX, selectedOption.text());
+                if(selectedOption == null){
+                    return this.ajaxUrlsPerDepth()[depth];
+                } else {
+                    return this.ajaxUrlsPerDepth()[depth]
+                        .replace(ChainedSelect.Configuration.VALUE_REGEX, selectedOption.val())
+                        .replace(ChainedSelect.Configuration.LABEL_REGEX, selectedOption.text());
+                }
             } else {
                 return null;
             }
@@ -84,8 +172,14 @@ ChainedSelect.Configuration = function(){
         var _targetFieldForSelectedOption;  // MANDATORY
         this.targetFieldForSelectedOption = function(__targetFieldForSelectedOption){ if(__targetFieldForSelectedOption==null){ return _targetFieldForSelectedOption; } else { _targetFieldForSelectedOption = __targetFieldForSelectedOption; return this; } };
         // Template that will be used to display a selected item
-        var _templateForDisplaySelectionItem;
+        // IMPORTANT Notes:
+        // - The template MUST start with a <li> tag
+        // - It must include a <a> tag with name="{{= value}}"
+        var _templateForDisplaySelectionItem;  // MANDATORY
         this.templateForDisplaySelectionItem = function(__templateForDisplaySelectionItem){ if(__templateForDisplaySelectionItem==null){ return _templateForDisplaySelectionItem; } else { _templateForDisplaySelectionItem = __templateForDisplaySelectionItem; return this; } };
+        // JQuery selector to retrieve closing links in _templateForDisplaySelectionItem
+        var _selectorForClosingLinkInDisplaySelectionItemTemplate; // MANDATORY
+        this.selectorForClosingLinkInDisplaySelectionItemTemplate = function(__selectorForClosingLinkInDisplaySelectionItemTemplate){ if(__selectorForClosingLinkInDisplaySelectionItemTemplate==null){ return _selectorForClosingLinkInDisplaySelectionItemTemplate; } else { _selectorForClosingLinkInDisplaySelectionItemTemplate = __selectorForClosingLinkInDisplaySelectionItemTemplate; return this; } };
         // HTML Element where the selected hierarchy will be displayed
         var _displaySelectionTarget;     // MANDATORY
         this.displaySelectionTarget = function(__displaySelectionTarget){ if(__displaySelectionTarget==null){ return _displaySelectionTarget; } else { _displaySelectionTarget = __displaySelectionTarget; return this; } };
@@ -96,3 +190,4 @@ ChainedSelect.Configuration = function(){
 }();
 ChainedSelect.Configuration.VALUE_REGEX = new RegExp("\\{value\\}", "ig");
 ChainedSelect.Configuration.LABEL_REGEX = new RegExp("\\{label\\}", "ig");
+ChainedSelect.HIERARCHY_SEPARATOR = "/";

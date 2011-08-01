@@ -74,10 +74,12 @@
                 .ajaxUrlsPerDepth([
                       "/content/criterias?depth=0",
                       "/content/criterias?depth=1&parent={value}",
-                      "/content/criterias?depth=2&parent={value}"
+                      "/content/criterias?depth=2&parent={value}",
+                      "/content/criterias?depth=3&parent={value}"
                 ]).targetFieldForSelectedOption($("#criterias"))
                 .displaySelectionTarget($("#criteriasList"))
                 .templateForDisplaySelectionItem($("#criteriaSelectedItem"))
+                .selectorForClosingLinkInDisplaySelectionItemTemplate("a.search-choice-close")
                 .selectMenuContainer($("#searchCriteriaMenuContainer"));
         var criteriaCombo = new ChainedSelect(config).decorateSelectFieldWithChainedSelectConfiguration($("#adSearchCriterias"));
     });
@@ -122,9 +124,6 @@
                     </div>
                     <div id="searchCriteriaMenuContainer" style="float:left; padding-left: 10px">
                         <select id="adSearchCriterias" style="width: 150px">
-                            <option value="Critere 1">Libellé Critere 1</option>
-                            <option value="Critere 2">Libellé Critere 2</option>
-                            <option value="Critere 3">Libellé Critere 3</option>
                         </select>
                     </div>
                 </div>
@@ -140,7 +139,7 @@
     Aucun résultat trouvé !
 </div>
 <script id="criteriaSelectedItem" type="text/x-jquery-tmpl">
-    <li class="search-choice"><span>{{= label}}</span><a href="#" class="search-choice-close"></a></li>
+    <li class="search-choice"><span>{{= label}}</span><a href="#" name="{{= value}}" class="search-choice-close"></a></li>
 </script>
 <script id="authorItemTemplate" type="text/x-jquery-tmpl">
     <option value="{{= id}}"> {{= name}} </option>
