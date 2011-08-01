@@ -46,7 +46,9 @@ function ChainedSelect(_configuration){
             // Refreshing chosen select menu to empty it
             selectElement.trigger("liszt:updated");
             // If we are on the last depth, let's hide the select menu
-            configuration.selectMenuContainer().hide();
+            if(configuration.selectMenuContainer() != null){
+                configuration.selectMenuContainer().hide();
+            }
         }
     };
 };
