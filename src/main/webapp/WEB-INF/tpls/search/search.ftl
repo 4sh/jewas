@@ -16,9 +16,10 @@
         $.getJSON(
             '/content/author/all',
             function success(data) {
-                var container = $("#adSearchAuthor");
+                var container = $("#adSearchAuthors");
                 container.children().remove();
                 $("#authorItemTemplate").tmpl(data).appendTo(container);
+                $("#adSearchAuthors").trigger("liszt:updated");
             }
         );
     }
@@ -62,8 +63,17 @@
 		});
         $("#adSearchType").chosen();
         $("#adSearchCriterias").chosen();
+        $("#adSearchAuthors").chosen();
         SearchQuery.bindSearchToForm(
                 new SearchQuery.SearchContext().targetForm($("#simpleSearchForm"))
+                        .resultElement($("#searchResultsComponent"))
+                        .globalResultTemplate($("#contentResult"))
+                        .resultElementTemplate($("#contentLineResult"))
+                        .selectorForClickableOfSearchNext("#searchNext")
+                        .selectorWhereResultsWillBeAppended("#contentResults")
+        );
+        SearchQuery.bindSearchToForm(
+                new SearchQuery.SearchContext().targetForm($("#advancedSearchForm"))
                         .resultElement($("#searchResultsComponent"))
                         .globalResultTemplate($("#contentResult"))
                         .resultElementTemplate($("#contentLineResult"))
@@ -109,7 +119,7 @@
             <div style="width: 600px; display:block; clear:both;">
                 <div style="float:left"><label for="adSearchType">Types de contenu</label> :</div>
                 <div style="float:left">
-                    <select id="adSearchType" class="chzn-select side-by-side clearfix" multiple style="width: 350px">
+                    <select id="adSearchType" name="searchTypes" class="chzn-select side-by-side clearfix" multiple style="width: 350px">
                     </select>
                 </div>
             </div>
@@ -128,9 +138,16 @@
                     </div>
                 </div>
             </div>
-            <div style="display:block; clear: both;"><label for="adSearchAuthor">Auteur</label> : <select
-                    id="adSearchAuthor"></select></div>
-            <input id="advancedSearchButton" type="submit" value="Rechercher"/>
+            <div style="display:block; clear: both;">
+                <div style="float:left"><label for="adSearchAuthors">Auteur</label> :</div>
+                <div style="float:left">
+                    <select id="adSearchAuthors" name="authors" class="chzn-select side-by-side clearfix" multiple style="width: 350px">
+                    </select>
+                </div>
+            </div>
+            <div style="display:block; clear: both;">
+                <input id="advancedSearchButton" type="submit" value="Rechercher"/>
+            </div>
         </form>
     </div>
 </div>
