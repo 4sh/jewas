@@ -30,7 +30,7 @@
                 var container = $("#adSearchType");
                 container.children().remove();
                 $("#contentTypeItemTemplate").tmpl(data).appendTo(container);
-                $("#adSearchType").chosen();
+                $("#adSearchType").trigger("liszt:updated");
             }
         );
     }
