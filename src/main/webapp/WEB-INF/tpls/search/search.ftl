@@ -102,8 +102,7 @@
                 <input type="text" id="from" name="from"/>
                 <label for="to">et</label>
                 <input type="text" id="to" name="to"/>
-            </div>                                                                                                    id="adSearchDate"
-                                                                                                    name="date"/></div>
+            </div>
             <div style="width: 600px; display:block; clear:both;">
                 <div style="float:left"><label for="adSearchType">Types de contenu</label> :</div>
                 <div style="float:left">
