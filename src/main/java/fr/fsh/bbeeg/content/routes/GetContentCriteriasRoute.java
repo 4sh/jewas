@@ -52,13 +52,13 @@ public class GetContentCriteriasRoute extends AbstractRoute {
             public void onRequest(HttpRequest request) {
                 String prefix = "";
                 for(int i=0; i<qo.depth(); i++){
-                    prefix += "Sous-";
+                    prefix += "Ss-";
                 }
 
                 List<Option> options = new ArrayList<Option>();
                 for(int i=0; i<5; i++){
-                    String val = prefix+"Critere "+i;
-                    options.add(new Option(val,"Libellé "+val));
+                    String val = prefix+"Crit "+i;
+                    options.add(new Option(val,"Lib "+val));
                 }
 
                 request.respondJson().object(options, new TypeToken<List<Option>>(){}.getType());
