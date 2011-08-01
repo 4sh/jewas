@@ -37,7 +37,8 @@ public class Main {
                 new SimpleHtmlRoute("/login.html", "login.ftl"),
                 new PostConnectionRoute(),
                 new GetContentTypeRoute(),
-                new GetContentCriteriasRoute()
+                new GetContentCriteriasRoute(),
+                new GetAdvancedSearchContent()
         ).start();
         System.out.println("Ready, if you dare");
     }
