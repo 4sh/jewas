@@ -1,12 +1,6 @@
 package fr.fsh.bbeeg;
 
-import fr.fsh.bbeeg.content.routes.GetAddedContentRoute;
-import fr.fsh.bbeeg.content.routes.GetAuthorContentRoute;
-import fr.fsh.bbeeg.content.routes.GetContentTypeRoute;
-import fr.fsh.bbeeg.content.routes.GetViewedContentRoute;
-import fr.fsh.bbeeg.content.routes.GetPopularContentRoute;
-import fr.fsh.bbeeg.content.routes.GetSimpleSearchContent;
-import fr.fsh.bbeeg.content.routes.GetTotalNumberOfContentRoute;
+import fr.fsh.bbeeg.content.routes.*;
 import fr.fsh.bbeeg.domain.routes.GetPopularDomainRoute;
 import fr.fsh.bbeeg.security.routes.PostConnectionRoute;
 import fr.fsh.bbeeg.user.routes.GetLastConnectionDateRoute;
@@ -42,7 +36,8 @@ public class Main {
                 new GetUserInformationsRoute(),
                 new SimpleHtmlRoute("/login.html", "login.ftl"),
                 new PostConnectionRoute(),
-                new GetContentTypeRoute()
+                new GetContentTypeRoute(),
+                new GetContentCriteriasRoute()
         ).start();
         System.out.println("Ready, if you dare");
     }
