@@ -25,7 +25,8 @@ function ChainedSelect(_configuration){
         configuration.targetFieldForSelectedOption().val(targetFieldValue);
 
         // Updating displaySelectionTarget
-        $('<li class="search-choice"><span>'+selectedOption.text()+'</span><a href="#" class="search-choice-close"></a></li>').appendTo(configuration.displaySelectionTarget());
+        var itemHtml = configuration.templateForDisplaySelectionItem().tmpl({ label: selectedOption.text() });
+        $(itemHtml).appendTo(configuration.displaySelectionTarget());
 
         // Updating select content
         var selectElement = selectedOption.parents('select').first();
@@ -39,11 +40,11 @@ function ChainedSelect(_configuration){
                      selectElement.append($('<option></option>').val(resolvedOption.value).html(resolvedOption.label));
                  });
 
-                // Saying chosen "hey you should update the select menu"
+                // (for chosen integration) Saying chosen "hey you should update the select menu"
                 selectElement.trigger("liszt:updated");
             }, "json");
         } else {
-            // Refreshing chosen select menu to empty it
+            // (for chosen integration) Refreshing chosen select menu to empty it
             selectElement.trigger("liszt:updated");
             // If we are on the last depth, let's hide the select menu
             if(configuration.selectMenuContainer() != null){
@@ -82,6 +83,9 @@ ChainedSelect.Configuration = function(){
         // Field (hidden generaly) that will welcome the hierarchical path representing selected values
         var _targetFieldForSelectedOption;  // MANDATORY
         this.targetFieldForSelectedOption = function(__targetFieldForSelectedOption){ if(__targetFieldForSelectedOption==null){ return _targetFieldForSelectedOption; } else { _targetFieldForSelectedOption = __targetFieldForSelectedOption; return this; } };
+        // Template that will be used to display a selected item
+        var _templateForDisplaySelectionItem;
+        this.templateForDisplaySelectionItem = function(__templateForDisplaySelectionItem){ if(__templateForDisplaySelectionItem==null){ return _templateForDisplaySelectionItem; } else { _templateForDisplaySelectionItem = __templateForDisplaySelectionItem; return this; } };
         // HTML Element where the selected hierarchy will be displayed
         var _displaySelectionTarget;     // MANDATORY
         this.displaySelectionTarget = function(__displaySelectionTarget){ if(__displaySelectionTarget==null){ return _displaySelectionTarget; } else { _displaySelectionTarget = __displaySelectionTarget; return this; } };

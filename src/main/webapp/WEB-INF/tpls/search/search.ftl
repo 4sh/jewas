@@ -77,6 +77,7 @@
                       "/content/criterias?depth=2&parent={value}"
                 ]).targetFieldForSelectedOption($("#criterias"))
                 .displaySelectionTarget($("#criteriasList"))
+                .templateForDisplaySelectionItem($("#criteriaSelectedItem"))
                 .selectMenuContainer($("#searchCriteriaMenuContainer"));
         var criteriaCombo = new ChainedSelect(config).decorateSelectFieldWithChainedSelectConfiguration($("#adSearchCriterias"));
     });
@@ -138,6 +139,9 @@
 <div id="searchResultsComponent" style="margin-top: 10px;" class="ui-widget">
     Aucun résultat trouvé !
 </div>
+<script id="criteriaSelectedItem" type="text/x-jquery-tmpl">
+    <li class="search-choice"><span>{{= label}}</span><a href="#" class="search-choice-close"></a></li>
+</script>
 <script id="authorItemTemplate" type="text/x-jquery-tmpl">
     <option value="{{= id}}"> {{= name}} </option>
 </script>
