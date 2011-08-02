@@ -5,7 +5,7 @@ import jewas.util.file.Files;
 import junit.framework.Assert;
 import org.junit.Test;
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,14 +19,14 @@ import java.util.Map;
 public class TemplatesTest {
 
     @Test
-    public void shouldProcessATemplateWithGivenParameters() throws FileNotFoundException {
+    public void shouldProcessATemplateWithGivenParameters() throws IOException {
         JewasConfigurationForTest.override("jewas/configuration/jewasForTemplate.conf");
 
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("user", "JewasUser");
 
-        String expected = Files.getStringFromFile(
-                Files.getFileFromPath("jewas/template/testTemplateWithParamsExpected.txt"));
+        String expected = Files.getStringFromStream(
+                Files.getInputStreamFromPath("jewas/template/testTemplateWithParamsExpected.txt"));
 
         String result = Templates.process("testTemplateWithParams.ftl", params);
 

@@ -153,7 +153,7 @@ public class RestServerTest {
         byte[] expected = new byte[0];
 
         try {
-            expected = Files.getBytesFromFile(Files.getFileFromPath("jewas/http/staticResources/test.js"));
+            expected = Files.getBytesFromStream(Files.getInputStreamFromPath("jewas/http/staticResources/test.js"));
         } catch (IOException e) {
             e.getMessage();
             Assert.assertTrue(e.getMessage(), false);

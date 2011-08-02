@@ -2,7 +2,6 @@ package jewas.configuration;
 
 import jewas.util.file.Files;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -25,7 +24,7 @@ public class DefaultJewasConfigurationDelegate implements JewasConfigurationDele
         properties = new Properties();
 
         try {
-            properties.load(new FileInputStream(Files.getFileFromPath(path)));
+            properties.load(Files.getInputStreamFromPath(path));
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }

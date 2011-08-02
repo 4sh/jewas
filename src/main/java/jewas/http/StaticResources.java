@@ -3,7 +3,7 @@ package jewas.http;
 import jewas.configuration.JewasConfiguration;
 import jewas.util.file.Files;
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -22,9 +22,12 @@ public class StaticResources {
         String staticResourcesPath = JewasConfiguration.getStaticResourcesPath();
 
         try {
-            request.respondFile().file(Files.getFileFromPath(staticResourcesPath + path));
-        } catch (FileNotFoundException e) {
+            request.respondFile().file(Files.getInputStreamFromPath(staticResourcesPath + path));
+        } catch (IOException e) {
+            // FIXME with a log message
             System.err.println(e.getMessage());
+            // TODO : better runtime exception here ?
+            throw new RuntimeException("Error while transmitting file with path : "+path, e);
         }
     }
 }

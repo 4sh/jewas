@@ -1,8 +1,6 @@
 package jewas.util.file;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,10 +17,10 @@ public class Files {
     /**
      * Get a file from a given path.
      * @param path the path
-     * @return the file at the given path
-     * @throws FileNotFoundException a {@link FileNotFoundException}
+     * @return the inputstream at the given path
+     * @throws IOException a {@link IOException}
      */
-    public static File getFileFromPath(String path) throws FileNotFoundException {
+    public static InputStream getInputStreamFromPath(String path) throws IOException {
         if (path == null) {
             throw new FileNotFoundException("The given path is null.");
         }
@@ -33,83 +31,42 @@ public class Files {
             throw new FileNotFoundException("The path: " + path + " was not found in the classpath.");
         }
 
-        String resourcePath = resource.getPath();
-
-        File file = new File(resourcePath);
-
-        if (!file.exists()) {
-            throw new FileNotFoundException("The file at the path: " + resourcePath + " was not found. The path you give was: " + path);
-        }
-
-        return file;
+        return resource.openStream();
     }
 
     /**
      * Get the bytes array that correspond to the given file.
-     * @param file a file
+     * @param stream a stream
      * @return the bytes array that correspond to the given file
      * @throws IOException an {@link IOException}
      */
-    public static byte[] getBytesFromFile(File file) throws IOException {
-        if (file == null) {
-            throw new IOException("File is null");
-        }
-
-        InputStream is = new FileInputStream(file);
-
-        // Get the size of the file
-        long length = file.length();
-
-        if (length > Integer.MAX_VALUE) {
-            is.close();
-            throw new IOException("The file to load is too large.");
+    public static byte[] getBytesFromStream(InputStream stream) throws IOException {
+        if (stream == null) {
+            throw new IOException("Stream is null");
         }
 
         // Create the byte array to hold the data
-        byte[] bytes = new byte[(int)length];
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        byte[] chunks = new byte[1024];
 
-        // Read in the bytes
-        int offset = 0;
-        int numRead = 0;
-        while (offset < bytes.length
-               && (numRead=is.read(bytes, offset, bytes.length-offset)) >= 0) {
-            offset += numRead;
+        while(stream.read(chunks) == 1024){
+            baos.write(chunks);
         }
 
-        // Ensure all the bytes have been read in
-        if (offset < bytes.length) {
-            is.close();
-            throw new IOException("Could not completely read file " + file.getName());
-        }
+        baos.write(chunks);
 
         // Close the input stream and return bytes
-        is.close();
+        stream.close();
 
-        return bytes;
+        return baos.toByteArray();
     }
 
     /**
      * Get the string that correspond to the content of the given file.
-     * @param file the {@link File}
+     * @param stream the {@link InputStream}
      * @return the string that correspond to the content of the given file.
      */
-    public static String getStringFromFile(File file) {
-        if (file == null || !file.canRead()) {
-            return "";
-        }
-
-        byte[] buffer = new byte[(int) file.length()];
-        BufferedInputStream f = null;
-
-        try {
-            f = new BufferedInputStream(new FileInputStream(file));
-            f.read(buffer);
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
-        } finally {
-            if (f != null) try { f.close(); } catch (IOException ignored) { }
-        }
-        
-        return new String(buffer);
+    public static String getStringFromStream(InputStream stream) throws IOException {
+        return new String(getBytesFromStream(stream));
     }
 }
