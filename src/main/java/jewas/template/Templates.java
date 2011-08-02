@@ -6,7 +6,6 @@ import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import jewas.configuration.JewasConfiguration;
-import jewas.util.file.Files;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -33,13 +32,9 @@ public class Templates {
         }
         
         cfg = new Configuration();
-
-        try {
-            cfg.setDirectoryForTemplateLoading(Files.getFileFromPath(templatesPath));
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
-        }
-
+        // TODO: see if in "servlet mode" this will work since the Templates.class.getClassLoader()
+        // will surely not be the same than the application one
+        cfg.setTemplateLoader(new ClassLoaderTemplateLoader(null, templatesPath));
         cfg.setObjectWrapper(new DefaultObjectWrapper());
     }
 
