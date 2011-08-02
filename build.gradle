@@ -1,13 +1,15 @@
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'sonar'
-apply plugin: 'maven'
 
 // For cobertura
 def cobSerFile = "${project.buildDir}/reports/tests/cobertura.ser"
 def srcOriginal = "${sourceSets.main.classesDir}"
 def srcCopy = "${srcOriginal}-copy"
 def COVERAGE_SYS_PROPERTY = "test.coverage.activated"
+// Set this to false to generate a war file
+// TODO: implement the war file related build
+def STANDALONE_PACKAGING = true
 
 group = "fr.4sh.bbeeg"
 version = "0.1-SNAPSHOT"
@@ -18,11 +20,30 @@ repositories {
     mavenRepo urls: 'file://' + new File(System.getProperty('user.home'), '.m2/repository').absolutePath
 }
 
+if(STANDALONE_PACKAGING){
+    jar {
+      // Convert every jars in a fatjar
+      from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+      manifest {
+        attributes 'Main-Class': 'fr.fsh.bbeeg.Main'
+      }
+    }
+
+    sourceSets{
+        main {
+            resources {
+                srcDir "src/main/java"
+                srcDir "src/main/webapp"
+            }
+        }
+    }
+}
+
 dependencies {
     compile(
             [group: 'org.elasticsearch', name: 'elasticsearch', version: '0.17.0'],
             [group: 'com.h2database', name: 'h2', version: '1.3.158'],
-            [group: 'fr.4sh.jewas', name: 'jewas', version: '0.1-SNAPSHOT']
+            [group: 'fr.4sh.jewas', name: 'jewas', version: '0.1-SNAPSHOT', transitive: true]
     )
     testCompile(
             [group: 'junit', name: 'junit', version: '4.8.2', transitive: true],
