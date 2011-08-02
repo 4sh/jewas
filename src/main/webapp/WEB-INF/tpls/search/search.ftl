@@ -106,7 +106,7 @@
     </div>
     <h3><a href="#">Recherche avancée</a></h3>
 
-    <div>
+    <div style="overflow: visible;"> <!-- Here the style is set directly because we want to ensure that the overflow is visible -->
         <form action="/content/advancedSearch" id="advancedSearchForm">
             <div style="display:block;">
                 <!--<label for="adSearchDate">Date de création :</label>-->
