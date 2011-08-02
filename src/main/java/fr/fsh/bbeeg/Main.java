@@ -38,7 +38,8 @@ public class Main {
                 new PostConnectionRoute(),
                 new GetContentTypeRoute(),
                 new GetContentCriteriasRoute(),
-                new GetAdvancedSearchContent()
+                new GetAdvancedSearchContent(),
+                new GetViewContentRoute()
         ).start();
         System.out.println("Ready, if you dare");
     }
