@@ -3,16 +3,25 @@ apply plugin: 'idea'
 apply plugin: 'sonar'
 
 // For cobertura
+def timestamp = new java.text.SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
 def cobSerFile = "${project.buildDir}/reports/tests/cobertura.ser"
 def srcOriginal = "${sourceSets.main.classesDir}"
 def srcCopy = "${srcOriginal}-copy"
 def COVERAGE_SYS_PROPERTY = "test.coverage.activated"
 // Set this to false to generate a war file
-// TODO: implement the war file related build
+// TODO: implement the war file related build ?
 def STANDALONE_PACKAGING = true
 
 group = "fr.4sh.bbeeg"
 version = "0.1-SNAPSHOT"
+
+// TODO: when releasing a version, do stuff here ...
+
+// Finally, if we are in a snapshot version, replace snapshot with timestamp
+if(version.contains("-SNAPSHOT")){
+    def unsnapshotedVersion = version.substring(0, version.length() - "-SNAPSHOT".length());
+    version = unsnapshotedVersion+"-"+timestamp;
+}
 
 repositories {
     mavenCentral()
@@ -26,6 +35,8 @@ if(STANDALONE_PACKAGING){
       from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
       manifest {
         attributes 'Main-Class': 'fr.fsh.bbeeg.Main'
+        attributes 'Implementation-Version': version
+        attributes 'Implementation-Vendor': '4SH France'
       }
     }
 
