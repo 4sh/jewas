@@ -1,16 +1,39 @@
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'sonar'
+apply plugin: 'maven'
 
 // For cobertura
 def timestamp = new java.text.SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
 def cobSerFile = "${project.buildDir}/reports/tests/cobertura.ser"
 def srcOriginal = "${sourceSets.main.classesDir}"
 def srcCopy = "${srcOriginal}-copy"
+// System property to activate test coverage during test execution
+// (de-activated by default)
 def COVERAGE_SYS_PROPERTY = "test.coverage.activated"
+// System property used to define target execution environnment used for deployment
+// See ENV_PROPERTIES map for the possible values to set in this system property
+def TARGET_ENV_SYS_PROPERTY = "deploy.target.env"
 // Set this to false to generate a war file
 // TODO: implement the war file related build ?
+// Useless property (for the moment...)
 def STANDALONE_PACKAGING = true
+// Root directory on demo environnment, where will be hosted every targetEnvironnment directories
+def ENV_DEMO_DEPLOY_ROOT_PATH = "/home/bbeeg/dist";
+// Demo connection properties
+def ENV_DEMO_HOST = '91.121.39.83'
+def ENV_DEMO_USER = "bbeeg"
+def ENV_DEMO_PASS = "4SHbbfr"
+
+def ENV_PROPERTIES = [
+   nightly: [
+           targetDir: ENV_DEMO_DEPLOY_ROOT_PATH+"/nightly",
+           bbeegPort: 18086 // Useless for now...
+   ], qa: [
+           targetDir: ENV_DEMO_DEPLOY_ROOT_PATH+"/qa",
+           bbeegPort: 28086 // Useless for now...
+   ]
+]
 
 group = "fr.4sh.bbeeg"
 version = "0.1-SNAPSHOT"
@@ -23,31 +46,17 @@ if(version.contains("-SNAPSHOT")){
     version = unsnapshotedVersion+"-"+timestamp;
 }
 
+
 repositories {
     mavenCentral()
     mavenRepo urls: "http://oss.sonatype.org/content/repositories/releases/"
     mavenRepo urls: 'file://' + new File(System.getProperty('user.home'), '.m2/repository').absolutePath
 }
 
-if(STANDALONE_PACKAGING){
-    jar {
-      // Convert every jars in a fatjar
-      from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-      manifest {
-        attributes 'Main-Class': 'fr.fsh.bbeeg.Main'
-        attributes 'Implementation-Version': version
-        attributes 'Implementation-Vendor': '4SH France'
-      }
-    }
-
-    sourceSets{
-        main {
-            resources {
-                srcDir "src/main/java"
-                srcDir "src/main/webapp"
-            }
-        }
-    }
+configurations {
+    intTestCompile { extendsFrom testCompile }
+    intTestRuntime { extendsFrom intTestCompile, runtime }
+    ssh
 }
 
 dependencies {
@@ -61,13 +70,8 @@ dependencies {
             [group: 'com.jayway.restassured', name: 'rest-assured', version: '1.2.1']
     )
     testRuntime 'net.sourceforge.cobertura:cobertura:1.9.4.1'
+    ssh 'org.apache.ant:ant-jsch:1.7.0'
 }
-
-configurations {
-    intTestCompile { extendsFrom testCompile }
-    intTestRuntime { extendsFrom intTestCompile, runtime }
-}
-
 
 sourceSets {
     intTest {
@@ -80,6 +84,78 @@ sourceSets {
             srcDir "src/integration-test/resources"
         }
     }
+}
+
+jar {
+  manifest {
+    attributes 'Main-Class': 'fr.fsh.bbeeg.Main'
+    attributes 'Implementation-Title': 'BB-EEG'
+    attributes 'Implementation-Version': version
+    attributes 'Implementation-Vendor': '4SH France'
+  }
+}
+
+if(STANDALONE_PACKAGING){
+    jar {
+      // Convert every jars in a fatjar
+      from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    }
+
+    sourceSets{
+        main {
+            resources {
+                srcDir "src/main/java"
+                srcDir "src/main/webapp"
+            }
+        }
+    }
+}
+
+task checkPropsForDeployment << {
+    if(System.properties[TARGET_ENV_SYS_PROPERTY] == null
+            || !ENV_PROPERTIES.containsKey(System.properties[TARGET_ENV_SYS_PROPERTY])){
+        throw new IllegalArgumentException("You should define <"+TARGET_ENV_SYS_PROPERTY+"> system property !")
+    }
+}
+
+task initSsh << {
+    ant.taskdef(name: 'scp2',
+    	classname: 'org.apache.tools.ant.taskdefs.optional.ssh.Scp',
+    	classpath: configurations.ssh.asPath)
+    ant.taskdef(name: 'ssh',
+    	classname: 'org.apache.tools.ant.taskdefs.optional.ssh.SSHExec',
+    	classpath: configurations.ssh.asPath)
+}
+
+task uploadOnDemo(dependsOn: [initSsh, checkPropsForDeployment]) << {
+    def deployDirectory = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].targetDir
+
+	println "Deploying BB-EEG to $deployDirectory"
+
+    def libFiles = file(libsDir).listFiles().findAll { it =~ "\\.jar\$" }
+    libFiles.each { File f ->
+        println "Uploading ${f.name} (${f.size()/1000000} Mo) ..."
+
+        ant.scp2(file: f,
+                remoteTofile: "${ENV_DEMO_USER}:${ENV_DEMO_PASS}@${ENV_DEMO_HOST}:${deployDirectory}/bbeeg.jar",
+                port: 2224,
+                trust: true,
+                verbose: true
+        )
+    }
+}
+
+task startBBEEG(dependsOn: [initSsh, checkPropsForDeployment]) << {
+    def deployDirectory = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].targetDir
+
+    ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 2224,
+		command: """kill -9 \$(cat "${deployDirectory}/bbeeg.pid")""", trust: true, failonerror: false)
+    // TODO: pass the http port here...
+    ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 2224,
+		command: """java -Dfile.encoding=UTF-8 -jar "${deployDirectory}/bbeeg.jar" > "${deployDirectory}/bbeeg.log" &""",
+        trust: true, failonerror: true)
+    ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 2224,
+		command: """echo \$! > "${deployDirectory}/bbeeg.pid" """, trust: true, failonerror: true)
 }
 
 task intTest(type: Test) {
