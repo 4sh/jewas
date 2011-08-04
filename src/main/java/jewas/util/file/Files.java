@@ -49,11 +49,12 @@ public class Files {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         byte[] chunks = new byte[1024];
 
-        while(stream.read(chunks) == 1024){
+        int bytesRead = -1;
+        while((bytesRead = stream.read(chunks)) == 1024){
             baos.write(chunks);
         }
 
-        baos.write(chunks);
+        baos.write(chunks, 0, bytesRead);
 
         // Close the input stream and return bytes
         stream.close();
