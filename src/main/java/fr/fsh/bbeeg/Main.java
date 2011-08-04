@@ -1,5 +1,8 @@
 package fr.fsh.bbeeg;
 
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.Parameter;
+import com.beust.jcommander.ParameterException;
 import fr.fsh.bbeeg.content.routes.*;
 import fr.fsh.bbeeg.domain.routes.GetPopularDomainRoute;
 import fr.fsh.bbeeg.security.routes.PostConnectionRoute;
@@ -18,8 +21,26 @@ import jewas.routes.StaticResourceRoute;
  * To change this template use File | Settings | File Templates.
  */
 public class Main {
+    public static class CliOptions {
+        @Parameter(names="-httpPort", description="Http port used by Netty")
+        private int httpPort = 8086;
+
+        public int httpPort(){
+            return this.httpPort;
+        }
+    }
+
     public static void main(String[] args) {
-        final RestServer rs = RestServerFactory.createRestServer(8086);
+        CliOptions options = new CliOptions();
+        try {
+            JCommander jcommander = new JCommander(options, args);
+        }catch(ParameterException e){
+            System.err.println(e.getMessage());
+            new JCommander(options).usage();
+            System.exit(-1);
+        }
+
+        final RestServer rs = RestServerFactory.createRestServer(options.httpPort());
         rs.addRoutes(
                 new StaticResourceRoute(),
                 new SimpleHtmlRoute("/dashboard/dashboard.html", "dashboard/dashboard.ftl"),
