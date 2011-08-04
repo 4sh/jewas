@@ -19,7 +19,7 @@
           href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/themes/ui-lightness/jquery-ui.css"/>
 
 <#list stylesheets as stylesheet>
-    <link rel="stylesheet" href=${stylesheet}/>
+    <link rel="stylesheet" href="${stylesheet}" />
 </#list>
 
 <#if compressedJS == "true">
