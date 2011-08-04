@@ -127,7 +127,7 @@ task initSsh << {
     	classpath: configurations.ssh.asPath)
 }
 
-task uploadOnDemo(dependsOn: [initSsh, checkPropsForDeployment]) << {
+task uploadOnDemo(dependsOn: [initSsh, checkPropsForDeployment, build]) << {
     def deployDirectory = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].targetDir
 
 	println "Deploying BB-EEG to $deployDirectory"
