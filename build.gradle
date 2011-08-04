@@ -61,7 +61,7 @@ configurations {
 
 dependencies {
     compile(
-            [group: 'org.elasticsearch', name: 'elasticsearch', version: '0.17.0'],
+            //[group: 'org.elasticsearch', name: 'elasticsearch', version: '0.17.0'],
             [group: 'com.h2database', name: 'h2', version: '1.3.158'],
             [group: 'fr.4sh.jewas', name: 'jewas', version: '0.1-SNAPSHOT', transitive: true]
     )
