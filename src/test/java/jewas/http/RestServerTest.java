@@ -168,4 +168,21 @@ public class RestServerTest {
         JewasConfigurationForTest.clean();
     }
 
+    @Test
+    public void shouldReturnEmptyStaticResourceWithGETParameterIsOk() {
+        //System.setProperty(JewasConfiguration.APPLICATION_CONFIGURATION_FILE_PATH_KEY, "jewas/configuration/jewasForHttp.conf");
+        JewasConfigurationForTest.override("jewas/configuration/jewasForHttp.conf");
+        Response response = get("/public/emptyFile.js");
+
+        byte[] result = response.getBody().asByteArray();
+        byte[] expected = new byte[0];
+
+        Assert.assertEquals(response.getBody().asString(), expected.length, result.length);
+
+        for (int i = 0; i < result.length; i++) {
+            Assert.assertEquals(result[i], expected[i]);
+        }
+
+        JewasConfigurationForTest.clean();
+    }
 }

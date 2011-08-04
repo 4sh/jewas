@@ -54,7 +54,9 @@ public class Files {
             baos.write(chunks);
         }
 
-        baos.write(chunks, 0, bytesRead);
+        if(bytesRead != -1){
+            baos.write(chunks, 0, bytesRead);
+        }
 
         // Close the input stream and return bytes
         stream.close();
