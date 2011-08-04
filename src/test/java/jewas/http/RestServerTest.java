@@ -10,6 +10,7 @@ import junit.framework.Assert;
 import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -134,6 +135,7 @@ public class RestServerTest {
                 .get("/root/toUpperCase?stringToConvert=foo");
     }
 
+    @Ignore("urls with ; should be parsed correctly")
     @Test
     public void shouldUrlWithInlinedCommaParametersBeStripped(){
         expect()
