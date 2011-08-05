@@ -26,11 +26,11 @@ public class DefaultJewasConfigurationDelegate implements JewasConfigurationDele
         try {
             properties.load(Files.getInputStreamFromPath(path));
         } catch (IOException e) {
+            // FIXME : log a warning here !... Or even throw a non checked exception ???
             System.err.println(e.getMessage());
         }
     }
 
-    @Override
     public Properties getProperties() {
        return properties;
     }
