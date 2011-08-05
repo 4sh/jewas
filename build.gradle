@@ -3,8 +3,8 @@ apply plugin: 'idea'
 apply plugin: 'sonar'
 apply plugin: 'maven'
 
-// For cobertura
 def timestamp = new java.text.SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+// For cobertura
 def cobSerFile = "${project.buildDir}/reports/tests/cobertura.ser"
 def srcOriginal = "${sourceSets.main.classesDir}"
 def srcCopy = "${srcOriginal}-copy"
