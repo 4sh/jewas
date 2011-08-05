@@ -14,18 +14,31 @@ import java.net.URL;
  * To change this template use File | Settings | File Templates.
  */
 public class Files {
+
     /**
-     * Get a file from a given path.
+     * Get a file from a given path via the Files classloader
+     * @param path the path
+     * @return the inputstream at the given path
+     * @throws IOException a {@link IOException}
+     * @see Files#getInputStreamFromPath(ClassLoader, String)
+     */
+    public static InputStream getInputStreamFromPath(String path) throws IOException {
+        return getInputStreamFromPath(Files.class.getClassLoader(), path);
+    }
+
+    /**
+     * Get a file from a given path via a classloader
+     * @param classloader The classloader we will look for path file
      * @param path the path
      * @return the inputstream at the given path
      * @throws IOException a {@link IOException}
      */
-    public static InputStream getInputStreamFromPath(String path) throws IOException {
+    public static InputStream getInputStreamFromPath(ClassLoader classloader, String path) throws IOException {
         if (path == null) {
             throw new FileNotFoundException("The given path is null.");
         }
 
-        URL resource = Files.class.getClassLoader().getResource(path);
+        URL resource = classloader.getResource(path);
 
         if (resource == null) {
             throw new FileNotFoundException("The path: " + path + " was not found in the classpath.");
