@@ -1,8 +1,9 @@
 package fr.fsh.bbeeg;
 
 import com.beust.jcommander.JCommander;
-import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
+import fr.fsh.bbeeg.common.CliOptions;
+import fr.fsh.bbeeg.common.config.BBEEGConfiguration;
 import fr.fsh.bbeeg.content.routes.*;
 import fr.fsh.bbeeg.domain.routes.GetPopularDomainRoute;
 import fr.fsh.bbeeg.security.routes.PostConnectionRoute;
@@ -21,14 +22,6 @@ import jewas.routes.StaticResourceRoute;
  * To change this template use File | Settings | File Templates.
  */
 public class Main {
-    public static class CliOptions {
-        @Parameter(names="-httpPort", description="Http port used by Netty")
-        private int httpPort = 8086;
-
-        public int httpPort(){
-            return this.httpPort;
-        }
-    }
 
     public static void main(String[] args) {
         CliOptions options = new CliOptions();
@@ -39,6 +32,9 @@ public class Main {
             new JCommander(options).usage();
             System.exit(-1);
         }
+
+        // Registering cli options
+        BBEEGConfiguration.INSTANCE.cliOptions(options);
 
         final RestServer rs = RestServerFactory.createRestServer(options.httpPort());
         rs.addRoutes(
