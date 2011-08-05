@@ -48,9 +48,9 @@ if(version.contains("-SNAPSHOT")){
 
 
 repositories {
+    mavenLocal()
     mavenCentral()
     mavenRepo urls: "http://oss.sonatype.org/content/repositories/releases/"
-    mavenRepo urls: 'file://' + new File(System.getProperty('user.home'), '.m2/repository').absolutePath
 }
 
 configurations {
