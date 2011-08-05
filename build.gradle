@@ -28,10 +28,10 @@ def TARGET_ENV_SYS_PROPERTY = "deploy.target.env"
 def ENV_PROPERTIES = [
    nightly: [
            targetDir: ENV_DEMO_DEPLOY_ROOT_PATH+"/nightly",
-           bbeegPort: 18086 // Useless for now...
+           bbeegPort: 18086
    ], qa: [
            targetDir: ENV_DEMO_DEPLOY_ROOT_PATH+"/qa",
-           bbeegPort: 28086 // Useless for now...
+           bbeegPort: 28086
    ]
 ]
 
