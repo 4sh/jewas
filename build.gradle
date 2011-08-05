@@ -28,10 +28,12 @@ def TARGET_ENV_SYS_PROPERTY = "deploy.target.env"
 def ENV_PROPERTIES = [
    nightly: [
            targetDir: ENV_DEMO_DEPLOY_ROOT_PATH+"/nightly",
-           bbeegPort: 18086
+           bbeegPort: 18086,
+           visioEegUrl: "http://nightly.visio.bbeeg.4sh.fr"
    ], qa: [
            targetDir: ENV_DEMO_DEPLOY_ROOT_PATH+"/qa",
-           bbeegPort: 28086
+           bbeegPort: 28086,
+           visioEegUrl: "http://qa.visio.bbeeg.4sh.fr"
    ]
 ]
 
@@ -149,12 +151,16 @@ task uploadOnDemo(dependsOn: [initSsh, checkPropsForDeployment, test, build]) <<
 task startBBEEG(dependsOn: [initSsh, checkPropsForDeployment]) << {
     def deployDirectory = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].targetDir
     def executionPort = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].bbeegPort
+    def visioUrl = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].visioEegUrl
 
     ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 2224,
 		command: """kill -9 \$(cat "${deployDirectory}/bbeeg.pid")""", trust: true, failonerror: false)
     // TODO: pass the http port here...
     ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 2224,
-		command: """java -Dfile.encoding=UTF-8 -jar "${deployDirectory}/bbeeg.jar" -httpPort ${executionPort} > "${deployDirectory}/bbeeg.log" 2> "${deployDirectory}/bbeeg.err.log" & echo \$! > "${deployDirectory}/bbeeg.pid" """,
+		command: """java -Dfile.encoding=UTF-8 -jar "${deployDirectory}/bbeeg.jar" \
+		    -httpPort ${executionPort} -visioUrl ${visioUrl} \
+		    > "${deployDirectory}/bbeeg.log" 2> "${deployDirectory}/bbeeg.err.log" \
+		    & echo \$! > "${deployDirectory}/bbeeg.pid" """,
         trust: true, failonerror: true)
 }
 
