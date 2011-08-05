@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Created-By: Blah
+Built-By: Blah
+Implementation-Title: Manifest bidon pour que tout fonctionne
+Implementation-Version: version-dev
