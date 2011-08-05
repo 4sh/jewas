@@ -11,9 +11,6 @@ def srcCopy = "${srcOriginal}-copy"
 // System property to activate test coverage during test execution
 // (de-activated by default)
 def COVERAGE_SYS_PROPERTY = "test.coverage.activated"
-// System property used to define target execution environnment used for deployment
-// See ENV_PROPERTIES map for the possible values to set in this system property
-def TARGET_ENV_SYS_PROPERTY = "deploy.target.env"
 // Set this to false to generate a war file
 // TODO: implement the war file related build ?
 // Useless property (for the moment...)
@@ -24,6 +21,9 @@ def ENV_DEMO_DEPLOY_ROOT_PATH = "/home/bbeeg/dist";
 def ENV_DEMO_HOST = '91.121.39.83'
 def ENV_DEMO_USER = "bbeeg"
 def ENV_DEMO_PASS = "4SHbbfr"
+// System property used to define target execution environnment used for deployment
+// See ENV_PROPERTIES map for the possible values to set in this system property
+def TARGET_ENV_SYS_PROPERTY = "deploy.target.env"
 
 def ENV_PROPERTIES = [
    nightly: [
