@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Enumeration;
+import java.util.jar.Manifest;
 
 /**
  * Created by IntelliJ IDEA.
@@ -16,29 +18,70 @@ import java.net.URL;
 public class Files {
 
     /**
-     * Get a file from a given path via the Files classloader
+     * Get a file from the same archive as Files.class file
      * @param path the path
      * @return the inputstream at the given path
      * @throws IOException a {@link IOException}
-     * @see Files#getInputStreamFromPath(ClassLoader, String)
+     * @see Files#getInputStreamFromPath(Class, String)
      */
     public static InputStream getInputStreamFromPath(String path) throws IOException {
-        return getInputStreamFromPath(Files.class.getClassLoader(), path);
+        return getInputStreamFromPath(Files.class, path);
     }
 
     /**
-     * Get a file from a given path via a classloader
-     * @param classloader The classloader we will look for path file
+     * Get a file from a given path inside the same archive where resides the given clazz
+     * @param clazz The classloader we will look for path file
      * @param path the path
      * @return the inputstream at the given path
      * @throws IOException a {@link IOException}
      */
-    public static InputStream getInputStreamFromPath(ClassLoader classloader, String path) throws IOException {
+    public static InputStream getInputStreamFromPath(Class clazz, String path) throws IOException {
         if (path == null) {
             throw new FileNotFoundException("The given path is null.");
         }
 
-        URL resource = classloader.getResource(path);
+        Enumeration<URL> resources = clazz.getClassLoader().getResources(path);
+        if(!resources.hasMoreElements()){
+            throw new FileNotFoundException("The path: " + path + " was not found in the classpath.");
+        }
+
+        URL resource = resources.nextElement();
+
+        // If there is more than 1 resource matching path in the classpath ...
+        if(resources.hasMoreElements()){
+            URL currentResource = resource;
+            resource = null;
+            // Trying to find the first resource matching path _and_ where resides clazz
+            while(resources.hasMoreElements()){
+
+                String resourcePath = currentResource.toString();
+                StringBuilder classPath = new StringBuilder();
+                classPath.append(resourcePath.substring(0, resourcePath.length() - path.length()))
+                         .append(clazz.getCanonicalName().replaceAll("\\.", "/"))
+                         .append(".class");
+
+                URL classUrl = new URL(classPath.toString());
+                boolean classFoundInClasspath = false;
+                InputStream tmpStream = null;
+                try {
+                    tmpStream = classUrl.openStream();
+                    classFoundInClasspath = true;
+                }catch(IOException e){
+                    classFoundInClasspath = false;
+                } finally{
+                    if(tmpStream != null){
+                        tmpStream.close();
+                    }
+                }
+
+                if(classFoundInClasspath){
+                    resource = currentResource;
+                    break;
+                }
+
+                currentResource = resources.nextElement();
+            }
+        }
 
         if (resource == null) {
             throw new FileNotFoundException("The path: " + path + " was not found in the classpath.");
