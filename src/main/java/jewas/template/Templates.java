@@ -1,6 +1,7 @@
 package jewas.template;
 
 
+import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
@@ -10,6 +11,7 @@ import jewas.configuration.JewasConfiguration;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.HashMap;
 import java.util.Map;
 
 public class Templates {
@@ -62,6 +64,12 @@ public class Templates {
         }
 
         Writer writer = new StringWriter();
+
+        if(params == null){
+            params = new HashMap<String, Object>();
+        }
+        // Providing static fields to the freemarker context
+        params.put("statics", BeansWrapper.getDefaultInstance().getStaticModels());
 
         try {
             temp.process(params, writer);
