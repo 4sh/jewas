@@ -76,7 +76,7 @@
             <#nested>
         </div>
     </div>
-    <div id="footer"> Plateforme d'eLearning BB-EEG </div>
+    <div id="footer"> Plateforme d'eLearning BB-EEG v${statics["fr.fsh.bbeeg.common.config.BBEEGConfiguration"].INSTANCE.appVersion()}</div>
 </body>
 </html>
 </#macro>
