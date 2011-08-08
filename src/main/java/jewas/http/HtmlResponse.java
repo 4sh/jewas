@@ -11,7 +11,7 @@ public class HtmlResponse {
 	public void content(String content) {
 		httpResponse
 			.status(HttpStatus.OK)
-			.contentType(new ContentType("text/html"));
+			.contentType(ContentType.TXT_HTML);
 		httpResponse.content(content);
 	}
 

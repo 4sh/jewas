@@ -13,7 +13,7 @@ public class RedirectResponse {
 	public void location(String location) {
 		httpResponse
                 .status(HttpStatus.SEE_OTHER)
-                .contentType(new ContentType("text/html"))
+                .contentType(ContentType.TXT_HTML)
                 .addHeader(HttpHeaders.Names.LOCATION, location)
                 .content("<p>Redirection</p>");
 	}

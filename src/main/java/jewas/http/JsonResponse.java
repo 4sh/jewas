@@ -19,7 +19,7 @@ public class JsonResponse {
     public void object(Object o, Type parameterizedType) {
         httpResponse
                 .status(HttpStatus.OK)
-                .contentType(new ContentType("application/json"));
+                .contentType(ContentType.APP_JSON);
         httpResponse.content(Json.instance().toJsonString(o, parameterizedType));
     }
 

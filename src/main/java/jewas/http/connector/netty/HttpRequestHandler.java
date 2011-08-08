@@ -56,7 +56,7 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
 
                 @Override
                 public jewas.http.HttpResponse contentType(ContentType contentType) {
-                    nettyResponse.setHeader(CONTENT_TYPE, contentType.name());
+                    nettyResponse.setHeader(CONTENT_TYPE, contentType.value());
                     return this;
                 }
 
