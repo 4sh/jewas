@@ -3,8 +3,9 @@ package jewas.http;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.response.Response;
 import jewas.configuration.JewasConfigurationForTest;
+import jewas.routes.RedirectRoute;
+import jewas.routes.StaticResourceRoute;
 import jewas.test.fakeapp.routes.SimpleJSONFileRoute;
-import jewas.test.fakeapp.routes.StaticResourceRoute;
 import jewas.util.file.Files;
 import junit.framework.Assert;
 import org.hamcrest.CoreMatchers;
@@ -38,8 +39,10 @@ public class RestServerTest {
     public void startServer() {
         // Restserver without any route
         restServer = RestServerFactory.createRestServer(SERVER_PORT);
-        restServer.addRoutes(new SimpleJSONFileRoute());
-        restServer.addRoutes(new StaticResourceRoute());
+        restServer.addRoutes(
+                new SimpleJSONFileRoute(),
+                new StaticResourceRoute()
+        );
         restServer.start();
         RestAssured.port = SERVER_PORT;
     }
