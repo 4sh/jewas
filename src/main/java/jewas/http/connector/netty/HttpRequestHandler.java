@@ -45,45 +45,47 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
                 send100Continue(e);
             }
 
+            jewas.http.HttpResponse response = new jewas.http.HttpResponse() {
+                private DefaultHttpResponse nettyResponse = new DefaultHttpResponse(HTTP_1_1, HttpResponseStatus.INTERNAL_SERVER_ERROR);
+
+                @Override
+                public jewas.http.HttpResponse status(HttpStatus status) {
+                    nettyResponse.setStatus(HttpResponseStatus.valueOf(status.code()));
+                    return this;
+                }
+
+                @Override
+                public jewas.http.HttpResponse contentType(ContentType contentType) {
+                    nettyResponse.setHeader(CONTENT_TYPE, contentType.name());
+                    return this;
+                }
+
+                @Override
+                public jewas.http.HttpResponse content(String content) {
+                    return content(content.getBytes(CharsetUtil.UTF_8));
+                }
+
+                @Override
+                public jewas.http.HttpResponse content(byte[] content) {
+                    nettyResponse.setContent(ChannelBuffers.copiedBuffer(content));
+
+                    ChannelFuture future = e.getChannel().write(nettyResponse);
+                    future.addListener(ChannelFutureListener.CLOSE);
+                    return this;
+                }
+
+                @Override
+                public jewas.http.HttpResponse addHeader(String header, Object value) {
+                    nettyResponse.addHeader(header, value);
+                    return this;
+                }
+            };
             this.request = new DefaultHttpRequest(
             		HttpMethod.valueOf(request.getMethod().getName()), 
             		request.getUri(), 
-            		request.getHeaders(), 
-            		new jewas.http.HttpResponse() {
-						private HttpResponse nettyResponse;
-						
-						@Override
-						public jewas.http.HttpResponse status(HttpStatus status) {
-							nettyResponse = new DefaultHttpResponse(HTTP_1_1, HttpResponseStatus.valueOf(status.code()));
-							return this;
-						}
-						
-						@Override
-						public jewas.http.HttpResponse contentType(ContentType contentType) {
-							nettyResponse.setHeader(CONTENT_TYPE, contentType.name());
-							return this;
-						}
-						
-						@Override
-						public jewas.http.HttpResponse content(String content) {
-							return content(content.getBytes(CharsetUtil.UTF_8));
-						}
-
-                        @Override
-                        public jewas.http.HttpResponse content(byte[] content) {
-                            nettyResponse.setContent(ChannelBuffers.copiedBuffer(content));
-
-							ChannelFuture future = e.getChannel().write(nettyResponse);
-							future.addListener(ChannelFutureListener.CLOSE);
-							return this;
-                        }
-
-                        @Override
-                        public jewas.http.HttpResponse addHeader(String header, Object value) {
-                            nettyResponse.addHeader(header, value);
-                            return this;
-                        }
-                    });
+            		request.getHeaders(),
+                    response
+            );
             handler.onRequest(this.request);
 
 
