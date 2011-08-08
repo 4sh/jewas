@@ -22,27 +22,62 @@
         <p id="lastConnectionDate"/>
 
         <div id="dashboard">
-            <div class="dashboard-group">
+            <div class="dashboard-group dashboard-group-linestart">
                 <div class="box">
-                    <div id="myContentsPanel" class="panel">
-                        <h3> Mes contenus </h3>
-                        <div id="user-contents"></div>
+                    <div id="myContentsPanelLastAdded" class="panel">
+                        <h3> Contenus ajoutés </h3>
+                        <div id="user-contents-last-added"></div>
                     </div>
                 </div>
             </div>
             <div class="dashboard-group">
+                <div class="box">
+                    <div id="myContentsPanelLastViewed" class="panel">
+                        <h3> Contenus vus </h3>
+                        <div id="user-contents-last-viewed"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="dashboard-group">
+                <div class="box">
+                    <div id="myContentsPanelPopulars" class="panel">
+                        <h3> Contenus populaires </h3>
+                        <div id="user-contents-populars"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="dashboard-group-fullline dashboard-group-linestart">
                 <div class="box">
                     <div id="myLessonsPanel" class="panel">
                         <h3> Mes cours </h3>
-                        <div id="user-lessons"> Non disponible </div>
+                        <div id="user-lessons">
+                            <#--
+                            Hardcoded styles here since it is a temporary style
+                            JQuery is adding extra div tag when using panel(), this div is
+                            made of class="ui-panel-content-text" which adds extra margin to elements
+                            In real life, we would use an ajax query which would replace the <div> tag
+                            and thus, extra style shouldn't be needed anymore...
+                            -->
+                            <p style="margin-top: 0px;">Non disponible l1</p>
+                            <p>Non disponible l2</p>
+                            <p>Non disponible l3</p>
+                            <p>Non disponible l4</p>
+                            <p style="margin-bottom: 0px">Non disponible l5</p>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="dashboard-group">
+            <div class="dashboard-group-fullline dashboard-group-linestart">
                 <div class="box">
                     <div id="myTestsPanel" class="panel">
                         <h3> Mes tests </h3>
-                        <div id="user-tests"> Non disponible </div>
+                        <div id="user-tests">
+                            <p style="margin-top: 0px;">Non disponible l1</p>
+                            <p>Non disponible l2</p>
+                            <p>Non disponible l3</p>
+                            <p>Non disponible l4</p>
+                            <p style="margin-bottom: 0px;">Non disponible l5</p>
+                        </div>
                     </div>
                 </div>
             </div>

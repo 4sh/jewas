@@ -43,7 +43,9 @@ function loadMyContents() {
 
     $("#user-contents").append(tabContainer.htmlElement());
     */
-    createLastAdded($("#user-contents"));
+    createLastAdded($("#user-contents-last-added"));
+    createLastViewed($("#user-contents-last-viewed"));
+    createMostPopular($("#user-contents-populars"));
 }
 
 function loadTotalNumberOfContents() {
@@ -76,21 +78,14 @@ function loadDomains() {
 }
 
 function buildPanels() {
-    $('#myContentsPanel').panel({
-        'collapsible':false
-    });
-    $('#myLessonsPanel').panel({
-        'collapsible':false
-    });
-    $('#myTestsPanel').panel({
-        'collapsible':false
-    });
-    $('#plateformInformationsPanel').panel({
-        'collapsible':false
-    });
-    $('#domainsPanel').panel({
-        'collapsible':false
-    });
+    $.each(["#myContentsPanelLastAdded", "#myContentsPanelLastViewed", "#myContentsPanelPopulars",
+        "#myLessonsPanel", "#myTestsPanel", "#plateformInformationsPanel", "#domainsPanel"],
+        function(index, value){
+            $(value).panel({
+                'collapsible':false
+            });
+        }
+    );
 }
 
 $(

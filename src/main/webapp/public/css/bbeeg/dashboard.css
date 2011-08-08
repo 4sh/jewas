@@ -12,6 +12,19 @@
     vertical-align: top;
     width: 240px;
     margin-left: 6px;
+    margin-top: 17px;
+}
+
+.dashboard-group-fullline {
+    display: inline-block;
+    vertical-align: top;
+    width: 740px;
+    margin-top: 17px;
+    margin-left: 6px;
+}
+
+.dashboard-group-linestart {
+    clear: both;
 }
 
 #generalInformations {
