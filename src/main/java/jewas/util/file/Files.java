@@ -52,7 +52,7 @@ public class Files {
             URL currentResource = resource;
             resource = null;
             // Trying to find the first resource matching path _and_ where resides clazz
-            while(resources.hasMoreElements()){
+            while(currentResource != null){
 
                 String resourcePath = currentResource.toString();
                 StringBuilder classPath = new StringBuilder();
@@ -79,7 +79,11 @@ public class Files {
                     break;
                 }
 
-                currentResource = resources.nextElement();
+                if(!resources.hasMoreElements()){
+                    currentResource = null;
+                } else {
+                    currentResource = resources.nextElement();
+                }
             }
         }
 
