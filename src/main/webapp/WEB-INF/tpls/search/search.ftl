@@ -51,6 +51,11 @@
             dateFormat: "dd-mm-yy",
 			changeMonth: true,
 			numberOfMonths: 1,
+            beforeShow: function(){
+                setTimeout(function() {
+                    $("#ui-datepicker-div").css('z-index', '20');
+                }, 50);
+            },
 			onSelect: function( selectedDate ) {
 				var option = this.id == "from" ? "minDate" : "maxDate",
 					instance = $( this ).data( "datepicker" ),
@@ -109,10 +114,8 @@
     <div style="overflow: visible;"> <!-- Here the style is set directly because we want to ensure that the overflow is visible -->
         <form action="/content/advancedSearch" id="advancedSearchForm">
             <div style="display:block;">
-                <!--<label for="adSearchDate">Date de création :</label>-->
-                <!--<input type="text" id="adSearchDate" name="date"/>-->
                 <label for="from">Date de création : Entre</label>
-                <input type="text" id="from" name="from"/>
+                <input type="text" id="from" name="from" />
                 <label for="to">et</label>
                 <input type="text" id="to" name="to"/>
             </div>
