@@ -11,6 +11,7 @@ import fr.fsh.bbeeg.user.routes.GetLastConnectionDateRoute;
 import fr.fsh.bbeeg.user.routes.GetUserInformationsRoute;
 import jewas.http.RestServer;
 import jewas.http.RestServerFactory;
+import jewas.routes.RedirectRoute;
 import jewas.routes.SimpleHtmlRoute;
 import jewas.routes.StaticResourceRoute;
 
@@ -38,6 +39,7 @@ public class Main {
 
         final RestServer rs = RestServerFactory.createRestServer(options.httpPort());
         rs.addRoutes(
+                new RedirectRoute("/", "/dashboard/dashboard.html"),
                 new StaticResourceRoute(),
                 new SimpleHtmlRoute("/dashboard/dashboard.html", "dashboard/dashboard.ftl"),
                 new GetSimpleSearchContent(),
