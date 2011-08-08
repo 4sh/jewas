@@ -1,5 +1,6 @@
 package jewas.http;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.*;
@@ -37,6 +38,12 @@ public class PatternUriMatcherTest {
     public void shouldNonParameterizedUncompleteRouteNotMatch() {
         Parameters params = new PatternUriPathMatcher("/content/search").match("/content/search.html");
         assertThat(params, is(nullValue()));
+    }
+
+    @Test
+    public void shouldRootUrlMatches(){
+        Parameters params = new PatternUriPathMatcher("/").match("/");
+        assertThat(params, is(notNullValue()));
     }
 
 }

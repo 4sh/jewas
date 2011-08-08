@@ -41,7 +41,9 @@ public class RestServerTest {
         restServer = RestServerFactory.createRestServer(SERVER_PORT);
         restServer.addRoutes(
                 new SimpleJSONFileRoute(),
-                new StaticResourceRoute()
+                new StaticResourceRoute(),
+                new RedirectRoute("/helloFoo", "/root/toUpperCase/foo"),
+                new RedirectRoute("/", "/root/toUpperCase/foo")
         );
         restServer.start();
         RestAssured.port = SERVER_PORT;
@@ -146,6 +148,24 @@ public class RestServerTest {
                 .body("convertedString", is(equalTo("FOO")))
                 .when()
                 .get("/root/toUpperCase;stringToConvert=foo");
+    }
+
+    @Test
+    public void shouldUrlRedirectOnUrlHelloIsOk() {
+        expect().
+                body("convertedString", CoreMatchers.is(CoreMatchers.equalTo("FOO"))).
+                when().
+                get("/helloFoo");
+
+    }
+
+    @Test
+    public void shouldUrlRedirectOnUrlRootIsOk() {
+        expect().
+                body("convertedString", CoreMatchers.is(CoreMatchers.equalTo("FOO"))).
+                when().
+                get("/");
+
     }
 
     @Test

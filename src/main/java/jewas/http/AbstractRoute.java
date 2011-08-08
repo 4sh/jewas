@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 public abstract class AbstractRoute implements Route {
 	private final HttpMethodMatcher methodMatcher;
 	private final UriPathMatcher pathMatcher;
-	private final static Pattern URI_PATTERN = Pattern.compile("^((?:/([\\w\\.\\_\\-\\d]+))*)/*$");
+	private final static Pattern URI_PATTERN = Pattern.compile("^(/|(?:/([\\w\\.\\_\\-\\d]+))*)/*$");
 
 	public AbstractRoute(HttpMethodMatcher methodMatcher,
 			UriPathMatcher pathMatcher) {
