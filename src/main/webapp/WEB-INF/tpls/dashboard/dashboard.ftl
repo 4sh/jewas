@@ -11,7 +11,7 @@
                      "/public/css/panel/ui.panel.css",
                      "/public/css/bbeeg/dashboard.css"]>
     <script id="contentItemTemplate" type="text/html">
-        <div> <p> {{= title}} </p> </div>
+        <div class="ui-panel-content-text">{{= title}}</div>
     </script>
 
     <script id="authorItemTemplate" type="text/html">

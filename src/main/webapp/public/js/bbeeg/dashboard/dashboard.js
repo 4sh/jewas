@@ -34,6 +34,7 @@ function loadLastConnectionDate() {
 }
 
 function loadMyContents() {
+    /*
     var tabContainer = new TabContainer('myContents');
 
     tabContainer.addTab('New', createLastAdded);
@@ -41,6 +42,8 @@ function loadMyContents() {
     tabContainer.addTab('Popular', createMostPopular);
 
     $("#user-contents").append(tabContainer.htmlElement());
+    */
+    createLastAdded($("#user-contents"));
 }
 
 function loadTotalNumberOfContents() {
