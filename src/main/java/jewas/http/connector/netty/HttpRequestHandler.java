@@ -86,6 +86,7 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
             		request.getHeaders(),
                     response
             );
+            provideContentTypeFor(request.getUri(), response);
             handler.onRequest(this.request);
 
 
@@ -120,6 +121,13 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
         }
     }
 
+    protected void provideContentTypeFor(String path, jewas.http.HttpResponse response){
+        String extension = path.substring(path.lastIndexOf(".")+1);
+        ContentType contentTypeMatchingExtension = ContentType.findByExtension(extension);
+        if(contentTypeMatchingExtension != null){
+            response.contentType(contentTypeMatchingExtension);
+        }
+    }
 
     private void send100Continue(MessageEvent e) {
         HttpResponse response = new DefaultHttpResponse(HTTP_1_1, CONTINUE);
