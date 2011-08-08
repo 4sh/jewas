@@ -56,7 +56,8 @@ public enum ContentType {
         return contentTypeValue;
     }
 
-    public static ContentType findByExtension(String extension){
+    public static ContentType guessContentTypeByUri(String uri){
+        String extension = uri.substring(uri.lastIndexOf(".")+1);
         if(CONTENT_TYPES_BY_EXTENSION.containsKey(extension)){
             return CONTENT_TYPES_BY_EXTENSION.get(extension);
         } else {

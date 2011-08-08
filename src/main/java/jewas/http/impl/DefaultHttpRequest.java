@@ -66,22 +66,22 @@ public final class DefaultHttpRequest implements HttpRequest {
      // TODO: Why not having a method renderJson(object) like in Play!
 	@Override
 	public JsonResponse respondJson() {
-		return new JsonResponse(response());
+		return new JsonResponse(this, response());
 	}
 
     @Override
     public HtmlResponse respondHtml() {
-        return new HtmlResponse(response());
+        return new HtmlResponse(this, response());
     }
 
     @Override
     public FileResponse respondFile() {
-        return new FileResponse(response());  //To change body of implemented methods use File | Settings | File Templates.
+        return new FileResponse(this, response());  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
     public RedirectResponse redirect() {
-        return new RedirectResponse(response());  //To change body of implemented methods use File | Settings | File Templates.
+        return new RedirectResponse(this, response());  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override

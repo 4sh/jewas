@@ -1,6 +1,7 @@
 package jewas.http;
 
 
+import jewas.http.impl.DefaultHttpRequest;
 import jewas.json.Json;
 
 import java.lang.reflect.Type;
@@ -8,8 +9,9 @@ import java.lang.reflect.Type;
 public class JsonResponse {
     private HttpResponse httpResponse;
 
-    public JsonResponse(HttpResponse response) {
+    public JsonResponse(DefaultHttpRequest defaultHttpRequest, HttpResponse response) {
         this.httpResponse = response;
+        this.httpResponse.status(HttpStatus.OK).contentType(ContentType.APP_JSON);
     }
 
     public void object(Object o) {
@@ -17,9 +19,6 @@ public class JsonResponse {
     }
 
     public void object(Object o, Type parameterizedType) {
-        httpResponse
-                .status(HttpStatus.OK)
-                .contentType(ContentType.APP_JSON);
         httpResponse.content(Json.instance().toJsonString(o, parameterizedType));
     }
 
