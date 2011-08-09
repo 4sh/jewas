@@ -49,7 +49,6 @@
                 ui.oldContent.css('overflow', 'auto');
             }
         });
-        //$("#adSearchDate").datepicker();
         var dates = $( "#from, #to" ).datepicker({
 			defaultDate: "",
             dateFormat: "dd-mm-yy",
@@ -96,6 +95,15 @@
                 .selectorForClosingLinkInDisplaySelectionItemTemplate("a.search-choice-close")
                 .selectMenuContainer($("#searchCriteriaMenuContainer"));
         var criteriaCombo = new ChainedSelect(config).decorateSelectFieldWithChainedSelectConfiguration($("#adSearchCriterias"));
+
+        // Enabling auto query when scrollbar is at the bottom of the window
+        $(window).scroll(function(args){
+            if($("#searchResultsComponent #searchNext").length != 0){
+                if($(window).scrollTop() >= $(document).height() - $(window).height()){
+                    $("#searchNext").click();
+                }
+            }
+        });
     });
 </script>
 
@@ -171,7 +179,7 @@
     <div id="contentResults">
         {{tmpl(results) "#contentLineResult"}}
     </div>
-    <button id="searchNext">Résultats suivants</button>
+    <button id="searchNext"><img src="/public/images/ajax/indicator.gif" class="spinner" />Résultats suivants</button>
 </script>
 <script id="contentLineResult" type="text/x-jquery-tmpl">
     <div class="content-result">

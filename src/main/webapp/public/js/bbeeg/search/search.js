@@ -73,6 +73,11 @@ function SearchQuery() {
      */
     function contentSearch(searchContext, queryParams, templateApplied, appendResults) {
         $.get(searchContext.targetForm().attr('action'), queryParams, function(data) {
+            $(searchContext.selectorForClickableOfSearchNext()).each(function() {
+                $(".spinner", this).css('display', 'none');
+                this.disabled = false;
+            });
+            
             // If we are not in append mode, let's remember the last query and the server timestamp of this query
             // It will be used when searching in append mode ! (look above)
             if (!appendResults) {
@@ -105,7 +110,10 @@ function SearchQuery() {
             // Binding clickables for "next search"
             if (!appendResults) {
                 $(searchContext.selectorForClickableOfSearchNext()).each(function() {
+                    var clickable = this;
                     $(this).click(function() {
+                        this.disabled = true;
+                        $(".spinner", this).css('display', 'inline');
                         SearchQuery.INSTANCE.searchNext();
                     });
                 });

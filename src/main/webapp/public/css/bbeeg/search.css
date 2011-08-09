@@ -54,6 +54,10 @@ select[multiple]{
     width: 400px;
 }
 
+img.spinner {
+    display: none;
+}
+
 h3 {
     color: #eb8f00;
 }
