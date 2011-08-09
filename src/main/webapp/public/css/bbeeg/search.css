@@ -50,6 +50,10 @@ select {
     width: 150px;
 }
 
+select[multiple]{
+    width: 400px;
+}
+
 h3 {
     color: #eb8f00;
 }
