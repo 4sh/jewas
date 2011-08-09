@@ -10,7 +10,7 @@
     title="Ecran d'accueil"
     selectedMenuItem="search"
     scripts=[chosenJS, "/public/js/bbeeg/search/search.js", "/public/js/bbeeg/common/widgets/chainedSelect.js"]
-    stylesheets=["/public/css/chosen/chosen.css"]>
+    stylesheets=["/public/css/chosen/chosen.css", "/public/css/bbeeg/search.css"]>
 <script>
     function loadAuthors() {
         $.getJSON(
@@ -51,11 +51,6 @@
             dateFormat: "dd-mm-yy",
 			changeMonth: true,
 			numberOfMonths: 1,
-            beforeShow: function(){
-                setTimeout(function() {
-                    $("#ui-datepicker-div").css('z-index', '20');
-                }, 50);
-            },
 			onSelect: function( selectedDate ) {
 				var option = this.id == "from" ? "minDate" : "maxDate",
 					instance = $( this ).data( "datepicker" ),
@@ -111,51 +106,50 @@
     </div>
     <h3><a href="#">Recherche avancée</a></h3>
 
-    <div style="overflow: visible;"> <!-- Here the style is set directly because we want to ensure that the overflow is visible -->
+    <div class="criteria-box">
         <form action="/content/advancedSearch" id="advancedSearchForm">
-            <div style="display:block;">
+            <div class="criteria-line">
                 <label for="from">Date de création : Entre</label>
                 <input type="text" id="from" name="from" />
                 <label for="to">et</label>
                 <input type="text" id="to" name="to"/>
             </div>
-            <div style="width: 600px; display:block; clear:both;">
-                <div style="float:left"><label for="adSearchType">Types de contenu</label> :</div>
-                <div style="float:left">
-                    <select id="adSearchType" name="searchTypes" class="chzn-select side-by-side clearfix" multiple style="width: 350px">
+            <div class="criteria-line">
+                <div class="criteria-label"><label for="adSearchType">Types de contenu</label> :</div>
+                <div class="criteria-field">
+                    <select id="adSearchType" name="searchTypes" class="chzn-select side-by-side clearfix" multiple>
                     </select>
                 </div>
             </div>
-            <div style="width: 600px; display:block; clear:both;">
-                <div style="float:left"><label for="adSearchCriterias">Critères </label> :</div>
-                <div style="float:left">
+            <div class="criteria-line">
+                <div class="criteria-label"><label for="adSearchCriterias">Critères </label> :</div>
+                <div class="criteria-field">
                     <input type="hidden" id="criterias" name="criterias" value="" />
-                    <div class="chzn-container" style="float:left">
-                        <ul class="chzn-choices" id="criteriasList"
-                                style="background-color: transparent; border: 0px; background-image: none;">
+                    <div class="chzn-container criteria-field">
+                        <ul class="chzn-choices selected-options" id="criteriasList">
                         </ul>
                     </div>
-                    <div id="searchCriteriaMenuContainer" style="float:left; padding-left: 10px">
-                        <select id="adSearchCriterias" style="width: 150px">
+                    <div id="searchCriteriaMenuContainer" class="criteria-field">
+                        <select id="adSearchCriterias">
                         </select>
                     </div>
                 </div>
             </div>
-            <div style="display:block; clear: both;">
-                <div style="float:left"><label for="adSearchAuthors">Auteur</label> :</div>
-                <div style="float:left">
-                    <select id="adSearchAuthors" name="authors" class="chzn-select side-by-side clearfix" multiple style="width: 350px">
+            <div class="criteria-line">
+                <div class="criteria-label"><label for="adSearchAuthors">Auteur</label> :</div>
+                <div class="criteria-field">
+                    <select id="adSearchAuthors" name="authors" class="chzn-select side-by-side clearfix" multiple>
                     </select>
                 </div>
             </div>
-            <div style="display:block; clear: both;">
+            <div class="criteria-line">
                 <input id="advancedSearchButton" type="submit" value="Rechercher"/>
             </div>
         </form>
     </div>
 </div>
 
-<div id="searchResultsComponent" style="margin-top: 10px;" class="ui-widget">
+<div id="searchResultsComponent" style="margin-top: 10px; clear:both;" class="ui-widget">
     Aucun résultat trouvé !
 </div>
 <script id="criteriaSelectedItem" type="text/x-jquery-tmpl">

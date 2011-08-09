@@ -1,0 +1,39 @@
+
+.criteria-box {
+    /*
+    Here the style is set directly because we want to ensure that the overflow is visible
+    It is not really convenient since now, when we collapse the accordion, things stay outside
+    the accordion during the fading
+    */
+    overflow: visible !important;
+}
+
+.criteria-line {
+    width: 600px;
+    clear: both;
+    display: block;
+}
+
+.criteria-label {
+    float: left;
+}
+
+.criteria-field {
+    float: left;
+    padding-left: 10px;
+}
+
+/* Purpose of this class is to nullify some chzn-choices attributes */
+.selected-options {
+    background-color: transparent !important;
+    border: 0px !important;
+    background-image: none !important;
+}
+
+select {
+    width: 150px;
+}
+
+#ui-datepicker-div {
+    z-index: 20 !important;
+}
