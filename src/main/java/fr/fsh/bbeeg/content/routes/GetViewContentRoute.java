@@ -1,6 +1,7 @@
 package fr.fsh.bbeeg.content.routes;
 
 import fr.fsh.bbeeg.common.resources.ObjectId;
+import fr.fsh.bbeeg.content.resources.ContentResource;
 import jewas.http.AbstractRoute;
 import jewas.http.HttpMethodMatcher;
 import jewas.http.HttpRequest;
@@ -28,7 +29,7 @@ public class GetViewContentRoute extends AbstractRoute {
             @Override
             public void onRequest(HttpRequest request) {
                 Map<String, Object> params = new HashMap<String, Object>();
-                params.put("id", oi.id());
+                params.put("content", ContentResource.getContentById(oi.id()));
                 request.respondHtml().content(Templates.process("content/view.ftl", params));
             }
         };

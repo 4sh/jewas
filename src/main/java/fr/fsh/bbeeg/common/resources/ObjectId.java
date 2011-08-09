@@ -4,14 +4,14 @@ package fr.fsh.bbeeg.common.resources;
  * @author driccio
  */
 public class ObjectId {
-    private Integer id;
+    private Long id;
 
-    public ObjectId id(Integer _id){
+    public ObjectId id(Long _id){
         this.id = _id;
         return this;
     }
 
-    public Integer id(){
+    public Long id(){
         return this.id;
     }
 }
