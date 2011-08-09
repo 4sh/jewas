@@ -186,10 +186,10 @@
 </script>
 <script id="contentLineResult" type="text/x-jquery-tmpl">
     <div class="content-result">
-        <div class="ui-helper-reset content-result-title"><a href="/content/{{= id}}/view.html">{{= title}}</a></div>
-        <div class="ui-helper-reset content-result-author">{{= author}}</div>
-        <div class="ui-helper-reset content-result-creation-date">{{= creationDate}}</div>
-        <div class="ui-helper-reset content-result-description">{{= description}}</div>
+        <div class="content-result-title"><a href="/content/{{= id}}/view.html">{{= title}}</a></div>
+        <div class="content-result-author">{{= author}}</div>
+        <div class="content-result-creation-date">{{= creationDate}}</div>
+        <div class="content-result-description">{{= description}}</div>
     </div>
 </script>
 
