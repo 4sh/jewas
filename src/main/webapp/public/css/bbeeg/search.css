@@ -1,13 +1,4 @@
 
-.criteria-box {
-    /*
-    Here the style is set directly because we want to ensure that the overflow is visible
-    It is not really convenient since now, when we collapse the accordion, things stay outside
-    the accordion during the fading
-    */
-    overflow: visible !important;
-}
-
 .criteria-line {
     width: 600px;
     clear: both;

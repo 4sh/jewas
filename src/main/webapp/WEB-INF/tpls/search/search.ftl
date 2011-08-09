@@ -43,7 +43,11 @@
 
         $("#searchComponent").accordion({
             autoHeight: false,
-            navigation: true
+            navigation: true,
+            changestart: function(event, ui){
+                ui.newContent.css('overflow', 'visible');
+                ui.oldContent.css('overflow', 'auto');
+            }
         });
         //$("#adSearchDate").datepicker();
         var dates = $( "#from, #to" ).datepicker({
@@ -106,7 +110,7 @@
     </div>
     <h3><a href="#">Recherche avancée</a></h3>
 
-    <div class="criteria-box">
+    <div>
         <form action="/content/advancedSearch" id="advancedSearchForm">
             <div class="criteria-line">
                 <label for="from">Date de création : Entre</label>
