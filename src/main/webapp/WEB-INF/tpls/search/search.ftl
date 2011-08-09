@@ -97,9 +97,12 @@
         var criteriaCombo = new ChainedSelect(config).decorateSelectFieldWithChainedSelectConfiguration($("#adSearchCriterias"));
 
         // Enabling auto query when scrollbar is at the bottom of the window
+        var SCROLLBAR_THRESHOLD = 100; // 100 pixels before the bottom of the screen, we consider the scrollbar is at the bottom
         $(window).scroll(function(args){
-            if($("#searchResultsComponent #searchNext").length != 0){
-                if($(window).scrollTop() >= $(document).height() - $(window).height()){
+            if($("#searchResultsComponent #searchNext").length != 0 // Button "searchNext" exists and is not disabled
+                      && $("#searchResultsComponent #searchNext").attr('disabled') != "disabled"){
+                var scrollbarIsAtBottom = $(window).scrollTop() + SCROLLBAR_THRESHOLD >= $(document).height() - $(window).height();
+                if(scrollbarIsAtBottom){
                     $("#searchNext").click();
                 }
             }
