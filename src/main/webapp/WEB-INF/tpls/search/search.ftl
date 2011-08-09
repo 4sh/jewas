@@ -164,7 +164,7 @@
     </div>
 </div>
 
-<div id="searchResultsComponent" class="ui-widget search-results-component">
+<div id="searchResultsComponent" class="search-results-component">
     Aucun résultat trouvé !
 </div>
 <script id="criteriaSelectedItem" type="text/x-jquery-tmpl">
@@ -177,7 +177,7 @@
     <option value="{{= id}}"> {{= title}} </option>
 </script>
 <script id="contentResult" type="text/x-jquery-tmpl">
-    <h3 class="ui-widget">Résultats de la recherche</h3>
+    <h3>Résultats de la recherche</h3>
 
     <div id="contentResults">
         {{tmpl(results) "#contentLineResult"}}
@@ -186,10 +186,10 @@
 </script>
 <script id="contentLineResult" type="text/x-jquery-tmpl">
     <div class="content-result">
-        <div class="ui-widget ui-helper-reset content-result-title"><a href="/content/{{= id}}/view.html">{{= title}}</a></div>
-        <div class="ui-widget ui-helper-reset content-result-author">{{= author}}</div>
-        <div class="ui-widget ui-helper-reset content-result-creation-date">{{= creationDate}}</div>
-        <div class="ui-widget ui-helper-reset content-result-description">{{= description}}</div>
+        <div class="ui-helper-reset content-result-title"><a href="/content/{{= id}}/view.html">{{= title}}</a></div>
+        <div class="ui-helper-reset content-result-author">{{= author}}</div>
+        <div class="ui-helper-reset content-result-creation-date">{{= creationDate}}</div>
+        <div class="ui-helper-reset content-result-description">{{= description}}</div>
     </div>
 </script>
 
