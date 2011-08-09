@@ -153,7 +153,7 @@
     </div>
 </div>
 
-<div id="searchResultsComponent" style="margin-top: 10px; clear:both;" class="ui-widget">
+<div id="searchResultsComponent" class="ui-widget search-results-component">
     Aucun résultat trouvé !
 </div>
 <script id="criteriaSelectedItem" type="text/x-jquery-tmpl">
@@ -166,7 +166,7 @@
     <option value="{{= id}}"> {{= title}} </option>
 </script>
 <script id="contentResult" type="text/x-jquery-tmpl">
-    <h3 style="color: #eb8f00;" class="ui-widget">Résultats de la recherche</h3>
+    <h3 class="ui-widget">Résultats de la recherche</h3>
 
     <div id="contentResults">
         {{tmpl(results) "#contentLineResult"}}
@@ -174,12 +174,11 @@
     <button id="searchNext">Résultats suivants</button>
 </script>
 <script id="contentLineResult" type="text/x-jquery-tmpl">
-    <!-- Yeah I know css direct in html is weird... will externalize this in css after sandboxing -->
-    <div class="contentResult" style="margin: 10px;">
-        <div style="width: 400px; float:left;" class="ui-widget ui-helper-reset"><a href="/content/{{= id}}/view.html">{{= title}}</a></div>
-        <div style="width: 90px; float:left;" class="ui-widget ui-helper-reset">{{= author}}</div>
-        <div style="width: 200px; float:left;" class="ui-widget ui-helper-reset">{{= creationDate}}</div>
-        <div style="clear: both; width: 800px; font-style: italic;" class="ui-widget ui-helper-reset">{{= description}}</div>
+    <div class="content-result">
+        <div class="ui-widget ui-helper-reset content-result-title"><a href="/content/{{= id}}/view.html">{{= title}}</a></div>
+        <div class="ui-widget ui-helper-reset content-result-author">{{= author}}</div>
+        <div class="ui-widget ui-helper-reset content-result-creation-date">{{= creationDate}}</div>
+        <div class="ui-widget ui-helper-reset content-result-description">{{= description}}</div>
     </div>
 </script>
 

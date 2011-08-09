@@ -14,6 +14,31 @@
     padding-left: 10px;
 }
 
+.search-results-component {
+    margin-top: 10px;
+    clear:both;
+}
+
+.content-result {
+    margin: 10px;
+}
+
+.content-result-title {
+    width: 400px; float:left;
+}
+
+.content-result-author {
+    width: 90px; float:left;
+}
+
+.content-result-creation-date {
+    width: 200px; float:left;
+}
+
+.content-result-description {
+    clear: both; width: 800px; font-style: italic;
+}
+
 /* Purpose of this class is to nullify some chzn-choices attributes */
 .selected-options {
     background-color: transparent !important;
@@ -25,6 +50,11 @@ select {
     width: 150px;
 }
 
+h3 {
+    color: #eb8f00;
+}
+
 #ui-datepicker-div {
+    /* Overriding datepicker z-index to display it above select menu */
     z-index: 20 !important;
 }
