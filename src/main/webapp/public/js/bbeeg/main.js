@@ -1,7 +1,9 @@
 $(
     function() {
+        /*
         var applicationMenu = $('#applicationMenu');
         var configurationMenu = $('#configurationMenu');
+        */
 
         /* This function is used to load a item menu. It select the menu and load it's content. */
         var loadMenuItem = function (menuItemElement, url) {
@@ -22,23 +24,14 @@ $(
             }
         };
 
-        $('#dashboardMenuItem').click(
-            function () {
-                loadMenuItem(this, '/dashboard/dashboard.html');
-            }
-        );
-
-        $('#searchMenuItem').click(
-            function () {
-                loadMenuItem(this, '/content/search.html');
-            }
-        );
-
-        $('#profileMenuItem').click(
-            function () {
-                loadMenuItem(this, '/user/profile.html');
-            }
-        );
-
+        $.each([
+                ['#dashboardMenuItem', '/dashboard/dashboard.html'],
+                ['#searchMenuItem', '/content/search.html'],
+                ['#profileMenuItem', '/user/profile.html']
+            ],function(index, value){
+            $(value[0]).click(function(){
+                loadMenuItem(this, value[1]);
+            });
+        });
     }
 );
