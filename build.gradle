@@ -29,7 +29,7 @@ dependencies {
             [group: "freemarker", name: 'freemarker', version: '2.3.9', transitive: true],
             [group: 'com.google.code.gson', name: 'gson', version: '1.7.1', transitive: true],
             [group: 'joda-time', name: 'joda-time', version: '1.6.2', transitive: true],
-            [group: "org.jboss.netty", name: 'netty', version: '3.2.5.Final', transitive: true],
+            [group: "org.jboss.netty", name: 'netty', version: '4.0.0.Alpha0-4sh', transitive: true],
             [group: 'org.slf4j', name: 'slf4j-api', version: '1.6.1', transitive: true]
     )
     testCompile(
