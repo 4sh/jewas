@@ -43,7 +43,7 @@ public class Main {
                 new StaticResourceRoute(),
                 new SimpleHtmlRoute("/dashboard/dashboard.html", "dashboard/dashboard.ftl"),
                 new GetSimpleSearchContent(),
-                new SimpleHtmlRoute("/content/search.html", "search/search.ftl"),
+                new SimpleHtmlRoute("/content/search.html", "content/search.ftl"),
                 new GetAddedContentRoute(),
                 new GetViewedContentRoute(),
                 new GetPopularContentRoute(),
