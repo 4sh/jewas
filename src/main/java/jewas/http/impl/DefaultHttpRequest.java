@@ -12,9 +12,13 @@ import jewas.http.JsonResponse;
 import jewas.http.Parameters;
 import jewas.http.RedirectResponse;
 import org.jboss.netty.buffer.ChannelBuffer;
+import org.jboss.netty.handler.codec.http.Attribute;
+import org.jboss.netty.handler.codec.http.HttpPostRequestDecoder;
+import org.jboss.netty.handler.codec.http.InterfaceHttpData;
 import org.jboss.netty.handler.codec.http.QueryStringDecoder;
 
-import java.util.List;
+import java.io.IOException;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -32,17 +36,46 @@ public final class DefaultHttpRequest implements HttpRequest {
 	private final HttpResponse response;
 	private final List<ContentHandler> handlers = new CopyOnWriteArrayList<ContentHandler>();
 	
-	public DefaultHttpRequest(HttpMethod method, String uri,
-			List<Entry<String, String>> headers, HttpResponse response) {
+	public DefaultHttpRequest(org.jboss.netty.handler.codec.http.HttpRequest request, HttpResponse response) {
 		super();
-		this.method = method;
-		this.uri = uri;
-		this.headers = new Headers(headers);
+		this.uri = request.getUri();
+		this.headers = new Headers(request.getHeaders());
 		this.response = response;
 		
 		QueryStringDecoder queryStringDecoder = new QueryStringDecoder(uri);
 		path = queryStringDecoder.getPath();
-		parameters = new Parameters(queryStringDecoder.getParameters());
+        Map<String,List<String>> reqParameters = new HashMap<String, List<String>>(queryStringDecoder.getParameters());
+
+        if("post".equalsIgnoreCase(request.getMethod().getName())){
+            try {
+                HttpPostRequestDecoder postRequestDecoder = new HttpPostRequestDecoder(request);
+                for(InterfaceHttpData d : postRequestDecoder.getBodyHttpDatas()){
+                    if(d.getHttpDataType() == InterfaceHttpData.HttpDataType.Attribute){
+                        Attribute att = (Attribute)d;
+                        reqParameters.put(att.getName(), Arrays.<String>asList(att.getValue()));
+                        // FIXME : Why is there a att.getFile() here whereas we aren't a FileUpload data type ???
+                    } else if(d.getHttpDataType() == InterfaceHttpData.HttpDataType.FileUpload){
+                        // FIXME : implement fileupload here ...
+                    }
+                }
+            } catch (Throwable t) {
+                throw new RuntimeException("Error while reading POST request content : "+t.getMessage(), t);
+            }
+        }
+
+        // Overriding method attribute if __httpMethod special parameter has been set
+        // @see js/jewas-forms.js
+        if("post".equalsIgnoreCase(request.getMethod().getName())
+                && reqParameters.containsKey("__httpMethod")
+                && !reqParameters.get("__httpMethod").isEmpty()){
+            String overridenHttpMethod = reqParameters.get("__httpMethod").get(0);
+            this.method = HttpMethod.valueOf(overridenHttpMethod);
+            reqParameters.remove("__httpMethod");
+        } else {
+            this.method = HttpMethod.valueOf(request.getMethod().getName());
+        }
+
+        parameters = new Parameters(reqParameters);
 	}
 	
 	@Override

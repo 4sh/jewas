@@ -46,9 +46,7 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
             }
 
             this.request = new DefaultHttpRequest(
-            		HttpMethod.valueOf(request.getMethod().getName()),
-            		request.getUri(),
-            		request.getHeaders(),
+                    request,
             		new jewas.http.HttpResponse() {
 						private HttpResponse nettyResponse;
 
