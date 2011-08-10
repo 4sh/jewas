@@ -175,8 +175,9 @@ public class RestServerTest {
     public void shouldMagicPutMethodBeHandledCorrectly(){
         given().
                 param("__httpMethod", "put").
+                param("id", "1234").
         expect().
-                body("result", is(equalTo("putOk"))).
+                body("result", is(equalTo("putOk of 1234"))).
         when().
                 post("/putThing");
     }
@@ -187,6 +188,17 @@ public class RestServerTest {
                 body("result", is(equalTo("deleteOk"))).
                 when().
                 delete("/deleteThing");
+    }
+
+    @Test
+    public void shouldMagicDeleteMethodBeHandledCorrectly(){
+        given().
+                param("__httpMethod", "delete").
+                param("id", "1234").
+        expect().
+                body("result", is(equalTo("deleteOk of 1234"))).
+        when().
+                post("/deleteThing");
     }
 
     @Test

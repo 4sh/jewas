@@ -19,12 +19,28 @@ public class FakePutRoute extends AbstractRoute {
         }
     }
 
+    public static class QueryParam {
+        private String id;
+        public QueryParam id(String _id){
+            this.id = _id;
+            return this;
+        }
+        public String id(){
+            return this.id;
+        }
+    }
+
     @Override
     protected RequestHandler onMatch(HttpRequest request, Parameters parameters) {
+        final QueryParam param = toQueryObject(parameters, QueryParam.class);
         return new RequestHandler() {
             @Override
             public void onRequest(HttpRequest request) {
-                request.respondJson().object(new Result().result("putOk"));
+                if(param.id() == null){
+                    request.respondJson().object(new Result().result("putOk"));
+                } else {
+                    request.respondJson().object(new Result().result("putOk of "+param.id()));
+                }
             }
         };
     }
