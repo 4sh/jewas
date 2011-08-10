@@ -9,12 +9,19 @@ def srcOriginal = "${sourceSets.main.classesDir}"
 def srcCopy = "${srcOriginal}-copy"
 def COVERAGE_SYS_PROPERTY = "test.coverage.activated"
 
+if(!hasProperty("releasesRepoUsername")
+        || !hasProperty("releasesRepoPassword")){
+    ant.fail "You should define a ~/.gradle/gradle.properties containing properties 'releasesRepoUsername' and 'releasesRepoPassword' to access 4SH releases repository !"
+}
+
+org.apache.ivy.util.url.CredentialsStore.INSTANCE.addCredentials("Artifactory Realm", "repo.4sh.fr", releasesRepoUsername, releasesRepoPassword);
 
 group = "fr.4sh.jewas"
 version = "0.1-SNAPSHOT"
 
 repositories {
-    mavenCentral()
+    mavenRepo urls: ["http://repo.4sh.fr/libs-release/"]
+
 }
 
 dependencies {
