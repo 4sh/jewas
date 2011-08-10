@@ -2,7 +2,7 @@
 <#include "common/view-content-headers.ftl">
 
 <@mainTemplate title="Consultation"
-        selectedMenuItem="search">
+        selectedMenuItem="">
 
     <@viewContentHeaders content=content />
     <p>Contenu : ${content.text()}</p>
