@@ -68,13 +68,32 @@ body > #container {
     color: #FFFFFF;
 }
 
+div.submenu-container {
+    z-index: 20;
+    display:none;
+    position:absolute;
+    border: 1px solid #cccccc;
+}
+
+ul.submenu {
+    list-style-type: none;
+    padding: 10px;
+    margin: 0px;
+    background-color: white;
+}
+
+ul.submenu li {
+    font-size: 13px;
+    cursor: pointer;
+    color: black;
+}
+
 .menu-item-title {
     padding: 0 5px;
     height: 25px;
     line-height: 25px;
     display: block;
     cursor: pointer;
-    cursor: hand;
 }
 
 .selection-indicator {

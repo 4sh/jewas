@@ -24,14 +24,29 @@ $(
             }
         };
 
+        // Clickable menu items
         $.each([
                 ['#dashboardMenuItem', '/dashboard/dashboard.html'],
                 ['#searchMenuItem', '/content/search.html'],
-                ['#profileMenuItem', '/user/profile.html']
+                ['#profileMenuItem', '/user/profile.html'],
+                ['#createContentMenuItem', '/content/create.html']
             ],function(index, value){
-            $(value[0]).click(function(){
-                loadMenuItem(this, value[1]);
-            });
-        });
+                $(value[0]).click(function(){
+                    loadMenuItem(this, value[1]);
+                });
+            }
+        );
+
+        // Root menu item displaying a submenu
+        $.each([
+                ['#adminMenuItem', '#adminSubMenu']
+            ],function(index,value){
+                $(value[0]).mouseenter(function(evt){
+                    $(value[1]).show("drop", { direction: "right" }, 500);
+                }).mouseleave(function(evt){
+                    $(value[1]).hide("drop", { direction: "right" }, 500);
+                });
+            }
+        );
     }
 );

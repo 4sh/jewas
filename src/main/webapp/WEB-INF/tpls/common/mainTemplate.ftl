@@ -1,11 +1,23 @@
 <#assign compressedJS = "false">
 
-<#macro menuItem title="" id="" selected="false">
+<#macro rootMenuItem title="" id="" selected="false">
     <#if selected == "true">
-        <li id="${id}" class="inlined-block menu-item-selected"> <span class="menu-item-title">${title}</span> <span class="selection-indicator"/></li>
+        <li id="${id}" class="inlined-block menu-item-selected"> <span class="menu-item-title">${title}</span> <span class="selection-indicator"/><#nested></li>
     <#else>
-        <li id="${id}" class="inlined-block"><span class="menu-item-title">${title}</span></li>
+        <li id="${id}" class="inlined-block"><span class="menu-item-title">${title}</span><#nested></li>
     </#if>
+</#macro>
+
+<#macro subMenu id="" width="125">
+    <div id="${id}" class="submenu-container">
+        <ul class="submenu" style="width: ${width}px;">
+            <#nested>
+        </ul>
+    </div>
+</#macro>
+
+<#macro subMenuItem id="" title="">
+    <li id="${id}"><span>${title}</span></li>
 </#macro>
 
 <#macro mainTemplate title="" selectedMenuItem="dashboard" scripts=[] stylesheets=[]>
@@ -51,23 +63,28 @@
         <div id="header">
             <ul id="applicationMenu" class="inlined-left-group">
                 <#if selectedMenuItem == "dashboard">
-                    <@menuItem id="dashboardMenuItem" title="Accueil" selected="true"/>
+                    <@rootMenuItem id="dashboardMenuItem" title="Accueil" selected="true"/>
                 <#else>
-                    <@menuItem id="dashboardMenuItem" title="Accueil" selected="false"/>
+                    <@rootMenuItem id="dashboardMenuItem" title="Accueil" selected="false"/>
                 </#if>
 
                 <#if selectedMenuItem == "search">
-                    <@menuItem id="searchMenuItem" title="Recherche" selected="true"/>
+                    <@rootMenuItem id="searchMenuItem" title="Recherche" selected="true"/>
                 <#else>
-                    <@menuItem id="searchMenuItem" title="Recherche" selected="false"/>
+                    <@rootMenuItem id="searchMenuItem" title="Recherche" selected="false"/>
                 </#if>
             </ul>
 
             <ul id="configurationMenu" class="inlined-right-group">
+                <@rootMenuItem id="adminMenuItem" title="Administration" selected="false">
+                    <@subMenu id="adminSubMenu" width="125">
+                        <@subMenuItem id="createContentMenuItem" title="Créer un contenu" />
+                    </@subMenu>
+                </@rootMenuItem>
                 <#if selectedMenuItem == "profile">
-                    <@menuItem id="profileMenuItem" title="Profil" selected="true"/>
+                    <@rootMenuItem id="profileMenuItem" title="Profil" selected="true"/>
                 <#else>
-                    <@menuItem id="profileMenuItem" title="Profil" selected="false"/>
+                    <@rootMenuItem id="profileMenuItem" title="Profil" selected="false"/>
                 </#if>
             </ul>
         </div>
