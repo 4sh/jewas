@@ -5,6 +5,8 @@ import com.jayway.restassured.response.Response;
 import jewas.configuration.JewasConfigurationForTest;
 import jewas.routes.RedirectRoute;
 import jewas.routes.StaticResourceRoute;
+import jewas.test.fakeapp.routes.FakeDeleteRoute;
+import jewas.test.fakeapp.routes.FakePutRoute;
 import jewas.test.fakeapp.routes.SimpleJSONFileRoute;
 import jewas.util.file.Files;
 import junit.framework.Assert;
@@ -42,6 +44,8 @@ public class RestServerTest {
         restServer.addRoutes(
                 new SimpleJSONFileRoute(),
                 new StaticResourceRoute(),
+                new FakeDeleteRoute(),
+                new FakePutRoute(),
                 new RedirectRoute("/helloFoo", "/root/toUpperCase/foo"),
                 new RedirectRoute("/", "/root/toUpperCase/foo")
         );
@@ -92,7 +96,7 @@ public class RestServerTest {
         given().
                 param("stringToConvert", "foo").
                 expect().
-                body("convertedString", CoreMatchers.is(CoreMatchers.equalTo("FOO"))).
+                body("convertedString", is(equalTo("FOO"))).
                 when().
                 get("/root/toUpperCase/");
 
@@ -101,7 +105,7 @@ public class RestServerTest {
     @Test
     public void shouldRenderingJSONWithURLParameterIsOk() {
         expect().
-                body("convertedString", CoreMatchers.is(CoreMatchers.equalTo("FOO"))).
+                body("convertedString", is(equalTo("FOO"))).
                 when().
                 get("/root/toUpperCase/foo");
 
@@ -146,23 +150,49 @@ public class RestServerTest {
         expect()
                 .statusCode(200)
                 .body("convertedString", is(equalTo("FOO")))
-                .when()
+        .when()
                 .get("/root/toUpperCase;stringToConvert=foo");
     }
 
     @Test
     public void shouldUrlRedirectOnUrlHelloIsOk() {
         expect().
-                body("convertedString", CoreMatchers.is(CoreMatchers.equalTo("FOO"))).
-                when().
+                body("convertedString", is(equalTo("FOO"))).
+        when().
                 get("/helloFoo");
 
     }
 
     @Test
+    public void shouldPutMethodBeHandledCorrectly(){
+        expect().
+                body("result", is(equalTo("putOk"))).
+        when().
+                put("/putThing");
+    }
+
+    @Test
+    public void shouldMagicPutMethodBeHandledCorrectly(){
+        given().
+                param("__httpMethod", "put").
+        expect().
+                body("result", is(equalTo("putOk"))).
+        when().
+                post("/putThing");
+    }
+
+    @Test
+    public void shouldDeleteMethodBeHandledCorrectly(){
+        expect().
+                body("result", is(equalTo("deleteOk"))).
+                when().
+                delete("/deleteThing");
+    }
+
+    @Test
     public void shouldUrlRedirectOnUrlRootIsOk() {
         expect().
-                body("convertedString", CoreMatchers.is(CoreMatchers.equalTo("FOO"))).
+                body("convertedString", is(equalTo("FOO"))).
                 when().
                 get("/");
 
