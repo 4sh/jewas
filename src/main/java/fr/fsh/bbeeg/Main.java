@@ -48,6 +48,7 @@ public class Main {
                 new SimpleHtmlRoute("/dashboard/dashboard.html", "dashboard/dashboard.ftl"),
                 new GetSimpleSearchContent(),
                 new SimpleHtmlRoute("/content/search.html", "content/search.ftl"),
+                new SimpleHtmlRoute("/content/text/create.html", "content/create-text.ftl"),
                 new CreateContentRoute(),
                 new GetAddedContentRoute(),
                 new GetViewedContentRoute(),
