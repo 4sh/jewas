@@ -14,7 +14,7 @@ import jewas.http.RestServerFactory;
 import jewas.routes.RedirectRoute;
 import jewas.routes.SimpleFileRoute;
 import jewas.routes.SimpleHtmlRoute;
-import jewas.routes.StaticResourceRoute;
+import jewas.routes.StaticResourcesRoute;
 
 /**
  * Created by IntelliJ IDEA.
@@ -42,9 +42,9 @@ public class Main {
         rs.addRoutes(
                 new RedirectRoute("/", "/dashboard/dashboard.html"),
                 // Not really a static resource (located in webapp folder) since it is provided
-                // by jewas library. So it must be declared before the StaticResourceRoute !
+                // by jewas library. So it must be declared before the StaticResourcesRoute !
                 new SimpleFileRoute("/public/js/jewas/jewas-forms.js", "js/jewas-forms.js"),
-                new StaticResourceRoute(),
+                new StaticResourcesRoute("/public/", "public/"),
                 new SimpleHtmlRoute("/dashboard/dashboard.html", "dashboard/dashboard.ftl"),
                 new GetSimpleSearchContent(),
                 new SimpleHtmlRoute("/content/search.html", "content/search.ftl"),
