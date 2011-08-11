@@ -4,13 +4,12 @@ import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.response.Response;
 import jewas.configuration.JewasConfigurationForTest;
 import jewas.routes.RedirectRoute;
-import jewas.routes.StaticResourceRoute;
+import jewas.routes.StaticResourcesRoute;
 import jewas.test.fakeapp.routes.FakeDeleteRoute;
 import jewas.test.fakeapp.routes.FakePutRoute;
 import jewas.test.fakeapp.routes.SimpleJSONFileRoute;
 import jewas.util.file.Files;
 import junit.framework.Assert;
-import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -43,7 +42,7 @@ public class RestServerTest {
         restServer = RestServerFactory.createRestServer(SERVER_PORT);
         restServer.addRoutes(
                 new SimpleJSONFileRoute(),
-                new StaticResourceRoute(),
+                new StaticResourcesRoute("/public/", "jewas/http/staticResources/"),
                 new FakeDeleteRoute(),
                 new FakePutRoute(),
                 new RedirectRoute("/helloFoo", "/root/toUpperCase/foo"),
@@ -210,8 +209,6 @@ public class RestServerTest {
 
     @Test
     public void shouldReturnStaticResourceWithGETParameterIsOk() {
-        //System.setProperty(JewasConfiguration.APPLICATION_CONFIGURATION_FILE_PATH_KEY, "jewas/configuration/jewasForHttp.conf");
-        JewasConfigurationForTest.override("jewas/configuration/jewasForHttp.conf");
         Response response = get("/public/test.js");
 
         byte[] result = response.getBody().asByteArray();
@@ -235,8 +232,6 @@ public class RestServerTest {
 
     @Test
     public void shouldReturnEmptyStaticResourceWithGETParameterIsOk() {
-        //System.setProperty(JewasConfiguration.APPLICATION_CONFIGURATION_FILE_PATH_KEY, "jewas/configuration/jewasForHttp.conf");
-        JewasConfigurationForTest.override("jewas/configuration/jewasForHttp.conf");
         Response response = get("/public/emptyFile.js");
 
         byte[] result = response.getBody().asByteArray();

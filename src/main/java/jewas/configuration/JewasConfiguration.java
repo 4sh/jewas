@@ -24,16 +24,6 @@ public abstract class JewasConfiguration {
     private static final String TEMPLATE_PATH_DEFAULT_VALUE = "templates/";
 
     /**
-     * The key to use in the application configuration file to define the static resources folder.
-     */
-    private static final String STATIC_RESOURCES_PATH_KEY = "static.resources.path";
-
-    /**
-     * The default value of the static resources folder.
-     */
-    private static final String STATIC_RESOURCES_DEFAULT_VALUE = "public/";
-
-    /**
      * The delegate to use to get the properties.
      */
     protected static JewasConfigurationDelegate delegate =
@@ -61,13 +51,5 @@ public abstract class JewasConfiguration {
      */
     public static String getTemplatesPath() {
         return getValueOfKeyOrDefaultValue(TEMPLATE_PATH_KEY, TEMPLATE_PATH_DEFAULT_VALUE);
-    }
-
-    /**
-     *
-     * @return the path of the static resources folder.
-     */
-    public static String getStaticResourcesPath() {
-        return getValueOfKeyOrDefaultValue(STATIC_RESOURCES_PATH_KEY, STATIC_RESOURCES_DEFAULT_VALUE);
     }
 }

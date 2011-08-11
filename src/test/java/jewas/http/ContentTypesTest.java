@@ -2,10 +2,7 @@ package jewas.http;
 
 import com.jayway.restassured.RestAssured;
 import jewas.configuration.JewasConfigurationForTest;
-import jewas.routes.RedirectRoute;
-import jewas.routes.StaticResourceRoute;
-import jewas.test.fakeapp.routes.SimpleJSONFileRoute;
-import org.hamcrest.CoreMatchers;
+import jewas.routes.StaticResourcesRoute;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +27,7 @@ public class ContentTypesTest {
         // Restserver without any route
         restServer = RestServerFactory.createRestServer(SERVER_PORT);
         restServer.addRoutes(
-                new StaticResourceRoute()
+                new StaticResourcesRoute("/public/", "jewas/http/staticResources/")
         );
         restServer.start();
         RestAssured.port = SERVER_PORT;
@@ -44,7 +41,6 @@ public class ContentTypesTest {
 
     @Test
     public void shouldJsUriBeOfJavascriptContentType(){
-        JewasConfigurationForTest.override("jewas/configuration/jewasForHttp.conf");
         expect().
             contentType("application/javascript").
         when().

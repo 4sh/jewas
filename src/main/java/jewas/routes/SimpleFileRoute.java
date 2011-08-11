@@ -1,12 +1,15 @@
 package jewas.routes;
 
 import jewas.http.*;
+import jewas.http.impl.FileRequestHandler;
 import jewas.template.Templates;
 import jewas.util.file.Files;
 
 import java.io.IOException;
 
 /**
+ * Route which will serve a unique file resource from a given url.
+ * File will be loaded from the classpath.
  * @author fcamblor
  */
 public class SimpleFileRoute extends AbstractRoute {
@@ -23,15 +26,6 @@ public class SimpleFileRoute extends AbstractRoute {
     }
 
     protected RequestHandler onMatch(HttpRequest request, Parameters parameters) {
-        return new RequestHandler() {
-            @Override
-            public void onRequest(HttpRequest request) {
-                try {
-                    request.respondFile().file(Files.getInputStreamFromPath(filepath));
-                } catch (IOException e) {
-                    request.respondError(HttpStatus.NOT_FOUND);
-                }
-            }
-        };
+        return new FileRequestHandler(filepath);
     }
 }
