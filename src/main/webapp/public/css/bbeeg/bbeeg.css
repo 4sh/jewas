@@ -18,6 +18,18 @@ body > #container {
     background-color: #FFFFFF;
 }
 
+select {
+    width: 150px;
+}
+
+select[multiple]{
+    width: 400px;
+}
+
+h3 {
+    color: #eb8f00;
+}
+
 #header {
     top: 0px;
     background-color: #000000;

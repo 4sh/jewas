@@ -46,20 +46,8 @@
     background-image: none !important;
 }
 
-select {
-    width: 150px;
-}
-
-select[multiple]{
-    width: 400px;
-}
-
 img.spinner {
     display: none;
-}
-
-h3 {
-    color: #eb8f00;
 }
 
 #ui-datepicker-div {
