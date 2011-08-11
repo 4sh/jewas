@@ -35,8 +35,18 @@ jQuery.each([ "put", "delete" ], function(i, method){
             type = type || callback;
             callback = data;
             data = magicHttpMethod;
-        } else {
+        } else if(typeof data == 'object') {
+            // If data is : { "foo":"bar", "array":["val1", "val2"] }
+            // JQuery will call url with content following content parameters :
+            // foo=bar&array[]=val1&array[]=val2
+            // instead of :
+            // foo=bar&array=val1&array=val2
+            console.log("WARNING: passing an object to $."+method+"() as data attribute could be" +
+                " badly handled by jquery when it comes to arrayed values. Prefer using $(form).serialize()" +
+                " instead of $(form).serializeToObject() in such a case !");
             data = $.extend(data, magicHttpMethod);
+        } else if(typeof data == 'string') {
+            data += (data!=''?'&':'')+"__httpMethod="+method; 
         }
 
         return jQuery.ajax({
