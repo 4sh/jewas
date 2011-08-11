@@ -5,7 +5,7 @@ html, body, #container {
 
 body {
     margin: auto;
-    width: 1024px;
+    width: 1000px;
     background-color: #EEEEEE;
     font-family: 'Trebuchet MS', Tahoma, Verdana, Arial, sans-serif;
     font-size: 16px;
@@ -41,7 +41,7 @@ h3 {
     z-index: 10;           /* Needed for a sticky footer */
     height: 20px;          /* Needed for a sticky footer */
     margin-top: -20px;     /* Needed for a sticky footer */
-    width: 1024px;
+    width: 1000px;
     background-color: #000000;
     color: #FFFFFF;
 }
