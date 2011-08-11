@@ -46,6 +46,18 @@ public final class DefaultHttpRequest implements HttpRequest {
 		path = queryStringDecoder.getPath();
         Map<String,List<String>> reqParameters = new HashMap<String, List<String>>(queryStringDecoder.getParameters());
 
+        // Overriding method attribute if __httpMethod special parameter has been set
+        // @see js/jewas-forms.js
+        if("post".equalsIgnoreCase(request.getMethod().getName())
+                && reqParameters.containsKey("__httpMethod")
+                && !reqParameters.get("__httpMethod").isEmpty()){
+            String overridenHttpMethod = reqParameters.get("__httpMethod").get(0);
+            this.method = HttpMethod.valueOf(overridenHttpMethod);
+            reqParameters.remove("__httpMethod");
+        } else {
+            this.method = HttpMethod.valueOf(request.getMethod().getName());
+        }
+
         if("post".equalsIgnoreCase(request.getMethod().getName())
                 || "put".equalsIgnoreCase(request.getMethod().getName())){
             try {
@@ -70,18 +82,6 @@ public final class DefaultHttpRequest implements HttpRequest {
             } catch (Throwable t) {
                 throw new RuntimeException("Error while reading POST request content : "+t.getMessage(), t);
             }
-        }
-
-        // Overriding method attribute if __httpMethod special parameter has been set
-        // @see js/jewas-forms.js
-        if("post".equalsIgnoreCase(request.getMethod().getName())
-                && reqParameters.containsKey("__httpMethod")
-                && !reqParameters.get("__httpMethod").isEmpty()){
-            String overridenHttpMethod = reqParameters.get("__httpMethod").get(0);
-            this.method = HttpMethod.valueOf(overridenHttpMethod);
-            reqParameters.remove("__httpMethod");
-        } else {
-            this.method = HttpMethod.valueOf(request.getMethod().getName());
         }
 
         parameters = new Parameters(reqParameters);
