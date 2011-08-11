@@ -52,10 +52,18 @@ public final class DefaultHttpRequest implements HttpRequest {
                 for(InterfaceHttpData d : postRequestDecoder.getBodyHttpDatas()){
                     if(d.getHttpDataType() == InterfaceHttpData.HttpDataType.Attribute){
                         Attribute att = (Attribute)d;
-                        reqParameters.put(att.getName(), Arrays.<String>asList(att.getValue()));
+                        if(reqParameters.containsKey(att.getName())){
+                            reqParameters.get(att.getName()).add(att.getValue());
+                        } else {
+                            List<String> paramValues = new ArrayList<String>();
+                            paramValues.add(att.getValue());
+                            reqParameters.put(att.getName(), paramValues);
+                        }
                         // FIXME : Why is there a att.getFile() here whereas we aren't a FileUpload data type ???
                     } else if(d.getHttpDataType() == InterfaceHttpData.HttpDataType.FileUpload){
                         // FIXME : implement fileupload here ...
+                        // It could imply a refactoring in the Parameter object since it could
+                        // contain not only Strings but Files to as values
                     }
                 }
             } catch (Throwable t) {
