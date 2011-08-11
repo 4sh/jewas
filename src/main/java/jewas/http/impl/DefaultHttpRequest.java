@@ -46,7 +46,8 @@ public final class DefaultHttpRequest implements HttpRequest {
 		path = queryStringDecoder.getPath();
         Map<String,List<String>> reqParameters = new HashMap<String, List<String>>(queryStringDecoder.getParameters());
 
-        if("post".equalsIgnoreCase(request.getMethod().getName())){
+        if("post".equalsIgnoreCase(request.getMethod().getName())
+                || "put".equalsIgnoreCase(request.getMethod().getName())){
             try {
                 HttpPostRequestDecoder postRequestDecoder = new HttpPostRequestDecoder(request);
                 for(InterfaceHttpData d : postRequestDecoder.getBodyHttpDatas()){
