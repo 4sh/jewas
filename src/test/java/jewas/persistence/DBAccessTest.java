@@ -115,7 +115,7 @@ public class DBAccessTest {
         QueryTemplate<TestEntry> template = createQueryTemplate();
 
         List<TestEntry> entries = new ArrayList<TestEntry>();
-        template.selectObjectsAndFill(entries, "select ${fieldId}, ${fieldName}, ${fieldLastName}, ${age} from test where ${fieldId} > ${minId} and ${fieldId} in (${idWhiteList})",
+        template.selectObjectsAndFill(entries, "select :fieldId, :fieldName, :fieldLastName, :age from test where :fieldId > :minId and :fieldId in (:idWhiteList)",
                 new QueryContext().queryParameters(
                         SqlParameters.madeOf().sql("fieldId", "id").sql("fieldName", "name")
                                 .sql("fieldLastName", "last_name").sql("age", "age").integer("minId", Integer.valueOf(0))
@@ -133,9 +133,9 @@ public class DBAccessTest {
         QueryTemplate<TestEntry> template = createQueryTemplate();
 
         List<TestEntry> entries = new ArrayList<TestEntry>();
-        template.selectObjectsAndFill(entries, "select id, name, last_name, age from test ${optionalFiltering}",
+        template.selectObjectsAndFill(entries, "select id, name, last_name, age from test :optionalFiltering",
                 new QueryContext().queryParameters(
-                        SqlParameters.madeOf().sql("optionalFiltering", "where id > 0 and id in (${idWhiteList})")
+                        SqlParameters.madeOf().sql("optionalFiltering", "where id > 0 and id in (:idWhiteList)")
                                 .<ValuedType.IntegerValuedType>array("idWhiteList", ValuedTypes.integer(2), ValuedTypes.integer(4))
                                 .andThatsAll()
                 )

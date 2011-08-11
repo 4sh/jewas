@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
  */
 public class QueryContext {
 
-    private static final Pattern QUERY_PARAM_DETECTOR = Pattern.compile("\\$\\{(\\w+)\\}");
+    private static final Pattern QUERY_PARAM_DETECTOR = Pattern.compile(":(\\w+)");
     private List<SqlParameter> queryParameters;
 
     public List<SqlParameter> queryParameters() {
