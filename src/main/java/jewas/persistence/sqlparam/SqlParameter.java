@@ -49,11 +49,6 @@ public class SqlParameter {
             return this;
         }
 
-        public Builder sql(String paramName, String paramValue) {
-            parameters.add(new SqlParameter(paramName, ValuedTypes.sql(paramValue)));
-            return this;
-        }
-
         public Builder integer(String paramName, Integer paramValue) {
             parameters.add(new SqlParameter(paramName, ValuedTypes.integer(paramValue)));
             return this;

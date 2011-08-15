@@ -15,10 +15,6 @@ public class ValuedTypes {
         return new ValuedType.StringValuedType(paramValue);
     }
 
-    public static ValuedType.SqlValuedType sql(String paramValue) {
-        return new ValuedType.SqlValuedType(paramValue);
-    }
-
     public static ValuedType.IntegerValuedType integer(Integer paramValue) {
         return new ValuedType.IntegerValuedType(paramValue);
     }

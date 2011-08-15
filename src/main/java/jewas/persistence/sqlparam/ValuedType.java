@@ -57,17 +57,6 @@ public abstract class ValuedType<T> {
         }
     }
 
-    public static class SqlValuedType extends ValuedType<String> {
-
-        public SqlValuedType(String sql) {
-            super(sql);
-        }
-
-        protected String toNonNullQueryValue() {
-            return underlyingValue;
-        }
-    }
-
     public static class IntegerValuedType extends ValuedType<Integer> {
 
         public IntegerValuedType(Integer integer) {
