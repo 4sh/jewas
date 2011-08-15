@@ -121,9 +121,13 @@ public class QueryTemplate<T> {
         List<T> unaryList = new ArrayList<T>(1);
         selectObjectsAndFill(unaryList, sql, context);
 
-        // TODO: assert unaryList.size()==1
-
-        return unaryList.iterator().next();
+        // TODO: assert unaryList.size()<=1
+        
+        if(unaryList.size() == 0){
+            return null;
+        } else {
+            return unaryList.iterator().next();
+        }
     }
 
     public void insert(final String sql, final QueryContext context){
