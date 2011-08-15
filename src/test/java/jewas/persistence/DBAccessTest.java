@@ -6,6 +6,7 @@ import jewas.persistence.sqlparam.ValuedType;
 import jewas.persistence.sqlparam.ValuedTypes;
 import jewas.persistence.util.JDBCUtils;
 import org.apache.commons.dbcp.BasicDataSource;
+import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -19,7 +20,9 @@ import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 
 /**
@@ -161,7 +164,46 @@ public class DBAccessTest {
                         SqlParameters.madeOf().string("name", "toto").string("last_name", "tutu").integer("age", 20).andThatsAll()
                 ), "id");
         assertThat(genKeys.size(), is(equalTo(1)));
-        assertThat(Long.valueOf(genKeys.get("id")), is(greaterThanOrEqualTo(Long.valueOf(1000))));
+        Long generatedId = Long.valueOf(genKeys.get("id"));
+        assertThat(generatedId, is(greaterThanOrEqualTo(Long.valueOf(1000))));
+
+        TestEntry entry = template.selectObject("select id, name, last_name, age from test where id = :id",
+                new QueryContext().queryParameters(
+                        SqlParameters.madeOf().bigint("id", generatedId).andThatsAll()
+                ));
+        assertThat(entry, is(notNullValue()));
+        assertThat(entry.id(), is(equalTo(generatedId)));
+        assertThat(entry.name(), is(equalTo("toto")));
+        assertThat(entry.lastName(), is(equalTo("tutu")));
+        assertThat(entry.age(), is(equalTo(20)));
+
+        int rowsUpdated = template.update("UPDATE test SET name = :newName WHERE id = :id",
+                new QueryContext().queryParameters(
+                        SqlParameters.madeOf().string("newName", "newToto").bigint("id", generatedId).andThatsAll()
+                ));
+        assertThat(rowsUpdated, is(equalTo(1)));
+
+        entry = template.selectObject("select id, name, last_name, age from test where id = :id",
+                new QueryContext().queryParameters(
+                        SqlParameters.madeOf().bigint("id", generatedId).andThatsAll()
+                ));
+        assertThat(entry, is(notNullValue()));
+        assertThat(entry.id(), is(equalTo(generatedId)));
+        assertThat(entry.name(), is(equalTo("newToto")));
+        assertThat(entry.lastName(), is(equalTo("tutu")));
+        assertThat(entry.age(), is(equalTo(20)));
+
+        rowsUpdated = template.delete("delete test where id = :id",
+                new QueryContext().queryParameters(
+                        SqlParameters.madeOf().bigint("id", generatedId).andThatsAll()
+                ));
+        assertThat(rowsUpdated, is(equalTo(1)));
+
+        entry = template.selectObject("select id, name, last_name, age from test where id = :id",
+                new QueryContext().queryParameters(
+                        SqlParameters.madeOf().bigint("id", generatedId).andThatsAll()
+                ));
+        assertThat(entry, is(nullValue()));
     }
 
     private static QueryTemplate<TestEntry> createQueryTemplate() {
