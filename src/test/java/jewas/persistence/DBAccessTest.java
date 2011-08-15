@@ -140,7 +140,7 @@ public class DBAccessTest {
 
     @Ignore("Not yet implemented ...")
     @Test
-    public void shouldPerformOptionalQueryParameter() {
+    public void shouldPerformFilledOptionalQueryParameter() {
         QueryTemplate<TestEntry> template = createQueryTemplate();
 
         List<TestEntry> entries = new ArrayList<TestEntry>();
@@ -152,6 +152,23 @@ public class DBAccessTest {
 
         assertThat(entries.size(), is(equalTo(1)));
         assertThat(entries.get(0).id(), is(equalTo(Long.valueOf(2))));
+    }
+
+    @Ignore("Not yet implemented ...")
+    @Test
+    public void shouldPerformNotFilledOptionalQueryParameter() {
+        QueryTemplate<TestEntry> template = createQueryTemplate();
+
+        List<TestEntry> entries = new ArrayList<TestEntry>();
+        template.selectObjectsAndFill(entries, "select id, name, last_name, age from test where id > 0 [? and id in :idWhiteList]",
+                new QueryContext()
+                // Here, we don't fill the idWhiteList and expect the "and id in ..." clause won't be added to the request
+        );
+
+        assertThat(entries.size(), is(equalTo(3)));
+        assertThat(entries.get(0).id(), is(equalTo(Long.valueOf(1))));
+        assertThat(entries.get(1).id(), is(equalTo(Long.valueOf(2))));
+        assertThat(entries.get(2).id(), is(equalTo(Long.valueOf(3))));
     }
 
     @Test
