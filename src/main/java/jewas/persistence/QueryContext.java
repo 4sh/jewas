@@ -1,7 +1,11 @@
 package jewas.persistence;
 
+import jewas.persistence.exception.DataAccessException;
 import jewas.persistence.sqlparam.SqlParameter;
 
+import java.math.BigDecimal;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,7 +18,8 @@ import java.util.regex.Pattern;
  */
 public class QueryContext {
 
-    private static final Pattern QUERY_PARAM_DETECTOR = Pattern.compile(":(\\w+)");
+    private static final String QUERY_PARAM_DETECTOR_STRING = ":(\\w+)";
+    private static final Pattern QUERY_PARAM_DETECTOR = Pattern.compile(QUERY_PARAM_DETECTOR_STRING);
     private List<SqlParameter> queryParameters;
 
     public List<SqlParameter> queryParameters() {
@@ -26,45 +31,63 @@ public class QueryContext {
         return this;
     }
 
-    /**
-     * Will compute sql query by replacing named parameters by their value
-     *
-     * @param sql the sql query to compute
-     * @return the computed sql query
-     */
-    public String compute(String sql) {
-        String previousSql = null;
-        String computedSql = sql;
+    public String toPreparedStatementSql(String sqlQuery){
+        final StringBuffer sb = new StringBuffer();
 
-        // Computing sql query again and again.. until no query parameter is relying into it
-        while (!computedSql.equals(previousSql)) {
-            previousSql = computedSql;
-            StringBuffer sb = new StringBuffer();
-            Matcher queryParamMatcher = QUERY_PARAM_DETECTOR.matcher(previousSql);
-            while (queryParamMatcher.find()) {
-                String paramName = queryParamMatcher.group(1);
-                String value = parameterValue(paramName);
-                // to fix IllegalArgumentEception: Illegal group reference
-                // (see : http://veerasundar.com/blog/2010/01/java-lang-illegalargumentexception-illegal-group-reference-in-string-replaceall/
-                value = Matcher.quoteReplacement(value);
-                queryParamMatcher.appendReplacement(sb, value == null ? "" : value);
+        computeQuery(sqlQuery, new QueryReader() {
+            @Override
+            public void queryParamDetected(String paramName, Matcher queryParamMatcher) {
+                queryParamMatcher.appendReplacement(sb, findSqlParameter(paramName).generatePreparedStatementParams());
             }
-            queryParamMatcher.appendTail(sb);
+            @Override
+            public void end(Matcher queryParamMatcher){
+                queryParamMatcher.appendTail(sb);
+            }
+        });
 
-            computedSql = sb.toString();
-        }
-
-        return computedSql;
+        return sb.toString();
     }
 
-    protected String parameterValue(String paramName) {
+    public void fillPreparedStatementParameters(final PreparedStatement ps, final String sqlQuery){
+        final int[] index = new int[1];
+        index[0] = 1;
+        computeQuery(sqlQuery, new QueryReader() {
+            @Override
+            public void queryParamDetected(String paramName, Matcher queryParamMatcher) {
+                try {
+                    int numberOfFilledParams = findSqlParameter(paramName).fillPreparedStatementParameters(ps, index[0]);
+                    index[0] += numberOfFilledParams;
+                } catch(SQLException e){
+                    throw new DataAccessException("Error while binding query parameter <"+paramName+"> in query : "+sqlQuery, e);
+                }
+            }
+        });
+    }
+
+    private static abstract class QueryReader {
+        public void start(Matcher queryParamMatcher){ }
+        public abstract void queryParamDetected(String paramName, Matcher queryParamMatcher);
+        public void end(Matcher queryParamMatcher){ }
+    }
+
+    protected void computeQuery(String query, QueryReader callback){
+        Matcher queryParamMatcher = QUERY_PARAM_DETECTOR.matcher(query);
+        callback.start(queryParamMatcher);
+        while (queryParamMatcher.find()) {
+            String paramName = queryParamMatcher.group(1);
+            callback.queryParamDetected(paramName, queryParamMatcher);
+        }
+        callback.end(queryParamMatcher);
+    }
+
+    protected SqlParameter findSqlParameter(String paramName) {
         if (queryParameters() == null) {
             return null;
         }
 
         for (SqlParameter p : queryParameters()) {
             if (p.paramName().equals(paramName)) {
-                return p.value();
+                return p;
             }
         }
 

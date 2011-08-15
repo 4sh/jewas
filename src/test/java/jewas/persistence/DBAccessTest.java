@@ -1,20 +1,25 @@
 package jewas.persistence;
 
+import com.sun.tools.corba.se.idl.constExpr.GreaterThan;
 import jewas.persistence.sqlparam.SqlParameters;
 import jewas.persistence.sqlparam.ValuedType;
 import jewas.persistence.sqlparam.ValuedTypes;
 import jewas.persistence.util.JDBCUtils;
 import org.apache.commons.dbcp.BasicDataSource;
+import org.hamcrest.Matchers;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.junit.Assert.*;
 
 /**
@@ -28,32 +33,35 @@ public class DBAccessTest {
         // load the driver class
         Class.forName("org.h2.Driver");
         dbInitializationConnection = DriverManager.getConnection("jdbc:h2:mem:mytest", "sa", "");
-        // here you create the table
-        String s = "CREATE TABLE test (id INTEGER, name char(50), last_name char(50), age INTEGER)";
-        Statement sst = dbInitializationConnection.createStatement();
-        sst.executeUpdate(s);
-        sst.executeUpdate("INSERT INTO test VALUES (1, 'foo', 'FOO', 69)");
-        sst.executeUpdate("INSERT INTO test VALUES (2, 'bar', 'BAR', 10)");
-        sst.executeUpdate("INSERT INTO test VALUES (3, 'zot', 'ZOT', 32)");
-        JDBCUtils.closeStatementIfNecessary(sst);
+
+        Statement st = dbInitializationConnection.createStatement();
+        st.execute("CREATE SEQUENCE TEST_SEQ INCREMENT BY 1 START WITH 1000");
+        st.executeUpdate("CREATE TABLE test (id INTEGER, name char(50), last_name char(50), age INTEGER)");
+        st.executeUpdate("INSERT INTO test VALUES (1, 'foo', 'FOO', 69)");
+        st.executeUpdate("INSERT INTO test VALUES (2, 'bar', 'BAR', 10)");
+        st.executeUpdate("INSERT INTO test VALUES (3, 'zot', 'ZOT', 32)");
+
+        JDBCUtils.closeStatementIfNecessary(st);
     }
 
     @AfterClass
     public static void stop() throws SQLException {
-        String s = "DROP TABLE test";
         Statement sst = dbInitializationConnection.createStatement();
-        sst.executeUpdate(s);
+
+        sst.executeUpdate("DROP TABLE test");
+        sst.executeUpdate("DROP SEQUENCE TEST_SEQ");
+
         JDBCUtils.closeStatementIfNecessary(sst);
         JDBCUtils.closeConnectionIfNecessary(dbInitializationConnection);
     }
 
     public static class TestEntry {
-        private int id;
+        private long id;
         private String name;
         private String lastName;
         private int age;
 
-        public int id() {
+        public long id() {
             return id;
         }
 
@@ -104,7 +112,7 @@ public class DBAccessTest {
         QueryTemplate<TestEntry> template = createQueryTemplate();
 
         TestEntry entry = template.selectObject("select * from test where id=2", new QueryContext());
-        assertThat(entry.id(), is(equalTo(2)));
+        assertThat(entry.id(), is(equalTo(Long.valueOf(2))));
         assertThat(entry.age(), is(equalTo(10)));
         assertThat(entry.name(), is(equalTo("bar")));
         assertThat(entry.lastName(), is(equalTo("BAR")));
@@ -115,7 +123,7 @@ public class DBAccessTest {
         QueryTemplate<TestEntry> template = createQueryTemplate();
 
         List<TestEntry> entries = new ArrayList<TestEntry>();
-        template.selectObjectsAndFill(entries, "select id, name, last_name, age from test where id > :minId and name in (:nameWhiteList)",
+        template.selectObjectsAndFill(entries, "select id, name, last_name, age from test where id > :minId and name in :nameWhiteList",
                 new QueryContext().queryParameters(
                         SqlParameters.madeOf().integer("minId", 0)
                                 .<String>array("nameWhiteList", "bar", "azerty")
@@ -124,23 +132,36 @@ public class DBAccessTest {
         );
 
         assertThat(entries.size(), is(equalTo(1)));
-        assertThat(entries.get(0).id(), is(equalTo(2)));
+        assertThat(entries.get(0).id(), is(equalTo(Long.valueOf(2))));
     }
 
+    @Ignore("Not yet implemented ...")
     @Test
     public void shouldPerformOptionalQueryParameter() {
         QueryTemplate<TestEntry> template = createQueryTemplate();
 
         List<TestEntry> entries = new ArrayList<TestEntry>();
-        template.selectObjectsAndFill(entries, "select id, name, last_name, age from test where id > 0 and id in (:idWhiteList)",
+        template.selectObjectsAndFill(entries, "select id, name, last_name, age from test where id > 0 [? and id in :idWhiteList]",
                 new QueryContext().queryParameters(
-                        SqlParameters.madeOf().<Integer>array("idWhiteList", 2, 4).andThatsAll()
+                        SqlParameters.madeOf().<Integer>array("idWhiteList", Integer.valueOf(2), Integer.valueOf(4)).andThatsAll()
                 )
         );
 
         assertThat(entries.size(), is(equalTo(1)));
-        assertThat(entries.get(0).id(), is(equalTo(2)));
+        assertThat(entries.get(0).id(), is(equalTo(Long.valueOf(2))));
+    }
 
+    @Test
+    public void shouldCreateUpdateReadAndDeleteRecordBeOk(){
+        QueryTemplate<TestEntry> template = createQueryTemplate();
+
+        // I would have prefered to not use nextval here but heh.. didn't succceed :(
+        Map<String,String> genKeys = template.insert("insert into test (id, name, last_name, age) values (TEST_SEQ.NEXTVAL, :name, :last_name, :age)",
+                new QueryContext().queryParameters(
+                        SqlParameters.madeOf().string("name", "toto").string("last_name", "tutu").integer("age", 20).andThatsAll()
+                ), "id");
+        assertThat(genKeys.size(), is(equalTo(1)));
+        assertThat(Long.valueOf(genKeys.get("id")), is(greaterThanOrEqualTo(Long.valueOf(1000))));
     }
 
     private static QueryTemplate<TestEntry> createQueryTemplate() {
@@ -152,7 +173,6 @@ public class DBAccessTest {
                         .name(rs.getString("name")).lastName(rs.getString("last_name"));
             }
         });
-
     }
 
     private static DataSource createDatasource() {
