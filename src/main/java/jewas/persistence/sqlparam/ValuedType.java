@@ -51,6 +51,12 @@ public abstract class ValuedType<T> {
         }
     }
 
+    public static class LongValuedType extends ValuedType<Long> {
+        public LongValuedType(Long l) {
+            super(l);
+        }
+    }
+
     public static class DecimalValuedType extends ValuedType<BigDecimal> {
         public DecimalValuedType(BigDecimal decimalNumber) {
             super(decimalNumber);

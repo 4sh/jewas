@@ -19,6 +19,10 @@ public class ValuedTypes {
         return new ValuedType.IntegerValuedType(paramValue);
     }
 
+    public static ValuedType.LongValuedType bigint(Long paramValue) {
+        return new ValuedType.LongValuedType(paramValue);
+    }
+
     public static ValuedType.DecimalValuedType decimal(BigDecimal paramValue) {
         return new ValuedType.DecimalValuedType(paramValue);
     }

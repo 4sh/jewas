@@ -67,6 +67,15 @@ public class SqlParameter {
             return this;
         }
 
+        public Builder bigint(String paramName, long paramValue){
+            return bigint(paramName, Long.valueOf(paramValue));
+        }
+
+        public Builder bigint(String paramName, Long paramValue) {
+            parameters.add(new SqlParameter(paramName, ValuedTypes.bigint(paramValue)));
+            return this;
+        }
+
         public Builder decimal(String paramName, BigDecimal paramValue) {
             parameters.add(new SqlParameter(paramName, ValuedTypes.decimal(paramValue)));
             return this;
