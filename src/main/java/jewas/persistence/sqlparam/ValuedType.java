@@ -79,8 +79,7 @@ public abstract class ValuedType<T> {
         }
     }
 
-    public static class ArrayValuedType<V extends ValuedType> extends ValuedType<V[]> {
-
+    public static class ArrayValuedType<V> extends ValuedType<V[]> {
         public ArrayValuedType(V[] array) {
             super(array);
         }
@@ -88,10 +87,10 @@ public abstract class ValuedType<T> {
         protected String toNonNullQueryValue() {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < underlyingValue.length - 1; i++) {
-                sb.append(underlyingValue[i].queryValue()).append(",");
+                sb.append(underlyingValue[i]).append(",");
             }
             if (underlyingValue.length != 0) {
-                sb.append(underlyingValue[underlyingValue.length - 1].queryValue());
+                sb.append(underlyingValue[underlyingValue.length - 1]);
             }
             return sb.toString();
         }

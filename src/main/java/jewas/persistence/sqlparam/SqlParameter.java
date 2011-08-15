@@ -49,6 +49,10 @@ public class SqlParameter {
             return this;
         }
 
+        public Builder integer(String paramName, int paramValue){
+            return integer(paramName, Integer.valueOf(paramValue));
+        }
+
         public Builder integer(String paramName, Integer paramValue) {
             parameters.add(new SqlParameter(paramName, ValuedTypes.integer(paramValue)));
             return this;
@@ -59,7 +63,7 @@ public class SqlParameter {
             return this;
         }
 
-        public <T extends ValuedType> Builder array(String paramName, T... paramValue) {
+        public <T> Builder array(String paramName, T... paramValue) {
             parameters.add(new SqlParameter(paramName, ValuedTypes.<T>array(paramValue)));
             return this;
         }

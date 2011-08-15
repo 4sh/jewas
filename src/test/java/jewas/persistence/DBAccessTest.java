@@ -115,10 +115,10 @@ public class DBAccessTest {
         QueryTemplate<TestEntry> template = createQueryTemplate();
 
         List<TestEntry> entries = new ArrayList<TestEntry>();
-        template.selectObjectsAndFill(entries, "select id, name, last_name, age from test where id > :minId and id in (:idWhiteList)",
+        template.selectObjectsAndFill(entries, "select id, name, last_name, age from test where id > :minId and name in (:nameWhiteList)",
                 new QueryContext().queryParameters(
-                        SqlParameters.madeOf().integer("minId", Integer.valueOf(0))
-                                .<ValuedType.IntegerValuedType>array("idWhiteList", ValuedTypes.integer(2), ValuedTypes.integer(4))
+                        SqlParameters.madeOf().integer("minId", 0)
+                                .<String>array("nameWhiteList", "bar", "azerty")
                                 .andThatsAll()
                 )
         );
@@ -132,11 +132,9 @@ public class DBAccessTest {
         QueryTemplate<TestEntry> template = createQueryTemplate();
 
         List<TestEntry> entries = new ArrayList<TestEntry>();
-        template.selectObjectsAndFill(entries, "select id, name, last_name, age from test :optionalFiltering where id > 0 and id in (:idWhiteList)",
+        template.selectObjectsAndFill(entries, "select id, name, last_name, age from test where id > 0 and id in (:idWhiteList)",
                 new QueryContext().queryParameters(
-                        SqlParameters.madeOf()
-                                .<ValuedType.IntegerValuedType>array("idWhiteList", ValuedTypes.integer(2), ValuedTypes.integer(4))
-                                .andThatsAll()
+                        SqlParameters.madeOf().<Integer>array("idWhiteList", 2, 4).andThatsAll()
                 )
         );
 

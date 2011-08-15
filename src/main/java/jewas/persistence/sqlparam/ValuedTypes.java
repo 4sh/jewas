@@ -23,7 +23,7 @@ public class ValuedTypes {
         return new ValuedType.DecimalValuedType(paramValue);
     }
 
-    public static <T extends ValuedType> ValuedType.ArrayValuedType<T> array(T... paramValue) {
+    public static <T> ValuedType.ArrayValuedType<T> array(T... paramValue) {
         return new ValuedType.ArrayValuedType<T>(paramValue);
     }
 }
