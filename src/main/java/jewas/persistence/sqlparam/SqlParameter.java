@@ -2,6 +2,8 @@ package jewas.persistence.sqlparam;
 
 
 import java.math.BigDecimal;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -23,10 +25,17 @@ public class SqlParameter {
         return paramName;
     }
 
-    public String value() {
-        return paramValuedType.queryValue();
+    public Object value(){
+        return this.paramValuedType.value();
     }
 
+    public String generatePreparedStatementParams() {
+        return this.paramValuedType.generatePreparedStatementParams();
+    }
+
+    public int fillPreparedStatementParameters(PreparedStatement ps, int index) throws SQLException {
+        return this.paramValuedType.fillPreparedStatementParameters(ps, index);
+    }
 
     public static class Builder {
         private List<SqlParameter> parameters = new ArrayList<SqlParameter>();
