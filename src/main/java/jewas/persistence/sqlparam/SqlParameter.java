@@ -1,7 +1,7 @@
 package jewas.persistence.sqlparam;
 
 
-import jewas.persistence.QueryContext;
+import jewas.persistence.QueryExecutionContext;
 
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
@@ -41,15 +41,15 @@ public class SqlParameter {
 
     public static class Builder {
         private List<SqlParameter> parameters = new ArrayList<SqlParameter>();
-        private QueryContext context;
+        private QueryExecutionContext executionContext;
 
-        public Builder(QueryContext context){
-            this.context = context;
+        public Builder(QueryExecutionContext context){
+            this.executionContext = context;
         }
 
-        public QueryContext toContext() {
-            this.context.queryParameters(parameters);
-            return this.context;
+        public QueryExecutionContext toContext() {
+            this.executionContext.queryParameters(parameters);
+            return this.executionContext;
         }
 
         public Builder date(String paramName, Date paramValue) {

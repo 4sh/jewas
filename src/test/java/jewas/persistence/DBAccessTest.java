@@ -1,12 +1,7 @@
 package jewas.persistence;
 
-import com.sun.tools.corba.se.idl.constExpr.GreaterThan;
-import jewas.persistence.sqlparam.ValuedType;
-import jewas.persistence.sqlparam.ValuedTypes;
 import jewas.persistence.util.JDBCUtils;
 import org.apache.commons.dbcp.BasicDataSource;
-import org.hamcrest.CoreMatchers;
-import org.hamcrest.Matchers;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -105,7 +100,7 @@ public class DBAccessTest {
         QueryTemplate<TestEntry> template = createQueryTemplate();
 
         List<TestEntry> allEntries = new ArrayList<TestEntry>();
-        template.selectObjectsAndFill(allEntries, "select * from test", new QueryContext());
+        template.selectObjectsAndFill(allEntries, "select * from test", new QueryExecutionContext());
         assertThat(allEntries.size(), is(equalTo(3)));
     }
 
@@ -113,7 +108,7 @@ public class DBAccessTest {
     public void shouldPerformASelectWith1RowCorrectly() {
         QueryTemplate<TestEntry> template = createQueryTemplate();
 
-        TestEntry entry = template.selectObject("select * from test where id=2", new QueryContext());
+        TestEntry entry = template.selectObject("select * from test where id=2", new QueryExecutionContext());
         assertThat(entry.id(), is(equalTo(Long.valueOf(2))));
         assertThat(entry.age(), is(equalTo(10)));
         assertThat(entry.name(), is(equalTo("bar")));
@@ -126,7 +121,7 @@ public class DBAccessTest {
 
         List<TestEntry> entries = new ArrayList<TestEntry>();
         template.selectObjectsAndFill(entries, "select id, name, last_name, age from test where id > :minId and name in :nameWhiteList",
-                new QueryContext().buildParams()
+                new QueryExecutionContext().buildParams()
                         .integer("minId", 0)
                         .<String>array("nameWhiteList", "bar", "azerty")
                 .toContext()
@@ -143,7 +138,7 @@ public class DBAccessTest {
 
         List<TestEntry> entries = new ArrayList<TestEntry>();
         template.selectObjectsAndFill(entries, "select id, name, last_name, age from test where id > 0 [? and id in :idWhiteList]",
-                new QueryContext().buildParams()
+                new QueryExecutionContext().buildParams()
                         .<Integer>array("idWhiteList", Integer.valueOf(2), Integer.valueOf(4))
                 .toContext()
         );
@@ -159,7 +154,7 @@ public class DBAccessTest {
 
         List<TestEntry> entries = new ArrayList<TestEntry>();
         template.selectObjectsAndFill(entries, "select id, name, last_name, age from test where id > 0 [? and id in :idWhiteList]",
-                new QueryContext()
+                new QueryExecutionContext()
                 // Here, we don't fill the idWhiteList and expect the "and id in ..." clause won't be added to the request
         );
 
@@ -175,7 +170,7 @@ public class DBAccessTest {
 
         // I would have prefered to not use nextval here but heh.. didn't succceed :(
         Map<String,String> genKeys = template.insert("insert into test (id, name, last_name, age) values (TEST_SEQ.NEXTVAL, :name, :last_name, :age)",
-                new QueryContext().buildParams()
+                new QueryExecutionContext().buildParams()
                         .string("name", "toto")
                         .string("last_name", "tutu")
                         .integer("age", 20)
@@ -186,7 +181,7 @@ public class DBAccessTest {
 
 
         TestEntry entry = template.selectObject("select id, name, last_name, age from test where id = :id",
-                new QueryContext().buildParams().bigint("id", generatedId).toContext());
+                new QueryExecutionContext().buildParams().bigint("id", generatedId).toContext());
         assertThat(entry, is(notNullValue()));
         assertThat(entry.id(), is(equalTo(generatedId)));
         assertThat(entry.name(), is(equalTo("toto")));
@@ -195,7 +190,7 @@ public class DBAccessTest {
 
 
         int rowsUpdated = template.update("UPDATE test SET name = :newName WHERE id = :id",
-                new QueryContext().buildParams()
+                new QueryExecutionContext().buildParams()
                         .string("newName", "newToto")
                         .bigint("id", generatedId)
                 .toContext());
@@ -203,7 +198,7 @@ public class DBAccessTest {
 
 
         entry = template.selectObject("select id, name, last_name, age from test where id = :id",
-                new QueryContext().buildParams().bigint("id", generatedId).toContext());
+                new QueryExecutionContext().buildParams().bigint("id", generatedId).toContext());
         assertThat(entry, is(notNullValue()));
         assertThat(entry.id(), is(equalTo(generatedId)));
         assertThat(entry.name(), is(equalTo("newToto")));
@@ -212,12 +207,12 @@ public class DBAccessTest {
 
 
         rowsUpdated = template.delete("delete test where id = :id",
-                new QueryContext().buildParams().bigint("id", generatedId).toContext());
+                new QueryExecutionContext().buildParams().bigint("id", generatedId).toContext());
         assertThat(rowsUpdated, is(equalTo(1)));
 
         
         entry = template.selectObject("select id, name, last_name, age from test where id = :id",
-                new QueryContext().buildParams().bigint("id", generatedId).toContext());
+                new QueryExecutionContext().buildParams().bigint("id", generatedId).toContext());
         assertThat(entry, is(nullValue()));
     }
 

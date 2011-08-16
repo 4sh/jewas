@@ -3,7 +3,6 @@ package jewas.persistence;
 import jewas.persistence.exception.DataAccessException;
 import jewas.persistence.sqlparam.SqlParameter;
 
-import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
@@ -16,7 +15,7 @@ import java.util.regex.Pattern;
  *
  * @author fcamblor
  */
-public class QueryContext {
+public class QueryExecutionContext {
 
     private static final String QUERY_PARAM_DETECTOR_STRING = ":(\\w+)";
     private static final Pattern QUERY_PARAM_DETECTOR = Pattern.compile(QUERY_PARAM_DETECTOR_STRING);
@@ -26,7 +25,7 @@ public class QueryContext {
         return new SqlParameter.Builder(this);
     }
 
-    public QueryContext queryParameters(List<SqlParameter> p) {
+    public QueryExecutionContext queryParameters(List<SqlParameter> p) {
         this.queryParameters = p;
         return this;
     }
