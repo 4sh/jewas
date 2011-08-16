@@ -98,17 +98,19 @@ public class DBAccessTest {
     @Test
     public void shouldPerformASelectWithNRowsCorrectly() {
         QueryTemplate<TestEntry> template = createQueryTemplate();
+        template.addQuery("selectAll", "select * from test");
 
         List<TestEntry> allEntries = new ArrayList<TestEntry>();
-        template.selectObjectsAndFill(allEntries, "select * from test", new QueryExecutionContext());
+        template.selectObjectsAndFill(allEntries, "selectAll", new QueryExecutionContext());
         assertThat(allEntries.size(), is(equalTo(3)));
     }
 
     @Test
     public void shouldPerformASelectWith1RowCorrectly() {
         QueryTemplate<TestEntry> template = createQueryTemplate();
+        template.addQuery("selectId2", "select * from test where id=2");
 
-        TestEntry entry = template.selectObject("select * from test where id=2", new QueryExecutionContext());
+        TestEntry entry = template.selectObject("selectId2", new QueryExecutionContext());
         assertThat(entry.id(), is(equalTo(Long.valueOf(2))));
         assertThat(entry.age(), is(equalTo(10)));
         assertThat(entry.name(), is(equalTo("bar")));
@@ -118,9 +120,10 @@ public class DBAccessTest {
     @Test
     public void shouldPerformASelectWithMultipleQueryParameters() {
         QueryTemplate<TestEntry> template = createQueryTemplate();
+        template.addQuery("selectWithIdAndName", "select id, name, last_name, age from test where id > :minId and name in :nameWhiteList");
 
         List<TestEntry> entries = new ArrayList<TestEntry>();
-        template.selectObjectsAndFill(entries, "select id, name, last_name, age from test where id > :minId and name in :nameWhiteList",
+        template.selectObjectsAndFill(entries, "selectWithIdAndName",
                 new QueryExecutionContext().buildParams()
                         .integer("minId", 0)
                         .<String>array("nameWhiteList", "bar", "azerty")
@@ -137,7 +140,7 @@ public class DBAccessTest {
         QueryTemplate<TestEntry> template = createQueryTemplate();
 
         List<TestEntry> entries = new ArrayList<TestEntry>();
-        template.selectObjectsAndFill(entries, "select id, name, last_name, age from test where id > 0 [? and id in :idWhiteList]",
+        template.selectObjectsAndFill(entries, "selectWithOptionalCriteria",
                 new QueryExecutionContext().buildParams()
                         .<Integer>array("idWhiteList", Integer.valueOf(2), Integer.valueOf(4))
                 .toContext()
@@ -153,7 +156,7 @@ public class DBAccessTest {
         QueryTemplate<TestEntry> template = createQueryTemplate();
 
         List<TestEntry> entries = new ArrayList<TestEntry>();
-        template.selectObjectsAndFill(entries, "select id, name, last_name, age from test where id > 0 [? and id in :idWhiteList]",
+        template.selectObjectsAndFill(entries, "selectWithOptionalCriteria",
                 new QueryExecutionContext()
                 // Here, we don't fill the idWhiteList and expect the "and id in ..." clause won't be added to the request
         );
@@ -167,9 +170,12 @@ public class DBAccessTest {
     @Test
     public void shouldCreateUpdateReadAndDeleteRecordBeOk(){
         QueryTemplate<TestEntry> template = createQueryTemplate();
+        template.addQuery("insertQuery", "insert into test (id, name, last_name, age) values (TEST_SEQ.NEXTVAL, :name, :last_name, :age)")
+                .addQuery("updateQuery", "UPDATE test SET name = :newName WHERE id = :id")
+                .addQuery("deleteQuery", "delete test where id = :id");
 
         // I would have prefered to not use nextval here but heh.. didn't succceed :(
-        Map<String,String> genKeys = template.insert("insert into test (id, name, last_name, age) values (TEST_SEQ.NEXTVAL, :name, :last_name, :age)",
+        Map<String,String> genKeys = template.insert("insertQuery",
                 new QueryExecutionContext().buildParams()
                         .string("name", "toto")
                         .string("last_name", "tutu")
@@ -180,7 +186,7 @@ public class DBAccessTest {
         assertThat(generatedId, is(greaterThanOrEqualTo(Long.valueOf(1000))));
 
 
-        TestEntry entry = template.selectObject("select id, name, last_name, age from test where id = :id",
+        TestEntry entry = template.selectObject("selectById",
                 new QueryExecutionContext().buildParams().bigint("id", generatedId).toContext());
         assertThat(entry, is(notNullValue()));
         assertThat(entry.id(), is(equalTo(generatedId)));
@@ -189,7 +195,7 @@ public class DBAccessTest {
         assertThat(entry.age(), is(equalTo(20)));
 
 
-        int rowsUpdated = template.update("UPDATE test SET name = :newName WHERE id = :id",
+        int rowsUpdated = template.update("updateQuery",
                 new QueryExecutionContext().buildParams()
                         .string("newName", "newToto")
                         .bigint("id", generatedId)
@@ -197,7 +203,7 @@ public class DBAccessTest {
         assertThat(rowsUpdated, is(equalTo(1)));
 
 
-        entry = template.selectObject("select id, name, last_name, age from test where id = :id",
+        entry = template.selectObject("selectById",
                 new QueryExecutionContext().buildParams().bigint("id", generatedId).toContext());
         assertThat(entry, is(notNullValue()));
         assertThat(entry.id(), is(equalTo(generatedId)));
@@ -206,12 +212,12 @@ public class DBAccessTest {
         assertThat(entry.age(), is(equalTo(20)));
 
 
-        rowsUpdated = template.delete("delete test where id = :id",
+        rowsUpdated = template.delete("deleteQuery",
                 new QueryExecutionContext().buildParams().bigint("id", generatedId).toContext());
         assertThat(rowsUpdated, is(equalTo(1)));
 
         
-        entry = template.selectObject("select id, name, last_name, age from test where id = :id",
+        entry = template.selectObject("selectById",
                 new QueryExecutionContext().buildParams().bigint("id", generatedId).toContext());
         assertThat(entry, is(nullValue()));
     }
@@ -224,7 +230,8 @@ public class DBAccessTest {
                         .id(rs.getInt("id")).age(rs.getInt("age"))
                         .name(rs.getString("name")).lastName(rs.getString("last_name"));
             }
-        });
+        }).addQuery("selectById", "select id, name, last_name, age from test where id = :id")
+          .addQuery("selectWithOptionalCriteria", "select id, name, last_name, age from test where id > 0 [? and id in :idWhiteList]");
     }
 
     private static DataSource createDatasource() {

@@ -18,10 +18,12 @@ public class QueryTemplate<T> {
 
     private RowMapper<T> rowMapper;
     private DataSource datasource;
+    private Map<String, Query> queries;
 
     public QueryTemplate(DataSource datasource, RowMapper<T> rowMapper) {
         this.rowMapper = rowMapper;
         this.datasource = datasource;
+        this.queries = new HashMap<String,Query>();
     }
 
     static interface InConnectionCallback {
@@ -30,11 +32,11 @@ public class QueryTemplate<T> {
 
     private static abstract class OpenPreparedStatementInConnection implements InConnectionCallback{
 
-        private String sqlQuery;
+        private Query query;
         private QueryExecutionContext context;
 
-        public OpenPreparedStatementInConnection(String sqlQuery, QueryExecutionContext executionContext){
-            this.sqlQuery = sqlQuery;
+        public OpenPreparedStatementInConnection(Query query, QueryExecutionContext executionContext){
+            this.query = query;
             this.context = executionContext;
         }
 
@@ -42,10 +44,7 @@ public class QueryTemplate<T> {
         public void doInConnection(Connection connection) {
             PreparedStatement ps = null;
             try {
-                String psQuery = context.toPreparedStatementSql(sqlQuery);
-
-                ps = createPreparedStatement(connection, psQuery);
-                context.fillPreparedStatementParameters(ps, sqlQuery);
+                ps = createPreparedStatement(query, connection, context);
 
                 doWithPreparedStatement(ps);
 
@@ -57,8 +56,9 @@ public class QueryTemplate<T> {
             }
         }
 
-        protected PreparedStatement createPreparedStatement(Connection c, String sql) throws SQLException{
-            return c.prepareStatement(sql);
+        protected PreparedStatement createPreparedStatement(Query query, Connection c,
+                                                            QueryExecutionContext context) throws SQLException{
+            return query.preparedStatementForContext(context, c);
         }
 
         public abstract void doWithPreparedStatement(PreparedStatement ps) throws SQLException;
@@ -68,8 +68,8 @@ public class QueryTemplate<T> {
 
         int rowsUpdated = 0;
 
-        public ExecuteUpdateQueryWithPreparedStatement(String sqlQuery, QueryExecutionContext executionContext){
-            super(sqlQuery, executionContext);
+        public ExecuteUpdateQueryWithPreparedStatement(Query query, QueryExecutionContext executionContext){
+            super(query, executionContext);
         }
 
         @Override
@@ -79,6 +79,30 @@ public class QueryTemplate<T> {
 
         public int rowsUpdated(){
             return this.rowsUpdated;
+        }
+    }
+
+    public QueryTemplate<T> addQuery(String queryName, Query q){
+        queries.put(queryName, q);
+        return this;
+    }
+
+    // Syntaxic sugar for addQuery(String,Query)
+    public QueryTemplate<T> addQuery(String queryName, String sql){
+        return addQuery(queryName, new Query(sql));
+    }
+
+    protected Query query(String name){
+        if(queries.containsKey(name)){
+            return queries.get(name);
+        } else {
+            StringBuilder message = new StringBuilder("Unknown query <").append(name).append("> !")
+                    .append(String.format("%n")).append(String.format("Available queries : %s"));
+            for(Query q : queries.values()){
+                message.append(String.format("%s %n", q));
+            }
+
+            throw new IllegalArgumentException(message.toString());
         }
     }
 
@@ -97,16 +121,17 @@ public class QueryTemplate<T> {
         }
     }
 
-    public int executeUpdate(String sql, QueryExecutionContext executionContext) throws DataAccessException {
-        ExecuteUpdateQueryWithPreparedStatement callback = new ExecuteUpdateQueryWithPreparedStatement(sql, executionContext);
+    public int executeUpdate(String queryName, QueryExecutionContext executionContext) throws DataAccessException {
+        ExecuteUpdateQueryWithPreparedStatement callback = new ExecuteUpdateQueryWithPreparedStatement(
+                query(queryName), executionContext);
         execute(callback);
         return callback.rowsUpdated();
     }
 
-    public void selectObjectsAndFill(final List<T> objects, final String sql, final QueryExecutionContext executionContext) {
+    public void selectObjectsAndFill(final List<T> objects, final String queryName, final QueryExecutionContext executionContext) {
         // TODO: check @NonNull of objects with a specialized framework like CheckerFramework or Intellij implem ?
 
-        execute(new OpenPreparedStatementInConnection(sql, executionContext) {
+        execute(new OpenPreparedStatementInConnection(query(queryName), executionContext) {
             @Override
             public void doWithPreparedStatement(PreparedStatement ps) throws SQLException {
                 ResultSet rs = ps.executeQuery();
@@ -117,9 +142,9 @@ public class QueryTemplate<T> {
         });
     }
 
-    public T selectObject(String sql, QueryExecutionContext executionContext) {
+    public T selectObject(String queryName, QueryExecutionContext executionContext) {
         List<T> unaryList = new ArrayList<T>(1);
-        selectObjectsAndFill(unaryList, sql, executionContext);
+        selectObjectsAndFill(unaryList, queryName, executionContext);
 
         // TODO: assert unaryList.size()<=1
         
@@ -130,13 +155,13 @@ public class QueryTemplate<T> {
         }
     }
 
-    public void insert(final String sql, final QueryExecutionContext executionContext){
-        insert(sql, executionContext, null);
+    public void insert(final String queryName, final QueryExecutionContext executionContext){
+        insert(queryName, executionContext, null);
     }
 
     /**
      * Insert a row in the database
-     * @param sql The insert sql query
+     * @param queryName The name of the insert sql query
      * @param executionContext Current Querycontext
      * @param generatedKeyColumns List of column names which will be auto-filled by the database
      * (auto increment / sequence fields).
@@ -146,16 +171,17 @@ public class QueryTemplate<T> {
      * must be filled with ["id1", "id2"]
      * @return A Map having every generated column values. It is in the form [column name => generated value ]
      */
-    public Map<String,String> insert(final String sql, final QueryExecutionContext executionContext, final String... generatedKeyColumns){
+    public Map<String,String> insert(final String queryName, final QueryExecutionContext executionContext, final String... generatedKeyColumns){
         final Map<String, String> genKeys = new HashMap<String, String>();
 
-        execute(new OpenPreparedStatementInConnection(sql, executionContext) {
+        execute(new OpenPreparedStatementInConnection(query(queryName), executionContext) {
             @Override
-            protected PreparedStatement createPreparedStatement(Connection c, String sql) throws SQLException {
+            protected PreparedStatement createPreparedStatement(Query query, Connection c,
+                                                                QueryExecutionContext context) throws SQLException{
                 if(generatedKeyColumns==null || generatedKeyColumns.length==0){
-                    return super.createPreparedStatement(c,sql);
+                    return super.createPreparedStatement(query, c, context);
                 }else{
-                    return c.prepareStatement(sql,generatedKeyColumns);
+                    return query.preparedStatementForContext(context, c, generatedKeyColumns);
                 }
             }
 
@@ -176,11 +202,11 @@ public class QueryTemplate<T> {
         return genKeys;
     }
 
-    public int update(final String sql, final QueryExecutionContext executionContext){
-        return executeUpdate(sql, executionContext);
+    public int update(final String queryName, final QueryExecutionContext executionContext){
+        return executeUpdate(queryName, executionContext);
     }
 
-    public int delete(final String sql, final QueryExecutionContext executionContext){
-        return executeUpdate(sql, executionContext);
+    public int delete(final String queryName, final QueryExecutionContext executionContext){
+        return executeUpdate(queryName, executionContext);
     }
 }
