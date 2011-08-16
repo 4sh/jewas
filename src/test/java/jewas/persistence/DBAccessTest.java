@@ -1,7 +1,6 @@
 package jewas.persistence;
 
 import com.sun.tools.corba.se.idl.constExpr.GreaterThan;
-import jewas.persistence.sqlparam.SqlParameters;
 import jewas.persistence.sqlparam.ValuedType;
 import jewas.persistence.sqlparam.ValuedTypes;
 import jewas.persistence.util.JDBCUtils;
@@ -127,11 +126,10 @@ public class DBAccessTest {
 
         List<TestEntry> entries = new ArrayList<TestEntry>();
         template.selectObjectsAndFill(entries, "select id, name, last_name, age from test where id > :minId and name in :nameWhiteList",
-                new QueryContext().queryParameters(
-                        SqlParameters.madeOf().integer("minId", 0)
-                                .<String>array("nameWhiteList", "bar", "azerty")
-                                .andThatsAll()
-                )
+                new QueryContext().buildParams()
+                        .integer("minId", 0)
+                        .<String>array("nameWhiteList", "bar", "azerty")
+                .toContext()
         );
 
         assertThat(entries.size(), is(equalTo(1)));
@@ -145,9 +143,9 @@ public class DBAccessTest {
 
         List<TestEntry> entries = new ArrayList<TestEntry>();
         template.selectObjectsAndFill(entries, "select id, name, last_name, age from test where id > 0 [? and id in :idWhiteList]",
-                new QueryContext().queryParameters(
-                        SqlParameters.madeOf().<Integer>array("idWhiteList", Integer.valueOf(2), Integer.valueOf(4)).andThatsAll()
-                )
+                new QueryContext().buildParams()
+                        .<Integer>array("idWhiteList", Integer.valueOf(2), Integer.valueOf(4))
+                .toContext()
         );
 
         assertThat(entries.size(), is(equalTo(1)));
@@ -177,49 +175,49 @@ public class DBAccessTest {
 
         // I would have prefered to not use nextval here but heh.. didn't succceed :(
         Map<String,String> genKeys = template.insert("insert into test (id, name, last_name, age) values (TEST_SEQ.NEXTVAL, :name, :last_name, :age)",
-                new QueryContext().queryParameters(
-                        SqlParameters.madeOf().string("name", "toto").string("last_name", "tutu").integer("age", 20).andThatsAll()
-                ), "id");
+                new QueryContext().buildParams()
+                        .string("name", "toto")
+                        .string("last_name", "tutu")
+                        .integer("age", 20)
+                .toContext(), "id");
         assertThat(genKeys.size(), is(equalTo(1)));
         Long generatedId = Long.valueOf(genKeys.get("id"));
         assertThat(generatedId, is(greaterThanOrEqualTo(Long.valueOf(1000))));
 
+
         TestEntry entry = template.selectObject("select id, name, last_name, age from test where id = :id",
-                new QueryContext().queryParameters(
-                        SqlParameters.madeOf().bigint("id", generatedId).andThatsAll()
-                ));
+                new QueryContext().buildParams().bigint("id", generatedId).toContext());
         assertThat(entry, is(notNullValue()));
         assertThat(entry.id(), is(equalTo(generatedId)));
         assertThat(entry.name(), is(equalTo("toto")));
         assertThat(entry.lastName(), is(equalTo("tutu")));
         assertThat(entry.age(), is(equalTo(20)));
 
+
         int rowsUpdated = template.update("UPDATE test SET name = :newName WHERE id = :id",
-                new QueryContext().queryParameters(
-                        SqlParameters.madeOf().string("newName", "newToto").bigint("id", generatedId).andThatsAll()
-                ));
+                new QueryContext().buildParams()
+                        .string("newName", "newToto")
+                        .bigint("id", generatedId)
+                .toContext());
         assertThat(rowsUpdated, is(equalTo(1)));
 
+
         entry = template.selectObject("select id, name, last_name, age from test where id = :id",
-                new QueryContext().queryParameters(
-                        SqlParameters.madeOf().bigint("id", generatedId).andThatsAll()
-                ));
+                new QueryContext().buildParams().bigint("id", generatedId).toContext());
         assertThat(entry, is(notNullValue()));
         assertThat(entry.id(), is(equalTo(generatedId)));
         assertThat(entry.name(), is(equalTo("newToto")));
         assertThat(entry.lastName(), is(equalTo("tutu")));
         assertThat(entry.age(), is(equalTo(20)));
 
+
         rowsUpdated = template.delete("delete test where id = :id",
-                new QueryContext().queryParameters(
-                        SqlParameters.madeOf().bigint("id", generatedId).andThatsAll()
-                ));
+                new QueryContext().buildParams().bigint("id", generatedId).toContext());
         assertThat(rowsUpdated, is(equalTo(1)));
 
+        
         entry = template.selectObject("select id, name, last_name, age from test where id = :id",
-                new QueryContext().queryParameters(
-                        SqlParameters.madeOf().bigint("id", generatedId).andThatsAll()
-                ));
+                new QueryContext().buildParams().bigint("id", generatedId).toContext());
         assertThat(entry, is(nullValue()));
     }
 

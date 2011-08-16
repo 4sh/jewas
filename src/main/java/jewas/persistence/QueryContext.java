@@ -11,8 +11,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Class will contain every Query informations like pagination parameters,
- * query parameters, ordering etc..
+ * Class will contain every Query informations like pagination build,
+ * query build, ordering etc..
  *
  * @author fcamblor
  */
@@ -22,8 +22,8 @@ public class QueryContext {
     private static final Pattern QUERY_PARAM_DETECTOR = Pattern.compile(QUERY_PARAM_DETECTOR_STRING);
     private List<SqlParameter> queryParameters;
 
-    public List<SqlParameter> queryParameters() {
-        return queryParameters;
+    public SqlParameter.Builder buildParams(){
+        return new SqlParameter.Builder(this);
     }
 
     public QueryContext queryParameters(List<SqlParameter> p) {
@@ -81,11 +81,11 @@ public class QueryContext {
     }
 
     protected SqlParameter findSqlParameter(String paramName) {
-        if (queryParameters() == null) {
+        if (queryParameters == null) {
             return null;
         }
 
-        for (SqlParameter p : queryParameters()) {
+        for (SqlParameter p : queryParameters) {
             if (p.paramName().equals(paramName)) {
                 return p;
             }

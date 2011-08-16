@@ -1,6 +1,8 @@
 package jewas.persistence.sqlparam;
 
 
+import jewas.persistence.QueryContext;
+
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -39,14 +41,16 @@ public class SqlParameter {
 
     public static class Builder {
         private List<SqlParameter> parameters = new ArrayList<SqlParameter>();
+        private QueryContext context;
 
-        public List<SqlParameter> parameters() {
-            return parameters;
+        public Builder(QueryContext context){
+            this.context = context;
         }
 
-        public List<SqlParameter> andThatsAll() {
-            return parameters();
-        } // Syntaxic sugar
+        public QueryContext toContext() {
+            this.context.queryParameters(parameters);
+            return this.context;
+        }
 
         public Builder date(String paramName, Date paramValue) {
             parameters.add(new SqlParameter(paramName, ValuedTypes.date(paramValue)));
