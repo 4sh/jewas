@@ -142,7 +142,7 @@ public class DBAccessTest {
         List<TestEntry> entries = new ArrayList<TestEntry>();
         template.selectObjectsAndFill(entries, "selectWithOptionalCriteria",
                 new QueryExecutionContext().buildParams()
-                        .<Integer>array("idWhiteList", Integer.valueOf(2), Integer.valueOf(4))
+                        .<Integer>array("idWhiteList", 2, 4)
                 .toContext()
         );
 
@@ -170,9 +170,9 @@ public class DBAccessTest {
     @Test
     public void shouldCreateUpdateReadAndDeleteRecordBeOk(){
         QueryTemplate<TestEntry> template = createQueryTemplate();
-        template.addQuery("insertQuery", "insert into test (id, name, last_name, age) values (TEST_SEQ.NEXTVAL, :name, :last_name, :age)")
+        template.addQuery("insertQuery", "INSERT INTO test (id, name, last_name, age) VALUES (TEST_SEQ.NEXTVAL, :name, :last_name, :age)")
                 .addQuery("updateQuery", "UPDATE test SET name = :newName WHERE id = :id")
-                .addQuery("deleteQuery", "delete test where id = :id");
+                .addQuery("deleteQuery", "DELETE test WHERE id = :id");
 
         // I would have prefered to not use nextval here but heh.. didn't succceed :(
         Map<String,String> genKeys = template.insert("insertQuery",
