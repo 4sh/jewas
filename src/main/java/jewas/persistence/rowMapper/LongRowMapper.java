@@ -9,6 +9,6 @@ import java.sql.SQLException;
 public class LongRowMapper implements RowMapper<Long> {
     @Override
     public Long processRow(ResultSet rs) throws SQLException {
-        return rs.getLong(0);
+        return rs.getLong(1);
     }
 }
