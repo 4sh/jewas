@@ -101,7 +101,7 @@ public class DBAccessTest {
         template.addQuery("selectAll", "select * from test");
 
         List<TestEntry> allEntries = new ArrayList<TestEntry>();
-        template.selectObjectsAndFill(allEntries, "selectAll", new QueryExecutionContext());
+        template.select(allEntries, "selectAll", new QueryExecutionContext());
         assertThat(allEntries.size(), is(equalTo(3)));
     }
 
@@ -123,11 +123,11 @@ public class DBAccessTest {
         template.addQuery("selectWithIdAndName", "select id, name, last_name, age from test where id > :minId and name in :nameWhiteList");
 
         List<TestEntry> entries = new ArrayList<TestEntry>();
-        template.selectObjectsAndFill(entries, "selectWithIdAndName",
+        template.select(entries, "selectWithIdAndName",
                 new QueryExecutionContext().buildParams()
                         .integer("minId", 0)
                         .<String>array("nameWhiteList", "bar", "azerty")
-                .toContext()
+                        .toContext()
         );
 
         assertThat(entries.size(), is(equalTo(1)));
@@ -140,10 +140,10 @@ public class DBAccessTest {
         QueryTemplate<TestEntry> template = createQueryTemplate();
 
         List<TestEntry> entries = new ArrayList<TestEntry>();
-        template.selectObjectsAndFill(entries, "selectWithOptionalCriteria",
+        template.select(entries, "selectWithOptionalCriteria",
                 new QueryExecutionContext().buildParams()
                         .<Integer>array("idWhiteList", 2, 4)
-                .toContext()
+                        .toContext()
         );
 
         assertThat(entries.size(), is(equalTo(1)));
@@ -156,7 +156,7 @@ public class DBAccessTest {
         QueryTemplate<TestEntry> template = createQueryTemplate();
 
         List<TestEntry> entries = new ArrayList<TestEntry>();
-        template.selectObjectsAndFill(entries, "selectWithOptionalCriteria",
+        template.select(entries, "selectWithOptionalCriteria",
                 new QueryExecutionContext()
                 // Here, we don't fill the idWhiteList and expect the "and id in ..." clause won't be added to the request
         );

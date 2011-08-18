@@ -128,7 +128,7 @@ public class QueryTemplate<T> {
         return callback.rowsUpdated();
     }
 
-    public void selectObjectsAndFill(final List<T> objects, final String queryName, final QueryExecutionContext executionContext) {
+    public void select(final List<T> objects, final String queryName, final QueryExecutionContext executionContext) {
         // TODO: check @NonNull of objects with a specialized framework like CheckerFramework or Intellij implem ?
 
         execute(new OpenPreparedStatementInConnection(query(queryName), executionContext) {
@@ -144,7 +144,7 @@ public class QueryTemplate<T> {
 
     public T selectObject(String queryName, QueryExecutionContext executionContext) {
         List<T> unaryList = new ArrayList<T>(1);
-        selectObjectsAndFill(unaryList, queryName, executionContext);
+        select(unaryList, queryName, executionContext);
 
         // TODO: assert unaryList.size()<=1
         
