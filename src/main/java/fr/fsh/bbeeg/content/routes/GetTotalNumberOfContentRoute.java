@@ -11,9 +11,11 @@ import jewas.http.*;
  * To change this template use File | Settings | File Templates.
  */
 public class GetTotalNumberOfContentRoute extends AbstractRoute {
+    private ContentResource contentResource;
 
-    public GetTotalNumberOfContentRoute(){
+    public GetTotalNumberOfContentRoute(ContentResource _contentResource){
         super(HttpMethodMatcher.GET, new PatternUriPathMatcher("/content/count"));
+        contentResource = _contentResource;
     }
 
     @Override
@@ -21,7 +23,7 @@ public class GetTotalNumberOfContentRoute extends AbstractRoute {
         return new RequestHandler() {
             @Override
             public void onRequest(HttpRequest request) {
-                request.respondJson().object(ContentResource.getContentCount());
+                request.respondJson().object(contentResource.getContentCount());
             }
         };
     }

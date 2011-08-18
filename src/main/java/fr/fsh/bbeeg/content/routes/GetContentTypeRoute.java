@@ -2,8 +2,8 @@ package fr.fsh.bbeeg.content.routes;
 
 import com.google.gson.reflect.TypeToken;
 import fr.fsh.bbeeg.common.resources.LimitedOrderedQueryObject;
+import fr.fsh.bbeeg.content.pojos.ContentTypeResultObject;
 import fr.fsh.bbeeg.content.resources.ContentResource;
-import fr.fsh.bbeeg.content.resources.ContentType;
 import jewas.http.AbstractRoute;
 import jewas.http.HttpMethodMatcher;
 import jewas.http.HttpRequest;
@@ -17,8 +17,11 @@ import java.util.List;
  * @author driccio
  */
 public class GetContentTypeRoute extends AbstractRoute {
-    public GetContentTypeRoute(){
+    private ContentResource contentResource;
+
+    public GetContentTypeRoute(ContentResource _contentResource){
         super(HttpMethodMatcher.GET, new PatternUriPathMatcher("/content/type/[ordering]/[number]"));
+        contentResource = _contentResource;
     }
 
     @Override
@@ -28,7 +31,7 @@ public class GetContentTypeRoute extends AbstractRoute {
         return new RequestHandler() {
             @Override
             public void onRequest(HttpRequest request) {
-                request.respondJson().object(ContentResource.getContentType(qo), new TypeToken<List<ContentType>>(){}.getType());
+                request.respondJson().object(contentResource.getContentType(qo), new TypeToken<List<ContentTypeResultObject>>(){}.getType());
             }
         };
     }

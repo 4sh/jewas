@@ -1,13 +1,13 @@
-package fr.fsh.bbeeg.content.resources;
+package fr.fsh.bbeeg.content.pojos;
 
 /**
  * @author driccio
  */
-public class ContentType {
+public class ContentTypeResultObject {
     private Long id;
     private String title;
 
-    public ContentType id(Long _id){
+    public ContentTypeResultObject id(Long _id){
         this.id = _id;
         return this;
     }
@@ -16,7 +16,7 @@ public class ContentType {
         return this.id;
     }
 
-    public ContentType title(String _title){
+    public ContentTypeResultObject title(String _title){
         this.title = _title;
         return this;
     }

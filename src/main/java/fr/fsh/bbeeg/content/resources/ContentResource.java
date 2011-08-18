@@ -3,8 +3,14 @@ package fr.fsh.bbeeg.content.resources;
 import fr.fsh.bbeeg.common.resources.Author;
 import fr.fsh.bbeeg.common.resources.Count;
 import fr.fsh.bbeeg.common.resources.LimitedOrderedQueryObject;
-import fr.fsh.bbeeg.content.pojos.Content;
-import fr.fsh.bbeeg.content.pojos.TextContent;
+import fr.fsh.bbeeg.content.persistence.ContentDao;
+import fr.fsh.bbeeg.content.pojos.ContentDetail;
+import fr.fsh.bbeeg.content.pojos.ContentHeader;
+import fr.fsh.bbeeg.content.pojos.ContentType;
+import fr.fsh.bbeeg.content.pojos.ContentTypeResultObject;
+import fr.fsh.bbeeg.domain.pojos.Domain;
+import fr.fsh.bbeeg.user.pojos.User;
+import org.joda.time.DateMidnight;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,47 +19,32 @@ import java.util.List;
  * @author driccio
  */
 public class ContentResource {
-    public static List<ContentSearchResult> getAddedContent(LimitedOrderedQueryObject loqo) {
-        List<ContentSearchResult> list = new ArrayList<ContentSearchResult>();
+    private ContentDao contentDao;
 
-        for (int i = 0; i < loqo.number(); i++) {
-            ContentSearchResult csr = new ContentSearchResult();
-            csr.id(""+i).title("Nouveau contenu "+i);
-            list.add(csr);
-        }
-
-        return list;
+    public ContentResource(ContentDao _contentDao) {
+        contentDao = _contentDao;
     }
 
-    public static List<ContentSearchResult> getPopularContent(LimitedOrderedQueryObject loqo) {
-        List<ContentSearchResult> list = new ArrayList<ContentSearchResult>();
-
-        for (int i = 0; i < loqo.number(); i++) {
-            ContentSearchResult csr = new ContentSearchResult();
-            csr.id(""+i).title("Contenu "+i);
-            list.add(csr);
-        }
-
-        return list;
+    public List<ContentHeader> getAddedContent(LimitedOrderedQueryObject loqo) {
+        // TODO: check the ordering property
+        return contentDao.getRecentContent(loqo.number());
     }
 
-    public static List<ContentSearchResult> getViewedContent(LimitedOrderedQueryObject loqo) {
-        List<ContentSearchResult> list = new ArrayList<ContentSearchResult>();
-
-        for (int i = 0; i < loqo.number(); i++) {
-            ContentSearchResult csr = new ContentSearchResult();
-            csr.id(""+i).title("Contenu visualisé "+i);
-            list.add(csr);
-        }
-
-        return list;
+    public List<ContentHeader> getPopularContent(LimitedOrderedQueryObject loqo) {
+        // TODO: check the ordering property
+        return contentDao.getPopularContent(loqo.number());
     }
 
-    public static Count getContentCount() {
-        return new Count(367);
+    public List<ContentHeader> getViewedContent(LimitedOrderedQueryObject loqo) {
+        // TODO: check the ordering property
+        return contentDao.getLastViewedContent(loqo.number());
     }
 
-    public static List<Author> getAuthor(LimitedOrderedQueryObject loqo) {
+    public Count getContentCount() {
+        return contentDao.getTotalNumberOfContent();
+    }
+
+    public List<Author> getAuthor(LimitedOrderedQueryObject loqo) {
         List<Author> list = new ArrayList<Author>();
         int count;
 
@@ -72,31 +63,24 @@ public class ContentResource {
         return list;
     }
 
-    public static List<ContentType> getContentType(LimitedOrderedQueryObject loqo) {
-        List<ContentType> list = new ArrayList<ContentType>();
-        int count;
+    public List<ContentTypeResultObject> getContentType(LimitedOrderedQueryObject loqo) {
+        // TODO: check the ordering property
+        List<ContentTypeResultObject> results = new ArrayList<ContentTypeResultObject>();
+        ContentType[] contentTypes = ContentType.values();
 
-        if ("all".equals(loqo.ordering())) {
-            count = 18;
-        } else {
-            count = loqo.number();
+        for (int i = 0; i < contentTypes.length; i++) {
+            results.add(new ContentTypeResultObject().id(new Long(i)).title(contentTypes[i].name()));
         }
 
-        for (int i = 0; i < count; i++) {
-            ContentType type = new ContentType();
-            type.id(new Long(i)).title("Type " + i);
-            list.add(type);
-        }
-
-        return list;
+        return results;
     }
 
-    public static Content getContentById(Long contentId){
-        TextContent c = new TextContent();
+    public ContentHeader getContentById(Long contentId){
+        ContentDetail c = new ContentDetail();
         c.id(Long.valueOf(1234));
-        c.author("4sh");
+        c.author(new User().name("4sh"));
         c.title("Lorem Ipsum");
-        c.text("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas luctus lectus sed nulla " +
+        c.description("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas luctus lectus sed nulla " +
                 "vestibulum nec volutpat ante ultrices. Etiam sed neque ipsum. Nulla nulla nisl, rutrum vel luctus " +
                 "at, hendrerit at tellus. Aliquam rutrum risus eget libero porta congue. Nunc porta augue in " +
                 "felis fringilla nec accumsan nunc aliquam. Cras ac volutpat arcu. Phasellus diam erat, rutrum " +
@@ -105,5 +89,18 @@ public class ContentResource {
                 "et netus et malesuada fames ac turpis egestas. Nullam vitae sollicitudin diam.");
 
         return c;
+    }
+
+    public void createTextContent(String title, List<Domain> domains) {
+        ContentDetail fileContent = new ContentDetail();
+
+        fileContent.title(title)
+                .domains(domains)
+                .creationDate(new DateMidnight().toDate())
+                .lastModificationDate(new DateMidnight().toDate())
+                .published(false)
+                .author();
+
+        // TODO
     }
 }

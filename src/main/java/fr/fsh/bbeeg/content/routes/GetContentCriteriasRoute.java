@@ -1,6 +1,7 @@
 package fr.fsh.bbeeg.content.routes;
 
 import com.google.gson.reflect.TypeToken;
+import fr.fsh.bbeeg.content.resources.ContentResource;
 import jewas.http.*;
 
 import java.util.ArrayList;
@@ -10,9 +11,11 @@ import java.util.List;
  * @author fcamblor
  */
 public class GetContentCriteriasRoute extends AbstractRoute {
+    private ContentResource contentResource;
 
-    public GetContentCriteriasRoute(){
+    public GetContentCriteriasRoute(ContentResource _contentResource){
         super(HttpMethodMatcher.GET, new PatternUriPathMatcher("/content/criterias"));
+        contentResource = _contentResource;
     }
 
     public static class QueryObject{

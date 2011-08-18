@@ -6,10 +6,6 @@ package fr.fsh.bbeeg.common.resources;
 public class Count {
     private Integer count;
 
-    public Count(Integer count) {
-        this.count = count;
-    }
-
     public Count count(Integer _count){
         this.count = _count;
         return this;

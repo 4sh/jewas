@@ -4,7 +4,17 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import fr.fsh.bbeeg.common.CliOptions;
 import fr.fsh.bbeeg.common.config.BBEEGConfiguration;
-import fr.fsh.bbeeg.content.routes.*;
+import fr.fsh.bbeeg.content.routes.CreateContentRoute;
+import fr.fsh.bbeeg.content.routes.GetAddedContentRoute;
+import fr.fsh.bbeeg.content.routes.GetAdvancedSearchContent;
+import fr.fsh.bbeeg.content.routes.GetAuthorContentRoute;
+import fr.fsh.bbeeg.content.routes.GetContentCriteriasRoute;
+import fr.fsh.bbeeg.content.routes.GetContentTypeRoute;
+import fr.fsh.bbeeg.content.routes.GetPopularContentRoute;
+import fr.fsh.bbeeg.content.routes.GetSimpleSearchContent;
+import fr.fsh.bbeeg.content.routes.GetTotalNumberOfContentRoute;
+import fr.fsh.bbeeg.content.routes.GetViewContentRoute;
+import fr.fsh.bbeeg.content.routes.GetViewedContentRoute;
 import fr.fsh.bbeeg.domain.routes.GetPopularDomainRoute;
 import fr.fsh.bbeeg.security.routes.PostConnectionRoute;
 import fr.fsh.bbeeg.user.routes.GetLastConnectionDateRoute;
@@ -15,6 +25,13 @@ import jewas.routes.RedirectRoute;
 import jewas.routes.SimpleFileRoute;
 import jewas.routes.SimpleHtmlRoute;
 import jewas.routes.StaticResourcesRoute;
+import jewas.util.file.Files;
+
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -25,7 +42,7 @@ import jewas.routes.StaticResourcesRoute;
  */
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ClassNotFoundException, SQLException, IOException {
         CliOptions options = new CliOptions();
         try {
             JCommander jcommander = new JCommander(options, args);
@@ -38,6 +55,14 @@ public class Main {
         // Registering cli options
         BBEEGConfiguration.INSTANCE.cliOptions(options);
 
+org.h2.tools.Server.createWebServer(null).start();
+        Class.forName("org.h2.Driver");
+        Connection dbInitializationConnection = DriverManager.getConnection("jdbc:h2:mem:mytest", "sa", "");
+        ScriptRunner sr = new ScriptRunner(dbInitializationConnection, true, true);
+        sr.runScript(new InputStreamReader(Files.getInputStreamFromPath("fr/fsh/bbeeg/bbeeg_script.sql")));
+
+        Assembler assembler = new Assembler();
+
         final RestServer rs = RestServerFactory.createRestServer(options.httpPort());
         rs.addRoutes(
                 new RedirectRoute("/", "/dashboard/dashboard.html"),
@@ -46,25 +71,25 @@ public class Main {
                 new SimpleFileRoute("/public/js/jewas/jewas-forms.js", "js/jewas-forms.js"),
                 new StaticResourcesRoute("/public/", "public/"),
                 new SimpleHtmlRoute("/dashboard/dashboard.html", "dashboard/dashboard.ftl"),
-                new GetSimpleSearchContent(),
+                new GetSimpleSearchContent(assembler.contentResource()),
                 new SimpleHtmlRoute("/content/search.html", "content/search.ftl"),
                 new SimpleHtmlRoute("/content/text/create.html", "content/create-text.ftl"),
-                new CreateContentRoute(),
-                new GetAddedContentRoute(),
-                new GetViewedContentRoute(),
-                new GetPopularContentRoute(),
+                new CreateContentRoute(assembler.contentResource()),
+                new GetAddedContentRoute(assembler.contentResource()),
+                new GetViewedContentRoute(assembler.contentResource()),
+                new GetPopularContentRoute(assembler.contentResource()),
                 new GetLastConnectionDateRoute(),
-                new GetTotalNumberOfContentRoute(),
-                new GetAuthorContentRoute(),
+                new GetTotalNumberOfContentRoute(assembler.contentResource()),
+                new GetAuthorContentRoute(assembler.contentResource()),
                 new GetPopularDomainRoute(),
                 new SimpleHtmlRoute("/user/profile.html", "user/profile.ftl"),
                 new GetUserInformationsRoute(),
                 new SimpleHtmlRoute("/login.html", "login.ftl"),
                 new PostConnectionRoute(),
-                new GetContentTypeRoute(),
-                new GetContentCriteriasRoute(),
-                new GetAdvancedSearchContent(),
-                new GetViewContentRoute()
+                new GetContentTypeRoute(assembler.contentResource()),
+                new GetContentCriteriasRoute(assembler.contentResource()),
+                new GetAdvancedSearchContent(assembler.contentResource()),
+                new GetViewContentRoute(assembler.contentResource())
         ).start();
         System.out.println("Ready, if you dare");
     }

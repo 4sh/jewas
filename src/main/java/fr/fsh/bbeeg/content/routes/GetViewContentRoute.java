@@ -17,8 +17,11 @@ import java.util.Map;
  * @author driccio
  */
 public class GetViewContentRoute extends AbstractRoute {
-    public GetViewContentRoute(){
+    private ContentResource contentResource;
+
+    public GetViewContentRoute(ContentResource _contentResource){
         super(HttpMethodMatcher.GET, new PatternUriPathMatcher("/content/[id]/view.html"));
+        contentResource = _contentResource;
     }
 
     @Override
@@ -29,7 +32,7 @@ public class GetViewContentRoute extends AbstractRoute {
             @Override
             public void onRequest(HttpRequest request) {
                 Map<String, Object> params = new HashMap<String, Object>();
-                params.put("content", ContentResource.getContentById(oi.id()));
+                params.put("content", contentResource.getContentById(oi.id()));
                 request.respondHtml().content(Templates.process("content/view.ftl", params));
             }
         };

@@ -16,9 +16,11 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class GetAuthorContentRoute extends AbstractRoute {
+    private ContentResource contentResource;
 
-    public GetAuthorContentRoute(){
+    public GetAuthorContentRoute(ContentResource _contentResource){
         super(HttpMethodMatcher.GET, new PatternUriPathMatcher("/content/author/[ordering]/[number]"));
+        contentResource = _contentResource;
     }
 
     @Override
@@ -28,7 +30,7 @@ public class GetAuthorContentRoute extends AbstractRoute {
         return new RequestHandler() {
             @Override
             public void onRequest(HttpRequest request) {
-                request.respondJson().object(ContentResource.getAuthor(qo), new TypeToken<List<Author>>(){}.getType());
+                request.respondJson().object(contentResource.getAuthor(qo), new TypeToken<List<Author>>(){}.getType());
             }
         };
     }

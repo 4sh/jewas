@@ -14,7 +14,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="jewas" />
     <orderEntry type="library" name="gradle-1.0-milestone-3" level="application" />
     <orderEntry type="module-library" exported="">
       <library>
@@ -50,11 +49,11 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/cache/org.jboss.netty/netty/bundles/netty-3.2.5.Final.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/cache/org.jboss.netty/netty/bundles/netty-4.0.0.Alpha0-4sh.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/cache/org.jboss.netty/netty/sources/netty-3.2.5.Final-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/cache/org.jboss.netty/netty/sources/netty-4.0.0.Alpha0-4sh-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -99,6 +98,28 @@
         <JAVADOC />
         <SOURCES>
           <root url="jar://$USER_HOME$/.gradle/cache/com.beust/jcommander/sources/jcommander-1.17-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/cache/commons-dbcp/commons-dbcp/jars/commons-dbcp-1.4.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/cache/commons-dbcp/commons-dbcp/sources/commons-dbcp-1.4-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/cache/commons-pool/commons-pool/jars/commons-pool-1.5.4.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/cache/commons-pool/commons-pool/sources/commons-pool-1.5.4-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -159,7 +180,9 @@
           <root url="jar://$USER_HOME$/.gradle/cache/org.apache.ant/ant/jars/ant-1.7.0.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/cache/org.apache.ant/ant/sources/ant-1.7.0-sources.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" scope="TEST">

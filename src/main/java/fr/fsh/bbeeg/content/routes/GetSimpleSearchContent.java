@@ -2,6 +2,7 @@ package fr.fsh.bbeeg.content.routes;
 
 import com.google.gson.reflect.TypeToken;
 import fr.fsh.bbeeg.common.resources.SearchInfo;
+import fr.fsh.bbeeg.content.resources.ContentResource;
 import fr.fsh.bbeeg.content.resources.ContentSearchResult;
 import jewas.http.*;
 
@@ -13,8 +14,11 @@ import java.util.List;
  * @author fcamblor
  */
 public class GetSimpleSearchContent extends AbstractRoute {
-    public GetSimpleSearchContent() {
+    private ContentResource contentResource;
+
+    public GetSimpleSearchContent(ContentResource _contentResource) {
         super(HttpMethodMatcher.GET, new PatternUriPathMatcher("/content/search"));
+        contentResource = _contentResource;
     }
 
     // FIXME : to externalize into resources package (when ContentQueryObject will have been renamed)
