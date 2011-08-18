@@ -12,6 +12,9 @@ public class Converters {
 		if (clazz == Integer.class) {
 			return (Converter<String, T>) new IntegerConverter();
 		}
+        if (clazz == Long.class) {
+			return (Converter<String, T>) new LongConverter();
+		}
 		return new Converter<String, T>() {
 			@Override
 			public T to(String from) {
