@@ -17,15 +17,18 @@ import org.jboss.netty.handler.codec.http.HttpPostRequestDecoder;
 import org.jboss.netty.handler.codec.http.InterfaceHttpData;
 import org.jboss.netty.handler.codec.http.QueryStringDecoder;
 
-import java.io.IOException;
-import java.util.*;
-import java.util.Map.Entry;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public final class DefaultHttpRequest implements HttpRequest {
 	private final HttpMethod method;
 	private final String uri;
 	private final Headers headers;
+    private final ByteBuffer content;
 
 	// computed fields
 	private final String path;
@@ -41,6 +44,7 @@ public final class DefaultHttpRequest implements HttpRequest {
 		this.uri = request.getUri();
 		this.headers = new Headers(request.getHeaders());
 		this.response = response;
+        this.content = request.getContent().toByteBuffer();
 		
 		QueryStringDecoder queryStringDecoder = new QueryStringDecoder(uri);
 		path = queryStringDecoder.getPath();
@@ -156,9 +160,10 @@ public final class DefaultHttpRequest implements HttpRequest {
 	public Parameters parameters() {
 		return parameters;
 	}
-	
-	
-	
+
+    public ByteBuffer content() {
+        return content;
+    }
 	
 //	public boolean isKeepAlive() {
 //        String connection = getHeader(Names.CONNECTION);
