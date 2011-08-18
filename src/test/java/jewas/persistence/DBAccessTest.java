@@ -1,5 +1,6 @@
 package jewas.persistence;
 
+import jewas.persistence.rowMapper.RowMapper;
 import jewas.persistence.util.JDBCUtils;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.junit.AfterClass;

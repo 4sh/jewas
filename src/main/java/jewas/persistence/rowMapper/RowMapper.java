@@ -1,4 +1,4 @@
-package jewas.persistence;
+package jewas.persistence.rowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

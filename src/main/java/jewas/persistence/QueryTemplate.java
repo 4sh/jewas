@@ -2,6 +2,8 @@ package jewas.persistence;
 
 import jewas.persistence.exception.CannotGetJDBCConnectionException;
 import jewas.persistence.exception.DataAccessException;
+import jewas.persistence.rowMapper.LongRowMapper;
+import jewas.persistence.rowMapper.RowMapper;
 import jewas.persistence.util.JDBCUtils;
 
 import javax.sql.DataSource;
@@ -9,7 +11,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author fcamblor
@@ -128,7 +133,8 @@ public class QueryTemplate<T> {
         return callback.rowsUpdated();
     }
 
-    public void select(final List<T> objects, final String queryName, final QueryExecutionContext executionContext) {
+    private <U> void select(final List<U> objects, final String queryName,
+                        final QueryExecutionContext executionContext, final RowMapper<U> rowMapper) {
         // TODO: check @NonNull of objects with a specialized framework like CheckerFramework or Intellij implem ?
 
         execute(new OpenPreparedStatementInConnection(query(queryName), executionContext) {
@@ -142,17 +148,30 @@ public class QueryTemplate<T> {
         });
     }
 
-    public T selectObject(String queryName, QueryExecutionContext executionContext) {
-        List<T> unaryList = new ArrayList<T>(1);
-        select(unaryList, queryName, executionContext);
+    private <U> U selectObject(String queryName, QueryExecutionContext executionContext,
+                               RowMapper<U> rowMapper) {
+        List<U> unaryList = new ArrayList<U>(1);
+        select(unaryList, queryName, executionContext, rowMapper);
 
         // TODO: assert unaryList.size()<=1
-        
+
         if(unaryList.size() == 0){
             return null;
         } else {
             return unaryList.iterator().next();
         }
+    }
+
+    public void select(final List<T> objects, final String queryName, final QueryExecutionContext executionContext) {
+        select(objects, queryName, executionContext, rowMapper);
+    }
+
+    public T selectObject(String queryName, QueryExecutionContext executionContext) {
+        return selectObject(queryName, executionContext, rowMapper);
+    }
+
+    public Long selectLong(String queryName, QueryExecutionContext executionContext) {
+        return selectObject(queryName, executionContext, new LongRowMapper());
     }
 
     public void insert(final String queryName, final QueryExecutionContext executionContext){
