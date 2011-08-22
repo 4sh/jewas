@@ -25,7 +25,7 @@ public class DomainDao {
         this.domainQueryTemplate =
                 new QueryTemplate<Domain>(dataSource, new DomainToReadRowMapper())
                         .addQuery("selectById", "select * from Domain where id = :id")
-                        .addQuery("selectByIds", "select * from Domain where id in (:id)")
+                        .addQuery("selectByIds", "select * from Domain where id in (:ids)")
                         .addQuery("selectAll", "select * from Domain")
                         .addQuery("selectLimitedPopular", // TODO: change request or remove it. Use elasticSearch insteed
                                 "select * from (select * from Domain) " +
