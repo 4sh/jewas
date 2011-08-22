@@ -68,14 +68,14 @@ public class ContentDao {
     }
 
     public ContentDetail getContentDetail(Long id) {
-        // TODO
-//        ContentHeader ctr = contentHeaderQueryTemplate.selectObject("selectById",
-//                new QueryExecutionContext().buildParams()
-//                        .bigint("id", id)
-//                        .toContext()
-//        );
 
-        return null;
+        ContentHeader contentHeader = contentHeaderQueryTemplate.selectObject("selectById",
+                new QueryExecutionContext().buildParams()
+                        .bigint("id", id)
+                        .toContext()
+        );
+
+        return new ContentDetail().header(contentHeader).url("/content/content/" + contentHeader.id());
     }
 
     public List<ContentHeader> getAllContentToRead() {

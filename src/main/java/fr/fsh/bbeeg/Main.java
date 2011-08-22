@@ -11,6 +11,7 @@ import fr.fsh.bbeeg.content.routes.GetAddedContentRoute;
 import fr.fsh.bbeeg.content.routes.GetAdvancedSearchContent;
 import fr.fsh.bbeeg.content.routes.GetAuthorContentRoute;
 import fr.fsh.bbeeg.content.routes.GetContentCriteriasRoute;
+import fr.fsh.bbeeg.content.routes.GetContentOfContentRoute;
 import fr.fsh.bbeeg.content.routes.GetContentTypeRoute;
 import fr.fsh.bbeeg.content.routes.GetPopularContentRoute;
 import fr.fsh.bbeeg.content.routes.GetSimpleSearchContent;
@@ -78,6 +79,7 @@ org.h2.tools.Server.createWebServer(null).start();
                 new CreateContentOfContentRoute(assembler.contentResource()),
                // new GetCreateContentRoute(assembler.contentResource()),
                 new CreateTextContentRoute(assembler.contentResource()),
+                new GetContentOfContentRoute(assembler.contentResource()),
                 new SimpleHtmlRoute("/content/text/create.html", "content/create-text.ftl"),
                 new EditContentRoute(assembler.contentResource()),
                 new GetAddedContentRoute(assembler.contentResource()),
