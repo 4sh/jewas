@@ -31,4 +31,36 @@ $(function() {
     });
 
     $("#domains").chosen();
+
+    $("#createContent").submit(function(){
+        var form = this;
+
+        var contentDetail = {
+            header: {
+                title: $("#title").val(),
+                description: $("#description").val(),
+                domains: getDomains($("#domains").val())
+            }
+        }
+
+        $.put(form.action,
+            JSON.stringify(contentDetail),
+            function(data){
+                $.put('/content/content/' + $.parseJSON(data).id,
+                    $('#content')[0].value,
+                    function(data){
+                        $("#confirmationDialog").dialog('open');
+                        setTimeout(function(){
+                            $("#confirmationDialog").dialog('close');
+                        }, 2000);
+                        form.reset();
+                    }
+                );
+            },
+            'text'
+        );
+
+
+        return false;
+    });
 });

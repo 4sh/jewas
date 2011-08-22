@@ -5,13 +5,13 @@ import com.beust.jcommander.ParameterException;
 import fr.fsh.bbeeg.common.CliOptions;
 import fr.fsh.bbeeg.common.config.BBEEGConfiguration;
 import fr.fsh.bbeeg.content.routes.CreateContentOfContentRoute;
+import fr.fsh.bbeeg.content.routes.CreateTextContentRoute;
 import fr.fsh.bbeeg.content.routes.EditContentRoute;
 import fr.fsh.bbeeg.content.routes.GetAddedContentRoute;
 import fr.fsh.bbeeg.content.routes.GetAdvancedSearchContent;
 import fr.fsh.bbeeg.content.routes.GetAuthorContentRoute;
 import fr.fsh.bbeeg.content.routes.GetContentCriteriasRoute;
 import fr.fsh.bbeeg.content.routes.GetContentTypeRoute;
-import fr.fsh.bbeeg.content.routes.GetCreateContentRoute;
 import fr.fsh.bbeeg.content.routes.GetPopularContentRoute;
 import fr.fsh.bbeeg.content.routes.GetSimpleSearchContent;
 import fr.fsh.bbeeg.content.routes.GetTotalNumberOfContentRoute;
@@ -76,7 +76,9 @@ org.h2.tools.Server.createWebServer(null).start();
                 new GetSimpleSearchContent(assembler.contentResource()),
                 new SimpleHtmlRoute("/content/search.html", "content/search.ftl"),
                 new CreateContentOfContentRoute(assembler.contentResource()),
-                new GetCreateContentRoute(assembler.contentResource()),
+               // new GetCreateContentRoute(assembler.contentResource()),
+                new CreateTextContentRoute(assembler.contentResource()),
+                new SimpleHtmlRoute("/content/text/create.html", "content/create-text.ftl"),
                 new EditContentRoute(assembler.contentResource()),
                 new GetAddedContentRoute(assembler.contentResource()),
                 new GetViewedContentRoute(assembler.contentResource()),

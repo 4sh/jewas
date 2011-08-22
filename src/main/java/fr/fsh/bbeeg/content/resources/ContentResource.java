@@ -104,8 +104,8 @@ public class ContentResource {
         contentDao.updateContent(contentDetail);
     }
 
-    public Long createContent(ContentType contentType) {
-        return contentDao.createContent(contentType);
+    public Long createContent(ContentDetail contentDetail) {
+        return contentDao.createContent(contentDetail);
     }
 
     public void updateContentOfContent(Long contentId, String contentType, ByteBuffer content) {

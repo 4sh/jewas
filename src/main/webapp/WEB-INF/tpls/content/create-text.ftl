@@ -11,38 +11,6 @@
                         "/public/js/jewas/jewas-forms.js",
                         "/public/js/bbeeg/content/create-text.js"]
                stylesheets=["/public/css/chosen/chosen.css"]>
-    <script type="text/javascript">
-        $(function() {
-            $("#createContent").submit(function(){
-                var form = this;
-
-                var contentDetail = {
-                    header: {
-                        title: $("#title").val(),
-                        description: $("#description").val(),
-                        domains: getDomains($("#domains").val())
-                    }
-                }
-
-                $.put('/content/content/${contentId?c}',
-                        $('#content')[0].value,
-                        function(data){
-                            $.put(form.action, JSON.stringify(contentDetail), function(data){
-                                $("#confirmationDialog").dialog('open');
-                                setTimeout(function(){
-                                    $("#confirmationDialog").dialog('close');
-                                }, 2000);
-                                form.reset();
-                            });
-                        },
-                        'text'
-                );
-
-
-                return false;
-            });
-        });
-    </script>
 
     <script id="domainItemTemplate" type="text/x-jquery-tmpl">
         <option value="{{= id}}"> {{= label}} </option>
@@ -55,7 +23,7 @@
 
     <h3>Création d'un contenu</h3>
 
-    <form id="createContent" action="/content/${contentId?c}" method="post">
+    <form id="createContent" action="/content/text" method="post">
         <p>Auteur : toto</p>
         <p><label for="title">Titre</label> : <input type="text" id="title" name="title" /></p>
         <p><label for="content">Description</label> :<br/><textarea rows="3" cols="100" id="description" name="description"></textarea></p>

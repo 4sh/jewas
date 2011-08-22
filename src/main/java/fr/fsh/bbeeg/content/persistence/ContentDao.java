@@ -50,8 +50,8 @@ public class ContentDao {
                                         "(select * from Content) " +
                                         "where ROWNUM <= :limit")
                         .addQuery("count", "select count(*) as COUNT from Content")
-                        .addQuery("insertForCreation", "INSERT INTO CONTENT (ID, CREATION_DATE, LAST_MODIFICATION_DATE, PUBLISHED, CONTENT_TYPE, AUTHOR_REF) " +
-                                "VALUES (CONTENT_SEQ.nextval, CURRENT_DATE, CURRENT_DATE, 0, :contentType, :authorId)")
+                        .addQuery("insert", "INSERT INTO CONTENT (ID, TITLE, DESCRIPTION, CREATION_DATE, LAST_MODIFICATION_DATE, PUBLISHED, CONTENT_TYPE, AUTHOR_REF) " +
+                                "VALUES (CONTENT_SEQ.nextval, :title, :description, CURRENT_DATE, CURRENT_DATE, 0, :contentType, :authorId)")
                         .addQuery("updateContentUrl", "UPDATE CONTENT SET FILE_URI = :url WHERE ID = :id")
                         .addQuery("updateContent", "UPDATE CONTENT SET TITLE = :title, DESCRIPTION = :description WHERE ID = :id")
                         .addQuery("addLinkWithDomain", "INSERT INTO CONTENT_DOMAIN (CONTENT_REF, DOMAIN_REF) VALUES (:contentId, :domainId)")
@@ -121,14 +121,25 @@ public class ContentDao {
         );
     }
 
-    public Long createContent(ContentType contentType) {
+    public Long createContent(ContentDetail contentDetail) {
         Map<String, String> genKeys =
-                contentHeaderQueryTemplate.insert("insertForCreation",
+                contentHeaderQueryTemplate.insert("insert",
                         new QueryExecutionContext().buildParams()
-                                .integer("contentType", contentType.ordinal())
+                                .string("title", contentDetail.header().title())
+                                .string("description", contentDetail.header().description())
+                                .integer("contentType", contentDetail.header().type().ordinal())
                                 .bigint("authorId", 1000) // TODO: change 0 with the current connected user id
                                 .toContext(),
                         "id");
+
+        for (Domain domain : contentDetail.header().domains()) {
+            contentHeaderQueryTemplate.insert("addLinkWithDomain",
+                    new QueryExecutionContext().buildParams()
+                            .bigint("contentId", Long.valueOf(genKeys.get("id")))
+                            .bigint("domainId", domain.id())
+                            .toContext());
+        }
+
         return Long.valueOf(genKeys.get("id"));
     }
 

@@ -2,6 +2,7 @@ package fr.fsh.bbeeg.content.routes;
 
 import fr.fsh.bbeeg.common.resources.ObjectId;
 import fr.fsh.bbeeg.content.pojos.ContentDetail;
+import fr.fsh.bbeeg.content.pojos.ContentType;
 import fr.fsh.bbeeg.content.resources.ContentResource;
 import jewas.http.AbstractRoute;
 import jewas.http.HttpMethodMatcher;
@@ -16,39 +17,29 @@ import java.nio.ByteBuffer;
 /**
  * @author fcamblor
  */
-public class EditContentRoute extends AbstractRoute {
+public class CreateTextContentRoute extends AbstractRoute {
     private ContentResource contentResource;
 
-    public EditContentRoute(ContentResource _contentResource){
-        super(HttpMethodMatcher.POST, new PatternUriPathMatcher("/content/[id]"));
+    public CreateTextContentRoute(ContentResource _contentResource){
+        super(HttpMethodMatcher.PUT, new PatternUriPathMatcher("/content/text"));
         contentResource = _contentResource;
     }
 
     @Override
     protected RequestHandler onMatch(HttpRequest request, Parameters parameters) {
-        final ObjectId oi = toQueryObject(parameters, ObjectId.class);
-
         return new RequestHandler() {
             @Override
             public void onRequest(HttpRequest request) {
-                // TODO: to complete !
-//                ContentDetail contentDetail = new ContentDetail().header(
-//                        new ContentHeader().id(oi.id())
-//                                .title(request.parameters().val("title"))
-//                                .description(request.parameters().val("description"))
-//                );
-
                 ByteBuffer bytebuff = request.content();
                 byte[] bytearray = new byte[bytebuff.remaining()];
                 bytebuff.get(bytearray);
                 String text = new String(bytearray);
 
                 ContentDetail contentDetail = (ContentDetail) Json.instance().fromJsonString(text, ContentDetail.class);
-                contentDetail.header().id(oi.id());
+                contentDetail.header().type(ContentType.TEXT);
 
-                contentResource.updateContent(contentDetail);
-
-                request.respondJson().object("Ok");
+                Long id = contentResource.createContent(contentDetail);
+                request.respondJson().object(new ObjectId().id(id));
             }
         };
     }
