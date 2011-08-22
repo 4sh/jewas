@@ -14,7 +14,7 @@ public class ContentHeader {
     private String title;
     private Date creationDate;
     private Date lastModificationDate;
-    private Boolean published;
+    private ContentStatus status;
     private String description;
 
     private ContentType type;
@@ -68,13 +68,13 @@ public class ContentHeader {
         return this.lastModificationDate;
     }
 
-    public ContentHeader published(Boolean _published){
-        this.published = _published;
+    public ContentHeader status(ContentStatus _status){
+        this.status = _status;
         return this;
     }
 
-    public Boolean published(){
-        return this.published;
+    public ContentStatus status(){
+        return this.status;
     }
 
     public ContentHeader description(String _description){

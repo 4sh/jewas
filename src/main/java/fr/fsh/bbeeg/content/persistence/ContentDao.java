@@ -3,6 +3,7 @@ package fr.fsh.bbeeg.content.persistence;
 import fr.fsh.bbeeg.common.resources.Count;
 import fr.fsh.bbeeg.content.pojos.ContentDetail;
 import fr.fsh.bbeeg.content.pojos.ContentHeader;
+import fr.fsh.bbeeg.content.pojos.ContentStatus;
 import fr.fsh.bbeeg.content.pojos.ContentType;
 import fr.fsh.bbeeg.domain.persistence.DomainDao;
 import fr.fsh.bbeeg.domain.pojos.Domain;
@@ -50,12 +51,18 @@ public class ContentDao {
                                         "(select * from Content) " +
                                         "where ROWNUM <= :limit")
                         .addQuery("count", "select count(*) as COUNT from Content")
-                        .addQuery("insert", "INSERT INTO CONTENT (ID, TITLE, DESCRIPTION, CREATION_DATE, LAST_MODIFICATION_DATE, PUBLISHED, CONTENT_TYPE, AUTHOR_REF) " +
+                        .addQuery("insert", "INSERT INTO CONTENT (ID, TITLE, DESCRIPTION, CREATION_DATE, LAST_MODIFICATION_DATE, STATUS, CONTENT_TYPE, AUTHOR_REF) " +
                                 "VALUES (CONTENT_SEQ.nextval, :title, :description, CURRENT_DATE, CURRENT_DATE, 0, :contentType, :authorId)")
-                        .addQuery("updateContentUrl", "UPDATE CONTENT SET FILE_URI = :url WHERE ID = :id")
-                        .addQuery("updateContent", "UPDATE CONTENT SET TITLE = :title, DESCRIPTION = :description WHERE ID = :id")
-                        .addQuery("addLinkWithDomain", "INSERT INTO CONTENT_DOMAIN (CONTENT_REF, DOMAIN_REF) VALUES (:contentId, :domainId)")
-                        .addQuery("removeLinkWithDomain", "DELETE FROM CONTENT_DOMAIN WHERE CONTENT_REF = :contentId AND DOMAIN_REF = :domainId");
+                        .addQuery("updateContentUrl", "UPDATE CONTENT " +
+                                "SET FILE_URI = :url, STATUS = 0, LAST_MODIFICATION_DATE = CURRENT_DATE " +
+                                "WHERE ID = :id")
+                        .addQuery("updateContent", "UPDATE CONTENT " +
+                                "SET TITLE = :title, DESCRIPTION = :description, STATUS = 0, LAST_MODIFICATION_DATE = CURRENT_DATE " +
+                                "WHERE ID = :id")
+                        .addQuery("addLinkWithDomain", "INSERT INTO CONTENT_DOMAIN (CONTENT_REF, DOMAIN_REF) " +
+                                "VALUES (:contentId, :domainId)")
+                        .addQuery("removeLinkWithDomain", "DELETE FROM CONTENT_DOMAIN " +
+                                "WHERE CONTENT_REF = :contentId AND DOMAIN_REF = :domainId");
 
 //        this.contentDetailQueryTemplate = new QueryTemplate<ContentDetail>(dataSource, new ContentDetailRowMapper())
 //                        .addQuery("selectById", "select * from Content where id = :id");
@@ -215,7 +222,7 @@ public class ContentDao {
                     .id(rs.getLong("ID"))
                     .title(rs.getString("TITLE"))
                     .description(rs.getString("DESCRIPTION"))
-                    .published(rs.getBoolean("PUBLISHED"))
+                    .status(ContentStatus.values()[rs.getInt("STATUS")])
                     .creationDate(rs.getDate("CREATION_DATE"))
                     .lastModificationDate(rs.getDate("LAST_MODIFICATION_DATE"))
                     .type(ContentType.values()[rs.getInt("CONTENT_TYPE")])
