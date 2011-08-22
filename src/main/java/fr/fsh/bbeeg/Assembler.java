@@ -4,6 +4,7 @@ package fr.fsh.bbeeg;
 import fr.fsh.bbeeg.content.persistence.ContentDao;
 import fr.fsh.bbeeg.content.resources.ContentResource;
 import fr.fsh.bbeeg.domain.persistence.DomainDao;
+import fr.fsh.bbeeg.domain.resources.DomainResource;
 import fr.fsh.bbeeg.i18n.persistence.I18nDao;
 import fr.fsh.bbeeg.user.persistence.UserDao;
 import org.apache.commons.dbcp.BasicDataSource;
@@ -25,6 +26,7 @@ public class Assembler {
 
     /* Resources */
     private ContentResource contentResource;
+    private DomainResource domainResource;
 
     public Assembler() {
         dataSource = createDatasource();
@@ -35,6 +37,7 @@ public class Assembler {
         contentDao = new ContentDao(dataSource, userDao, domainDao);
 
         contentResource = new ContentResource(contentDao);
+        domainResource = new DomainResource(domainDao);
     }
 
     private DataSource createDatasource() {
@@ -49,5 +52,9 @@ public class Assembler {
     /* ***** Resources ***** */
     public ContentResource contentResource() {
         return contentResource;
+    }
+
+    public DomainResource domainResource() {
+        return domainResource;
     }
 }

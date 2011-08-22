@@ -5,7 +5,7 @@ CREATE SEQUENCE CONTENT_SEQ INCREMENT BY 1 START WITH 1000;
 
 
 
-CREATE TABLE I18N_KEY (
+CREATE TABLE I18N_TABLE (
                 I18N_KEY CHAR(50) NOT NULL,
                 LANGUAGE CHAR(2) NOT NULL,
                 LABEL VARCHAR(200) NOT NULL,
@@ -39,14 +39,14 @@ CREATE TABLE USER (
 
 CREATE TABLE CONTENT (
                 ID INT(10) NOT NULL,
-                TITLE CHAR(100) NOT NULL,
+                TITLE CHAR(100),
                 CREATION_DATE DATE NOT NULL,
                 LAST_MODIFICATION_DATE DATE NOT NULL,
                 PUBLISHED BOOLEAN NOT NULL,
                 DESCRIPTION VARCHAR(200),
 				CONTENT_TYPE INT(2) NOT NULL,
                 AUTHOR_REF INT(10) NOT NULL,
-                FILE_URI CHAR(100) NOT NULL,
+                FILE_URI CHAR(100),
                 PRIMARY KEY (ID)
 );
 
@@ -99,15 +99,15 @@ ON DELETE NO ACTION
 ON UPDATE NO ACTION;
 
 
-INSERT INTO I18N_KEY (I18N_KEY, LANGUAGE , LABEL) VALUES ('domain.domain1', 'fr', 'Domaine A');
-INSERT INTO I18N_KEY (I18N_KEY, LANGUAGE , LABEL) VALUES ('domain.domain2', 'fr', 'Domaine B');
-INSERT INTO I18N_KEY (I18N_KEY, LANGUAGE , LABEL) VALUES ('domain.domain3', 'fr', 'Domaine C');
-INSERT INTO I18N_KEY (I18N_KEY, LANGUAGE , LABEL) VALUES ('contentType.text', 'fr', 'Texte');
-INSERT INTO I18N_KEY (I18N_KEY, LANGUAGE , LABEL) VALUES ('contentType.image', 'fr', 'Image');
-INSERT INTO I18N_KEY (I18N_KEY, LANGUAGE , LABEL) VALUES ('contentType.video', 'fr', 'Video');
-INSERT INTO I18N_KEY (I18N_KEY, LANGUAGE , LABEL) VALUES ('contentType.audio', 'fr', 'Audio');
-INSERT INTO I18N_KEY (I18N_KEY, LANGUAGE , LABEL) VALUES ('contentType.document', 'fr', 'Document');
-INSERT INTO I18N_KEY (I18N_KEY, LANGUAGE , LABEL) VALUES ('contentType.eeg', 'fr', 'EEG');
+INSERT INTO I18N_TABLE (I18N_KEY, LANGUAGE , LABEL) VALUES ('domain.domain1', 'fr', 'Domaine A');
+INSERT INTO I18N_TABLE (I18N_KEY, LANGUAGE , LABEL) VALUES ('domain.domain2', 'fr', 'Domaine B');
+INSERT INTO I18N_TABLE (I18N_KEY, LANGUAGE , LABEL) VALUES ('domain.domain3', 'fr', 'Domaine C');
+INSERT INTO I18N_TABLE (I18N_KEY, LANGUAGE , LABEL) VALUES ('contentType.text', 'fr', 'Texte');
+INSERT INTO I18N_TABLE (I18N_KEY, LANGUAGE , LABEL) VALUES ('contentType.image', 'fr', 'Image');
+INSERT INTO I18N_TABLE (I18N_KEY, LANGUAGE , LABEL) VALUES ('contentType.video', 'fr', 'Video');
+INSERT INTO I18N_TABLE (I18N_KEY, LANGUAGE , LABEL) VALUES ('contentType.audio', 'fr', 'Audio');
+INSERT INTO I18N_TABLE (I18N_KEY, LANGUAGE , LABEL) VALUES ('contentType.document', 'fr', 'Document');
+INSERT INTO I18N_TABLE (I18N_KEY, LANGUAGE , LABEL) VALUES ('contentType.eeg', 'fr', 'EEG');
 
 INSERT INTO USER (ID, NAME, SURNAME, EMAIL) VALUES (USER_SEQ.nextval, 'Sponge', 'Bob', 'bob.sponge@sea.fr');
 

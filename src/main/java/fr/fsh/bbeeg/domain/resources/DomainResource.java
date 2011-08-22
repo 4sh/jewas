@@ -1,24 +1,28 @@
 package fr.fsh.bbeeg.domain.resources;
 
 import fr.fsh.bbeeg.common.resources.LimitedOrderedQueryObject;
+import fr.fsh.bbeeg.domain.persistence.DomainDao;
+import fr.fsh.bbeeg.domain.pojos.Domain;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * @author driccio
  */
 public class DomainResource {
+    private DomainDao domainDao;
 
-    public static List<DomainSearchResult> getPopularDomain(LimitedOrderedQueryObject loqo) {
-        List<DomainSearchResult> list = new ArrayList<DomainSearchResult>();
+    public DomainResource(DomainDao domainDao) {
+        this.domainDao = domainDao;
+    }
 
-        for (int i = 0; i < loqo.number(); i++) {
-            list.add(new DomainSearchResult("Domain" + i, new BigDecimal(new Random().nextInt(10)), ""));
-        }
+    public List<Domain> getPopularDomain(LimitedOrderedQueryObject loqo) {
+//        List<DomainSearchResult> list = new ArrayList<DomainSearchResult>();
+//
+//        for (int i = 0; i < loqo.number(); i++) {
+//            list.add(new DomainSearchResult("Domain" + i, new BigDecimal(new Random().nextInt(10)), ""));
+//        }
 
-        return list;
+        return domainDao.getPopularDomains(loqo.number());
     }
 }

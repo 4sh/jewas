@@ -3,7 +3,7 @@ package fr.fsh.bbeeg.content.pojos;
 /**
  * @author driccio
  */
-public class ContentDetail extends ContentHeader {
+public class ContentDetail {
     private ContentHeader header;
     private String url;
 

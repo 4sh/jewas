@@ -17,6 +17,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author driccio
@@ -48,9 +49,15 @@ public class ContentDao {
                                 "select * from " +
                                         "(select * from Content) " +
                                         "where ROWNUM <= :limit")
-                        .addQuery("count", "select count(*) as COUNT from Content");
+                        .addQuery("count", "select count(*) as COUNT from Content")
+                        .addQuery("insertForCreation", "INSERT INTO CONTENT (ID, CREATION_DATE, LAST_MODIFICATION_DATE, PUBLISHED, CONTENT_TYPE, AUTHOR_REF) " +
+                                "VALUES (CONTENT_SEQ.nextval, CURRENT_DATE, CURRENT_DATE, 0, :contentType, :authorId)")
+                        .addQuery("updateContentUrl", "UPDATE CONTENT SET FILE_URI = :url WHERE ID = :id")
+                        .addQuery("updateContent", "UPDATE CONTENT SET TITLE = :title, DESCRIPTION = :description WHERE ID = :id")
+                        .addQuery("addLinkWithDomain", "INSERT INTO CONTENT_DOMAIN (CONTENT_REF, DOMAIN_REF) VALUES (:contentId, :domainId)")
+                        .addQuery("removeLinkWithDomain", "DELETE FROM CONTENT_DOMAIN WHERE CONTENT_REF = :contentId AND DOMAIN_REF = :domainId");
 
-//        this.contentDetailQueryTemplate = new QueryTemplate<ContentHeader>(dataSource, new ContentRowMapper())
+//        this.contentDetailQueryTemplate = new QueryTemplate<ContentDetail>(dataSource, new ContentDetailRowMapper())
 //                        .addQuery("selectById", "select * from Content where id = :id");
 
         this.idQueryTemplate =
@@ -60,14 +67,15 @@ public class ContentDao {
                                         "where content_ref = :id");
     }
 
-    public ContentHeader getContentToRead(Long id) {
-        ContentHeader ctr = contentHeaderQueryTemplate.selectObject("selectById",
-                new QueryExecutionContext().buildParams()
-                        .bigint("id", id)
-                        .toContext()
-        );
+    public ContentDetail getContentDetail(Long id) {
+        // TODO
+//        ContentHeader ctr = contentHeaderQueryTemplate.selectObject("selectById",
+//                new QueryExecutionContext().buildParams()
+//                        .bigint("id", id)
+//                        .toContext()
+//        );
 
-        return ctr;
+        return null;
     }
 
     public List<ContentHeader> getAllContentToRead() {
@@ -113,6 +121,67 @@ public class ContentDao {
         );
     }
 
+    public Long createContent(ContentType contentType) {
+        Map<String, String> genKeys =
+                contentHeaderQueryTemplate.insert("insertForCreation",
+                        new QueryExecutionContext().buildParams()
+                                .integer("contentType", contentType.ordinal())
+                                .bigint("authorId", 1000) // TODO: change 0 with the current connected user id
+                                .toContext(),
+                        "id");
+        return Long.valueOf(genKeys.get("id"));
+    }
+
+    public void updateContentOfContent(Long contentId, String contentType, String url) {
+        contentHeaderQueryTemplate.update("updateContentUrl",
+                new QueryExecutionContext().buildParams()
+                        .string("url", url)
+                        .bigint("id", contentId)
+                        .toContext());
+        // TODO: check the number of row updated.
+    }
+
+    public void updateContent(ContentDetail contentDetail) {
+        contentHeaderQueryTemplate.update("updateContent",
+                new QueryExecutionContext().buildParams()
+                        .string("title", contentDetail.header().title())
+                        .string("description", contentDetail.header().description())
+                        .bigint("id", contentDetail.header().id())
+                        .toContext());
+
+        // Get current domain ids that are linked with the content.
+        List<Long> domainsIds = getDomainIds(contentDetail.header().id());
+
+        for (Domain domainToCheck : contentDetail.header().domains()) {
+            if (!domainsIds.contains(domainToCheck.id())) {
+                contentHeaderQueryTemplate.insert("addLinkWithDomain",
+                        new QueryExecutionContext().buildParams()
+                                .bigint("contentId", contentDetail.header().id())
+                                .bigint("domainId", domainToCheck.id())
+                                .toContext());
+            }
+        }
+
+        for (Long domainIdToCheckForRemove : domainsIds) {
+            boolean found = false;
+
+            for (Domain domain : contentDetail.header().domains()) {
+                if (domainIdToCheckForRemove == domain.id()) {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                contentHeaderQueryTemplate.delete("removeLinkWithDomain",
+                        new QueryExecutionContext().buildParams()
+                                .bigint("contentId", contentDetail.header().id())
+                                .bigint("domainId", domainIdToCheckForRemove)
+                                .toContext());
+            }
+        }
+    }
+
     private List<Long> getDomainIds(Long contentId) {
         List<Long> domainIds = new ArrayList<Long>();
         idQueryTemplate.select(domainIds, "selectDomainIdsByContentId",
@@ -125,7 +194,7 @@ public class ContentDao {
     }
 
     private List<Domain> getDomains(Long contentId) {
-        return domainDao.getDomainsToRead(getDomainIds(contentId));
+        return domainDao.getDomains(getDomainIds(contentId));
     }
 
     private class ContentRowMapper implements RowMapper<ContentHeader> {

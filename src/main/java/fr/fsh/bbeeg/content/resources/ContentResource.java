@@ -8,10 +8,13 @@ import fr.fsh.bbeeg.content.pojos.ContentDetail;
 import fr.fsh.bbeeg.content.pojos.ContentHeader;
 import fr.fsh.bbeeg.content.pojos.ContentType;
 import fr.fsh.bbeeg.content.pojos.ContentTypeResultObject;
-import fr.fsh.bbeeg.domain.pojos.Domain;
 import fr.fsh.bbeeg.user.pojos.User;
-import org.joda.time.DateMidnight;
 
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,7 +79,7 @@ public class ContentResource {
     }
 
     public ContentHeader getContentById(Long contentId){
-        ContentDetail c = new ContentDetail();
+        ContentHeader c = new ContentHeader();
         c.id(Long.valueOf(1234));
         c.author(new User().name("4sh"));
         c.title("Lorem Ipsum");
@@ -91,16 +94,31 @@ public class ContentResource {
         return c;
     }
 
-    public void createTextContent(String title, List<Domain> domains) {
-        ContentDetail fileContent = new ContentDetail();
+    public void updateContent(ContentDetail contentDetail) {
+//        ContentDetail content = new ContentDetail();
+//
+//        content.header().title(title)
+//                .description(description)
+//                .domains(domains);
 
-        fileContent.title(title)
-                .domains(domains)
-                .creationDate(new DateMidnight().toDate())
-                .lastModificationDate(new DateMidnight().toDate())
-                .published(false)
-                .author();
+        contentDao.updateContent(contentDetail);
+    }
 
-        // TODO
+    public Long createContent(ContentType contentType) {
+        return contentDao.createContent(contentType);
+    }
+
+    public void updateContentOfContent(Long contentId, String contentType, ByteBuffer content) {
+        // TODO: take into account contentType
+        String url = "D:\\docs\\BBEEG\\contents\\file" + contentId + ".txt";
+        Path path = Paths.get(url);
+
+        try {
+            Files.write(path, content.array());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        contentDao.updateContentOfContent(contentId, contentType, url);
     }
 }
