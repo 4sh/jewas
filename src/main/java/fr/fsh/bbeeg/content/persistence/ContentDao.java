@@ -5,6 +5,7 @@ import fr.fsh.bbeeg.content.pojos.ContentDetail;
 import fr.fsh.bbeeg.content.pojos.ContentHeader;
 import fr.fsh.bbeeg.content.pojos.ContentStatus;
 import fr.fsh.bbeeg.content.pojos.ContentType;
+import fr.fsh.bbeeg.content.pojos.SimpleSearchQueryObject;
 import fr.fsh.bbeeg.domain.persistence.DomainDao;
 import fr.fsh.bbeeg.domain.pojos.Domain;
 import fr.fsh.bbeeg.user.persistence.UserDao;
@@ -12,11 +13,13 @@ import jewas.persistence.QueryExecutionContext;
 import jewas.persistence.QueryTemplate;
 import jewas.persistence.rowMapper.LongRowMapper;
 import jewas.persistence.rowMapper.RowMapper;
+import org.joda.time.DateMidnight;
 
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -50,6 +53,14 @@ public class ContentDao {
                                 "select * from " +
                                         "(select * from Content) " +
                                         "where ROWNUM <= :limit")
+                        .addQuery("simpleSearch",
+                                "select * from " +
+                                        "(select *, ROWNUM as rnum" +
+                                        " from (select * from Content " +
+                                        "  where title like :textToSearch" +
+                                        "  and LAST_MODIFICATION_DATE <= :serverTimestamp" +
+                                        " ) where ROWNUM <= :endOffset) " +
+                                        "where rnum >= :beginOffset")
                         .addQuery("count", "select count(*) as COUNT from Content")
                         .addQuery("insert", "INSERT INTO CONTENT (ID, TITLE, DESCRIPTION, CREATION_DATE, LAST_MODIFICATION_DATE, STATUS, CONTENT_TYPE, AUTHOR_REF) " +
                                 "VALUES (CONTENT_SEQ.nextval, :title, :description, CURRENT_DATE, CURRENT_DATE, 0, :contentType, :authorId)")
@@ -189,6 +200,33 @@ public class ContentDao {
                                 .toContext());
             }
         }
+    }
+
+    public void fetchSearch(List<ContentHeader> contentHeaders, SimpleSearchQueryObject query) {
+        Date serverTimestamp;
+        String textToSearch;
+
+        if (query.serverTimestamp() == null) {
+            serverTimestamp = new DateMidnight().toDate();
+        } else {
+            serverTimestamp = query.serverTimestamp();
+        }
+
+        if (query.query() == null) {
+            textToSearch = "";
+        } else {
+            textToSearch = query.query();
+        }
+
+        contentHeaderQueryTemplate.select(contentHeaders, "simpleSearch",
+                new QueryExecutionContext()
+                        .buildParams()
+                        .string("textToSearch", "%" + textToSearch + "%")
+                        .integer("beginOffset", query.startingOffset())
+                        .integer("endOffset", query.startingOffset() + query.numberOfContents() - 1)
+                        .date("serverTimestamp", serverTimestamp)
+                        .toContext()
+        );
     }
 
     private List<Long> getDomainIds(Long contentId) {

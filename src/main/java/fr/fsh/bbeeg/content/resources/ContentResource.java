@@ -8,6 +8,7 @@ import fr.fsh.bbeeg.content.pojos.ContentDetail;
 import fr.fsh.bbeeg.content.pojos.ContentHeader;
 import fr.fsh.bbeeg.content.pojos.ContentType;
 import fr.fsh.bbeeg.content.pojos.ContentTypeResultObject;
+import fr.fsh.bbeeg.content.pojos.SimpleSearchQueryObject;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -133,5 +134,9 @@ public class ContentResource {
         }
 
         return content;
+    }
+
+    public void fetchSearch(List<ContentHeader> results, SimpleSearchQueryObject query) {
+        contentDao.fetchSearch(results, query);
     }
 }

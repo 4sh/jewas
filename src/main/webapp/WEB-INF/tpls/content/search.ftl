@@ -187,7 +187,7 @@
 <script id="contentLineResult" type="text/x-jquery-tmpl">
     <div class="content-result">
         <div class="content-result-title"><a href="/content/{{= id}}/view.html">{{= title}}</a></div>
-        <div class="content-result-author">{{= author}}</div>
+        <div class="content-result-author">{{= author.name}}</div>
         <div class="content-result-creation-date">{{= creationDate}}</div>
         <div class="content-result-description">{{= description}}</div>
     </div>
