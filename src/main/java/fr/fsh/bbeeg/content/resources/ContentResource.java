@@ -4,11 +4,14 @@ import fr.fsh.bbeeg.common.resources.Author;
 import fr.fsh.bbeeg.common.resources.Count;
 import fr.fsh.bbeeg.common.resources.LimitedOrderedQueryObject;
 import fr.fsh.bbeeg.content.persistence.ContentDao;
+import fr.fsh.bbeeg.content.pojos.AdvancedSearchQueryObject;
 import fr.fsh.bbeeg.content.pojos.ContentDetail;
 import fr.fsh.bbeeg.content.pojos.ContentHeader;
 import fr.fsh.bbeeg.content.pojos.ContentType;
 import fr.fsh.bbeeg.content.pojos.ContentTypeResultObject;
 import fr.fsh.bbeeg.content.pojos.SimpleSearchQueryObject;
+import fr.fsh.bbeeg.user.pojos.User;
+import org.joda.time.DateMidnight;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -121,5 +124,32 @@ public class ContentResource {
 
     public void fetchSearch(List<ContentHeader> results, SimpleSearchQueryObject query) {
         contentDao.fetchSearch(results, query);
+    }
+
+    public void fetchSearch(List<ContentHeader> results, AdvancedSearchQueryObject query) {
+        Long offset = new Long(query.startingOffset());
+
+        for(int i=0; i<query.numberOfContents(); i++){
+            results.add(new ContentHeader().id(offset)
+                    .author(new User().name("fcamblor"))
+                    .title("Contenu " + offset)
+                    .creationDate(new DateMidnight().toDate())
+                    .type(ContentType.TEXT)
+                    .description("blablabla"));
+            offset++;
+        }
+
+        if (query.authors() != null) {
+            results.add(new ContentHeader().id(offset)
+                    .author(new User().name("fcamblor"))
+                    .title("Contenu (caché) " + offset)
+                    .creationDate(new DateMidnight().toDate())
+                    .type(ContentType.TEXT)
+                    .description("blablabla"));
+            offset++;
+        }
+
+        // TODO: uncomment this line when the mock will be removed
+        //contentDao.fetchSearch(results, query);
     }
 }

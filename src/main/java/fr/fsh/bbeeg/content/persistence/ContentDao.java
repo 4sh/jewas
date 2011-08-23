@@ -1,6 +1,7 @@
 package fr.fsh.bbeeg.content.persistence;
 
 import fr.fsh.bbeeg.common.resources.Count;
+import fr.fsh.bbeeg.content.pojos.AdvancedSearchQueryObject;
 import fr.fsh.bbeeg.content.pojos.ContentDetail;
 import fr.fsh.bbeeg.content.pojos.ContentHeader;
 import fr.fsh.bbeeg.content.pojos.ContentStatus;
@@ -228,6 +229,11 @@ public class ContentDao {
                         .toContext()
         );
     }
+
+    public void fetchSearch(List<ContentHeader> results, AdvancedSearchQueryObject query) {
+        // TODO: implement it
+    }
+
 
     public String getContentUrl(Long contentId) {
         return contentHeaderQueryTemplate.selectString("selectUrl",
