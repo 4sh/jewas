@@ -1,6 +1,7 @@
 package fr.fsh.bbeeg;
 
 
+import fr.fsh.bbeeg.common.config.BBEEGConfiguration;
 import fr.fsh.bbeeg.content.persistence.ContentDao;
 import fr.fsh.bbeeg.content.resources.ContentResource;
 import fr.fsh.bbeeg.domain.persistence.DomainDao;
@@ -36,7 +37,8 @@ public class Assembler {
         domainDao = new DomainDao(dataSource, i18nDao);
         contentDao = new ContentDao(dataSource, userDao, domainDao);
 
-        contentResource = new ContentResource(contentDao);
+        contentResource = new ContentResource(contentDao,
+                BBEEGConfiguration.INSTANCE.cliOptions().contentFileRepository());
         domainResource = new DomainResource(domainDao);
     }
 

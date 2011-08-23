@@ -23,9 +23,11 @@ import java.util.List;
  */
 public class ContentResource {
     private ContentDao contentDao;
+    private String contentPath;
 
-    public ContentResource(ContentDao _contentDao) {
+    public ContentResource(ContentDao _contentDao, String _contentPath) {
         contentDao = _contentDao;
+        contentPath = _contentPath;
     }
 
     public List<ContentHeader> getAddedContent(LimitedOrderedQueryObject loqo) {
@@ -114,7 +116,7 @@ public class ContentResource {
 
     public void updateContentOfContent(Long contentId, String contentType, ByteBuffer content) {
         // TODO: take into account contentType
-        String url = "D:\\docs\\BBEEG\\contents\\file" + contentId + ".txt";
+        String url = contentPath + contentId + ".txt";
         Path path = Paths.get(url);
 
         try {
@@ -127,7 +129,7 @@ public class ContentResource {
     }
 
     public InputStream getContentOfContent(Long contentId) {
-        String url = "D:\\docs\\BBEEG\\contents\\file" + contentId + ".txt";
+        String url = contentPath + contentId + ".txt";
         Path path = Paths.get(url);
         InputStream content = null;
 

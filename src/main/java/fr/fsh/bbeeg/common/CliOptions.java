@@ -9,11 +9,18 @@ public class CliOptions {
     @Parameter(names = "-visioRootUrl", description = "Root URL of the EEG visualizer", required = true)
     private String visioRootUrl;
 
+    @Parameter(names = "-contentFileRepository", description = "Repository of content files", required = true)
+    private String contentFileRepository;
+
     public int httpPort() {
         return this.httpPort;
     }
 
     public String visioRootUrl(){
         return this.visioRootUrl;
+    }
+
+    public String contentFileRepository() {
+        return this.contentFileRepository;
     }
 }
