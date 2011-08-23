@@ -29,11 +29,13 @@ def ENV_PROPERTIES = [
    nightly: [
            targetDir: ENV_DEMO_DEPLOY_ROOT_PATH+"/nightly",
            bbeegPort: 18086,
-           visioEegRootUrl: "http://nightly.visio.bbeeg.4sh.fr"
+           visioEegRootUrl: "http://nightly.visio.bbeeg.4sh.fr",
+           contentFileRepository: "~/contents"
    ], qa: [
            targetDir: ENV_DEMO_DEPLOY_ROOT_PATH+"/qa",
            bbeegPort: 28086,
-           visioEegRootUrl: "http://qa.visio.bbeeg.4sh.fr"
+           visioEegRootUrl: "http://qa.visio.bbeeg.4sh.fr",
+           contentFileRepository: "~/contents"
    ]
 ]
 
