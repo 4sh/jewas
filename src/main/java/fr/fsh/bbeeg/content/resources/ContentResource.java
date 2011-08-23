@@ -78,29 +78,7 @@ public class ContentResource {
         }
     }
 
-//    public ContentHeader getContentById(Long contentId){
-//        ContentHeader c = new ContentHeader();
-//        c.id(Long.valueOf(1234));
-//        c.author(new User().name("4sh"));
-//        c.title("Lorem Ipsum");
-//        c.description("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas luctus lectus sed nulla " +
-//                "vestibulum nec volutpat ante ultrices. Etiam sed neque ipsum. Nulla nulla nisl, rutrum vel luctus " +
-//                "at, hendrerit at tellus. Aliquam rutrum risus eget libero porta congue. Nunc porta augue in " +
-//                "felis fringilla nec accumsan nunc aliquam. Cras ac volutpat arcu. Phasellus diam erat, rutrum " +
-//                "in scelerisque eu, convallis a diam. Aenean sodales tellus sed lectus tempus pellentesque. " +
-//                "Suspendisse et est metus, sit amet blandit urna. Pellentesque habitant morbi tristique senectus " +
-//                "et netus et malesuada fames ac turpis egestas. Nullam vitae sollicitudin diam.");
-//
-//        return c;
-//    }
-
     public void updateContent(ContentDetail contentDetail) {
-//        ContentDetail content = new ContentDetail();
-//
-//        content.header().title(title)
-//                .description(description)
-//                .domains(domains);
-
         contentDao.updateContent(contentDetail);
     }
 
