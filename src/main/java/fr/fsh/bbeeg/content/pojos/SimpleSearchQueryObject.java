@@ -6,7 +6,7 @@ public class SimpleSearchQueryObject {
     private String query;
     private Date serverTimestamp;
     private Integer startingOffset = -1;
-    private Integer numberOfContents = Integer.valueOf(2);
+    private Integer numberOfContents = Integer.valueOf(10);
 
     public SimpleSearchQueryObject query(String _query) {
         this.query = _query;
