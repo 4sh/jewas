@@ -4,8 +4,14 @@ import com.google.gson.reflect.TypeToken;
 import fr.fsh.bbeeg.common.resources.Author;
 import fr.fsh.bbeeg.common.resources.LimitedOrderedQueryObject;
 import fr.fsh.bbeeg.content.resources.ContentResource;
-import jewas.http.*;
+import jewas.http.AbstractRoute;
+import jewas.http.HttpMethodMatcher;
+import jewas.http.HttpRequest;
+import jewas.http.Parameters;
+import jewas.http.PatternUriPathMatcher;
+import jewas.http.RequestHandler;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,7 +36,10 @@ public class GetAuthorContentRoute extends AbstractRoute {
         return new RequestHandler() {
             @Override
             public void onRequest(HttpRequest request) {
-                request.respondJson().object(contentResource.getAuthor(qo), new TypeToken<List<Author>>(){}.getType());
+                List<Author> authors = new ArrayList<Author>();
+                contentResource.fetchAuthors(authors, qo);
+                request.respondJson().object(authors, new TypeToken<List<Author>>() {
+                }.getType());
             }
         };
     }

@@ -15,7 +15,6 @@ import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,19 +29,19 @@ public class ContentResource {
         contentPath = _contentPath;
     }
 
-    public List<ContentHeader> getAddedContent(LimitedOrderedQueryObject loqo) {
+    public void fetchAddedContents(List<ContentHeader> contentHeaders, LimitedOrderedQueryObject loqo) {
         // TODO: check the ordering property
-        return contentDao.getRecentContent(loqo.number());
+        contentDao.fetchRecentContents(contentHeaders, loqo.number());
     }
 
-    public List<ContentHeader> getPopularContent(LimitedOrderedQueryObject loqo) {
+    public void fetchPopularContents(List<ContentHeader> contentHeaders, LimitedOrderedQueryObject loqo) {
         // TODO: check the ordering property
-        return contentDao.getPopularContent(loqo.number());
+        contentDao.fetchPopularContent(contentHeaders, loqo.number());
     }
 
-    public List<ContentHeader> getViewedContent(LimitedOrderedQueryObject loqo) {
+    public void fetchViewedContent(List<ContentHeader> contentHeaders, LimitedOrderedQueryObject loqo) {
         // TODO: check the ordering property
-        return contentDao.getLastViewedContent(loqo.number());
+        contentDao.fetchLastViewedContent(contentHeaders, loqo.number());
     }
 
     public Count getContentCount() {
@@ -53,8 +52,7 @@ public class ContentResource {
         return contentDao.getContentDetail(id);
     }
 
-    public List<Author> getAuthor(LimitedOrderedQueryObject loqo) {
-        List<Author> list = new ArrayList<Author>();
+    public void fetchAuthors(List<Author> authors, LimitedOrderedQueryObject loqo) {
         int count;
 
         if ("all".equals(loqo.ordering())) {
@@ -66,22 +64,17 @@ public class ContentResource {
         for (int i = 0; i < count; i++) {
             Author author = new Author();
             author.id(new Long(i)).name("Auteur " + i);
-            list.add(author);
+            authors.add(author);
         }
-
-        return list;
     }
 
-    public List<ContentTypeResultObject> getContentType(LimitedOrderedQueryObject loqo) {
+    public void fetchContentTypes(List<ContentTypeResultObject> results, LimitedOrderedQueryObject loqo) {
         // TODO: check the ordering property
-        List<ContentTypeResultObject> results = new ArrayList<ContentTypeResultObject>();
         ContentType[] contentTypes = ContentType.values();
 
         for (int i = 0; i < contentTypes.length; i++) {
             results.add(new ContentTypeResultObject().id(new Long(i)).title(contentTypes[i].name()));
         }
-
-        return results;
     }
 
 //    public ContentHeader getContentById(Long contentId){

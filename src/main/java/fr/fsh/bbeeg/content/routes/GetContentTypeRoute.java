@@ -11,6 +11,7 @@ import jewas.http.Parameters;
 import jewas.http.PatternUriPathMatcher;
 import jewas.http.RequestHandler;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,7 +32,12 @@ public class GetContentTypeRoute extends AbstractRoute {
         return new RequestHandler() {
             @Override
             public void onRequest(HttpRequest request) {
-                request.respondJson().object(contentResource.getContentType(qo), new TypeToken<List<ContentTypeResultObject>>(){}.getType());
+                List<ContentTypeResultObject> contentTypeResultObjects =
+                        new ArrayList<ContentTypeResultObject>();
+                contentResource.fetchContentTypes(contentTypeResultObjects, qo);
+                request.respondJson().object(
+                        contentTypeResultObjects,
+                        new TypeToken<List<ContentTypeResultObject>>(){}.getType());
             }
         };
     }

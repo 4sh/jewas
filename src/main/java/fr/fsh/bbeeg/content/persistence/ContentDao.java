@@ -94,31 +94,22 @@ public class ContentDao {
         return entries;
     }
 
-    public List<ContentHeader> getRecentContent(int limit) {
-        List<ContentHeader> entries = new ArrayList<ContentHeader>();
-        contentHeaderQueryTemplate.select(entries, "selectLimitedRecent",
+    public void fetchRecentContents(List<ContentHeader> contentHeaders, int limit) {
+        contentHeaderQueryTemplate.select(contentHeaders, "selectLimitedRecent",
                 new QueryExecutionContext().buildParams().integer("limit", limit).toContext()
         );
-
-        return entries;
     }
 
-    public List<ContentHeader> getPopularContent(int limit) {
-        List<ContentHeader> entries = new ArrayList<ContentHeader>();
-        contentHeaderQueryTemplate.select(entries, "selectLimitedPopular",
+    public void fetchPopularContent(List<ContentHeader> contentHeaders, int limit) {
+        contentHeaderQueryTemplate.select(contentHeaders, "selectLimitedPopular",
                 new QueryExecutionContext().buildParams().integer("limit", limit).toContext()
         );
-
-        return entries;
     }
 
-    public List<ContentHeader> getLastViewedContent(int limit) {
-        List<ContentHeader> entries = new ArrayList<ContentHeader>();
-        contentHeaderQueryTemplate.select(entries, "selectLimitedLastViewed",
+    public void fetchLastViewedContent(List<ContentHeader> contentHeaders, int limit) {
+        contentHeaderQueryTemplate.select(contentHeaders, "selectLimitedLastViewed",
                 new QueryExecutionContext().buildParams().integer("limit", limit).toContext()
         );
-
-        return entries;
     }
 
     public Count getTotalNumberOfContent() {

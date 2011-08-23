@@ -11,6 +11,7 @@ import jewas.http.Parameters;
 import jewas.http.PatternUriPathMatcher;
 import jewas.http.RequestHandler;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,7 +36,10 @@ public class GetAddedContentRoute extends AbstractRoute {
         return new RequestHandler() {
             @Override
             public void onRequest(HttpRequest request) {
-                request.respondJson().object(contentResource.getAddedContent(qo), new TypeToken<List<ContentHeader>>(){}.getType());
+                List<ContentHeader> contentHeaders = new ArrayList<ContentHeader>();
+                contentResource.fetchAddedContents(contentHeaders, qo);
+                request.respondJson().object(
+                        contentHeaders, new TypeToken<List<ContentHeader>>(){}.getType());
             }
         };
     }
