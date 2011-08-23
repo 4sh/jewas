@@ -28,8 +28,8 @@ import java.util.Map;
  */
 public class ContentDao {
     private QueryTemplate<ContentHeader> contentHeaderQueryTemplate;
-    private QueryTemplate<ContentDetail> contentDetailQueryTemplate;
     private QueryTemplate<Long> idQueryTemplate;
+    private QueryTemplate<String> stringQueryTemplate;
     private UserDao userDao;
     private DomainDao domainDao;
 
@@ -41,6 +41,7 @@ public class ContentDao {
                 new QueryTemplate<ContentHeader>(dataSource, new ContentRowMapper())
                         .addQuery("selectById", "select * from Content where id = :id")
                         .addQuery("selectAll", "select * from Content")
+                        .addQuery("selectUrl", "select FILE_URI from Content where id = :id")
                         .addQuery("selectLimitedRecent",
                                 "select * from " +
                                         "(select * from Content order by id desc) " +
@@ -225,6 +226,15 @@ public class ContentDao {
                         .integer("beginOffset", query.startingOffset())
                         .integer("endOffset", query.startingOffset() + query.numberOfContents() - 1)
                         .date("serverTimestamp", serverTimestamp)
+                        .toContext()
+        );
+    }
+
+    public String getContentUrl(Long contentId) {
+        return contentHeaderQueryTemplate.selectString("selectUrl",
+                new QueryExecutionContext()
+                        .buildParams()
+                        .bigint("id", contentId)
                         .toContext()
         );
     }

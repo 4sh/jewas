@@ -123,7 +123,12 @@ public class ContentResource {
     }
 
     public InputStream getContentOfContent(Long contentId) {
-        String url = contentPath + contentId + ".txt";
+        String url = contentDao.getContentUrl(contentId);
+
+        if (url == null || "".equals(url)) {
+            return null;
+        }
+
         Path path = Paths.get(url);
         InputStream content = null;
 
