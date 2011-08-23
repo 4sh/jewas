@@ -4,7 +4,9 @@ import fr.fsh.bbeeg.common.resources.LimitedOrderedQueryObject;
 import fr.fsh.bbeeg.domain.persistence.DomainDao;
 import fr.fsh.bbeeg.domain.pojos.Domain;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Random;
 
 /**
  * @author driccio
@@ -16,13 +18,13 @@ public class DomainResource {
         this.domainDao = domainDao;
     }
 
-    public List<Domain> getPopularDomain(LimitedOrderedQueryObject loqo) {
-//        List<DomainSearchResult> list = new ArrayList<DomainSearchResult>();
-//
-//        for (int i = 0; i < loqo.number(); i++) {
-//            list.add(new DomainSearchResult("Domain" + i, new BigDecimal(new Random().nextInt(10)), ""));
-//        }
+    public void getPopularDomain(List<DomainSearchResult> results, LimitedOrderedQueryObject loqo) {
+        List<Domain> domains = domainDao.getPopularDomains(loqo.number());
 
-        return domainDao.getPopularDomains(loqo.number());
+        // TODO: use a right weight and set a url
+        for (Domain domain: domains) {
+            results.add(new DomainSearchResult(domain.label(),
+                    new BigDecimal(new Random().nextInt(10)), ""));
+        }
     }
 }
