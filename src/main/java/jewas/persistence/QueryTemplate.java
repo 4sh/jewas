@@ -4,6 +4,7 @@ import jewas.persistence.exception.CannotGetJDBCConnectionException;
 import jewas.persistence.exception.DataAccessException;
 import jewas.persistence.rowMapper.LongRowMapper;
 import jewas.persistence.rowMapper.RowMapper;
+import jewas.persistence.rowMapper.StringRowMapper;
 import jewas.persistence.util.JDBCUtils;
 
 import javax.sql.DataSource;
@@ -172,6 +173,10 @@ public class QueryTemplate<T> {
 
     public Long selectLong(String queryName, QueryExecutionContext executionContext) {
         return selectObject(queryName, executionContext, new LongRowMapper());
+    }
+
+    public String selectString(String queryName, QueryExecutionContext executionContext) {
+        return selectObject(queryName, executionContext, new StringRowMapper());
     }
 
     public void insert(final String queryName, final QueryExecutionContext executionContext){
