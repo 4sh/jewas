@@ -153,13 +153,14 @@ task startBBEEG(dependsOn: [initSsh, checkPropsForDeployment]) << {
     def deployDirectory = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].targetDir
     def executionPort = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].bbeegPort
     def visioRootUrl = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].visioEegRootUrl
+    def contentFileRepository = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].contentFileRepository
 
     ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 2224,
 		command: """kill -9 \$(cat "${deployDirectory}/bbeeg.pid")""", trust: true, failonerror: false)
     // TODO: pass the http port here...
     ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 2224,
 		command: """java -Dfile.encoding=UTF-8 -jar "${deployDirectory}/bbeeg.jar" \
-		    -httpPort ${executionPort} -visioRootUrl ${visioRootUrl} \
+		    -httpPort ${executionPort} -visioRootUrl ${visioRootUrl} -contentFileRepository ${contentFileRepository} \
 		    > "${deployDirectory}/bbeeg.log" 2> "${deployDirectory}/bbeeg.err.log" \
 		    & echo \$! > "${deployDirectory}/bbeeg.pid" """,
         trust: true, failonerror: true)
