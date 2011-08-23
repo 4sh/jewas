@@ -29,7 +29,6 @@ import java.util.Map;
 public class ContentDao {
     private QueryTemplate<ContentHeader> contentHeaderQueryTemplate;
     private QueryTemplate<Long> idQueryTemplate;
-    private QueryTemplate<String> stringQueryTemplate;
     private UserDao userDao;
     private DomainDao domainDao;
 
