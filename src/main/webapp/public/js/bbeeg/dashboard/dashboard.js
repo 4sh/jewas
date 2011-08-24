@@ -26,12 +26,12 @@ function createMostPopular(container) {
 }
 
 
-function loadLastConnectionDate() {
-    $.getJSON(
-        '/user/lastConnectionDate',
-        function (data) {$('#lastConnectionDate').append("Dernière date de connexion : " + data.date)}
-    );
-}
+//function loadLastConnectionDate() {
+//    $.getJSON(
+//        '/user/lastConnectionDate',
+//        function (data) {$('#lastConnectionDate').append("Dernière date de connexion : " + data.date)}
+//    );
+//}
 
 function loadMyContents() {
     /*
@@ -90,7 +90,6 @@ function buildPanels() {
 
 $(
     function() {
-        loadLastConnectionDate();
         loadMyContents();
         loadTotalNumberOfContents();
         loadLastAuthors();

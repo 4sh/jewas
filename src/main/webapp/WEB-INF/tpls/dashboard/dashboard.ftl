@@ -19,8 +19,6 @@
     </script>
 
     <div id="userInformations">
-        <p id="lastConnectionDate"/>
-
         <div id="dashboard">
             <div class="dashboard-group dashboard-group-linestart">
                 <div class="box">
