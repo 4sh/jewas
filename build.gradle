@@ -229,4 +229,7 @@ sonar {
     globalProperty "sonar.jdbc.driverClassName", "com.mysql.jdbc.Driver"
     globalProperty "sonar.jdbc.username", "sonar"
     globalProperty "sonar.jdbc.password", "4SHsoar"
+
+    globalProperty "sonar.java.source", "1.7"
+    globalProperty "sonar.java.target", "1.7"
 }
