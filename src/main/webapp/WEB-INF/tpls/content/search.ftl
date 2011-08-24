@@ -115,7 +115,7 @@
 
     <div>
         <form action="/content/search" id="simpleSearchForm">
-            <label for="simpleSearchQuery">Recherche</label> : <input id="simpleSearchQuery" type="text" name="query" size="50" />
+            <label for="simpleSearchQuery">Recherche</label> : <input id="simpleSearchQuery" type="text" name="query" size="80" />
             <input id="simpleSearchButton" type="submit" value="Rechercher"/>
         </form>
     </div>
