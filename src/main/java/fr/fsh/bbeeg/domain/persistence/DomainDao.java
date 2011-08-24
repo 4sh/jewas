@@ -56,12 +56,10 @@ public class DomainDao {
         return domains;
     }
 
-    public List<Domain> fetchAllDomains(List<Domain> domains) {
+    public void fetchAllDomains(List<Domain> domains) {
         domainQueryTemplate.select(domains, "selectAll",
                 new QueryExecutionContext().buildParams().toContext()
         );
-
-        return domains;
     }
 
     public List<Domain> getPopularDomains(int limit) {
