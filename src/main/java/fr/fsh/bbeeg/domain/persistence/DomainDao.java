@@ -56,9 +56,7 @@ public class DomainDao {
         return domains;
     }
 
-    public List<Domain> getAllDomains() {
-        List<Domain> domains = new ArrayList<Domain>();
-
+    public List<Domain> fetchAllDomains(List<Domain> domains) {
         domainQueryTemplate.select(domains, "selectAll",
                 new QueryExecutionContext().buildParams().toContext()
         );

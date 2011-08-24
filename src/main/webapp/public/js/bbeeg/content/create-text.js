@@ -1,6 +1,6 @@
 function loadDomains() {
     $.getJSON(
-        '/domain/popular?number=20',
+        '/domain/all',
         function success(data) {
             var container = $("#domains");
                 container.children().remove();

@@ -27,4 +27,8 @@ public class DomainResource {
                     new BigDecimal(new Random().nextInt(10)), ""));
         }
     }
+
+    public void fetchAllDomains(List<Domain> results) {
+        domainDao.fetchAllDomains(results);
+    }
 }
