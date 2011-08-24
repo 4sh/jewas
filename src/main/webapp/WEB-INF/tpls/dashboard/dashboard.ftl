@@ -18,8 +18,21 @@
         <li> {{= name}} </li>
     </script>
 
+    <script id="userDomainItemTemplate" type="text/html">
+        <li class="inlined-li"> {{= label}} </li>
+    </script>
+
+
     <div id="userInformations">
         <div id="dashboard">
+            <div class="dashboard-group-fullline dashboard-group-linestart">
+                <div class="box">
+                    <div id="myDomainsPanel" class="panel">
+                        <h3> Mes Domaines </h3>
+                        <ul id="user-domains"></ul>
+                    </div>
+                </div>
+            </div>
             <div class="dashboard-group dashboard-group-linestart">
                 <div class="box">
                     <div id="myContentsPanelLastAdded" class="panel">

@@ -5,6 +5,7 @@ import fr.fsh.bbeeg.domain.persistence.DomainDao;
 import fr.fsh.bbeeg.domain.pojos.Domain;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -19,7 +20,8 @@ public class DomainResource {
     }
 
     public void getPopularDomain(List<DomainSearchResult> results, LimitedOrderedQueryObject loqo) {
-        List<Domain> domains = domainDao.getPopularDomains(loqo.number());
+        List<Domain> domains = new ArrayList<Domain>();
+        domainDao.fetchPopularDomains(domains, loqo.number());
 
         // TODO: use a right weight and set a url
         for (Domain domain: domains) {

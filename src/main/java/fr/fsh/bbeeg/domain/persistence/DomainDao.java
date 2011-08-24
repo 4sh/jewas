@@ -62,16 +62,12 @@ public class DomainDao {
         );
     }
 
-    public List<Domain> getPopularDomains(int limit) {
-        List<Domain> domains = new ArrayList<Domain>();
-
+    public void fetchPopularDomains(List<Domain> domains, int limit) {
         domainQueryTemplate.select(domains, "selectLimitedPopular",
                 new QueryExecutionContext().buildParams()
                         .integer("limit", limit)
                         .toContext()
         );
-
-        return domains;
     }
 
     private class DomainToReadRowMapper implements RowMapper<Domain> {

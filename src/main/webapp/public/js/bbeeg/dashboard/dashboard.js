@@ -33,6 +33,16 @@ function createMostPopular(container) {
 //    );
 //}
 
+function loadUserDomains() {
+    $.getJSON(
+        '/user/domains/5',
+        function (data) {
+            $('#user-domains').children().remove();
+            $("#userDomainItemTemplate").tmpl(data).appendTo($('#user-domains'));
+        }
+    );
+}
+
 function loadMyContents() {
     /*
     var tabContainer = new TabContainer('myContents');
@@ -79,7 +89,7 @@ function loadDomains() {
 
 function buildPanels() {
     $.each(["#myContentsPanelLastAdded", "#myContentsPanelLastViewed", "#myContentsPanelPopulars",
-        "#myLessonsPanel", "#myTestsPanel", "#plateformInformationsPanel", "#domainsPanel"],
+        "#myLessonsPanel", "#myTestsPanel", "#plateformInformationsPanel", "#domainsPanel", "#myDomainsPanel"],
         function(index, value){
             $(value).panel({
                 'collapsible':false
@@ -90,6 +100,7 @@ function buildPanels() {
 
 $(
     function() {
+        loadUserDomains();
         loadMyContents();
         loadTotalNumberOfContents();
         loadLastAuthors();

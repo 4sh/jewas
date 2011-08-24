@@ -142,3 +142,8 @@ ul.submenu li {
 .tab-selected {
     background-color: #F86031;
 }
+
+/* *************** Utils style *************** */
+.inlined-li {
+    display: inline;
+}

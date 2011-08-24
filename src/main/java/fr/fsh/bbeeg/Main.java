@@ -22,6 +22,7 @@ import fr.fsh.bbeeg.domain.routes.GetAllDomainsRoute;
 import fr.fsh.bbeeg.domain.routes.GetPopularDomainRoute;
 import fr.fsh.bbeeg.security.routes.PostConnectionRoute;
 import fr.fsh.bbeeg.user.routes.GetLastConnectionDateRoute;
+import fr.fsh.bbeeg.user.routes.GetUserPreferredDomainsRoute;
 import fr.fsh.bbeeg.user.routes.GetUserInformationsRoute;
 import jewas.http.RestServer;
 import jewas.http.RestServerFactory;
@@ -98,7 +99,8 @@ org.h2.tools.Server.createWebServer(null).start();
                 new GetContentTypeRoute(assembler.contentResource()),
                 new GetContentCriteriasRoute(assembler.contentResource()),
                 new GetAdvancedSearchContent(assembler.contentResource()),
-                new GetViewContentRoute(assembler.contentResource())
+                new GetViewContentRoute(assembler.contentResource()),
+                new GetUserPreferredDomainsRoute(assembler.userResource())
         ).start();
         System.out.println("Ready, if you dare");
     }

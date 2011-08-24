@@ -8,6 +8,7 @@ import fr.fsh.bbeeg.domain.persistence.DomainDao;
 import fr.fsh.bbeeg.domain.resources.DomainResource;
 import fr.fsh.bbeeg.i18n.persistence.I18nDao;
 import fr.fsh.bbeeg.user.persistence.UserDao;
+import fr.fsh.bbeeg.user.resources.UserResource;
 import org.apache.commons.dbcp.BasicDataSource;
 
 import javax.sql.DataSource;
@@ -28,18 +29,20 @@ public class Assembler {
     /* Resources */
     private ContentResource contentResource;
     private DomainResource domainResource;
+    private UserResource userResource;
 
     public Assembler() {
         dataSource = createDatasource();
 
         i18nDao = new I18nDao(dataSource);
-        userDao = new UserDao(dataSource);
         domainDao = new DomainDao(dataSource, i18nDao);
+        userDao = new UserDao(dataSource, domainDao);
         contentDao = new ContentDao(dataSource, userDao, domainDao);
 
         contentResource = new ContentResource(contentDao,
                 BBEEGConfiguration.INSTANCE.cliOptions().contentFileRepository());
         domainResource = new DomainResource(domainDao);
+        userResource = new UserResource(userDao);
     }
 
     private DataSource createDatasource() {
@@ -58,5 +61,9 @@ public class Assembler {
 
     public DomainResource domainResource() {
         return domainResource;
+    }
+
+    public UserResource userResource() {
+        return userResource;
     }
 }
