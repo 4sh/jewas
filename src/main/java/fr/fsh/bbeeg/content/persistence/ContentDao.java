@@ -10,10 +10,12 @@ import fr.fsh.bbeeg.content.pojos.SimpleSearchQueryObject;
 import fr.fsh.bbeeg.domain.persistence.DomainDao;
 import fr.fsh.bbeeg.domain.pojos.Domain;
 import fr.fsh.bbeeg.user.persistence.UserDao;
+import fr.fsh.bbeeg.user.pojos.User;
 import jewas.persistence.QueryExecutionContext;
 import jewas.persistence.QueryTemplate;
 import jewas.persistence.rowMapper.LongRowMapper;
 import jewas.persistence.rowMapper.RowMapper;
+import jewas.persistence.sqlparam.SqlParameter;
 import org.joda.time.DateMidnight;
 
 import javax.sql.DataSource;
@@ -23,6 +25,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import static fr.fsh.bbeeg.content.pojos.SearchMode.values;
 
 /**
  * @author driccio
@@ -40,6 +44,7 @@ public class ContentDao {
         this.contentHeaderQueryTemplate =
                 new QueryTemplate<ContentHeader>(dataSource, new ContentRowMapper())
                         .addQuery("selectById", "select * from Content where id = :id")
+                        .addQuery("selectByUserId", "select * from Content where user_ref = :userId")
                         .addQuery("selectAll", "select * from Content")
                         .addQuery("selectUrl", "select FILE_URI from Content where id = :id")
                         .addQuery("selectLimitedRecent",
@@ -60,6 +65,8 @@ public class ContentDao {
                                         " from (select * from Content " +
                                         "  where title like :textToSearch" +
                                         "  and LAST_MODIFICATION_DATE <= :serverTimestamp" +
+                                        "  and status in :statuses" +
+                                        "  and (:userId IS NULL or AUTHOR_REF = :userId)" +
                                         " ) where ROWNUM <= :endOffset) " +
                                         "where rnum >= :beginOffset")
                         .addQuery("count", "select count(*) as COUNT from Content")
@@ -219,15 +226,45 @@ public class ContentDao {
             textToSearch = query.query();
         }
 
-        contentHeaderQueryTemplate.select(contentHeaders, "simpleSearch",
-                new QueryExecutionContext()
-                        .buildParams()
-                        .string("textToSearch", "%" + textToSearch + "%")
-                        .integer("beginOffset", query.startingOffset())
-                        .integer("endOffset", query.startingOffset() + query.numberOfContents() - 1)
-                        .date("serverTimestamp", serverTimestamp)
-                        .toContext()
-        );
+        SqlParameter.Builder builder = new QueryExecutionContext().buildParams();
+
+        builder.string("textToSearch", "%" + textToSearch + "%")
+                .integer("beginOffset", query.startingOffset())
+                .integer("endOffset", query.startingOffset() + query.numberOfContents() - 1)
+                .date("serverTimestamp", serverTimestamp);
+
+        if (query.searchMode() >= values().length) {
+            // TODO: throw an exception
+        }
+
+        List<Integer> statuses = new ArrayList<Integer>();
+
+        switch (values()[query.searchMode()]) {
+            case ALL_VALIDATED:
+                statuses.add(ContentStatus.VALIDATED.ordinal());
+                builder.array("statuses", statuses.toArray())
+                        .bigint("userId", null);
+                break;
+            case ONLY_USER_CONTENTS :
+                statuses.add(ContentStatus.DRAFT.ordinal());
+                statuses.add(ContentStatus.VALIDATED.ordinal());
+                statuses.add(ContentStatus.REJECTED.ordinal());
+                statuses.add(ContentStatus.TO_BE_VALIDATED.ordinal());
+                statuses.add(ContentStatus.TO_BE_DELETED.ordinal());
+                builder.array("statuses", statuses.toArray())
+                        .bigint("userId", 1000); // TODO: use current connected user
+                break;
+            case ONLY_CONTENTS_TO_TREAT:
+                statuses.add(ContentStatus.TO_BE_VALIDATED.ordinal());
+                statuses.add(ContentStatus.TO_BE_DELETED.ordinal());
+                builder.array("statuses", statuses.toArray())
+                        .bigint("userId", null);
+                break;
+            default:
+                // TODO
+        }
+
+        contentHeaderQueryTemplate.select(contentHeaders, "simpleSearch", builder.toContext());
     }
 
     public void fetchSearch(List<ContentHeader> results, AdvancedSearchQueryObject query) {
@@ -240,6 +277,15 @@ public class ContentDao {
                 new QueryExecutionContext()
                         .buildParams()
                         .bigint("id", contentId)
+                        .toContext()
+        );
+    }
+
+    public void fetchContents(List<ContentHeader> contentHeaders, User user) {
+        contentHeaderQueryTemplate.select(contentHeaders, "selectByUserId",
+                new QueryExecutionContext()
+                        .buildParams()
+                        .bigint("userId", user.id())
                         .toContext()
         );
     }

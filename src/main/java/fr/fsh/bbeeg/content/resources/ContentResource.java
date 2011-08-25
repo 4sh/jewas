@@ -152,4 +152,8 @@ public class ContentResource {
         // TODO: uncomment this line when the mock will be removed
         //contentDao.fetchSearch(results, query);
     }
+
+    public void fetchContents(List<ContentHeader> contentHeaders, User user) {
+        contentDao.fetchContents(contentHeaders, user);
+    }
 }

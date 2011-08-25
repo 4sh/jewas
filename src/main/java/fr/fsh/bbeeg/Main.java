@@ -12,18 +12,21 @@ import fr.fsh.bbeeg.content.routes.GetAdvancedSearchContent;
 import fr.fsh.bbeeg.content.routes.GetAuthorContentRoute;
 import fr.fsh.bbeeg.content.routes.GetContentCriteriasRoute;
 import fr.fsh.bbeeg.content.routes.GetContentOfContentRoute;
+import fr.fsh.bbeeg.content.routes.GetContentToTreatSearchScreenRoute;
 import fr.fsh.bbeeg.content.routes.GetContentTypeRoute;
 import fr.fsh.bbeeg.content.routes.GetPopularContentRoute;
+import fr.fsh.bbeeg.content.routes.GetSearchScreenRoute;
 import fr.fsh.bbeeg.content.routes.GetSimpleSearchContent;
 import fr.fsh.bbeeg.content.routes.GetTotalNumberOfContentRoute;
+import fr.fsh.bbeeg.content.routes.GetUserContentsSearchScreenRoute;
 import fr.fsh.bbeeg.content.routes.GetViewContentRoute;
 import fr.fsh.bbeeg.content.routes.GetViewedContentRoute;
 import fr.fsh.bbeeg.domain.routes.GetAllDomainsRoute;
 import fr.fsh.bbeeg.domain.routes.GetPopularDomainRoute;
 import fr.fsh.bbeeg.security.routes.PostConnectionRoute;
 import fr.fsh.bbeeg.user.routes.GetLastConnectionDateRoute;
-import fr.fsh.bbeeg.user.routes.GetUserPreferredDomainsRoute;
 import fr.fsh.bbeeg.user.routes.GetUserInformationsRoute;
+import fr.fsh.bbeeg.user.routes.GetUserPreferredDomainsRoute;
 import jewas.http.RestServer;
 import jewas.http.RestServerFactory;
 import jewas.routes.RedirectRoute;
@@ -77,7 +80,9 @@ org.h2.tools.Server.createWebServer(null).start();
                 new StaticResourcesRoute("/public/", "public/"),
                 new SimpleHtmlRoute("/dashboard/dashboard.html", "dashboard/dashboard.ftl"),
                 new GetSimpleSearchContent(assembler.contentResource()),
-                new SimpleHtmlRoute("/content/search.html", "content/search.ftl"),
+                new GetSearchScreenRoute(),
+                new GetUserContentsSearchScreenRoute(),
+                new GetContentToTreatSearchScreenRoute(),
                 new CreateContentOfContentRoute(assembler.contentResource()),
                // new GetCreateContentRoute(assembler.contentResource()),
                 new CreateTextContentRoute(assembler.contentResource()),

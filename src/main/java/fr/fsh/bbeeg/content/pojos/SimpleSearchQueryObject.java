@@ -7,6 +7,7 @@ public class SimpleSearchQueryObject {
     private Date serverTimestamp;
     private Integer startingOffset = -1;
     private Integer numberOfContents = Integer.valueOf(10);
+    private Integer searchMode;
 
     public SimpleSearchQueryObject query(String _query) {
         this.query = _query;
@@ -47,4 +48,16 @@ public class SimpleSearchQueryObject {
    public Date serverTimestamp(){
        return this.serverTimestamp;
    }
+
+    public SimpleSearchQueryObject searchMode(Integer _searchMode){
+        this.searchMode = _searchMode;
+        return this;
+    }
+
+    public Integer searchMode(){
+        if (searchMode == null || searchMode < 0) {
+            return 0;
+        }
+        return this.searchMode;
+    }
 }

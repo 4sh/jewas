@@ -117,6 +117,8 @@
         <form action="/content/search" id="simpleSearchForm">
             <label for="simpleSearchQuery">Recherche</label> : <input id="simpleSearchQuery" type="text" name="query" size="80" />
             <input id="simpleSearchButton" type="submit" value="Rechercher"/>
+
+            <input name="searchMode" style="visibility: hidden;" value="${searchMode}"/>
         </form>
     </div>
     <h3><a href="#">Recherche avancée</a></h3>
@@ -160,6 +162,8 @@
             <div class="criteria-line">
                 <input id="advancedSearchButton" type="submit" value="Rechercher"/>
             </div>
+
+            <input name="searchMode" style="visibility: hidden;" value="${searchMode}"/>
         </form>
     </div>
 </div>
