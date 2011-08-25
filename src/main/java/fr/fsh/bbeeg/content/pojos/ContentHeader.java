@@ -16,6 +16,7 @@ public class ContentHeader {
     private Date lastModificationDate;
     private ContentStatus status;
     private String description;
+    private Integer version;
 
     private ContentType type;
     private User author;
@@ -103,5 +104,14 @@ public class ContentHeader {
 
     public List<Domain> domains(){
         return this.domains;
+    }
+
+    public ContentHeader version(Integer _version){
+        this.version = _version;
+        return this;
+    }
+
+    public Integer version(){
+        return this.version;
     }
 }
