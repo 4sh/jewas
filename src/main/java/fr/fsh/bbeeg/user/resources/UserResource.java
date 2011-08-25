@@ -23,6 +23,7 @@ public class UserResource {
     }
 
     public static User getUserInformations() {
+        // TODO : should not return a User object but something else instead
         User user = new User();
         user.name("Bob").surname("Sponge").email("pacific_33@sea.gl")
                 .lastConnectionDate(new DateMidnight().toDate());
@@ -31,5 +32,9 @@ public class UserResource {
 
     public void fetchDomains(List<Domain> results, Integer number, User user) {
         userDao.fetchDomains(results, number, user);
+    }
+
+    public User getUser(Long id) {
+        return userDao.getUser(id);
     }
 }

@@ -82,9 +82,19 @@
                     </@subMenu>
                 </@rootMenuItem>
                 <#if selectedMenuItem == "profile">
-                    <@rootMenuItem id="profileMenuItem" title="Profil" selected="true"/>
+                    <@rootMenuItem id="profileMenuItem" title='${statics["fr.fsh.bbeeg.security.resources.ConnectedUserResource"].instance().userNames()}' selected="true">
+                         <@subMenu id="profileSubMenu" width="125">
+                            <@subMenuItem id="parametersMenuItem" title="Paramètres" />
+                            <@subMenuItem id="disconnectMenuItem" title="Déconnexion" />
+                        </@subMenu>
+                    </@rootMenuItem>
                 <#else>
-                    <@rootMenuItem id="profileMenuItem" title="Profil" selected="false"/>
+                    <@rootMenuItem id="profileMenuItem" title='${statics["fr.fsh.bbeeg.security.resources.ConnectedUserResource"].instance().userNames()}' selected="false">
+                         <@subMenu id="profileSubMenu" width="125">
+                            <@subMenuItem id="parametersMenuItem" title="Paramètres" />
+                            <@subMenuItem id="disconnectMenuItem" title="Déconnexion" />
+                        </@subMenu>
+                    </@rootMenuItem>
                 </#if>
             </ul>
         </div>

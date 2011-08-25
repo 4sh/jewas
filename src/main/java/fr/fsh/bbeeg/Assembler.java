@@ -7,6 +7,7 @@ import fr.fsh.bbeeg.content.resources.ContentResource;
 import fr.fsh.bbeeg.domain.persistence.DomainDao;
 import fr.fsh.bbeeg.domain.resources.DomainResource;
 import fr.fsh.bbeeg.i18n.persistence.I18nDao;
+import fr.fsh.bbeeg.security.resources.ConnectedUserResource;
 import fr.fsh.bbeeg.user.persistence.UserDao;
 import fr.fsh.bbeeg.user.resources.UserResource;
 import org.apache.commons.dbcp.BasicDataSource;
@@ -30,6 +31,7 @@ public class Assembler {
     private ContentResource contentResource;
     private DomainResource domainResource;
     private UserResource userResource;
+    private ConnectedUserResource connectedUserResource;
 
     public Assembler() {
         dataSource = createDatasource();
@@ -43,6 +45,7 @@ public class Assembler {
                 BBEEGConfiguration.INSTANCE.cliOptions().contentFileRepository());
         domainResource = new DomainResource(domainDao);
         userResource = new UserResource(userDao);
+        connectedUserResource = ConnectedUserResource.instance().userDao(userDao);
     }
 
     private DataSource createDatasource() {

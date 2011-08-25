@@ -28,7 +28,7 @@ $(
         $.each([
                 ['#dashboardMenuItem', '/dashboard/dashboard.html'],
                 ['#searchMenuItem', '/content/search.html'],
-                ['#profileMenuItem', '/user/profile.html'],
+                ['#parametersMenuItem', '/user/profile.html'],
                 ['#createContentMenuItem', '/content/text/create.html']
             ],function(index, value){
                 $(value[0]).click(function(){
@@ -39,7 +39,8 @@ $(
 
         // Root menu item displaying a submenu
         $.each([
-                ['#adminMenuItem', '#adminSubMenu']
+                ['#adminMenuItem', '#adminSubMenu'],
+                ['#profileMenuItem', '#profileSubMenu']
             ],function(index,value){
                 $(value[0]).mouseenter(function(evt){
                     $(value[1]).show("drop", { direction: "right" }, 500);

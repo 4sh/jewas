@@ -27,10 +27,10 @@ public class UserDao {
                         .addQuery("selectById", "select * from User where id = :id");
     }
 
-    public User getUser(Long authorId) {
+    public User getUser(Long id) {
         User user = userQueryTemplate.selectObject("selectById",
                 new QueryExecutionContext().buildParams()
-                        .bigint("id", authorId)
+                        .bigint("id", id)
                         .toContext()
         );
 
