@@ -6,9 +6,15 @@
         <#assign chosenJS = "/public/js/chosen/chosen.jquery.js">
 </#if>
 
+<#if searchMode == 0>
+<#assign selectMenu = "search">
+<#else>
+<#assign selectMenu = "administration">
+</#if>
+
 <@mainTemplate
     title="Ecran d'accueil"
-    selectedMenuItem="search"
+    selectedMenuItem=selectMenu
     scripts=[chosenJS, "/public/js/bbeeg/search/search.js", "/public/js/bbeeg/common/widgets/chainedSelect.js"]
     stylesheets=["/public/css/chosen/chosen.css", "/public/css/bbeeg/search.css"]>
 <script>

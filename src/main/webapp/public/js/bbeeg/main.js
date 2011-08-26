@@ -29,7 +29,9 @@ $(
                 ['#dashboardMenuItem', '/dashboard/dashboard.html'],
                 ['#searchMenuItem', '/content/search.html'],
                 ['#parametersMenuItem', '/user/profile.html'],
-                ['#createContentMenuItem', '/content/text/create.html']
+                ['#createContentMenuItem', '/content/text/create.html'],
+                ['#manageMyContentsMenuItem', '/content/search-user-content.html'],
+                ['#adminContentsMenuItem', '/content/search-content-to-treat.html']
             ],function(index, value){
                 $(value[0]).click(function(){
                     loadMenuItem(this, value[1]);
