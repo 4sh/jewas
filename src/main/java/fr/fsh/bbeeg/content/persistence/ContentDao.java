@@ -49,15 +49,16 @@ public class ContentDao {
                         .addQuery("selectUrl", "select FILE_URI from Content where id = :id")
                         .addQuery("selectLimitedRecent",
                                 "select * from " +
-                                        "(select * from Content order by id desc) " +
+                                        "(select * from Content where status = :status " +
+                                        "order by id desc) " +
                                         "where ROWNUM <= :limit")
                         .addQuery("selectLimitedPopular", // TODO: change request or remove it. Use elasticSearch insteed
                                 "select * from " +
-                                        "(select * from Content) " +
+                                        "(select * from Content where status = :status) " +
                                         "where ROWNUM <= :limit")
                         .addQuery("selectLimitedLastViewed", // TODO: change request or remove it. Use elasticSearch insteed
                                 "select * from " +
-                                        "(select * from Content) " +
+                                        "(select * from Content where status = :status) " +
                                         "where ROWNUM <= :limit")
                         .addQuery("simpleSearch",
                                 "select * from " +
@@ -69,7 +70,7 @@ public class ContentDao {
                                         "  and (:userId IS NULL or AUTHOR_REF = :userId)" +
                                         " ) where ROWNUM <= :endOffset) " +
                                         "where rnum >= :beginOffset")
-                        .addQuery("count", "select count(*) as COUNT from Content")
+                        .addQuery("count", "select count(*) as COUNT from Content where status = :status")
                         .addQuery("insert", "INSERT INTO CONTENT (ID, TITLE, DESCRIPTION, CREATION_DATE, LAST_MODIFICATION_DATE, STATUS, CONTENT_TYPE, AUTHOR_REF) " +
                                 "VALUES (CONTENT_SEQ.nextval, :title, :description, CURRENT_DATE, CURRENT_DATE, 0, :contentType, :authorId)")
                         .addQuery("updateContentUrl", "UPDATE CONTENT " +
@@ -83,8 +84,9 @@ public class ContentDao {
                         .addQuery("removeLinkWithDomain", "DELETE FROM CONTENT_DOMAIN " +
                                 "WHERE CONTENT_REF = :contentId AND DOMAIN_REF = :domainId")
                         .addQuery("updateStatus", "UPDATE CONTENT " +
-                                "SET STATUS = :status "+
-                                "WHERE ID = :id");
+                                "SET STATUS = :status, LAST_MODIFICATION_DATE = CURRENT_DATE "+
+                                "WHERE ID = :id")
+                        .addQuery("addComment", "INSERT INTO CONTENT_COMMENT (ID, CONTENT_REF, COMMENT) VALUES (CONTENT_COMMENT_SEQ.nextval, :id, :comment)");
 
 //        this.contentDetailQueryTemplate = new QueryTemplate<ContentDetail>(dataSource, new ContentDetailRowMapper())
 //                        .addQuery("selectById", "select * from Content where id = :id");
@@ -118,26 +120,42 @@ public class ContentDao {
 
     public void fetchRecentContents(List<ContentHeader> contentHeaders, int limit) {
         contentHeaderQueryTemplate.select(contentHeaders, "selectLimitedRecent",
-                new QueryExecutionContext().buildParams().integer("limit", limit).toContext()
+                new QueryExecutionContext()
+                        .buildParams()
+                        .integer("status", ContentStatus.VALIDATED.ordinal())
+                        .integer("limit", limit)
+                        .toContext()
         );
     }
 
     public void fetchPopularContent(List<ContentHeader> contentHeaders, int limit) {
         contentHeaderQueryTemplate.select(contentHeaders, "selectLimitedPopular",
-                new QueryExecutionContext().buildParams().integer("limit", limit).toContext()
+                new QueryExecutionContext()
+                        .buildParams()
+                        .integer("status", ContentStatus.VALIDATED.ordinal())
+                        .integer("limit", limit)
+                        .toContext()
         );
     }
 
     public void fetchLastViewedContent(List<ContentHeader> contentHeaders, int limit) {
         contentHeaderQueryTemplate.select(contentHeaders, "selectLimitedLastViewed",
-                new QueryExecutionContext().buildParams().integer("limit", limit).toContext()
+                new QueryExecutionContext()
+                        .buildParams()
+                        .integer("status", ContentStatus.VALIDATED.ordinal())
+                        .integer("limit", limit)
+                        .toContext()
         );
     }
 
     public Count getTotalNumberOfContent() {
         return new Count().count(
                 contentHeaderQueryTemplate.selectLong("count",
-                        new QueryExecutionContext().buildParams().toContext()).intValue()
+                        new QueryExecutionContext()
+                                .buildParams()
+                                .integer("status", ContentStatus.VALIDATED.ordinal())
+                                .toContext()
+                ).intValue()
         );
     }
 
@@ -293,7 +311,7 @@ public class ContentDao {
         );
     }
 
-    public void updateContentStatus(Long id, ContentStatus status) {
+    public void updateContentStatus(Long id, ContentStatus status, String comment) {
         // TODO check the status and check if it is possible to go to this status (workflow).
         // Check user rights...
         contentHeaderQueryTemplate.update("updateStatus",
@@ -303,6 +321,17 @@ public class ContentDao {
                         .integer("status", status.ordinal())
                         .toContext()
         );
+
+        if (comment != null && !comment.isEmpty()) {
+            contentHeaderQueryTemplate.insert("addComment",
+                    new QueryExecutionContext()
+                            .buildParams()
+                            .bigint("id", id)
+                            .string("comment", comment)
+                            .toContext(),
+                    "id"
+            );
+        }
     }
 
     private List<Long> getDomainIds(Long contentId) {

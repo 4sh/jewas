@@ -18,21 +18,19 @@
     scripts=[chosenJS, "/public/js/bbeeg/search/search.js", "/public/js/bbeeg/common/widgets/chainedSelect.js"]
     stylesheets=["/public/css/chosen/chosen.css", "/public/css/bbeeg/search.css"]>
 <script>
-    function updateStatus(containerId, contentId, status, callback) {
-        $.ajax({
-            method: 'POST',
-            url: '/content/' + contentId + '/status/' + status,
-            success: function (data) {
+    function updateStatus(containerId, contentId, status, comment, callback) {
+        $.post('/content/' + contentId + '/status/' + status,
+            "comment="+comment,
+            function (data) {
                 callback();
             }
-        });
+        );
     }
 
     <#if searchMode == 1>
-    function sendUpdateStatus(containerId, contentId, status) {
-        updateStatus(containerId, contentId, status,
+    function sendUpdateStatus(containerId, contentId, status, comment) {
+        updateStatus(containerId, contentId, status, comment,
                 function () {
-                    alert('Le contenu a bien été mis à jour');
                     if (status === 'DELETED') {
                         $("#" + containerId).remove();
                     } else {
@@ -49,11 +47,11 @@
         if (status === "DRAFT") {
             newStatus = 'TO_BE_VALIDATED';
         } else {
-            alert('Le contenu ne peut pas être mis à jour car son status ne le permet pas.');
+            $("#updateStatusImpossible").dialog({show: 'slide', hide: 'slide'});
         }
 
         if (newStatus !== null) {
-            sendUpdateStatus(containerId, contentId, newStatus);
+            sendUpdateStatus(containerId, contentId, newStatus, '');
         }
     }
 
@@ -67,16 +65,15 @@
         }
 
         if (newStatus !== null) {
-            sendUpdateStatus(containerId, contentId, newStatus);
+            sendUpdateStatus(containerId, contentId, newStatus, '');
         }
     }
     </#if>
 
     <#if searchMode == 2>
-        function sendUpdateStatus(containerId, contentId, status) {
-            updateStatus(containerId, contentId, status,
+        function sendUpdateStatus(containerId, contentId, status, comment) {
+            updateStatus(containerId, contentId, status, comment,
                     function () {
-                        alert('Le contenu a bien été mis à jour');
                         $("#" + containerId).remove();
                     }
             );
@@ -92,16 +89,17 @@
                     newStatus = 'DELETED';
                 }
                 else {
-                    alert('Le contenu ne peut pas être mis à jour car son status ne le permet pas.');
+                    $("#updateStatusImpossible").dialog({show: 'slide', hide: 'slide'});
                 }
             }
 
             if (newStatus !== null) {
-                sendUpdateStatus(containerId, contentId, newStatus);
+                sendUpdateStatus(containerId, contentId, newStatus, '');
             }
         }
 
-        function rejectContent(containerId, contentId, status) {
+
+        function rejectContentCallback(containerId, contentId, status, comment) {
             var newStatus = null;
 
             if (status === "TO_BE_VALIDATED") {
@@ -116,8 +114,30 @@
             }
 
             if (newStatus !== null) {
-                sendUpdateStatus(containerId, contentId, newStatus);
+                sendUpdateStatus(containerId, contentId, newStatus, comment);
             }
+        }
+
+        function rejectContent(containerId, contentId, status) {
+            $("#rejectReasonDialog").dialog(
+                    {   show: 'slide',
+                        hide: 'slide',
+                        buttons: [
+                        {
+                            text: "Annuler",
+                            click: function() { $(this).dialog("close"); }
+                        },
+                        {
+                            text: "Valider",
+                            click: function() {
+                                rejectContentCallback(containerId, contentId, status, $("#rejectReasonMsg").val());
+                                console.log($("#rejectReasonMsg").val());
+                                $(this).dialog("close");
+                            }
+                        }
+                        ]
+                    }
+            );
         }
     </#if>
 
@@ -333,6 +353,7 @@
                     >Supprimer</button>
         </#if>
 
+
         <#if searchMode == 2>
             <button type="button" onclick="acceptContent('item-{{= id}}', {{= id}}, '{{= status}}')">Accepter</button>
             <button type="button" onclick="rejectContent('item-{{= id}}', {{= id}}, '{{= status}}')">Rejeter</button>
@@ -340,5 +361,23 @@
         <div class="content-result-description">{{= description}}</div>
     </div>
 </script>
+
+<#if searchMode == 2>
+<div style="visibility: hidden">
+    <div id="rejectReasonDialog" title="Motif du rejet">
+        <p> Indiquez le motif du rejet: </p>
+        <textarea id="rejectReasonMsg" rows="10" cols="50"></textarea>
+    </div>
+</div>
+</#if>
+
+<#if searchMode == 2>
+<div style="visibility: hidden">
+    <div id="updateStatusImpossible" title="Echec de la mise à jour">
+        <p>Le contenu ne peut pas être mis à jour car son status ne le permet pas.</p>
+    </div>
+</div>
+</#if>
+
 
 </@mainTemplate>

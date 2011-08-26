@@ -16,13 +16,14 @@ public class ContentStatusRoute extends AbstractRoute {
     private ContentResource contentResource;
 
     public ContentStatusRoute(ContentResource _contentResource) {
-        super(HttpMethodMatcher.ALL, new PatternUriPathMatcher("/content/[id]/status/[status]"));
+        super(HttpMethodMatcher.ALL, new PatternUriPathMatcher("/content/[id]/status/[status]/[comment]"));
         this.contentResource = _contentResource;
     }
 
     public static class ContentStatusQueryObject {
         private Long id;
         private String status;
+        private String comment;
 
         public ContentStatusQueryObject id(Long _id){
             this.id = _id;
@@ -41,6 +42,15 @@ public class ContentStatusRoute extends AbstractRoute {
         public String status(){
             return this.status;
         }
+
+        public ContentStatusQueryObject comment(String _comment){
+            this.comment = _comment;
+            return this;
+        }
+
+        public String comment(){
+            return this.comment;
+        }
     }
 
     @Override
@@ -51,7 +61,7 @@ public class ContentStatusRoute extends AbstractRoute {
             @Override
             public void onRequest(HttpRequest request) {
                 // TODO: to complete !
-                contentResource.updateContentStatus(csqo.id(), ContentStatus.valueOf(csqo.status()));
+                contentResource.updateContentStatus(csqo.id(), ContentStatus.valueOf(csqo.status()), csqo.comment());
                 request.respondJson().object("Ok");
             }
         };

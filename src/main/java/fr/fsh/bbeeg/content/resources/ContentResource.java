@@ -158,7 +158,7 @@ public class ContentResource {
         contentDao.fetchContents(contentHeaders, user);
     }
 
-    public void updateContentStatus(Long id, ContentStatus status) {
-        contentDao.updateContentStatus(id, status);
+    public void updateContentStatus(Long id, ContentStatus status, String comment) {
+        contentDao.updateContentStatus(id, status, comment);
     }
 }
