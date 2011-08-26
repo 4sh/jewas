@@ -64,7 +64,8 @@ public class Main {
         // Registering cli options
         BBEEGConfiguration.INSTANCE.cliOptions(options);
 
-org.h2.tools.Server.createWebServer(null).start();
+        org.h2.tools.Server.createWebServer("-webPort",
+                BBEEGConfiguration.INSTANCE.cliOptions().h2ServerPort()).start();
         Class.forName("org.h2.Driver");
         Connection dbInitializationConnection = DriverManager.getConnection("jdbc:h2:mem:mytest", "sa", "");
         ScriptRunner sr = new ScriptRunner(dbInitializationConnection, true, true);

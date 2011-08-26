@@ -12,6 +12,9 @@ public class CliOptions {
     @Parameter(names = "-contentFileRepository", description = "Repository of content files", required = true)
     private String contentFileRepository;
 
+    @Parameter(names = "-h2ServerPort", description = "Port of the h2 server", required = true)
+    private String h2ServerPort;
+
     public int httpPort() {
         return this.httpPort;
     }
@@ -22,5 +25,9 @@ public class CliOptions {
 
     public String contentFileRepository() {
         return this.contentFileRepository;
+    }
+
+    public String h2ServerPort() {
+        return this.h2ServerPort;
     }
 }

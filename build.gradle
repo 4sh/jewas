@@ -30,12 +30,14 @@ def ENV_PROPERTIES = [
            targetDir: ENV_DEMO_DEPLOY_ROOT_PATH+"/nightly",
            bbeegPort: 18086,
            visioEegRootUrl: "http://nightly.visio.bbeeg.4sh.fr",
-           contentFileRepository: ENV_DEMO_DEPLOY_ROOT_PATH+"/nightly"+"/contents"
+           contentFileRepository: ENV_DEMO_DEPLOY_ROOT_PATH+"/nightly"+"/contents",
+           h2ServerPort: 8082
    ], qa: [
            targetDir: ENV_DEMO_DEPLOY_ROOT_PATH+"/qa",
            bbeegPort: 28086,
            visioEegRootUrl: "http://qa.visio.bbeeg.4sh.fr",
-           contentFileRepository: ENV_DEMO_DEPLOY_ROOT_PATH+"/qa"+"/contents"
+           contentFileRepository: ENV_DEMO_DEPLOY_ROOT_PATH+"/qa"+"/contents",
+           h2ServerPort: 8083
    ]
 ]
 
@@ -156,6 +158,7 @@ task startBBEEG(dependsOn: [initSsh, checkPropsForDeployment]) << {
     def executionPort = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].bbeegPort
     def visioRootUrl = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].visioEegRootUrl
     def contentFileRepository = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].contentFileRepository
+    def h2ServerPort = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].h2ServerPort
 
     ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 2224,
 		command: """kill -9 \$(cat "${deployDirectory}/bbeeg.pid")""", trust: true, failonerror: false)
@@ -163,6 +166,7 @@ task startBBEEG(dependsOn: [initSsh, checkPropsForDeployment]) << {
     ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 2224,
 		command: """/usr/lib/jvm/jdk1.7.0/jre/bin/java -Dfile.encoding=UTF-8 -jar "${deployDirectory}/bbeeg.jar" \
 		    -httpPort ${executionPort} -visioRootUrl ${visioRootUrl} -contentFileRepository ${contentFileRepository} \
+		    -h2ServerPort ${h2ServerPort} \
 		    > "${deployDirectory}/bbeeg.log" 2> "${deployDirectory}/bbeeg.err.log" \
 		    & echo \$! > "${deployDirectory}/bbeeg.pid" """,
         trust: true, failonerror: true)
