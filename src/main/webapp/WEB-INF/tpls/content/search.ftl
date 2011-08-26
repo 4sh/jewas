@@ -18,17 +18,18 @@
     scripts=[chosenJS, "/public/js/bbeeg/search/search.js", "/public/js/bbeeg/common/widgets/chainedSelect.js"]
     stylesheets=["/public/css/chosen/chosen.css", "/public/css/bbeeg/search.css"]>
 <script>
-    function updateStatus(id, status) {
+    function updateStatus(containerId, contentId, status) {
         $.ajax({
             method: 'POST',
-            url: '/content/' + id + '/status/' + status,
+            url: '/content/' + contentId + '/status/' + status,
             success: function (data) {
                 alert('Le contenu a bien été mis à jour');
+                $("#" + containerId).remove();
             }
         });
     }
 
-    function accept(id, status) {
+    function accept(containerId, contentId, status) {
         var newStatus = null;
 
         if (status === "TO_BE_VALIDATED") {
@@ -43,11 +44,11 @@
         }
 
         if (newStatus !== null) {
-            updateStatus(id, newStatus);
+            updateStatus(containerId, contentId, newStatus);
         }
     }
 
-    function reject(id, status) {
+    function reject(containerId, contentId, status) {
         var newStatus = null;
 
         if (status === "TO_BE_VALIDATED") {
@@ -62,7 +63,7 @@
         }
 
         if (newStatus !== null) {
-            updateStatus(id, newStatus);
+            updateStatus(containerId, contentId, newStatus);
         }
     }
 
@@ -243,15 +244,15 @@
     <button id="searchNext"><img src="/public/images/ajax/indicator.gif" class="spinner" />Résultats suivants</button>
 </script>
 <script id="contentLineResult" type="text/x-jquery-tmpl">
-    <div class="content-result">
+    <div id="item-{{= id}}" class="content-result">
         <div class="content-result-title"><a href="/content/{{= id}}/view.html">{{= title}}</a></div>
         <div class="content-result-author">{{= author.name}}</div>
         <div class="content-result-creation-date">{{= creationDate}}</div>
         <div class="content-result-status">{{= status}}</div>
 
         <#if searchMode == 2>
-            <button type="button" onclick="accept({{= id}}, '{{= status}}')">Accepter</button>
-            <button type="button" onclick="reject({{= id}}, '{{= status}}')">Rejeter</button>
+            <button type="button" onclick="accept('item-{{= id}}', {{= id}}, '{{= status}}')">Accepter</button>
+            <button type="button" onclick="reject('item-{{= id}}', {{= id}}, '{{= status}}')">Rejeter</button>
         </#if>
         <div class="content-result-description">{{= description}}</div>
     </div>
