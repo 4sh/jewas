@@ -121,17 +121,19 @@
         }
     </#if>
 
-    function loadAuthors() {
-        $.getJSON(
-                '/content/author/all',
-                function success(data) {
-                    var container = $("#adSearchAuthors");
-                    container.children().remove();
-                    $("#authorItemTemplate").tmpl(data).appendTo(container);
-                    $("#adSearchAuthors").trigger("liszt:updated");
-                }
-        );
-    }
+    <#if searchMode != 1>
+        function loadAuthors() {
+            $.getJSON(
+                    '/content/author/all',
+                    function success(data) {
+                        var container = $("#adSearchAuthors");
+                        container.children().remove();
+                        $("#authorItemTemplate").tmpl(data).appendTo(container);
+                        $("#adSearchAuthors").trigger("liszt:updated");
+                    }
+            );
+        }
+    </#if>
 
     function loadContentTypes() {
         $.getJSON(
@@ -147,7 +149,9 @@
 
 
     $(function() {
-        loadAuthors();
+        <#if searchMode != 1>
+            loadAuthors();
+        </#if>
         loadContentTypes();
 
         $("#searchComponent").accordion({
@@ -261,13 +265,15 @@
                     </div>
                 </div>
             </div>
-            <div class="criteria-line">
-                <div class="criteria-label"><label for="adSearchAuthors">Auteur</label> :</div>
-                <div class="criteria-field">
-                    <select id="adSearchAuthors" name="authors" class="chzn-select side-by-side clearfix" multiple>
-                    </select>
+            <#if searchMode != 1>
+                <div class="criteria-line">
+                    <div class="criteria-label"><label for="adSearchAuthors">Auteur</label> :</div>
+                    <div class="criteria-field">
+                        <select id="adSearchAuthors" name="authors" class="chzn-select side-by-side clearfix" multiple>
+                        </select>
+                    </div>
                 </div>
-            </div>
+            </#if>
             <div class="criteria-line">
                 <input id="advancedSearchButton" type="submit" value="Rechercher"/>
             </div>
