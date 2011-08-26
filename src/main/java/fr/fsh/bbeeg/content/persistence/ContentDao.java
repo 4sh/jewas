@@ -81,7 +81,10 @@ public class ContentDao {
                         .addQuery("addLinkWithDomain", "INSERT INTO CONTENT_DOMAIN (CONTENT_REF, DOMAIN_REF) " +
                                 "VALUES (:contentId, :domainId)")
                         .addQuery("removeLinkWithDomain", "DELETE FROM CONTENT_DOMAIN " +
-                                "WHERE CONTENT_REF = :contentId AND DOMAIN_REF = :domainId");
+                                "WHERE CONTENT_REF = :contentId AND DOMAIN_REF = :domainId")
+                        .addQuery("updateStatus", "UPDATE CONTENT " +
+                                "SET STATUS = :status "+
+                                "WHERE ID = :id");
 
 //        this.contentDetailQueryTemplate = new QueryTemplate<ContentDetail>(dataSource, new ContentDetailRowMapper())
 //                        .addQuery("selectById", "select * from Content where id = :id");
@@ -286,6 +289,18 @@ public class ContentDao {
                 new QueryExecutionContext()
                         .buildParams()
                         .bigint("userId", user.id())
+                        .toContext()
+        );
+    }
+
+    public void updateContentStatus(Long id, ContentStatus status) {
+        // TODO check the status and check if it is possible to go to this status (workflow).
+        // Check user rights...
+        contentHeaderQueryTemplate.update("updateStatus",
+                new QueryExecutionContext()
+                        .buildParams()
+                        .bigint("id", id)
+                        .integer("status", status.ordinal())
                         .toContext()
         );
     }

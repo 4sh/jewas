@@ -18,15 +18,63 @@
     scripts=[chosenJS, "/public/js/bbeeg/search/search.js", "/public/js/bbeeg/common/widgets/chainedSelect.js"]
     stylesheets=["/public/css/chosen/chosen.css", "/public/css/bbeeg/search.css"]>
 <script>
+    function updateStatus(id, status) {
+        $.ajax({
+            method: 'POST',
+            url: '/content/' + id + '/status/' + status,
+            success: function (data) {
+                alert('Le contenu a bien été mis à jour');
+            }
+        });
+    }
+
+    function accept(id, status) {
+        var newStatus = null;
+
+        if (status === "TO_BE_VALIDATED") {
+            newStatus = 'VALIDATED';
+        } else {
+            if (status === "TO_BE_DELETED") {
+                newStatus = 'DELETED';
+            }
+            else {
+                alert('Le contenu ne peut pas être mis à jour car son status ne le permet pas.');
+            }
+        }
+
+        if (newStatus !== null) {
+            updateStatus(id, newStatus);
+        }
+    }
+
+    function reject(id, status) {
+        var newStatus = null;
+
+        if (status === "TO_BE_VALIDATED") {
+            newStatus = 'REJECTED';
+        } else {
+            if (status === "TO_BE_DELETED") {
+                newStatus = 'VALIDATED';
+            }
+            else {
+                alert('Le contenu ne peut pas être mis à jour car son status ne le permet pas.');
+            }
+        }
+
+        if (newStatus !== null) {
+            updateStatus(id, newStatus);
+        }
+    }
+
     function loadAuthors() {
         $.getJSON(
-            '/content/author/all',
-            function success(data) {
-                var container = $("#adSearchAuthors");
-                container.children().remove();
-                $("#authorItemTemplate").tmpl(data).appendTo(container);
-                $("#adSearchAuthors").trigger("liszt:updated");
-            }
+                '/content/author/all',
+                function success(data) {
+                    var container = $("#adSearchAuthors");
+                    container.children().remove();
+                    $("#authorItemTemplate").tmpl(data).appendTo(container);
+                    $("#adSearchAuthors").trigger("liszt:updated");
+                }
         );
     }
 
@@ -199,6 +247,12 @@
         <div class="content-result-title"><a href="/content/{{= id}}/view.html">{{= title}}</a></div>
         <div class="content-result-author">{{= author.name}}</div>
         <div class="content-result-creation-date">{{= creationDate}}</div>
+        <div class="content-result-status">{{= status}}</div>
+
+        <#if searchMode == 2>
+            <button type="button" onclick="accept({{= id}}, '{{= status}}')">Accepter</button>
+            <button type="button" onclick="reject({{= id}}, '{{= status}}')">Rejeter</button>
+        </#if>
         <div class="content-result-description">{{= description}}</div>
     </div>
 </script>

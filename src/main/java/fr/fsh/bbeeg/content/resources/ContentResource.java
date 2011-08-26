@@ -7,6 +7,7 @@ import fr.fsh.bbeeg.content.persistence.ContentDao;
 import fr.fsh.bbeeg.content.pojos.AdvancedSearchQueryObject;
 import fr.fsh.bbeeg.content.pojos.ContentDetail;
 import fr.fsh.bbeeg.content.pojos.ContentHeader;
+import fr.fsh.bbeeg.content.pojos.ContentStatus;
 import fr.fsh.bbeeg.content.pojos.ContentType;
 import fr.fsh.bbeeg.content.pojos.ContentTypeResultObject;
 import fr.fsh.bbeeg.content.pojos.SimpleSearchQueryObject;
@@ -155,5 +156,9 @@ public class ContentResource {
 
     public void fetchContents(List<ContentHeader> contentHeaders, User user) {
         contentDao.fetchContents(contentHeaders, user);
+    }
+
+    public void updateContentStatus(Long id, ContentStatus status) {
+        contentDao.updateContentStatus(id, status);
     }
 }

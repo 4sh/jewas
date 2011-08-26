@@ -4,6 +4,7 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import fr.fsh.bbeeg.common.CliOptions;
 import fr.fsh.bbeeg.common.config.BBEEGConfiguration;
+import fr.fsh.bbeeg.content.routes.ContentStatusRoute;
 import fr.fsh.bbeeg.content.routes.CreateContentOfContentRoute;
 import fr.fsh.bbeeg.content.routes.CreateTextContentRoute;
 import fr.fsh.bbeeg.content.routes.EditContentRoute;
@@ -81,6 +82,7 @@ org.h2.tools.Server.createWebServer(null).start();
                 new SimpleHtmlRoute("/dashboard/dashboard.html", "dashboard/dashboard.ftl"),
                 new GetSimpleSearchContent(assembler.contentResource()),
                 new GetSearchScreenRoute(),
+                new ContentStatusRoute(assembler.contentResource()),
                 new GetUserContentsSearchScreenRoute(),
                 new GetContentToTreatSearchScreenRoute(),
                 new CreateContentOfContentRoute(assembler.contentResource()),

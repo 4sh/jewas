@@ -35,6 +35,10 @@
     width: 200px; float:left;
 }
 
+.content-result-status {
+    width: 150px; float:left;
+}
+
 .content-result-description {
     clear: both; width: 800px; font-style: italic;
 }

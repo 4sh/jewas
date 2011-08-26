@@ -85,14 +85,14 @@
                         </@subMenu>
                     </@rootMenuItem>
                 <#else>
-                     <@rootMenuItem id="adminMenuItem" title="Administration" selected="false">
-                    <@subMenu id="adminSubMenu" width="125">
-                        <@subMenuItem id="createContentMenuItem" title="Créer un contenu" />
-                        <@subMenuItem id="manageMyContentsMenuItem" title="Gérer mes contenus" />
-                        <@subMenuItem id="adminContentsMenuItem" title="Administrer les contenus" />
-                    </@subMenu>
-                </@rootMenuItem>
-                </#if>
+                    <@rootMenuItem id="adminMenuItem" title="Administration" selected="false">
+                        <@subMenu id="adminSubMenu" width="125">
+                            <@subMenuItem id="createContentMenuItem" title="Créer un contenu" />
+                            <@subMenuItem id="manageMyContentsMenuItem" title="Gérer mes contenus" />
+                            <@subMenuItem id="adminContentsMenuItem" title="Administrer les contenus" />
+                        </@subMenu>
+                    </@rootMenuItem>
+                 </#if>
 
                 <#if selectedMenuItem == "profile">
                     <@rootMenuItem id="profileMenuItem" title='${statics["fr.fsh.bbeeg.security.resources.ConnectedUserResource"].instance().userNames()}' selected="true">
