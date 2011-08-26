@@ -24,7 +24,7 @@
 }
 
 .content-result-title {
-    width: 400px; float:left;
+    width: 350px; float:left;
 }
 
 .content-result-author {
@@ -32,7 +32,7 @@
 }
 
 .content-result-creation-date {
-    width: 150px; float:left;
+    width: 130px; float:left;
 }
 
 .content-result-status {

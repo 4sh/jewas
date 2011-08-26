@@ -18,54 +18,107 @@
     scripts=[chosenJS, "/public/js/bbeeg/search/search.js", "/public/js/bbeeg/common/widgets/chainedSelect.js"]
     stylesheets=["/public/css/chosen/chosen.css", "/public/css/bbeeg/search.css"]>
 <script>
-    function updateStatus(containerId, contentId, status) {
+    function updateStatus(containerId, contentId, status, callback) {
         $.ajax({
             method: 'POST',
             url: '/content/' + contentId + '/status/' + status,
             success: function (data) {
-                alert('Le contenu a bien été mis à jour');
-                $("#" + containerId).remove();
+                callback();
             }
         });
     }
 
-    function accept(containerId, contentId, status) {
+    <#if searchMode == 1>
+    function sendUpdateStatus(containerId, contentId, status) {
+        updateStatus(containerId, contentId, status,
+                function () {
+                    alert('Le contenu a bien été mis à jour');
+                    if (status === 'DELETED') {
+                        $("#" + containerId).remove();
+                    } else {
+                        $("#" + containerId + ' .content-result-status').text(status);
+                    }
+                }
+        );
+    }
+
+    function publishContent(containerId, contentId, status) {
         var newStatus = null;
 
-        if (status === "TO_BE_VALIDATED") {
-            newStatus = 'VALIDATED';
+        if (status === "DRAFT") {
+            newStatus = 'TO_BE_VALIDATED';
         } else {
-            if (status === "TO_BE_DELETED") {
-                newStatus = 'DELETED';
-            }
-            else {
-                alert('Le contenu ne peut pas être mis à jour car son status ne le permet pas.');
-            }
+            alert('Le contenu ne peut pas être mis à jour car son status ne le permet pas.');
         }
 
         if (newStatus !== null) {
-            updateStatus(containerId, contentId, newStatus);
+            sendUpdateStatus(containerId, contentId, newStatus);
         }
     }
 
-    function reject(containerId, contentId, status) {
+    function deleteContent(containerId, contentId, status) {
         var newStatus = null;
 
-        if (status === "TO_BE_VALIDATED") {
-            newStatus = 'REJECTED';
+        if (status === "VALIDATED") {
+            newStatus = 'TO_BE_DELETED';
         } else {
-            if (status === "TO_BE_DELETED") {
+            newStatus = 'DELETED';
+        }
+
+        if (newStatus !== null) {
+            sendUpdateStatus(containerId, contentId, newStatus);
+        }
+    }
+    </#if>
+
+    <#if searchMode == 2>
+    function sendUpdateStatus(containerId, contentId, status) {
+        updateStatus(containerId, contentId, status,
+                function () {
+                    alert('Le contenu a bien été mis à jour');
+                    $("#" + containerId).remove();
+                }
+        );
+    }
+
+        function acceptContent(containerId, contentId, status) {
+            var newStatus = null;
+
+            if (status === "TO_BE_VALIDATED") {
                 newStatus = 'VALIDATED';
+            } else {
+                if (status === "TO_BE_DELETED") {
+                    newStatus = 'DELETED';
+                }
+                else {
+                    alert('Le contenu ne peut pas être mis à jour car son status ne le permet pas.');
+                }
             }
-            else {
-                alert('Le contenu ne peut pas être mis à jour car son status ne le permet pas.');
+
+            if (newStatus !== null) {
+                sendUpdateStatus(containerId, contentId, newStatus);
             }
         }
 
-        if (newStatus !== null) {
-            updateStatus(containerId, contentId, newStatus);
+        function rejectContent(containerId, contentId, status) {
+            var newStatus = null;
+
+            if (status === "TO_BE_VALIDATED") {
+                newStatus = 'REJECTED';
+            } else {
+                if (status === "TO_BE_DELETED") {
+                    newStatus = 'VALIDATED';
+                }
+                else {
+                    alert('Le contenu ne peut pas être mis à jour car son status ne le permet pas.');
+                }
+            }
+
+            if (newStatus !== null) {
+                sendUpdateStatus(containerId, contentId, newStatus);
+            }
         }
-    }
+    </#if>
 
     function loadAuthors() {
         $.getJSON(
@@ -248,11 +301,30 @@
         <div class="content-result-title"><a href="/content/{{= id}}/view.html">{{= title}}</a></div>
         <div class="content-result-author">{{= author.name}}</div>
         <div class="content-result-creation-date">{{= creationDate}}</div>
-        <div class="content-result-status">{{= status}}</div>
+
+        <#if searchMode != 0>
+            <div class="content-result-status">{{= status}}</div>
+        </#if>
+
+        <#if searchMode == 1>
+            <button type="button" disabled="true">Editer</button>
+            <button type="button"
+                    onclick="publishContent('item-{{= id}}', {{= id}}, '{{= status}}')"
+                    {{if status != 'DRAFT'}}
+                        disabled
+                    {{/if}}
+                    >Publier</button>
+            <button type="button"
+                    onclick="deleteContent('item-{{= id}}', {{= id}}, '{{= status}}')"
+                    {{if status == 'TO_BE_DELETED'}}
+                        disabled
+                    {{/if}}
+                    >Supprimer</button>
+        </#if>
 
         <#if searchMode == 2>
-            <button type="button" onclick="accept('item-{{= id}}', {{= id}}, '{{= status}}')">Accepter</button>
-            <button type="button" onclick="reject('item-{{= id}}', {{= id}}, '{{= status}}')">Rejeter</button>
+            <button type="button" onclick="acceptContent('item-{{= id}}', {{= id}}, '{{= status}}')">Accepter</button>
+            <button type="button" onclick="rejectContent('item-{{= id}}', {{= id}}, '{{= status}}')">Rejeter</button>
         </#if>
         <div class="content-result-description">{{= description}}</div>
     </div>
