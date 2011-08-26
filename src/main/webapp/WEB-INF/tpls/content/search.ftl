@@ -36,6 +36,7 @@
                     if (status === 'DELETED') {
                         $("#" + containerId).remove();
                     } else {
+                        $("#" + containerId + ' .publish-button')[0].disabled = true;
                         $("#" + containerId + ' .content-result-status').text(status);
                     }
                 }
@@ -72,14 +73,14 @@
     </#if>
 
     <#if searchMode == 2>
-    function sendUpdateStatus(containerId, contentId, status) {
-        updateStatus(containerId, contentId, status,
-                function () {
-                    alert('Le contenu a bien été mis à jour');
-                    $("#" + containerId).remove();
-                }
-        );
-    }
+        function sendUpdateStatus(containerId, contentId, status) {
+            updateStatus(containerId, contentId, status,
+                    function () {
+                        alert('Le contenu a bien été mis à jour');
+                        $("#" + containerId).remove();
+                    }
+            );
+        }
 
         function acceptContent(containerId, contentId, status) {
             var newStatus = null;
@@ -307,14 +308,18 @@
         </#if>
 
         <#if searchMode == 1>
-            <button type="button" disabled="true">Editer</button>
             <button type="button"
+                    class="edit-button"
+                    disabled="true">Editer</button>
+            <button type="button"
+                    class="publish-button"
                     onclick="publishContent('item-{{= id}}', {{= id}}, '{{= status}}')"
                     {{if status != 'DRAFT'}}
                         disabled
                     {{/if}}
                     >Publier</button>
             <button type="button"
+                    class="delete-button"
                     onclick="deleteContent('item-{{= id}}', {{= id}}, '{{= status}}')"
                     {{if status == 'TO_BE_DELETED'}}
                         disabled
