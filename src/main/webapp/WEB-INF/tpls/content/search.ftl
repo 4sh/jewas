@@ -301,16 +301,9 @@
             </div>
             <div class="criteria-line">
                 <div class="criteria-label"><label for="adSearchDomains">Domaines</label> :</div>
-                 <div class="criteria-field">
-                    <input type="hidden" id="domains" name="domains" value="" />
-                    <div class="chzn-container criteria-field">
-                        <ul class="chzn-choices selected-options" id="domainsList">
-                        </ul>
-                    </div>
-                    <div id="searchDomainsMenuContainer" class="criteria-field">
-                        <select id="adSearchDomains">
-                        </select>
-                    </div>
+                <div class="criteria-field">
+                    <select id="adSearchDomains" name="domains" class="chzn-select side-by-side clearfix" multiple>
+                    </select>
                 </div>
             </div>
             <#if searchMode != 1>
