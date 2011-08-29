@@ -31,6 +31,7 @@
     function sendUpdateStatus(containerId, contentId, status, comment) {
         updateStatus(containerId, contentId, status, comment,
                 function () {
+                    alert('Le contenu a bien été mis à jour');
                     if (status === 'DELETED') {
                         $("#" + containerId).remove();
                     } else {
@@ -167,11 +168,23 @@
         );
     }
 
+      function loadDomains() {
+        $.getJSON(
+            '/domain/all',
+            function success(data) {
+                var container = $("#adSearchDomains");
+                container.children().remove();
+                $("#domainItemTemplate").tmpl(data).appendTo(container);
+                $("#adSearchDomains").trigger("liszt:updated");
+            }
+        );
+    }
 
     $(function() {
         <#if searchMode != 1>
             loadAuthors();
         </#if>
+        loadDomains();
         loadContentTypes();
 
         $("#searchComponent").accordion({
@@ -199,6 +212,7 @@
 		});
         $("#adSearchType").chosen();
         $("#adSearchCriterias").chosen();
+        $("#adSearchDomains").chosen();
         $("#adSearchAuthors").chosen();
         SearchQuery.bindSearchToForm(
                 new SearchQuery.SearchContext().targetForm($("#simpleSearchForm"))
@@ -285,6 +299,20 @@
                     </div>
                 </div>
             </div>
+            <div class="criteria-line">
+                <div class="criteria-label"><label for="adSearchDomains">Domaines</label> :</div>
+                 <div class="criteria-field">
+                    <input type="hidden" id="domains" name="domains" value="" />
+                    <div class="chzn-container criteria-field">
+                        <ul class="chzn-choices selected-options" id="domainsList">
+                        </ul>
+                    </div>
+                    <div id="searchDomainsMenuContainer" class="criteria-field">
+                        <select id="adSearchDomains">
+                        </select>
+                    </div>
+                </div>
+            </div>
             <#if searchMode != 1>
                 <div class="criteria-line">
                     <div class="criteria-label"><label for="adSearchAuthors">Auteur</label> :</div>
@@ -308,6 +336,9 @@
 </div>
 <script id="criteriaSelectedItem" type="text/x-jquery-tmpl">
     <li class="search-choice"><span>{{= label}}</span><a href="#" name="{{= value}}" class="search-choice-close"></a></li>
+</script>
+<script id="domainItemTemplate" type="text/x-jquery-tmpl">
+    <option value="{{= id}}"> {{= label}} </option>
 </script>
 <script id="authorItemTemplate" type="text/x-jquery-tmpl">
     <option value="{{= id}}"> {{= name}} </option>
