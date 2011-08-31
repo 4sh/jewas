@@ -6,7 +6,7 @@ package jewas.http.data;
  * Particularly while reading basic form submissions
  */
 public abstract class NamedHttpData implements HttpData {
-    private String name;
+    protected String name;
 
     protected NamedHttpData(String name){
         this.name = name;
