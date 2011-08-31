@@ -16,7 +16,7 @@ import java.io.IOException;
  * FileRequestHandler is a {@link RequestHandler} to use to load static resources.
  *
  */
-public class FileRequestHandler implements RequestHandler {
+public class FileRequestHandler extends AbstractRequestHandler {
     /**
      * The path of the file to load.
      */

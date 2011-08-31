@@ -1,6 +1,7 @@
 package jewas.routes;
 
 import jewas.http.*;
+import jewas.http.impl.AbstractRequestHandler;
 
 /**
  * @author fcamblor
@@ -16,7 +17,7 @@ public class RedirectRoute extends AbstractRoute {
 
     @Override
     protected RequestHandler onMatch(HttpRequest request, Parameters parameters) {
-        return new RequestHandler() {
+        return new AbstractRequestHandler() {
             @Override
             public void onRequest(HttpRequest request) {
                 request.redirect().location(redirectLocation);

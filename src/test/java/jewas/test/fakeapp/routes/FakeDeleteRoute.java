@@ -1,6 +1,12 @@
 package jewas.test.fakeapp.routes;
 
 import jewas.http.*;
+import jewas.http.data.HttpData;
+import jewas.http.data.NamedString;
+import jewas.http.impl.AbstractRequestHandler;
+import org.apache.tools.ant.util.facade.ImplementationSpecificArgument;
+
+import java.util.List;
 
 /**
  * @author fcamblor
@@ -33,7 +39,7 @@ public class FakeDeleteRoute extends AbstractRoute {
     @Override
     protected RequestHandler onMatch(HttpRequest request, Parameters parameters) {
         final QueryParam param = toQueryObject(parameters, QueryParam.class);
-        return new RequestHandler() {
+        return new AbstractRequestHandler() {
             @Override
             public void onRequest(HttpRequest request) {
                 if(param.id() == null){

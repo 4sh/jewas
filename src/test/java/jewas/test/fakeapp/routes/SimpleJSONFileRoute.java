@@ -1,6 +1,7 @@
 package jewas.test.fakeapp.routes;
 
 import jewas.http.*;
+import jewas.http.impl.AbstractRequestHandler;
 
 /**
  * Created by IntelliJ IDEA.
@@ -39,7 +40,7 @@ public class SimpleJSONFileRoute extends AbstractRoute {
     @Override
     protected RequestHandler onMatch(HttpRequest request, Parameters parameters) {
         final QueryObject qo = toQueryObject(parameters, QueryObject.class);
-        return new RequestHandler() {
+        return new AbstractRequestHandler() {
             @Override
             public void onRequest(HttpRequest request) {
                 UpperCasedJSON result = new UpperCasedJSON();

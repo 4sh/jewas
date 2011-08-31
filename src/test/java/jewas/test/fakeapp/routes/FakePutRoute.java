@@ -1,6 +1,13 @@
 package jewas.test.fakeapp.routes;
 
 import jewas.http.*;
+import jewas.http.data.BodyParameters;
+import jewas.http.data.FormBodyParameters;
+import jewas.http.data.HttpData;
+import jewas.http.data.NamedString;
+import jewas.http.impl.AbstractRequestHandler;
+
+import java.util.List;
 
 /**
  * @author fcamblor
@@ -19,9 +26,9 @@ public class FakePutRoute extends AbstractRoute {
         }
     }
 
-    public static class QueryParam {
+    public static class BodyParam {
         private String id;
-        public QueryParam id(String _id){
+        public BodyParam id(String _id){
             this.id = _id;
             return this;
         }
@@ -32,14 +39,14 @@ public class FakePutRoute extends AbstractRoute {
 
     @Override
     protected RequestHandler onMatch(HttpRequest request, Parameters parameters) {
-        final QueryParam param = toQueryObject(parameters, QueryParam.class);
-        return new RequestHandler() {
+        return new AbstractRequestHandler() {
             @Override
-            public void onRequest(HttpRequest request) {
-                if(param.id() == null){
+            public void onReady(HttpRequest request, BodyParameters bodyParameters) {
+                BodyParam params = toContentObject(bodyParameters, BodyParam.class);
+                if(params.id() == null){
                     request.respondJson().object(new Result().result("putOk"));
                 } else {
-                    request.respondJson().object(new Result().result("putOk of "+param.id()));
+                    request.respondJson().object(new Result().result("putOk of "+params.id()));
                 }
             }
         };

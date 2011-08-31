@@ -1,6 +1,7 @@
 package jewas.routes;
 
 import jewas.http.*;
+import jewas.http.impl.AbstractRequestHandler;
 import jewas.template.Templates;
 
 /**
@@ -20,7 +21,7 @@ public class SimpleHtmlRoute extends AbstractRoute {
     }
 
     protected RequestHandler onMatch(HttpRequest request, Parameters parameters) {
-        return new RequestHandler() {
+        return new AbstractRequestHandler() {
             @Override
             public void onRequest(HttpRequest request) {
                 request.respondHtml().content(Templates.process(templatePath, null));

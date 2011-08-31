@@ -7,6 +7,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 
 import jewas.http.AddressAlreadyInUseException;
+import jewas.http.impl.AbstractRequestHandler;
+import jewas.http.impl.AbstractRequestHandlerDelegate;
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.ChannelException;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
@@ -38,14 +40,12 @@ public class NettyHttpConnector implements HttpConnector {
 						Executors.newCachedThreadPool()));
 
 		// Set up the event pipeline factory.
-		bootstrap.setPipelineFactory(new HttpServerPipelineFactory(new RequestHandler() {
-			@Override
-			public void onRequest(HttpRequest request) {
-				for (RequestHandler h : handlers) {
-					h.onRequest(request);
-				}
-			}
-		}));
+		bootstrap.setPipelineFactory(new HttpServerPipelineFactory(new AbstractRequestHandlerDelegate() {
+            @Override
+            public List<RequestHandler> findDelegatesFor(HttpRequest request) {
+                return handlers;
+            }
+        }));
 
 		// Bind and start to accept incoming connections.
         try {
