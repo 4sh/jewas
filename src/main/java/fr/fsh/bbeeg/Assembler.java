@@ -38,7 +38,10 @@ public class Assembler {
 
     public Assembler() {
         dataSource = createDatasource();
-        client = new TransportClient().addTransportAddress(new InetSocketTransportAddress("localhost", 9300));
+        client = new TransportClient().addTransportAddress(
+                new InetSocketTransportAddress(
+                        BBEEGConfiguration.INSTANCE.cliOptions().elasticSearchAdress(),
+                        BBEEGConfiguration.INSTANCE.cliOptions().elasticSearchPort()));
 
         i18nDao = new I18nDao(dataSource);
         domainDao = new DomainDao(dataSource, i18nDao);

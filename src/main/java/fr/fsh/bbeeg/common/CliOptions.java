@@ -15,6 +15,12 @@ public class CliOptions {
     @Parameter(names = "-h2ServerPort", description = "Port of the h2 server", required = true)
     private String h2ServerPort;
 
+    @Parameter(names = "-elasticSearchAdress", description = "Ip adress of the elasticSearch server", required = true)
+    private String elasticSearchAdress;
+
+    @Parameter(names = "-elasticSearchPort", description = "Port of the elasticSearch server", required = true)
+    private int elasticSearchPort;
+
     public int httpPort() {
         return this.httpPort;
     }
@@ -29,5 +35,13 @@ public class CliOptions {
 
     public String h2ServerPort() {
         return this.h2ServerPort;
+    }
+
+    public String elasticSearchAdress() {
+        return this.elasticSearchAdress;
+    }
+    
+    public int elasticSearchPort() {
+        return this.elasticSearchPort;
     }
 }
