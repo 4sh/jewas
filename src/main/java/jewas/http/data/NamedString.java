@@ -1,15 +1,24 @@
 package jewas.http.data;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * @author fcamblor
  */
 public class NamedString extends NamedHttpData {
 
-    private final String value;
+    private final List<String> values = new ArrayList<String>();
 
     public NamedString(String name, String value){
+        this(name, Arrays.asList(value));
+    }
+
+    public NamedString(String name, List<String> values){
         super(name);
-        this.value = value;
+        this.values.addAll(values);
     }
 
     @Override
@@ -19,7 +28,11 @@ public class NamedString extends NamedHttpData {
     }
 
     public String value(){
-        return this.value;
+        return this.values.get(0);
+    }
+
+    public List<String> values(){
+        return Collections.unmodifiableList(this.values());
     }
 
     @Override
@@ -28,7 +41,13 @@ public class NamedString extends NamedHttpData {
         sb.append("NamedString");
         sb.append('{');
         sb.append("name='").append(name).append('\'');
-        sb.append("value='").append(value).append('\'');
+        if(this.values.isEmpty()){
+            sb.append("value=null");
+        }else if(this.values.size() == 1){
+            sb.append("value='").append(value()).append('\'');
+        }else{
+            sb.append("value=[").append(values().toString()).append(']');
+        }
         sb.append('}');
         return sb.toString();
     }
