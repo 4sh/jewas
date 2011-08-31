@@ -6,6 +6,7 @@ import java.io.IOException;
 /**
  * @author fcamblor
  * FileUpload representation for http forms
+ * Not thread safe
  */
 public class FileUpload extends NamedHttpData {
 
@@ -21,7 +22,16 @@ public class FileUpload extends NamedHttpData {
         return nettyFileUploadAdaptee.isCompleted();
     }
 
-    public void renameTo(File dest) throws IOException {
+    /**
+     * Expose data into given file
+     * Won't be time consuming unless dest file is on the same filesystem as temporary
+     * files filesystem
+     * With certain implementations, this method will be mutable for the
+     * current FileUpload
+     * @param dest
+     * @throws IOException
+     */
+    public void toFile(File dest) throws IOException {
         this.nettyFileUploadAdaptee.renameTo(dest);
     }
 
