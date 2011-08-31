@@ -31,6 +31,10 @@ gradle.taskGraph.whenReady {taskGraph ->
    }
 }
 
+configurations {
+   deployerJars
+}
+
 repositories {
     mavenRepo urls: ["http://repo.4sh.fr/libs-release/"]
 
@@ -53,6 +57,24 @@ dependencies {
             [group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.0.3']
     )
     testRuntime 'net.sourceforge.cobertura:cobertura:1.9.4.1'
+    // to use WebDav protocol on upload
+    deployerJars "org.apache.maven.wagon:wagon-webdav-jackrabbit:1.0"
+}
+
+uploadArchives {
+   repositories {
+      deployer = mavenDeployer {
+        // you might use this configuration not to generate
+        // date based artefact names
+        // uniqueVersion = false
+        configureAuth = {
+           authentication(userName: releasesRepoUsername, password: releasesRepoPassword)
+        }
+        configuration = configurations.deployerJars
+        snapshotRepository(url: "dav:http://repo.4sh.fr/libs-snapshot-local", configureAuth)
+        repository(url: "dav:http://repo.4sh.fr/libs-release-local/", configureAuth)
+      }
+   }
 }
 
 // For cobertura ...
