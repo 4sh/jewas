@@ -61,6 +61,23 @@ dependencies {
     deployerJars "org.apache.maven.wagon:wagon-webdav-jackrabbit:1.0"
 }
 
+task packageJavadoc(type: Jar, dependsOn: 'javadoc') {
+   from javadoc.destinationDir
+   classifier = 'javadoc'
+}
+
+task packageSources(type: Jar) {
+   from sourceSets.main.allSource
+   classifier = 'sources'
+}
+artifacts {
+   archives(packageJavadoc) {
+      type = 'javadoc'
+      extension = 'jar'
+   }
+   archives(packageSources)
+}
+
 uploadArchives {
    repositories {
       deployer = mavenDeployer {
