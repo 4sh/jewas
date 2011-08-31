@@ -28,6 +28,14 @@ def ENV_DEMO_PASS = "4SHbbfr"
 // See ENV_PROPERTIES map for the possible values to set in this system property
 def TARGET_ENV_SYS_PROPERTY = "deploy.target.env"
 
+if(!hasProperty("releasesRepoUsername")
+        || !hasProperty("releasesRepoPassword")){
+    ant.fail "You should define a ~/.gradle/gradle.properties containing properties 'releasesRepoUsername' and 'releasesRepoPassword' to access 4SH releases repository !"
+}
+
+org.apache.ivy.util.url.CredentialsStore.INSTANCE.addCredentials("Artifactory Realm", "repo.4sh.fr", releasesRepoUsername, releasesRepoPassword);
+
+
 def ENV_PROPERTIES = [
    nightly: [
            targetDir: ENV_DEMO_DEPLOY_ROOT_PATH+"/nightly",
