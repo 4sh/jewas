@@ -28,7 +28,7 @@ public final class DefaultHttpRequest implements HttpRequest {
 	private final HttpMethod method;
 	private final String uri;
 	private final Headers headers;
-    //private final ByteBuffer content;
+    private final ByteBuffer content;
 
 	// computed fields
 	private final String path;
@@ -44,6 +44,7 @@ public final class DefaultHttpRequest implements HttpRequest {
 		this.uri = request.getUri();
 		this.headers = new Headers(request.getHeaders());
 		this.response = response;
+        this.content = request.getContent().toByteBuffer();
         this.path = path;
 
 		QueryStringDecoder queryStringDecoder = new QueryStringDecoder(uri);
@@ -161,11 +162,9 @@ public final class DefaultHttpRequest implements HttpRequest {
 		return parameters;
 	}
 
-/*
     public ByteBuffer content() {
         return content;
     }
-*/
 
 //	public boolean isKeepAlive() {
 //        String connection = getHeader(Names.CONNECTION);
