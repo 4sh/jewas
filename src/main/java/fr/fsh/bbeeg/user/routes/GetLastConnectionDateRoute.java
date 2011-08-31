@@ -2,6 +2,7 @@ package fr.fsh.bbeeg.user.routes;
 
 import fr.fsh.bbeeg.user.resources.UserResource;
 import jewas.http.*;
+import jewas.http.impl.AbstractRequestHandler;
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,7 +19,7 @@ public class GetLastConnectionDateRoute extends AbstractRoute {
 
     @Override
     protected RequestHandler onMatch(HttpRequest request, Parameters parameters) {
-        return new RequestHandler() {
+        return new AbstractRequestHandler() {
             @Override
             public void onRequest(HttpRequest request) {
                 request.respondJson().object(UserResource.getLastConnectionDate());

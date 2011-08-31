@@ -9,6 +9,7 @@ import jewas.http.HttpRequest;
 import jewas.http.Parameters;
 import jewas.http.PatternUriPathMatcher;
 import jewas.http.RequestHandler;
+import jewas.http.impl.AbstractRequestHandler;
 
 /**
  * @author driccio
@@ -25,7 +26,7 @@ public class GetContentOfContentRoute extends AbstractRoute {
     protected RequestHandler onMatch(HttpRequest request, Parameters parameters) {
         final ObjectId oi = toQueryObject(parameters, ObjectId.class);
 
-        return new RequestHandler() {
+        return new AbstractRequestHandler() {
             @Override
             public void onRequest(HttpRequest request) {
                 request.respondFile()

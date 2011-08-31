@@ -2,6 +2,7 @@ package fr.fsh.bbeeg.content.routes;
 
 import fr.fsh.bbeeg.content.resources.ContentResource;
 import jewas.http.*;
+import jewas.http.impl.AbstractRequestHandler;
 
 /**
  * Created by IntelliJ IDEA.
@@ -20,7 +21,7 @@ public class GetTotalNumberOfContentRoute extends AbstractRoute {
 
     @Override
     protected RequestHandler onMatch(HttpRequest request, Parameters parameters) {
-        return new RequestHandler() {
+        return new AbstractRequestHandler() {
             @Override
             public void onRequest(HttpRequest request) {
                 request.respondJson().object(contentResource.getContentCount());

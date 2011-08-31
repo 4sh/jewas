@@ -8,6 +8,8 @@ import jewas.http.HttpRequest;
 import jewas.http.Parameters;
 import jewas.http.PatternUriPathMatcher;
 import jewas.http.RequestHandler;
+import jewas.http.impl.AbstractRequestHandler;
+import org.joda.time.field.AbstractReadableInstantFieldProperty;
 
 /**
  * @author driccio
@@ -57,7 +59,7 @@ public class ContentStatusRoute extends AbstractRoute {
     protected RequestHandler onMatch(HttpRequest httpRequest, Parameters parameters) {
         final ContentStatusQueryObject csqo = toQueryObject(parameters, ContentStatusQueryObject.class);
 
-        return new RequestHandler() {
+        return new AbstractRequestHandler() {
             @Override
             public void onRequest(HttpRequest request) {
                 // TODO: to complete !

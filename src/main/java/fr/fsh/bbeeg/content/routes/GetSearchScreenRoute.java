@@ -7,6 +7,7 @@ import jewas.http.HttpRequest;
 import jewas.http.Parameters;
 import jewas.http.PatternUriPathMatcher;
 import jewas.http.RequestHandler;
+import jewas.http.impl.AbstractRequestHandler;
 import jewas.template.Templates;
 
 import java.util.HashMap;
@@ -23,7 +24,7 @@ public class GetSearchScreenRoute extends AbstractRoute {
 
     @Override
     protected RequestHandler onMatch(HttpRequest request, Parameters parameters) {
-        return new RequestHandler() {
+        return new AbstractRequestHandler() {
             @Override
             public void onRequest(HttpRequest request) {
                 Map<String, Object> params = new HashMap<String, Object>();

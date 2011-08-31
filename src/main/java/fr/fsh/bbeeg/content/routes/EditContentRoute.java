@@ -9,6 +9,9 @@ import jewas.http.HttpRequest;
 import jewas.http.Parameters;
 import jewas.http.PatternUriPathMatcher;
 import jewas.http.RequestHandler;
+import jewas.http.data.BodyParameters;
+import jewas.http.data.HttpData;
+import jewas.http.impl.AbstractRequestHandler;
 import jewas.json.Json;
 
 import java.nio.ByteBuffer;
@@ -28,7 +31,7 @@ public class EditContentRoute extends AbstractRoute {
     protected RequestHandler onMatch(HttpRequest request, Parameters parameters) {
         final ObjectId oi = toQueryObject(parameters, ObjectId.class);
 
-        return new RequestHandler() {
+        return new AbstractRequestHandler() {
             @Override
             public void onRequest(HttpRequest request) {
                 // TODO: to complete !

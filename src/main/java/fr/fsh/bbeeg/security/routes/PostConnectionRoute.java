@@ -10,6 +10,7 @@ import jewas.http.HttpRequest;
 import jewas.http.Parameters;
 import jewas.http.PatternUriPathMatcher;
 import jewas.http.RequestHandler;
+import jewas.http.impl.AbstractRequestHandler;
 
 /**
  * @author driccio
@@ -24,7 +25,7 @@ public class PostConnectionRoute extends AbstractRoute {
     protected RequestHandler onMatch(HttpRequest request, Parameters parameters) {
         final ConnectionInformation infos = toQueryObject(parameters, ConnectionInformation.class);
 
-        return new RequestHandler() {
+        return new AbstractRequestHandler() {
             @Override
             public void onRequest(HttpRequest request) {
                 Boolean connected = SecurityResource.connectUser(infos);

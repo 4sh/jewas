@@ -10,6 +10,7 @@ import jewas.http.HttpRequest;
 import jewas.http.Parameters;
 import jewas.http.PatternUriPathMatcher;
 import jewas.http.RequestHandler;
+import jewas.http.impl.AbstractRequestHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +34,7 @@ public class GetAuthorContentRoute extends AbstractRoute {
     protected RequestHandler onMatch(HttpRequest request, Parameters parameters) {
         final LimitedOrderedQueryObject qo = toQueryObject(parameters, LimitedOrderedQueryObject.class);
 
-        return new RequestHandler() {
+        return new AbstractRequestHandler() {
             @Override
             public void onRequest(HttpRequest request) {
                 List<Author> authors = new ArrayList<Author>();

@@ -3,6 +3,7 @@ package fr.fsh.bbeeg.content.routes;
 import com.google.gson.reflect.TypeToken;
 import fr.fsh.bbeeg.content.resources.ContentResource;
 import jewas.http.*;
+import jewas.http.impl.AbstractRequestHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +51,7 @@ public class GetContentCriteriasRoute extends AbstractRoute {
     @Override
     protected RequestHandler onMatch(HttpRequest request, Parameters parameters) {
         final QueryObject qo = super.toQueryObject(parameters, QueryObject.class);
-        return new RequestHandler() {
+        return new AbstractRequestHandler() {
             @Override
             public void onRequest(HttpRequest request) {
                 String prefix = "";

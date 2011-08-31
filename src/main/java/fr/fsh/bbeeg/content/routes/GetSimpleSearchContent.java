@@ -11,6 +11,7 @@ import jewas.http.HttpRequest;
 import jewas.http.Parameters;
 import jewas.http.PatternUriPathMatcher;
 import jewas.http.RequestHandler;
+import jewas.http.impl.AbstractRequestHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,7 @@ public class GetSimpleSearchContent extends AbstractRoute {
     protected RequestHandler onMatch(HttpRequest request, Parameters parameters) {
         final SimpleSearchQueryObject query =
                 toQueryObject(parameters, SimpleSearchQueryObject.class);
-        return new RequestHandler() {
+        return new AbstractRequestHandler() {
             @Override
             public void onRequest(HttpRequest request) {
                 // For tests purposes only... will have to delete this..

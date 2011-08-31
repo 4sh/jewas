@@ -10,6 +10,7 @@ import jewas.http.HttpRequest;
 import jewas.http.Parameters;
 import jewas.http.PatternUriPathMatcher;
 import jewas.http.RequestHandler;
+import jewas.http.impl.AbstractRequestHandler;
 import jewas.json.Json;
 
 import java.nio.ByteBuffer;
@@ -27,7 +28,7 @@ public class CreateTextContentRoute extends AbstractRoute {
 
     @Override
     protected RequestHandler onMatch(HttpRequest request, Parameters parameters) {
-        return new RequestHandler() {
+        return new AbstractRequestHandler() {
             @Override
             public void onRequest(HttpRequest request) {
                 ByteBuffer bytebuff = request.content();
@@ -41,6 +42,7 @@ public class CreateTextContentRoute extends AbstractRoute {
                 Long id = contentResource.createContent(contentDetail);
                 request.respondJson().object(new ObjectId().id(id));
             }
+
         };
     }
 }
