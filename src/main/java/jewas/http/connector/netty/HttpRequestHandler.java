@@ -4,21 +4,18 @@ import jewas.http.ContentType;
 import jewas.http.HttpMethod;
 import jewas.http.HttpStatus;
 import jewas.http.RequestHandler;
+import jewas.http.data.*;
+import jewas.http.data.HttpData;
 import jewas.http.impl.DefaultHttpRequest;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
-import org.jboss.netty.channel.ChannelFuture;
-import org.jboss.netty.channel.ChannelFutureListener;
-import org.jboss.netty.channel.ChannelHandlerContext;
-import org.jboss.netty.channel.ExceptionEvent;
-import org.jboss.netty.channel.MessageEvent;
-import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
-import org.jboss.netty.handler.codec.http.DefaultHttpResponse;
-import org.jboss.netty.handler.codec.http.HttpChunk;
-import org.jboss.netty.handler.codec.http.HttpRequest;
-import org.jboss.netty.handler.codec.http.HttpResponse;
-import org.jboss.netty.handler.codec.http.HttpResponseStatus;
+import org.jboss.netty.channel.*;
+import org.jboss.netty.handler.codec.http.*;
+import org.jboss.netty.handler.codec.http.FileUpload;
 import org.jboss.netty.util.CharsetUtil;
+
+import java.io.IOException;
+import java.util.*;
 
 import static org.jboss.netty.handler.codec.http.HttpHeaders.Names.CONTENT_TYPE;
 import static org.jboss.netty.handler.codec.http.HttpHeaders.is100ContinueExpected;
@@ -28,25 +25,88 @@ import static org.jboss.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
 
 	private final RequestHandler handler;
-    private boolean readingChunks;
+    private final List<jewas.http.data.HttpData> contentData = new ArrayList<jewas.http.data.HttpData>();
+
+    private volatile boolean readingChunks;
+
 	private DefaultHttpRequest request;
-	
+
+    private static final HttpDataFactory factory = new DefaultHttpDataFactory(
+            DefaultHttpDataFactory.MINSIZE); // Disk if size exceed MINSIZE
+
+    private HttpPostRequestDecoder decoder = null;
+    static {
+        DiskFileUpload.deleteOnExitTemporaryFile = true; // should delete file
+                                                         // on exit (in normal
+                                                         // exit)
+        DiskFileUpload.baseDirectory = null; // system temp directory
+        DiskAttribute.deleteOnExitTemporaryFile = true; // should delete file on
+                                                        // exit (in normal exit)
+        DiskAttribute.baseDirectory = null; // system temp directory
+    }
 	
     public HttpRequestHandler(RequestHandler handler) {
 		this.handler = handler;
 	}
 
-	@Override
+    @Override
+    public void channelClosed(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
+        if (decoder != null) {
+            decoder.cleanFiles();
+        }
+    }
+
+    @Override
     public void messageReceived(ChannelHandlerContext ctx, final MessageEvent e) throws Exception {
+        // Have we chunked previous response ?
         if (!readingChunks) {
+            // clean previous FileUpload if Any
+            if (decoder != null) {
+                decoder.cleanFiles();
+                decoder = null;
+            }
+
             HttpRequest request = (HttpRequest) e.getMessage();
 
-            if (is100ContinueExpected(request)) {
-                send100Continue(e);
+            // headers
+            List<Map.Entry<String, String>> headers = request.getHeaders();
+
+            // cookies
+            Set<Cookie> cookies;
+            String value = request.getHeader(HttpHeaders.Names.COOKIE);
+            if (value == null) {
+                cookies = Collections.emptySet();
+            } else {
+                CookieDecoder decoder = new CookieDecoder();
+                cookies = decoder.decode(value);
+            }
+
+            // uri params
+            QueryStringDecoder decoderQuery = new QueryStringDecoder(request
+                    .getUri());
+            Map<String, List<String> > uriAttributes = decoderQuery
+                    .getParameters();
+
+            // Overriding method attribute if __httpMethod special parameter has been set
+            // @see js/jewas-forms.js
+            String methodName = null;
+            if("post".equalsIgnoreCase(request.getMethod().getName())
+                    && uriAttributes.containsKey("__httpMethod")
+                    && !uriAttributes.get("__httpMethod").isEmpty()){
+                String overridenHttpMethod = uriAttributes.get("__httpMethod").get(0);
+                methodName = overridenHttpMethod;
+                uriAttributes.remove("__httpMethod");
+            } else {
+                methodName = request.getMethod().getName();
             }
 
             this.request = new DefaultHttpRequest(
-                    request,
+                    request.getUri(),
+                    methodName,
+                    headers,
+                    cookies,
+                    uriAttributes,
+                    decoderQuery.getPath(),
             		new jewas.http.HttpResponse() {
 						private HttpResponse nettyResponse;
 
@@ -81,37 +141,184 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
                             nettyResponse.addHeader(header, value);
                             return this;
                         }
-                    });
-            handler.onRequest(this.request);
+                    },
+                    // TODO: to remove !!!
+                    request.getContent().toByteBuffer());
 
+            this.handler.onRequest(this.request);
+
+            // if GET Method: should not try to create a HttpPostRequestDecoder
+            try {
+                decoder = new HttpPostRequestDecoder(factory, request);
+            } catch (HttpPostRequestDecoder.ErrorDataDecoderException e1) {
+                // TODO : retrieve writeResponse from netty source code ???
+                //writeResponse(e.getChannel());
+                Channels.close(e.getChannel());
+                throw new RuntimeException("Error while decoding post request", e1);
+            } catch (HttpPostRequestDecoder.IncompatibleDataDecoderException e1) {
+                // GET Method: should not try to create a HttpPostRequestDecoder
+                // So OK but stop here
+                // TODO : retrieve writeResponse from netty source code ???
+                //writeResponse(e.getChannel());
+                endOfReadContent(BodyParameters.Types.EMPTY);
+                return;
+            }
+
+            // If we are dealing with a chunked request, we are on a multipart/form-data
+            // so let's wait for the next chunk before processing the request
+/*            if(request.isChunked()){
+                send100Continue(e);
+
+                // Don' create DefaultHttpRequest since when chunked, content cannot be processed
+                return;
+                // TODO implement streaming on this type of request
+                // You will encounter problem when doing a postRequestDecoder.getBodyHttpDatas()
+                // in the DefaultHttpRequest constructor since netty won't be able to process body
+                // content unless it is completely available
+            }
+*/
 
             if (request.isChunked()) {
+                // Chunk version
                 readingChunks = true;
             } else {
-                ChannelBuffer content = request.getContent();
-                if (content.readable()) {
-                	this.request.offerContent(content);
-                }
-                this.request.endContent();
+                // Not chunk version
+                readHttpDataAllReceive(e.getChannel());
+                // TODO : retrieve writeResponse from netty source code ???
+                //writeResponse(e.getChannel());
             }
         } else {
             HttpChunk chunk = (HttpChunk) e.getMessage();
+            try {
+                decoder.offer(chunk);
+            } catch (HttpPostRequestDecoder.ErrorDataDecoderException e1) {
+                // TODO : retrieve writeResponse from netty source code ???
+                //writeResponse(e.getChannel());
+                Channels.close(e.getChannel());
+                throw new RuntimeException("Error while decoding post request", e1);
+            }
+
+            // Reading chunk by chunk (minimize memory usage due to Factory)
+            readHttpDataChunkByChunk(e.getChannel());
+            // I think this part is now useless since we offer HttpData in writeHttpData
+            request.offerContent(chunk.getContent());
+
             if (chunk.isLast()) {
+                // Useless .. is there an error in netty example ???
+                //readHttpDataAllReceive(e.getChannel());
+                // TODO : retrieve writeResponse from netty source code ???
+                //writeResponse(e.getChannel());
                 readingChunks = false;
-                this.request.endContent();
-                
-//                HttpChunkTrailer trailer = (HttpChunkTrailer) chunk;
-//                if (!trailer.getHeaderNames().isEmpty()) {
-//                    buf.append("\r\n");
-//                    for (String name: trailer.getHeaderNames()) {
-//                        for (String value: trailer.getHeaders(name)) {
-//                            buf.append("TRAILING HEADER: " + name + " = " + value + "\r\n");
-//                        }
-//                    }
-//                    buf.append("\r\n");
-//                }
+            }
+        }
+    }
+
+        /**
+     * Example of reading all InterfaceHttpData from finished transfer
+     *
+     * @param channel
+     */
+    private void readHttpDataAllReceive(Channel channel) {
+        List<InterfaceHttpData> datas = null;
+        try {
+            datas = decoder.getBodyHttpDatas();
+        } catch (HttpPostRequestDecoder.NotEnoughDataDecoderException e1) {
+            // TODO : retrieve writeResponse from netty source code ???
+            //writeResponse(channel);
+            Channels.close(channel);
+            return;
+        }
+        for (InterfaceHttpData data: datas) {
+            writeHttpData(data);
+        }
+        // TODO: manage streamed body parameters
+        endOfReadContent(BodyParameters.Types.FORM);
+    }
+
+    /**
+     * Example of reading request by chunk and getting values from chunk to
+     * chunk
+     *
+     * @param channel
+     */
+    private void readHttpDataChunkByChunk(Channel channel) {
+        try {
+            while (decoder.hasNext()) {
+                InterfaceHttpData data = decoder.next();
+                if (data != null) {
+                    // new value
+                    writeHttpData(data);
+                }
+            }
+        } catch (HttpPostRequestDecoder.EndOfDataDecoderException e1) {
+            // End of content
+            // TODO: manage streamed body parameters
+            endOfReadContent(BodyParameters.Types.FORM);
+            return;
+        }
+    }
+
+    private void writeHttpData(InterfaceHttpData data) {
+        if (data.getHttpDataType() == InterfaceHttpData.HttpDataType.Attribute) {
+            Attribute attribute = (Attribute) data;
+            String value;
+            try {
+                value = attribute.getValue();
+            } catch (IOException e1) {
+                // Error while reading data from File, only print name and error
+                e1.printStackTrace();
+                System.out.println("\r\nBODY Attribute: " +
+                        attribute.getHttpDataType().name() + ": " +
+                        attribute.getName() + " Error while reading value: " +
+                        e1.getMessage() + "\r\n");
+                return;
+            }
+            if (value.length() > 100) {
+                System.out.println("\r\nBODY Attribute: " +
+                        attribute.getHttpDataType().name() + ": " +
+                        attribute.getName() + " data too long\r\n");
             } else {
-            	this.request.offerContent(chunk.getContent());
+                // TODO : Manage NamedString with multiple values for content parameters ???
+                NamedString stringData = new NamedString(data.getName(), value);
+                this.handler.offer(this.request, stringData);
+                this.contentData.add(stringData);
+            }
+        } else {
+            System.out.println("\r\nBODY FileUpload: " +
+                    data.getHttpDataType().name() + ": " + data.toString() +
+                    "\r\n");
+            if (data.getHttpDataType() == InterfaceHttpData.HttpDataType.FileUpload) {
+                FileUpload fileUpload = (FileUpload) data;
+                jewas.http.data.FileUpload jewasFileupload = new jewas.http.data.FileUpload(data.getName(), fileUpload);
+                this.handler.offer(this.request, jewasFileupload);
+                if (fileUpload.isCompleted()) {
+                    this.contentData.add(jewasFileupload);
+                    /*
+                    if (fileUpload.length() < 10000) {
+                        System.out.println("\tContent of file\r\n");
+                        try {
+                            System.out.println(((FileUpload) data)
+                                            .getString(((FileUpload) data)
+                                                    .getCharset()));
+                        } catch (IOException e1) {
+                            // do nothing for the example
+                            e1.printStackTrace();
+                        }
+                        System.out.println("\r\n");
+                    } else {
+                        System.out.println("\tFile too long to be printed out:" +
+                                        fileUpload.length() + "\r\n");
+                    }
+                    */
+                    // fileUpload.isInMemory();// tells if the file is in Memory
+                    // or on File
+                    // fileUpload.renameTo(dest); // enable to move into another
+                    // File dest
+                    // decoder.removeFileUploadFromClean(fileUpload); //remove
+                    // the File of to delete file
+                } else {
+                    System.out.println("\tFile to be continued but should not!\r\n");
+                }
             }
         }
     }
@@ -119,6 +326,13 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
     private void send100Continue(MessageEvent e) {
         HttpResponse response = new DefaultHttpResponse(HTTP_1_1, CONTINUE);
         e.getChannel().write(response);
+    }
+
+    private void endOfReadContent(BodyParameters.Types bodyParameterType){
+        handler.onReady(this.request, bodyParameterType.createBodyParameters(contentData));
+        // Notifying request that end of content is reached
+        // Wondering if it is still useful...
+        request.endContent();
     }
 
     @Override

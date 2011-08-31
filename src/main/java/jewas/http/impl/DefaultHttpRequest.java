@@ -12,21 +12,15 @@ import jewas.http.JsonResponse;
 import jewas.http.Parameters;
 import jewas.http.RedirectResponse;
 import org.jboss.netty.buffer.ChannelBuffer;
-import org.jboss.netty.handler.codec.http.Attribute;
-import org.jboss.netty.handler.codec.http.HttpPostRequestDecoder;
-import org.jboss.netty.handler.codec.http.InterfaceHttpData;
-import org.jboss.netty.handler.codec.http.QueryStringDecoder;
+import org.jboss.netty.handler.codec.http.*;
 
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public final class DefaultHttpRequest implements HttpRequest {
 	private final HttpMethod method;
-	private final String uri;
+    private final String uri;
 	private final Headers headers;
     private final ByteBuffer content;
 
@@ -39,59 +33,21 @@ public final class DefaultHttpRequest implements HttpRequest {
 	private final HttpResponse response;
 	private final List<ContentHandler> handlers = new CopyOnWriteArrayList<ContentHandler>();
 	
-	public DefaultHttpRequest(org.jboss.netty.handler.codec.http.HttpRequest request, HttpResponse response) {
+	public DefaultHttpRequest(
+            String uri, String method, List<Map.Entry<String, String>> headers,
+            Set<Cookie> cookies, Map<String, List<String> > uriAttributes,
+            String path, HttpResponse response, ByteBuffer content) {
 		super();
-		this.uri = request.getUri();
-		this.headers = new Headers(request.getHeaders());
+		this.uri = uri;
+        this.method = HttpMethod.valueOf(method);
+		this.headers = new Headers(headers);
 		this.response = response;
-        this.content = request.getContent().toByteBuffer();
+        this.content = content;
         this.path = path;
 
-		QueryStringDecoder queryStringDecoder = new QueryStringDecoder(uri);
-		path = queryStringDecoder.getPath();
-        Map<String,List<String>> reqParameters = new HashMap<String, List<String>>(queryStringDecoder.getParameters());
-
-        // Overriding method attribute if __httpMethod special parameter has been set
-        // @see js/jewas-forms.js
-        if("post".equalsIgnoreCase(request.getMethod().getName())
-                && reqParameters.containsKey("__httpMethod")
-                && !reqParameters.get("__httpMethod").isEmpty()){
-            String overridenHttpMethod = reqParameters.get("__httpMethod").get(0);
-            this.method = HttpMethod.valueOf(overridenHttpMethod);
-            reqParameters.remove("__httpMethod");
-        } else {
-            this.method = HttpMethod.valueOf(request.getMethod().getName());
-        }
-
-        if("post".equalsIgnoreCase(request.getMethod().getName())
-                || "put".equalsIgnoreCase(request.getMethod().getName())){
-            try {
-                HttpPostRequestDecoder postRequestDecoder = new HttpPostRequestDecoder(request);
-                for(InterfaceHttpData d : postRequestDecoder.getBodyHttpDatas()){
-                    if(d.getHttpDataType() == InterfaceHttpData.HttpDataType.Attribute){
-                        Attribute att = (Attribute)d;
-                        if(reqParameters.containsKey(att.getName())){
-                            reqParameters.get(att.getName()).add(att.getValue());
-                        } else {
-                            List<String> paramValues = new ArrayList<String>();
-                            paramValues.add(att.getValue());
-                            reqParameters.put(att.getName(), paramValues);
-                        }
-                        // FIXME : Why is there a att.getFile() here whereas we aren't a FileUpload data type ???
-                    } else if(d.getHttpDataType() == InterfaceHttpData.HttpDataType.FileUpload){
-                        // FIXME : implement fileupload here ...
-                        // It could imply a refactoring in the Parameter object since it could
-                        // contain not only Strings but Files to as values
-                    }
-                }
-            } catch (Throwable t) {
-                throw new RuntimeException("Error while reading POST request content : "+t.getMessage(), t);
-            }
-        }
-
-        parameters = new Parameters(reqParameters);
+        parameters = new Parameters(uriAttributes);
 	}
-
+	
 	@Override
 	public HttpRequest addContentHandler(ContentHandler h) {
 		handlers.add(h);
