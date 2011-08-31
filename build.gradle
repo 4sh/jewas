@@ -19,6 +19,9 @@ org.apache.ivy.util.url.CredentialsStore.INSTANCE.addCredentials("Artifactory Re
 group = "fr.4sh.jewas"
 def versionBase = '0.1'
 
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
 // handles releases gracefully
 gradle.taskGraph.whenReady {taskGraph ->
    if (taskGraph.hasTask(':release')) {
