@@ -1,6 +1,5 @@
 package jewas.http.data;
 
-import org.apache.commons.lang.NotImplementedException;
 
 /**
  * @author fcamblor
@@ -10,6 +9,6 @@ import org.apache.commons.lang.NotImplementedException;
 public class StreamedContent implements HttpData {
     @Override
     public boolean isCompleted() {
-        throw new NotImplementedException();
+        throw new RuntimeException("Not yet implemented");
     }
 }
