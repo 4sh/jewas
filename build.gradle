@@ -69,9 +69,14 @@ if(version.contains("-SNAPSHOT")){
 
 
 repositories {
-    mavenLocal()
-    mavenCentral()
-    mavenRepo urls: "http://oss.sonatype.org/content/repositories/releases/"
+    // looking into maven local repo only if localRepo system property is set to true
+    // Will be useful to test snapshot deps (like jewas) which are not yet deployed on artifactory...
+    if(System.properties["localRepo"] == true){
+        mavenLocal()
+    }
+    mavenRepo(urls: "http://repo.4sh.fr/libs-release/")
+    mavenRepo(urls: "http://repo.4sh.fr/libs-snapshot/")
+    mavenRepo urls: ["http://oss.sonatype.org/content/repositories/releases/"]
 }
 
 configurations {
