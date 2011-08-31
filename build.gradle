@@ -25,8 +25,6 @@ def ENV_DEMO_PASS = "4SHbbfr"
 // See ENV_PROPERTIES map for the possible values to set in this system property
 def TARGET_ENV_SYS_PROPERTY = "deploy.target.env"
 
-ant.echo("${project.baseDir}")
-
 def ENV_PROPERTIES = [
    nightly: [
            targetDir: ENV_DEMO_DEPLOY_ROOT_PATH+"/nightly",
