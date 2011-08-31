@@ -16,6 +16,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
 
 import static com.jayway.restassured.RestAssured.*;
 import static org.hamcrest.CoreMatchers.*;
@@ -93,7 +95,7 @@ public class RestServerTest {
     @Test
     public void shouldRenderingJSONWithGETParameterIsOk() {
         given().
-                param("stringToConvert", "foo").
+                queryParam("stringToConvert", "foo").
                 expect().
                 body("convertedString", is(equalTo("FOO"))).
                 when().
@@ -113,7 +115,7 @@ public class RestServerTest {
     @Test
     public void shouldMatchTheRouteWithTrailingSlash() {
         given().
-                param("stringToConvert", "foo").
+                queryParam("stringToConvert", "foo").
                 expect().
                 statusCode(200).when().get("/root/toUpperCase/////");
     }
@@ -121,7 +123,7 @@ public class RestServerTest {
     @Test
     public void shouldMatchTheRouteWithoutParamWithTrailingSlash() {
         given().
-                param("stringToConvert", "foo").
+                queryParam("stringToConvert", "foo").
                 expect().
                 statusCode(200).when().get("/root/toUpperCase/");
     }
@@ -129,7 +131,7 @@ public class RestServerTest {
     @Test
     public void shouldMatchTheRouteWithoutParamAndTrailingSlash() {
         given().
-                param("stringToConvert", "foo").
+                queryParam("stringToConvert", "foo").
                 expect().
                 statusCode(200).when().get("/root/toUpperCase");
     }
@@ -159,13 +161,14 @@ public class RestServerTest {
                 body("convertedString", is(equalTo("FOO"))).
         when().
                 get("/helloFoo");
-
     }
 
     @Test
     public void shouldPutMethodBeHandledCorrectly(){
+        given().
+                body("id=1234").
         expect().
-                body("result", is(equalTo("putOk"))).
+                body("result", is(equalTo("putOk of 1234"))).
         when().
                 put("/putThing");
     }
@@ -173,7 +176,7 @@ public class RestServerTest {
     @Test
     public void shouldMagicPutMethodBeHandledCorrectly(){
         given().
-                param("id", "1234").
+                body("id=1234").
         expect().
                 body("result", is(equalTo("putOk of 1234"))).
         when().
@@ -182,16 +185,18 @@ public class RestServerTest {
 
     @Test
     public void shouldDeleteMethodBeHandledCorrectly(){
+        given().
+                queryParam("id", "1234").
         expect().
-                body("result", is(equalTo("deleteOk"))).
-                when().
+                body("result", is(equalTo("deleteOk of 1234"))).
+        when().
                 delete("/deleteThing");
     }
 
     @Test
     public void shouldMagicDeleteMethodBeHandledCorrectly(){
         given().
-                param("id", "1234").
+                queryParam("id", "1234").
         expect().
                 body("result", is(equalTo("deleteOk of 1234"))).
         when().
