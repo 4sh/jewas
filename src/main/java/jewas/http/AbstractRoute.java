@@ -1,5 +1,8 @@
 package jewas.http;
 
+import jewas.http.data.BodyParameters;
+import jewas.http.data.FormBodyParameters;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,10 +32,20 @@ public abstract class AbstractRoute implements Route {
         return null;
     }
 	
-	protected <T> T toQueryObject(Parameters parameters,
-			Class<T> clazz) {
-		return QueryObjects.toQueryObject(parameters, clazz);
-	}
+    protected <T> T toQueryObject(Parameters parameters,
+            Class<T> clazz) {
+        return QueryObjects.toQueryObject(parameters, clazz);
+    }
+
+    protected <T> T toContentObject(FormBodyParameters parameters,
+            Class<T> clazz) {
+        return QueryObjects.toContentObject(parameters, clazz);
+    }
+
+    protected <T> T toContentObject(BodyParameters parameters,
+            Class<T> clazz) {
+        return QueryObjects.toContentObject((FormBodyParameters)parameters, clazz);
+    }
 
 	protected abstract RequestHandler onMatch(HttpRequest request, Parameters parameters);
 }
