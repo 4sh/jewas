@@ -21,4 +21,15 @@ public class NamedString extends NamedHttpData {
     public String value(){
         return this.value;
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("NamedString");
+        sb.append('{');
+        sb.append("name='").append(name).append('\'');
+        sb.append("value='").append(value).append('\'');
+        sb.append('}');
+        return sb.toString();
+    }
 }
