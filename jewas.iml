@@ -153,11 +153,11 @@
     <orderEntry type="module-library" scope="TEST">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/cache/com.jayway.restassured/rest-assured/jars/rest-assured-1.2.1.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/cache/com.jayway.restassured/rest-assured/jars/rest-assured-1.2.3.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/cache/com.jayway.restassured/rest-assured/sources/rest-assured-1.2.1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/cache/com.jayway.restassured/rest-assured/sources/rest-assured-1.2.3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
