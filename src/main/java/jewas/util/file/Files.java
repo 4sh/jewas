@@ -29,13 +29,24 @@ public class Files {
     }
 
     /**
-     * Get a file from a given path inside the same archive where resides the given clazz
+     * Get a inputstream from a given path inside the same archive where resides the given clazz
      * @param clazz The classloader we will look for path file
      * @param path the path
      * @return the inputstream at the given path
      * @throws IOException a {@link IOException}
      */
     public static InputStream getInputStreamFromPath(Class clazz, String path) throws IOException {
+        return getResourceFromPath(clazz, path).openStream();
+    }
+
+    /**
+     * Get an resource from a given path inside the same archive where resides the given clazz
+     * @param clazz The classloader we will look for path file
+     * @param path the path
+     * @return the inputstream at the given path
+     * @throws IOException a {@link IOException}
+     */
+    public static URL getResourceFromPath(Class clazz, String path) throws IOException {
         if (path == null) {
             throw new FileNotFoundException("The given path is null.");
         }
@@ -91,7 +102,7 @@ public class Files {
             throw new FileNotFoundException("The path: " + path + " was not found in the classpath.");
         }
 
-        return resource.openStream();
+        return resource;
     }
 
     /**
