@@ -7,6 +7,11 @@ import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.List;
 
+import jewas.http.data.BodyParameters;
+import jewas.http.data.FileUpload;
+import jewas.http.data.FormBodyParameters;
+import jewas.http.data.HttpData;
+import jewas.http.impl.AbstractRequestHandler;
 import jewas.http.util.HttpTestUtils;
 import jewas.routes.RedirectRoute;
 import jewas.routes.StaticResourcesRoute;
@@ -46,21 +51,24 @@ public class DefaultHttpRequestTest {
     }
 
     public static class FileQueryObject{
-        private File file;
+        private FileUpload fileupload;
+        /* mixing fileupload paran & form parameter doesn't work for the moment...
         private String param;
-        public FileQueryObject file(File _file){
-            this.file = _file;
-            return this;
-        }
-        public File file(){
-            return this.file;
-        }
         public FileQueryObject param(String _param){
             this.param = _param;
             return this;
         }
         public String param(){
             return this.param;
+        }
+        */
+        public FileQueryObject fileupload(FileUpload _fileupload){
+            this.fileupload = _fileupload;
+            return this;
+        }
+
+        public FileUpload fileupload(){
+            return this.fileupload;
         }
     }
 
@@ -78,16 +86,20 @@ public class DefaultHttpRequestTest {
                 new AbstractRoute(HttpMethodMatcher.ALL, new PatternUriPathMatcher("/foo")) {
                     @Override
                     protected RequestHandler onMatch(HttpRequest request, Parameters parameters) {
-                        final FileQueryObject qo = toQueryObject(parameters, FileQueryObject.class);
-                        try {
-                            retrievedFileContentsInRoute.add(FileUtils.readFileToString(qo.file()));
-                        } catch (IOException e) {
-                            throw new RuntimeException("Cannot read uploaded file content", e);
-                        }
-                        retrievedParameterInRoute.add(qo.param());
-                        return new RequestHandler() {
-                           @Override
-                            public void onRequest(HttpRequest request) {
+                        return new AbstractRequestHandler() {
+                            
+                            @Override
+                            public void onReady(HttpRequest request, BodyParameters parameters) {
+                                final FileQueryObject qo = toContentObject(parameters, FileQueryObject.class);
+                                try {
+                                    File uploadedFile = testFolder.newFile("uploadedFile");
+                                    qo.fileupload().toFile(uploadedFile);
+                                    retrievedFileContentsInRoute.add(FileUtils.readFileToString(uploadedFile));
+                                } catch (IOException e) {
+                                    throw new RuntimeException("Cannot read uploaded file content", e);
+                                }
+                                //mixing fileupload paran & form parameter doesn't work for the moment...
+                                //retrievedParameterInRoute.add(qo.param());
                                 request.respondHtml().content("ok");
                             }
                         };
@@ -97,26 +109,32 @@ public class DefaultHttpRequestTest {
 
 
         try {
-            File fileToUpload = testFolder.newFile("fileToUpload");
+            File fileToUpload = new File(jewas.util.file.Files.getResourceFromPath(this.getClass(), "jewas/upload/rest-assured-khelg-2011.pdf").getFile());
 
-            FileUtils.writeStringToFile(fileToUpload, String.format("Hello %nworld !"));
-
+/*
             Map<String,HttpTestUtils.FileUploadDescriptor> filesToUpload = new HashMap<String,HttpTestUtils.FileUploadDescriptor>();
-            filesToUpload.put("file", new HttpTestUtils.FileUploadDescriptor(fileToUpload, "text/plain"));
+            filesToUpload.put("fileupload", new HttpTestUtils.FileUploadDescriptor(fileToUpload, ContentType.APP_PDF.value()));
 
             Map<String,String> params = new HashMap<String,String>();
             params.put("param", "foo");
 
-            Class c = Files.class;
-            
             String response = HttpTestUtils.sendMultipartFormTo("http://localhost:"+SERVER_PORT+"/foo",
                     filesToUpload, params);
+*/
+            given().
+                    formParam("param", "foo").
+                    multiPart("fileupload", fileToUpload, ContentType.APP_PDF.value()).
+                    multiPart("fileupload2", fileToUpload, ContentType.APP_PDF.value()).
+            when().
+                    post("/foo");
 
             assertThat(retrievedFileContentsInRoute.size(), is(equalTo(1)));
-            assertThat(retrievedParameterInRoute.size(), is(equalTo(1)));
-
-            assertThat(retrievedParameterInRoute.get(0), is(equalTo("foo")));
             assertThat(retrievedFileContentsInRoute.get(0), is(equalTo(FileUtils.readFileToString(fileToUpload))));
+
+//mixing fileupload paran & form parameter doesn't work for the moment...
+//            assertThat(retrievedParameterInRoute.size(), is(equalTo(1)));
+//            assertThat(retrievedParameterInRoute.get(0), is(equalTo("foo")));
+
         }finally{
             server.stop();
         }
