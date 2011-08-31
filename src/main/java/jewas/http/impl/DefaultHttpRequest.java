@@ -28,7 +28,7 @@ public final class DefaultHttpRequest implements HttpRequest {
 	private final HttpMethod method;
 	private final String uri;
 	private final Headers headers;
-    private final ByteBuffer content;
+    //private final ByteBuffer content;
 
 	// computed fields
 	private final String path;
@@ -44,8 +44,8 @@ public final class DefaultHttpRequest implements HttpRequest {
 		this.uri = request.getUri();
 		this.headers = new Headers(request.getHeaders());
 		this.response = response;
-        this.content = request.getContent().toByteBuffer();
-		
+        this.path = path;
+
 		QueryStringDecoder queryStringDecoder = new QueryStringDecoder(uri);
 		path = queryStringDecoder.getPath();
         Map<String,List<String>> reqParameters = new HashMap<String, List<String>>(queryStringDecoder.getParameters());
@@ -90,7 +90,7 @@ public final class DefaultHttpRequest implements HttpRequest {
 
         parameters = new Parameters(reqParameters);
 	}
-	
+
 	@Override
 	public HttpRequest addContentHandler(ContentHandler h) {
 		handlers.add(h);
@@ -161,10 +161,12 @@ public final class DefaultHttpRequest implements HttpRequest {
 		return parameters;
 	}
 
+/*
     public ByteBuffer content() {
         return content;
     }
-	
+*/
+
 //	public boolean isKeepAlive() {
 //        String connection = getHeader(Names.CONNECTION);
 //        if (Values.CLOSE.equalsIgnoreCase(connection)) {

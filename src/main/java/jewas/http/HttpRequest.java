@@ -8,7 +8,7 @@ public interface HttpRequest {
 	public String uri();
 	public Headers headers();
 	public String path();
-    public ByteBuffer content();
+    //public ByteBuffer content();
 	public Parameters parameters();
 	public JsonResponse respondJson();
 	public HtmlResponse respondHtml();
