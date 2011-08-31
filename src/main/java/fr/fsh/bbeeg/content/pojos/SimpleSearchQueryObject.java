@@ -24,8 +24,8 @@ public class SimpleSearchQueryObject {
     }
 
     public Integer startingOffset() {
-        if (startingOffset < 1) {
-            return 1;
+        if (startingOffset < 0) {
+            return 0;
         }
         
         return this.startingOffset;

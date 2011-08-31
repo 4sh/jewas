@@ -1,6 +1,5 @@
 package fr.fsh.bbeeg;
 
-
 import fr.fsh.bbeeg.common.config.BBEEGConfiguration;
 import fr.fsh.bbeeg.content.persistence.ContentDao;
 import fr.fsh.bbeeg.content.resources.ContentResource;
@@ -11,6 +10,9 @@ import fr.fsh.bbeeg.security.resources.ConnectedUserResource;
 import fr.fsh.bbeeg.user.persistence.UserDao;
 import fr.fsh.bbeeg.user.resources.UserResource;
 import org.apache.commons.dbcp.BasicDataSource;
+import org.elasticsearch.client.Client;
+import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.transport.InetSocketTransportAddress;
 
 import javax.sql.DataSource;
 
@@ -20,6 +22,7 @@ import javax.sql.DataSource;
  */
 public class Assembler {
     private DataSource dataSource;
+    private Client client = null;
 
     /* Daos */
     private ContentDao contentDao;
@@ -35,11 +38,12 @@ public class Assembler {
 
     public Assembler() {
         dataSource = createDatasource();
+        client = new TransportClient().addTransportAddress(new InetSocketTransportAddress("localhost", 9300));
 
         i18nDao = new I18nDao(dataSource);
         domainDao = new DomainDao(dataSource, i18nDao);
         userDao = new UserDao(dataSource, domainDao);
-        contentDao = new ContentDao(dataSource, userDao, domainDao);
+        contentDao = new ContentDao(dataSource, client, userDao, domainDao);
 
         contentResource = new ContentResource(contentDao,
                 BBEEGConfiguration.INSTANCE.cliOptions().contentFileRepository());

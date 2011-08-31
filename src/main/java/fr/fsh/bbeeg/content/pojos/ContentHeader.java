@@ -16,7 +16,8 @@ public class ContentHeader {
     private Date lastModificationDate;
     private ContentStatus status;
     private String description;
-    private Integer version;
+    //private Integer version;
+    private Long ancestorId;
 
     private ContentType type;
     private User author;
@@ -106,12 +107,21 @@ public class ContentHeader {
         return this.domains;
     }
 
-    public ContentHeader version(Integer _version){
-        this.version = _version;
+//    public ContentHeader version(Integer _version){
+//        this.version = _version;
+//        return this;
+//    }
+//
+//    public Integer version(){
+//        return this.version;
+//    }
+
+    public ContentHeader ancestorId(Long _ancestorId){
+        this.ancestorId = _ancestorId;
         return this;
     }
 
-    public Integer version(){
-        return this.version;
+    public Long ancestorId(){
+        return this.ancestorId;
     }
 }
