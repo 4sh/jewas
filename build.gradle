@@ -17,7 +17,16 @@ if(!hasProperty("releasesRepoUsername")
 org.apache.ivy.util.url.CredentialsStore.INSTANCE.addCredentials("Artifactory Realm", "repo.4sh.fr", releasesRepoUsername, releasesRepoPassword);
 
 group = "fr.4sh.jewas"
-version = "0.1-SNAPSHOT"
+def versionBase = '0.1'
+
+// handles releases gracefully
+gradle.taskGraph.whenReady {taskGraph ->
+   if (taskGraph.hasTask(':release')) {
+      version = versionBase
+   } else {
+      version = versionBase + '-SNAPSHOT'
+   }
+}
 
 repositories {
     mavenRepo urls: ["http://repo.4sh.fr/libs-release/"]
