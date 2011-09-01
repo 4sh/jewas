@@ -44,15 +44,31 @@ public class DefaultHttpRequestTest {
 
     private static final int SERVER_PORT = 8086;
 
+    private RestServer restServer = null;
+
     @Rule
     public TemporaryFolder testFolder = new TemporaryFolder();
 
     public DefaultHttpRequestTest() {
     }
 
+    @Before
+    public void startServer() {
+        // Restserver without any route
+        restServer = RestServerFactory.createRestServer(SERVER_PORT);
+        restServer.start();
+        RestAssured.port = SERVER_PORT;
+    }
+
+    @After
+    public void stopServer() {
+        restServer.stop();
+        restServer = null;
+    }
+
     public static class FileQueryObject{
         private FileUpload fileupload;
-        /* mixing fileupload paran & form parameter doesn't work for the moment...
+        private FileUpload fileupload2;
         private String param;
         public FileQueryObject param(String _param){
             this.param = _param;
@@ -61,12 +77,17 @@ public class DefaultHttpRequestTest {
         public String param(){
             return this.param;
         }
-        */
+        public FileQueryObject fileupload2(FileUpload _fileupload2){
+            this.fileupload2 = _fileupload2;
+            return this;
+        }
+        public FileUpload fileupload2(){
+            return this.fileupload2;
+        }
         public FileQueryObject fileupload(FileUpload _fileupload){
             this.fileupload = _fileupload;
             return this;
         }
-
         public FileUpload fileupload(){
             return this.fileupload;
         }
@@ -82,7 +103,7 @@ public class DefaultHttpRequestTest {
         final List<String> retrievedFileContentsInRoute = new ArrayList<String>();
         final List<String> retrievedParameterInRoute = new ArrayList<String>();
         List<Route> routes = new ArrayList<Route>();
-        RestServer server = startServer(
+        restServer.addRoutes(
                 new AbstractRoute(HttpMethodMatcher.ALL, new PatternUriPathMatcher("/foo")) {
                     @Override
                     protected RequestHandler onMatch(HttpRequest request, Parameters parameters) {
@@ -95,11 +116,13 @@ public class DefaultHttpRequestTest {
                                     File uploadedFile = testFolder.newFile("uploadedFile");
                                     qo.fileupload().toFile(uploadedFile);
                                     retrievedFileContentsInRoute.add(FileUtils.readFileToString(uploadedFile));
+                                    File uploadedFile2 = testFolder.newFile("uploadedFile2");
+                                    qo.fileupload2().toFile(uploadedFile2);
+                                    retrievedFileContentsInRoute.add(FileUtils.readFileToString(uploadedFile2));
                                 } catch (IOException e) {
                                     throw new RuntimeException("Cannot read uploaded file content", e);
                                 }
-                                //mixing fileupload paran & form parameter doesn't work for the moment...
-                                //retrievedParameterInRoute.add(qo.param());
+                                retrievedParameterInRoute.add(qo.param());
                                 request.respondHtml().content("ok");
                             }
                         };
@@ -108,44 +131,21 @@ public class DefaultHttpRequestTest {
         );
 
 
-        try {
-            File fileToUpload = new File(jewas.util.file.Files.getResourceFromPath(this.getClass(), "jewas/upload/rest-assured-khelg-2011.pdf").getFile());
+        File fileToUpload = new File(jewas.util.file.Files.getResourceFromPath(this.getClass(), "jewas/upload/rest-assured-khelg-2011.pdf").getFile());
+        File fileToUpload2 = new File(jewas.util.file.Files.getResourceFromPath(this.getClass(), this.getClass().getCanonicalName().replaceAll("\\.", "/")+".class").getFile());
 
-/*
-            Map<String,HttpTestUtils.FileUploadDescriptor> filesToUpload = new HashMap<String,HttpTestUtils.FileUploadDescriptor>();
-            filesToUpload.put("fileupload", new HttpTestUtils.FileUploadDescriptor(fileToUpload, ContentType.APP_PDF.value()));
+        given().
+                multiPart("param", "foo").
+                multiPart("fileupload", fileToUpload, ContentType.APP_PDF.value()).
+                multiPart("fileupload2", fileToUpload2, ContentType.APP_PDF.value()).
+        when().
+                post("/foo");
 
-            Map<String,String> params = new HashMap<String,String>();
-            params.put("param", "foo");
+        assertThat(retrievedFileContentsInRoute.size(), is(equalTo(2)));
+        assertThat(retrievedFileContentsInRoute.get(0), is(equalTo(FileUtils.readFileToString(fileToUpload))));
+        assertThat(retrievedFileContentsInRoute.get(1), is(equalTo(FileUtils.readFileToString(fileToUpload2))));
 
-            String response = HttpTestUtils.sendMultipartFormTo("http://localhost:"+SERVER_PORT+"/foo",
-                    filesToUpload, params);
-*/
-            given().
-                    formParam("param", "foo").
-                    multiPart("fileupload", fileToUpload, ContentType.APP_PDF.value()).
-                    multiPart("fileupload2", fileToUpload, ContentType.APP_PDF.value()).
-            when().
-                    post("/foo");
-
-            assertThat(retrievedFileContentsInRoute.size(), is(equalTo(1)));
-            assertThat(retrievedFileContentsInRoute.get(0), is(equalTo(FileUtils.readFileToString(fileToUpload))));
-
-//mixing fileupload paran & form parameter doesn't work for the moment...
-//            assertThat(retrievedParameterInRoute.size(), is(equalTo(1)));
-//            assertThat(retrievedParameterInRoute.get(0), is(equalTo("foo")));
-
-        }finally{
-            server.stop();
-        }
+        assertThat(retrievedParameterInRoute.size(), is(equalTo(1)));
+        assertThat(retrievedParameterInRoute.get(0), is(equalTo("foo")));
     }
-
-    protected static RestServer startServer(Route... routes){
-        // Restserver without any route
-        RestServer restServer = RestServerFactory.createRestServer(SERVER_PORT);
-        restServer.addRoutes(routes);
-        restServer.start();
-        return restServer;
-    }
-
 }
