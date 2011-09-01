@@ -195,4 +195,48 @@ public class DefaultHttpRequestTest {
         assertThat(retrievedParameterInRoute.get(0), is(equalTo(Long.valueOf(10))));
         assertThat(retrievedParameterInRoute.get(1), is(equalTo(Long.valueOf(20))));
     }
+
+    @Test
+    public void shouldMultipleFileUploadsInParametersBeHandledCorrectlyInContentObjects() throws IOException {
+        final List<String> retrievedFileContentsInRoute = new ArrayList<String>();
+        List<Route> routes = new ArrayList<Route>();
+        restServer.addRoutes(
+                new AbstractRoute(HttpMethodMatcher.ALL, new PatternUriPathMatcher("/foo")) {
+                    @Override
+                    protected RequestHandler onMatch(HttpRequest request, Parameters parameters) {
+                        return new AbstractRequestHandler() {
+
+                            @Override
+                            public void onReady(HttpRequest request, BodyParameters parameters) {
+                                FileQueryObject valuedObject = toContentObject(parameters, FileQueryObject.class);
+                                try {
+                                    for(int i=0; i<valuedObject.fileupload().count(); i++){
+                                        File uploadedFile = testFolder.newFile("uploadedFile");
+                                        valuedObject.fileupload().toFile(i, uploadedFile);
+                                        retrievedFileContentsInRoute.add(FileUtils.readFileToString(uploadedFile));
+                                        uploadedFile.delete();
+                                    }
+                                } catch (IOException e) {
+                                    throw new RuntimeException("Cannot read uploaded file content", e);
+                                }
+                                request.respondHtml().content("ok");
+                            }
+                        };
+                    }
+                }
+        );
+
+        File fileToUpload = new File(jewas.util.file.Files.getResourceFromPath(this.getClass(), "jewas/upload/rest-assured-khelg-2011.pdf").getFile());
+        File fileToUpload2 = new File(jewas.util.file.Files.getResourceFromPath(this.getClass(), this.getClass().getCanonicalName().replaceAll("\\.", "/")+".class").getFile());
+
+        given().
+                multiPart("fileupload", fileToUpload, ContentType.APP_PDF.value()).
+                multiPart("fileupload", fileToUpload2).
+        when().
+                post("/foo");
+
+        assertThat(retrievedFileContentsInRoute.size(), is(equalTo(2)));
+        assertThat(retrievedFileContentsInRoute.get(0), is(equalTo(FileUtils.readFileToString(fileToUpload))));
+        assertThat(retrievedFileContentsInRoute.get(1), is(equalTo(FileUtils.readFileToString(fileToUpload2))));
+    }
 }

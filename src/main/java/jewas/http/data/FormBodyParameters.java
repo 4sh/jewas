@@ -16,23 +16,35 @@ public class FormBodyParameters implements BodyParameters {
             if(!namedData.containsKey(nhd.name())){
                 namedData.put(nhd.name(), nhd);
             } else {
-                if(!(nhd instanceof NamedString)){
-                    throw new IllegalStateException(
-                            String.format("2 non-string parameters encountered in form body for key %s", nhd.name()));
-                }
-                NamedString nsToAdd = (NamedString)nhd;
+                if(nhd instanceof NamedString){
+                    NamedString nsToAdd = (NamedString)nhd;
 
-                HttpData existingData = namedData.get(nhd.name());
-                if(!(existingData instanceof NamedString)){
-                    throw new IllegalStateException(
-                            String.format("Trying to provide multiple values to existing non-string parameter " +
-                                    "in form body for key %s", nhd.name()));
-                }
-                NamedString nsExistingData = (NamedString)existingData;
+                    HttpData existingData = namedData.get(nhd.name());
+                    if(!(existingData instanceof NamedString)){
+                        throw new IllegalStateException(
+                                String.format("Trying to provide multiple values to differently typed parameters " +
+                                        "in form body for key %s", nhd.name()));
+                    }
+                    NamedString nsExistingData = (NamedString)existingData;
 
-                List<String> newValues = new ArrayList<String>(nsExistingData.values());
-                newValues.add(nsToAdd.value());
-                namedData.put(nhd.name(), new NamedString(nhd.name(), newValues));
+                    List<String> newValues = new ArrayList<String>(nsExistingData.values());
+                    newValues.add(nsToAdd.value());
+                    namedData.put(nhd.name(), new NamedString(nhd.name(), newValues));
+                } else if(nhd instanceof FileUpload){
+                    FileUpload fileUploadToAdd = (FileUpload)nhd;
+
+                    HttpData existingData = namedData.get(nhd.name());
+                    if(!(existingData instanceof FileUpload)){
+                        throw new IllegalStateException(
+                                String.format("Trying to provide multiple values to differently typed parameters " +
+                                        "in form body for key %s", nhd.name()));
+                    }
+                    FileUpload nsExistingData = (FileUpload)existingData;
+                    namedData.put(nhd.name(), nsExistingData.append(fileUploadToAdd));
+                } else {
+                    throw new IllegalArgumentException(
+                            String.format("2 complex parameters encountered in form body for key %s", nhd.name()));
+                }
             }
         }
     }
