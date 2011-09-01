@@ -7,6 +7,8 @@ import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.List;
 
+import jewas.collection.TypedArrayList;
+import jewas.collection.TypedList;
 import jewas.http.data.BodyParameters;
 import jewas.http.data.FileUpload;
 import jewas.http.data.FormBodyParameters;
@@ -93,6 +95,18 @@ public class DefaultHttpRequestTest {
         }
     }
 
+    public static class MultipleValuesObject {
+        // TypedLists MUST be instantiated during construction !
+        private TypedList<Long> values = new TypedArrayList<Long>(Long.class);
+        public MultipleValuesObject values(TypedList<Long> _values){
+            this.values = _values;
+            return this;
+        }
+        public TypedList<Long> values(){
+            return this.values;
+        }
+    }
+
     @Before
     public void setUp(){
         RestAssured.port = SERVER_PORT;
@@ -147,5 +161,38 @@ public class DefaultHttpRequestTest {
 
         assertThat(retrievedParameterInRoute.size(), is(equalTo(1)));
         assertThat(retrievedParameterInRoute.get(0), is(equalTo("foo")));
+    }
+
+    @Test
+    public void shouldMultipleValuesInParametersBeHandledCorrectlyInContentObjects(){
+        final List<Long> retrievedParameterInRoute = new ArrayList<Long>();
+        List<Route> routes = new ArrayList<Route>();
+        restServer.addRoutes(
+                new AbstractRoute(HttpMethodMatcher.ALL, new PatternUriPathMatcher("/foo")) {
+                    @Override
+                    protected RequestHandler onMatch(HttpRequest request, Parameters parameters) {
+                        return new AbstractRequestHandler() {
+
+                            @Override
+                            public void onReady(HttpRequest request, BodyParameters parameters) {
+                                final MultipleValuesObject qo = toContentObject(parameters, MultipleValuesObject.class);
+                                retrievedParameterInRoute.addAll(qo.values());
+                                request.respondHtml().content("ok");
+                            }
+                        };
+                    }
+                }
+        );
+
+
+        given().
+                formParam("values", "10").
+                formParam("values", "20").
+        when().
+                post("/foo");
+
+        assertThat(retrievedParameterInRoute.size(), is(equalTo(2)));
+        assertThat(retrievedParameterInRoute.get(0), is(equalTo(Long.valueOf(10))));
+        assertThat(retrievedParameterInRoute.get(1), is(equalTo(Long.valueOf(20))));
     }
 }
