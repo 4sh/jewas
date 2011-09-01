@@ -32,7 +32,7 @@ public class NamedString extends NamedHttpData {
     }
 
     public List<String> values(){
-        return Collections.unmodifiableList(this.values());
+        return Collections.unmodifiableList(this.values);
     }
 
     @Override
