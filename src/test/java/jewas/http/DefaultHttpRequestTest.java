@@ -148,7 +148,7 @@ public class DefaultHttpRequestTest {
         File fileToUpload2 = new File(jewas.util.file.Files.getResourceFromPath(this.getClass(), this.getClass().getCanonicalName().replaceAll("\\.", "/")+".class").getFile());
 
         given().
-                multiPart("param", "foo").
+                formParam("param", "foo").
                 multiPart("fileupload", fileToUpload, ContentType.APP_PDF.value()).
                 multiPart("fileupload2", fileToUpload2, ContentType.APP_PDF.value()).
         when().
