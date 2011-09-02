@@ -11,23 +11,24 @@ import java.util.List;
  * FileUpload representation for http forms
  * Not thread safe
  */
-public class FileUpload extends NamedHttpData {
-
-    private final List<org.jboss.netty.handler.codec.http.FileUpload> nettyFileUploadAdaptees =
-            new ArrayList<org.jboss.netty.handler.codec.http.FileUpload>();
+public class FileUpload extends NamedHttpData<org.jboss.netty.handler.codec.http.FileUpload> {
 
     public FileUpload(String name, List<org.jboss.netty.handler.codec.http.FileUpload> nettyFileUploads){
-        super(name);
-        this.nettyFileUploadAdaptees.addAll(nettyFileUploads);
+        super(name, nettyFileUploads);
     }
 
     public FileUpload(String name, org.jboss.netty.handler.codec.http.FileUpload nettyFileUpload){
-        this(name, Arrays.asList(nettyFileUpload));
+        super(name, nettyFileUpload);
+    }
+
+    @Override
+    protected NamedHttpData<org.jboss.netty.handler.codec.http.FileUpload> newInstance(String name, List<org.jboss.netty.handler.codec.http.FileUpload> values) {
+        return new FileUpload(name, values);
     }
 
     @Override
     public boolean isCompleted() {
-        for(org.jboss.netty.handler.codec.http.FileUpload f : nettyFileUploadAdaptees){
+        for(org.jboss.netty.handler.codec.http.FileUpload f : values){
             if(!f.isCompleted()){
                 return false;
             }
@@ -36,20 +37,7 @@ public class FileUpload extends NamedHttpData {
     }
 
     public boolean isCompleted(int index) {
-        return nettyFileUploadAdaptees.get(index).isCompleted();
-    }
-
-    /**
-     * Immutable
-     * Append a new file upload result to an existing file upload, and retrieve a defensive copy
-     * of the resulting FileUpload
-     * @param fileuploadToAdd The file upload result to add
-     * @return A new defensive copy of current Fileupload, with given fileupload appended
-     */
-    public FileUpload append(FileUpload fileuploadToAdd){
-        List<org.jboss.netty.handler.codec.http.FileUpload> fileUploads = new ArrayList<org.jboss.netty.handler.codec.http.FileUpload>(this.nettyFileUploadAdaptees);
-        fileUploads.addAll(fileuploadToAdd.nettyFileUploadAdaptees);
-        return new FileUpload(this.name(), fileUploads);
+        return values.get(index).isCompleted();
     }
 
     /**
@@ -63,7 +51,7 @@ public class FileUpload extends NamedHttpData {
      * @throws IOException
      */
     public void toFile(int index, File dest) throws IOException {
-        this.nettyFileUploadAdaptees.get(index).renameTo(dest);
+        this.values.get(index).renameTo(dest);
     }
 
     /**
@@ -77,20 +65,5 @@ public class FileUpload extends NamedHttpData {
      */
     public void toFile(File dest) throws IOException {
         toFile(0, dest);
-    }
-
-    public int count(){
-        return nettyFileUploadAdaptees.size();
-    }
-
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder();
-        sb.append("FileUpload");
-        sb.append('{');
-        sb.append("name='").append(name).append('\'');
-        sb.append("file='").append(nettyFileUploadAdaptees.toString()).append('\'');
-        sb.append('}');
-        return sb.toString();
     }
 }
