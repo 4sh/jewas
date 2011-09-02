@@ -123,6 +123,11 @@ jar {
   }
 }
 
+// Allows to generate USER_HOME idea variable uniformely on every OS
+ideaModule {
+    variables.put("USER_HOME", file(System.getProperty("user.home")))
+}
+
 if(STANDALONE_PACKAGING){
     jar {
       // Convert every jars in a fatjar
