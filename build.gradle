@@ -96,6 +96,11 @@ uploadArchives {
    }
 }
 
+// Allows to generate USER_HOME idea variable uniformely on every OS
+ideaModule {
+    variables.put("USER_HOME", file(System.getProperty("user.home")))
+}
+
 // For cobertura ...
 if ("true".equals(System.getProperty(COVERAGE_SYS_PROPERTY))) {
     gradle.taskGraph.beforeTask { task ->
