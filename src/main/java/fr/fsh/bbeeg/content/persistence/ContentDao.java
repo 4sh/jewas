@@ -386,13 +386,13 @@ public class ContentDao {
                 // TODO
         }
 
-        DisMaxQueryBuilder boolQueryBuilder = QueryBuilders.disMaxQuery()
+        DisMaxQueryBuilder disMaxQueryBuilder = QueryBuilders.disMaxQuery()
                 .add(QueryBuilders.inQuery("status", statuses.toArray()))
                 .add(QueryBuilders.termQuery("author", 1000)); // TODO: replace 1000 by the current user id.
                 //.must(QueryBuilders.rangeQuery("lastModificationDate").lt(serverTimestamp)); // TODO: Use serverTImeStamp to filter
 
         if (!textToSearch.isEmpty()) {
-            boolQueryBuilder.add(QueryBuilders.termQuery("title", textToSearch).boost(3))
+            disMaxQueryBuilder.add(QueryBuilders.termQuery("title", textToSearch).boost(3))
                     .add(QueryBuilders.termQuery("description", textToSearch).boost(1))
                     .add(QueryBuilders.termQuery("fileContent", textToSearch).boost(2));
         }
@@ -400,7 +400,7 @@ public class ContentDao {
         // Search into elasticSearch.
         SearchResponse sResponse = client.prepareSearch("bb-eeg")
                 .setSearchType(SearchType.DFS_QUERY_AND_FETCH)
-                .setQuery(boolQueryBuilder)
+                .setQuery(disMaxQueryBuilder)
                 .setFrom(query.startingOffset()).setSize(query.numberOfContents())
                 .addSort("_score", SortOrder.DESC)
                 .execute()
