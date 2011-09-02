@@ -30,7 +30,13 @@ public enum HttpMethodMatcher {
 		public boolean match(HttpMethod method) {
 			return method == HttpMethod.DELETE;
 		}
-	}
+	},
+    POST_OR_PUT {
+        @Override
+		public boolean match(HttpMethod method) {
+			return method == HttpMethod.POST || method == HttpMethod.PUT;
+		}
+    }
 	;
 
 	public abstract boolean match(HttpMethod method);
