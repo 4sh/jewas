@@ -12,11 +12,6 @@ public abstract class NamedHttpData implements HttpData {
         this.name = name;
     }
 
-    public NamedHttpData name(String _name){
-        this.name = _name;
-        return this;
-    }
-
     public String name(){
         return this.name;
     }
