@@ -19,8 +19,8 @@ org.apache.ivy.util.url.CredentialsStore.INSTANCE.addCredentials("Artifactory Re
 group = "fr.4sh.jewas"
 def versionBase = '0.1'
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
 
 // handles releases gracefully
 gradle.taskGraph.whenReady {taskGraph ->
@@ -154,6 +154,6 @@ sonar {
     globalProperty "sonar.jdbc.username", "sonar"
     globalProperty "sonar.jdbc.password", "4SHsoar"
 
-    globalProperty "sonar.java.source", "1.7"
-    globalProperty "sonar.java.target", "1.7"
+    globalProperty "sonar.java.source", "1.6"
+    globalProperty "sonar.java.target", "1.6"
 }
