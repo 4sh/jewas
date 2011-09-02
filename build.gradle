@@ -22,6 +22,11 @@ def versionBase = '0.1'
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
 
+if(System.getProperty("jdk") != null){
+    sourceCompatibility = System.getProperty("jdk")
+    targetCompatibility = System.getProperty("jdk")
+}
+
 // handles releases gracefully
 gradle.taskGraph.whenReady {taskGraph ->
    if (taskGraph.hasTask(':release')) {
