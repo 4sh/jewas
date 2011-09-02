@@ -1,7 +1,4 @@
 /.gradle
 /build
 /libs/netty
-/jewas.iml
-/jewas.ipr
-/jewas.iws
 /src/main/resources/rebel.xml
