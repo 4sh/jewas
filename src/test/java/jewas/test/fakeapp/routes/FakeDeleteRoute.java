@@ -1,12 +1,7 @@
 package jewas.test.fakeapp.routes;
 
 import jewas.http.*;
-import jewas.http.data.HttpData;
-import jewas.http.data.NamedString;
 import jewas.http.impl.AbstractRequestHandler;
-import org.apache.tools.ant.util.facade.ImplementationSpecificArgument;
-
-import java.util.List;
 
 /**
  * @author fcamblor
