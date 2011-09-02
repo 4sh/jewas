@@ -20,7 +20,7 @@ public class CreateContentOfContentRoute extends AbstractRoute {
     private ContentResource contentResource;
 
     public CreateContentOfContentRoute(ContentResource _contentResource){
-        super(HttpMethodMatcher.POST, new PatternUriPathMatcher("/content/content/[id]/[type]"));
+        super(HttpMethodMatcher.POST_OR_PUT, new PatternUriPathMatcher("/content/content/[id]/[type]"));
         contentResource = _contentResource;
     }
 

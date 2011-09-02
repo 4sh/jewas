@@ -21,7 +21,7 @@ import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
-import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.DisMaxQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortOrder;
@@ -386,16 +386,15 @@ public class ContentDao {
                 // TODO
         }
 
-        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery()
-                .must(QueryBuilders.inQuery("status", statuses.toArray()))
-                .must(QueryBuilders.termQuery("author", 1000)); // TODO: replace 1000 by the current user id.
+        DisMaxQueryBuilder boolQueryBuilder = QueryBuilders.disMaxQuery()
+                .add(QueryBuilders.inQuery("status", statuses.toArray()))
+                .add(QueryBuilders.termQuery("author", 1000)); // TODO: replace 1000 by the current user id.
                 //.must(QueryBuilders.rangeQuery("lastModificationDate").lt(serverTimestamp)); // TODO: Use serverTImeStamp to filter
 
         if (!textToSearch.isEmpty()) {
-            boolQueryBuilder.must(QueryBuilders.boolQuery()
-                    .should(QueryBuilders.termQuery("title", textToSearch))
-                    .should(QueryBuilders.termQuery("description", textToSearch))
-                    .should(QueryBuilders.termQuery("fileContent", textToSearch)));
+            boolQueryBuilder.add(QueryBuilders.termQuery("title", textToSearch).boost(3))
+                    .add(QueryBuilders.termQuery("description", textToSearch).boost(1))
+                    .add(QueryBuilders.termQuery("fileContent", textToSearch).boost(2));
         }
 
         // Search into elasticSearch.

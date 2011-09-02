@@ -15,6 +15,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="gradle-1.0-milestone-3" level="application" />
+    <orderEntry type="module" module-name="jewas" />
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
