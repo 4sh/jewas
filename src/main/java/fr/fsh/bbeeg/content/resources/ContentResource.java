@@ -12,11 +12,11 @@ import fr.fsh.bbeeg.content.pojos.ContentType;
 import fr.fsh.bbeeg.content.pojos.ContentTypeResultObject;
 import fr.fsh.bbeeg.content.pojos.SimpleSearchQueryObject;
 import fr.fsh.bbeeg.user.pojos.User;
+import jewas.http.data.FileUpload;
 import org.joda.time.DateMidnight;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -90,16 +90,31 @@ public class ContentResource {
         return contentDao.createContent(contentDetail);
     }
 
-    public void updateContentOfContent(Long contentId, String contentType, ByteBuffer content) {
+    public void updateContentOfContent(Long contentId, String text) {
         // TODO: take into account contentType
         String url = contentPath + contentId + ".txt";
         Path path = Paths.get(url);
 
         try {
-            Files.write(path, content.array());
+            Files.write(path, text.getBytes());
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        contentDao.updateContentOfContent(contentId, ContentType.TEXT, url);
+    }
+
+     public void updateContentOfContent(Long contentId, ContentType contentType,
+                                        FileUpload fileUpload, String extension) {
+        // TODO: take into account contentType
+        String url = contentPath + contentId + "." + extension;
+        Path path = Paths.get(url);
+
+         try {
+             fileUpload.toFile(path.toFile());
+         } catch (IOException e) {
+             e.printStackTrace();
+         }
 
         contentDao.updateContentOfContent(contentId, contentType, url);
     }

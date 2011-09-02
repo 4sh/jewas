@@ -1,14 +1,16 @@
 package fr.fsh.bbeeg.content.routes;
 
-import fr.fsh.bbeeg.common.resources.ObjectId;
+import fr.fsh.bbeeg.common.resources.FileQueryObject;
+import fr.fsh.bbeeg.common.resources.SuccessObject;
+import fr.fsh.bbeeg.content.pojos.ContentType;
 import fr.fsh.bbeeg.content.resources.ContentResource;
 import jewas.http.AbstractRoute;
-import jewas.http.HttpHeaders;
 import jewas.http.HttpMethodMatcher;
 import jewas.http.HttpRequest;
 import jewas.http.Parameters;
 import jewas.http.PatternUriPathMatcher;
 import jewas.http.RequestHandler;
+import jewas.http.data.BodyParameters;
 import jewas.http.impl.AbstractRequestHandler;
 
 /**
@@ -18,37 +20,65 @@ public class CreateContentOfContentRoute extends AbstractRoute {
     private ContentResource contentResource;
 
     public CreateContentOfContentRoute(ContentResource _contentResource){
-        super(HttpMethodMatcher.PUT, new PatternUriPathMatcher("/content/content/[id]"));
+        super(HttpMethodMatcher.POST, new PatternUriPathMatcher("/content/content/[id]/[type]"));
         contentResource = _contentResource;
+    }
+
+    public static class QueryObject {
+        private Long id;
+        private String type;
+
+        public QueryObject id(Long _id){
+            this.id = _id;
+            return this;
+        }
+
+        public Long id(){
+            return this.id;
+        }
+
+        public QueryObject type(String _type){
+            this.type = _type;
+            return this;
+        }
+
+        public String type(){
+            return this.type;
+        }
+    }
+
+    public static class TextQueryObject {
+        private String text;
+
+        public TextQueryObject text(String _text){
+            this.text = _text;
+            return this;
+        }
+
+        public String text(){
+            return this.text;
+        }
     }
 
     @Override
     protected RequestHandler onMatch(HttpRequest request, Parameters parameters) {
-        final ObjectId oi = toQueryObject(parameters, ObjectId.class);
-        String contentType = request.headers().getHeaderValue(HttpHeaders.CONTENT_TYPE);
-
-        if (contentType == null) {
-            // TODO: do something
-        }
-
-//        ByteBuffer content;
-//
-//        if ("text".equals(contentType)) {
-//            // Create a file...
-//
-//        } else {
-//            // Should be a file
-//            request.
-//        }
-
-        contentResource.updateContentOfContent(oi.id(), contentType, request.content());
+        final QueryObject qo = toQueryObject(parameters, QueryObject.class);
 
         return new AbstractRequestHandler() {
             @Override
-            public void onRequest(HttpRequest request) {
-                // TODO: to complete !
+            public void onReady(HttpRequest request, BodyParameters bodyParameters) {
+                super.onReady(request, bodyParameters);
 
-                request.respondJson().object("Ok");
+                if (ContentType.TEXT.name().equals(qo.type())) {
+                    TextQueryObject fqo = toContentObject(bodyParameters, TextQueryObject.class);
+                    contentResource.updateContentOfContent(qo.id(), fqo.text());
+                } else {
+                    FileQueryObject fqo = toContentObject(bodyParameters, FileQueryObject.class);
+                    contentResource.updateContentOfContent(qo.id(), ContentType.valueOf(qo.type()),
+                            fqo.file(), fqo.extension());
+                }
+
+                request.respondJson().object(new SuccessObject().success(true));
             }
         };
     }

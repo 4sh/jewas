@@ -46,18 +46,18 @@ $(function() {
         $.put(form.action,
             JSON.stringify(contentDetail),
             function(data){
-                $.put('/content/content/' + $.parseJSON(data).id,
-                    $('#content')[0].value,
+                $.put('/content/content/' + data.id + '/TEXT',
+                    {text: $('#content')[0].value},
                     function(data){
                         $("#confirmationDialog").dialog('open');
                         setTimeout(function(){
                             $("#confirmationDialog").dialog('close');
                         }, 2000);
                         form.reset();
-                    }
+                    },
+                    'text'
                 );
-            },
-            'text'
+            }
         );
 
 

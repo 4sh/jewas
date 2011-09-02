@@ -2,7 +2,6 @@ package fr.fsh.bbeeg.content.routes;
 
 import fr.fsh.bbeeg.common.resources.ObjectId;
 import fr.fsh.bbeeg.content.pojos.ContentDetail;
-import fr.fsh.bbeeg.content.pojos.ContentType;
 import fr.fsh.bbeeg.content.resources.ContentResource;
 import jewas.http.AbstractRoute;
 import jewas.http.HttpMethodMatcher;
@@ -40,12 +39,14 @@ public class GetViewContentRoute extends AbstractRoute {
 
                 String template;
 
-                if (ContentType.TEXT.equals(contentDetail.header().type())) {
-                    template = "content/view-text.ftl";
-                } else {
-                    template = "content/view-eeg.ftl";
+                switch (contentDetail.header().type()) {
+                    case TEXT: template = "content/view-text.ftl";
+                        break;
+                    case IMAGE: template = "content/view-image.ftl";
+                        break;
+                    default: template = "content/view-eeg.ftl";
                 }
-                
+
                 request.respondHtml().content(Templates.process(template, params));
             }
         };

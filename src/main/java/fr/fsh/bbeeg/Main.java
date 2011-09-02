@@ -6,6 +6,7 @@ import fr.fsh.bbeeg.common.CliOptions;
 import fr.fsh.bbeeg.common.config.BBEEGConfiguration;
 import fr.fsh.bbeeg.content.routes.ContentStatusRoute;
 import fr.fsh.bbeeg.content.routes.CreateContentOfContentRoute;
+import fr.fsh.bbeeg.content.routes.CreateImageContentRoute;
 import fr.fsh.bbeeg.content.routes.CreateTextContentRoute;
 import fr.fsh.bbeeg.content.routes.EditContentRoute;
 import fr.fsh.bbeeg.content.routes.GetAddedContentRoute;
@@ -89,8 +90,10 @@ public class Main {
                 new CreateContentOfContentRoute(assembler.contentResource()),
                // new GetCreateContentRoute(assembler.contentResource()),
                 new CreateTextContentRoute(assembler.contentResource()),
+                new CreateImageContentRoute(assembler.contentResource()),
                 new GetContentOfContentRoute(assembler.contentResource()),
                 new SimpleHtmlRoute("/content/text/create.html", "content/create-text.ftl"),
+                new SimpleHtmlRoute("/content/image/create.html", "content/create-image.ftl"),
                 new EditContentRoute(assembler.contentResource()),
                 new GetAddedContentRoute(assembler.contentResource()),
                 new GetViewedContentRoute(assembler.contentResource()),
