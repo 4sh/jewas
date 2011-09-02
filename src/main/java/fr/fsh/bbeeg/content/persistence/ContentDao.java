@@ -21,7 +21,7 @@ import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
-import org.elasticsearch.index.query.DisMaxQueryBuilder;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortOrder;
@@ -345,6 +345,18 @@ public class ContentDao {
         }
     }
 
+    private void fetchByIds(List<ContentHeader> contentHeaders, List<Long> contentIds) {
+        // Fetch the contents from the database via the content ids.
+        if (!contentIds.isEmpty()) {
+            for (Long contentId : contentIds) {
+                contentHeaders.add(contentHeaderQueryTemplate.selectObject("selectById",
+                        new QueryExecutionContext().buildParams()
+                                .bigint("id", contentId)
+                                .toContext()));
+            }
+        }
+    }
+
     public void fetchSearch(List<ContentHeader> contentHeaders, SimpleSearchQueryObject query) {
         Date serverTimestamp; // TODO: Don't forget to filter by server timestamp
         String textToSearch;
@@ -386,15 +398,15 @@ public class ContentDao {
                 // TODO
         }
 
-        DisMaxQueryBuilder disMaxQueryBuilder = QueryBuilders.disMaxQuery()
-                .add(QueryBuilders.inQuery("status", statuses.toArray()))
-                .add(QueryBuilders.termQuery("author", 1000)); // TODO: replace 1000 by the current user id.
+        BoolQueryBuilder disMaxQueryBuilder = QueryBuilders.boolQuery().must(QueryBuilders.inQuery("status", statuses.toArray()))
+                        .must(QueryBuilders.termQuery("author", 1000)); // TODO: replace 1000 by the current user id.
                 //.must(QueryBuilders.rangeQuery("lastModificationDate").lt(serverTimestamp)); // TODO: Use serverTImeStamp to filter
 
         if (!textToSearch.isEmpty()) {
-            disMaxQueryBuilder.add(QueryBuilders.termQuery("title", textToSearch).boost(3))
-                    .add(QueryBuilders.termQuery("description", textToSearch).boost(1))
-                    .add(QueryBuilders.termQuery("fileContent", textToSearch).boost(2));
+            disMaxQueryBuilder.must(QueryBuilders.disMaxQuery()
+                    .add(QueryBuilders.termQuery("title", textToSearch).boost(5))
+                    .add(QueryBuilders.termQuery("description", textToSearch).boost(3))
+                    .add(QueryBuilders.termQuery("fileContent", textToSearch).boost(4)));
         }
 
         // Search into elasticSearch.
@@ -403,6 +415,7 @@ public class ContentDao {
                 .setQuery(disMaxQueryBuilder)
                 .setFrom(query.startingOffset()).setSize(query.numberOfContents())
                 .addSort("_score", SortOrder.DESC)
+                .setMinScore(0.3f)
                 .execute()
                 .actionGet();
 
@@ -415,17 +428,7 @@ public class ContentDao {
             contentIds.add(Long.parseLong(searchHit.id()));
         }
 
-        // Fetch the contents from the database via the content ids.
-        if (!contentIds.isEmpty()) {
-            // FIX ME: Problem here. The request doesn't conserve order given by elastic search
-            // results. Maybe use a temporary table.
-            contentHeaderQueryTemplate.select(
-                    contentHeaders,
-                    "selectByIds",
-                    new QueryExecutionContext().buildParams()
-                            .array("ids", contentIds.toArray())
-                            .toContext());
-        }
+        fetchByIds(contentHeaders, contentIds);
     }
 
     public void fetchSearch(List<ContentHeader> results, AdvancedSearchQueryObject query) {
