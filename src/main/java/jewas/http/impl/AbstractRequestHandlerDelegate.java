@@ -36,7 +36,7 @@ public abstract class AbstractRequestHandlerDelegate implements RequestHandler {
     protected List<RequestHandler> findNonNullDelegatesFor(HttpRequest request){
         List<RequestHandler> delegates = findDelegatesFor(request);
         if(delegates == null || delegates.isEmpty()){
-            throw new IllegalStateException("No request delegate found !");
+            throw new IllegalStateException(String.format("No request delegate found for request uri %s !", request.uri()));
         }
         return delegates;
     }
