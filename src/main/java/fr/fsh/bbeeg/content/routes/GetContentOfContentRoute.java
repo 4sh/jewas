@@ -11,6 +11,8 @@ import jewas.http.PatternUriPathMatcher;
 import jewas.http.RequestHandler;
 import jewas.http.impl.AbstractRequestHandler;
 
+import java.io.InputStream;
+
 /**
  * @author driccio
  */
@@ -29,9 +31,38 @@ public class GetContentOfContentRoute extends AbstractRoute {
         return new AbstractRequestHandler() {
             @Override
             public void onRequest(HttpRequest request) {
+
+                InputStream content = contentResource.getContentOfContent(oi.id());
+                ContentType contentType;
+
+                switch (contentResource.getContentOfContentExtension(oi.id())) {
+                    case "pdf":
+                        contentType = ContentType.APP_PDF;
+                       break;
+                    case "jpg":
+                    case "jpeg":
+                        contentType = ContentType.IMG_JPG;
+                         break;
+                    case "png":
+                        contentType = ContentType.IMG_PNG;
+                         break;
+                    case "gif":
+                        contentType = ContentType.IMG_GIF;
+                        break;
+                    case "mp4":
+                        contentType = ContentType.VID_MP4;
+                        break;
+                    case "mp3":
+                        contentType = ContentType.AUD_MPEG;
+                        break;
+                    case "txt":
+                    default :
+                        contentType = ContentType.TXT_PLAIN;
+                }
+
                 request.respondFile()
-                        .contentType(ContentType.TXT_PLAIN)
-                        .file(contentResource.getContentOfContent(oi.id()));
+                        .contentType(contentType)
+                        .file(content);
             }
         };
     }

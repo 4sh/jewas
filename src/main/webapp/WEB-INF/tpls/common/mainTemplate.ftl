@@ -73,6 +73,29 @@
                 <#else>
                     <@rootMenuItem id="searchMenuItem" title="Recherche" selected="false"/>
                 </#if>
+                <#if selectedMenuItem == "creation">
+                    <@rootMenuItem id="creationMenuItem" title="Création" selected="true">
+                        <@subMenu id="creationSubMenu" width="125">
+                            <@subMenuItem id="createTextMenuItem" title="Texte" />
+                            <@subMenuItem id="createDocumentMenuItem" title="Document" />
+                            <@subMenuItem id="createImageMenuItem" title="Image" />
+                            <@subMenuItem id="createVideoMenuItem" title="Vidéo" />
+                            <@subMenuItem id="createAudioMenuItem" title="Audio" />
+                            <@subMenuItem id="createEegMenuItem" title="EEG" />
+                        </@subMenu>
+                    </@rootMenuItem>
+                <#else>
+                    <@rootMenuItem id="creationMenuItem" title="Création" selected="false">
+                        <@subMenu id="creationSubMenu" width="125">
+                            <@subMenuItem id="createTextMenuItem" title="Texte" />
+                            <@subMenuItem id="createDocumentMenuItem" title="Document" />
+                            <@subMenuItem id="createImageMenuItem" title="Image" />
+                            <@subMenuItem id="createVideoMenuItem" title="Vidéo" />
+                            <@subMenuItem id="createAudioMenuItem" title="Audio" />
+                            <@subMenuItem id="createEegMenuItem" title="EEG" />
+                        </@subMenu>
+                    </@rootMenuItem>
+                 </#if>
             </ul>
 
             <ul id="configurationMenu" class="inlined-right-group">

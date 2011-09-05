@@ -1,16 +1,8 @@
-<#include "../common/mainTemplate.ftl">
+<#macro createContent url type extensions extensionsMsgError>
 
-<#if compressedJS == "true">
-    <#assign chosenJS = "/public/js/chosen/chosen.jquery.min.js">
-    <#else>
-        <#assign chosenJS = "/public/js/chosen/chosen.jquery.js">
-</#if>
-
-<@mainTemplate title="Création d'un contenu" selectedMenuItem="creation"
-               scripts=[chosenJS,
-                        "/public/js/jewas/jewas-forms.js",
-                        "/public/js/bbeeg/content/create-text.js"]
-               stylesheets=["/public/css/chosen/chosen.css"]>
+<script type="text/javascript">
+    <#include "create-content.js" parse=true>
+</script>
 
     <script id="domainItemTemplate" type="text/x-jquery-tmpl">
         <option value="{{= id}}"> {{= label}} </option>
@@ -23,7 +15,7 @@
 
     <h3>Création d'un contenu</h3>
 
-    <form id="createContent" action="/content/text" method="post">
+    <form id="createContent" action="${url}" method="post">
         <p>Auteur : toto</p>
         <p><label for="title">Titre</label> : <input type="text" id="title" name="title" /></p>
         <p><label for="description">Description</label> :<br/><textarea rows="3" cols="100" id="description" name="description"></textarea></p>
@@ -34,8 +26,14 @@
                 </select>
             </div>
         </div>
-        <p><label for="content">Contenu</label> :<br/><textarea rows="8" cols="100" id="content"></textarea></p>
+        <p>
+            <div id="file-uploader">
+                <span id="upload" href="#" class="          ">Selectionner votre fichier : </span>
+                <span id="upstatus"></span>
+                <ul id="media"></ul>
+            </div>
+        </p>
         <p><input type="submit" value="Enregistrer" /></p>
     </form>
 
-</@mainTemplate>
+</#macro>

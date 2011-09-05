@@ -29,9 +29,14 @@ $(
                 ['#dashboardMenuItem', '/dashboard/dashboard.html'],
                 ['#searchMenuItem', '/content/search.html'],
                 ['#parametersMenuItem', '/user/profile.html'],
-                ['#createContentMenuItem', '/content/text/create.html'],
                 ['#manageMyContentsMenuItem', '/content/search-user-content.html'],
-                ['#adminContentsMenuItem', '/content/search-content-to-treat.html']
+                ['#adminContentsMenuItem', '/content/search-content-to-treat.html'],
+                ['#createTextMenuItem', '/content/text/create.html'],
+                ['#createDocumentMenuItem', '/content/document/create.html'],
+                ['#createImageMenuItem', '/content/image/create.html'],
+                ['#createVideoMenuItem', '/content/video/create.html'],
+                ['#createAudioMenuItem', '/content/audio/create.html'],
+                ['#createEegMenuItem', '/content/eeg/create.html']
             ],function(index, value){
                 $(value[0]).click(function(){
                     loadMenuItem(this, value[1]);
@@ -41,6 +46,7 @@ $(
 
         // Root menu item displaying a submenu
         $.each([
+                ['#creationMenuItem', '#creationSubMenu'],
                 ['#adminMenuItem', '#adminSubMenu'],
                 ['#profileMenuItem', '#profileSubMenu']
             ],function(index,value){

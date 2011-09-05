@@ -14,6 +14,6 @@
                             "/public/css/fileUpload/fileuploader.css"]>
 
     <#include "common/create-content.ftl">
-    <@createContent url="/content" type="IMAGE" extensions="png|jpg|pjeg|gif" extensionsMsgError="Seuls les formats PNG, JPEG et GIF sont supportés"/>
+    <@createContent url="/content" type="DOCUMENT" extensions="pdf" extensionsMsgError="Seuls le format PDF est supporté"/>
 
 </@mainTemplate>

@@ -127,15 +127,30 @@ public class ContentResource {
         }
 
         Path path = Paths.get(url);
-        InputStream content = null;
+        InputStream stream = null;
 
         try {
-            content = Files.newInputStream(path);
+            stream = Files.newInputStream(path);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return content;
+        return stream;
+    }
+
+    public String getContentOfContentExtension(Long contentId) {
+        String url = contentDao.getContentUrl(contentId);
+
+        if (url == null || "".equals(url)) {
+            return null;
+        }
+
+        int extIndex = url.lastIndexOf(".");
+        if (extIndex == -1) {
+            return "";
+        } else {
+            return url.substring(extIndex + 1);
+        }
     }
 
     public void fetchSearch(List<ContentHeader> results, SimpleSearchQueryObject query) {

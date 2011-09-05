@@ -6,8 +6,7 @@ import fr.fsh.bbeeg.common.CliOptions;
 import fr.fsh.bbeeg.common.config.BBEEGConfiguration;
 import fr.fsh.bbeeg.content.routes.ContentStatusRoute;
 import fr.fsh.bbeeg.content.routes.CreateContentOfContentRoute;
-import fr.fsh.bbeeg.content.routes.CreateImageContentRoute;
-import fr.fsh.bbeeg.content.routes.CreateTextContentRoute;
+import fr.fsh.bbeeg.content.routes.CreateContentRoute;
 import fr.fsh.bbeeg.content.routes.EditContentRoute;
 import fr.fsh.bbeeg.content.routes.GetAddedContentRoute;
 import fr.fsh.bbeeg.content.routes.GetAdvancedSearchContent;
@@ -89,11 +88,14 @@ public class Main {
                 new GetContentToTreatSearchScreenRoute(),
                 new CreateContentOfContentRoute(assembler.contentResource()),
                // new GetCreateContentRoute(assembler.contentResource()),
-                new CreateTextContentRoute(assembler.contentResource()),
-                new CreateImageContentRoute(assembler.contentResource()),
+               //new CreateTextContentRoute(assembler.contentResource()),
+                new CreateContentRoute(assembler.contentResource()),
                 new GetContentOfContentRoute(assembler.contentResource()),
                 new SimpleHtmlRoute("/content/text/create.html", "content/create-text.ftl"),
                 new SimpleHtmlRoute("/content/image/create.html", "content/create-image.ftl"),
+                new SimpleHtmlRoute("/content/audio/create.html", "content/create-audio.ftl"),
+                new SimpleHtmlRoute("/content/video/create.html", "content/create-video.ftl"),
+                new SimpleHtmlRoute("/content/document/create.html", "content/create-document.ftl"),
                 new EditContentRoute(assembler.contentResource()),
                 new GetAddedContentRoute(assembler.contentResource()),
                 new GetViewedContentRoute(assembler.contentResource()),

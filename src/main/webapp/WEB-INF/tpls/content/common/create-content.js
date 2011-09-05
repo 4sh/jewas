@@ -43,14 +43,26 @@ $(function() {
             }
         }
 
+
+        var dataToSend = {
+            type : '${type}',
+            contentDetail : JSON.stringify(contentDetail)
+        };
+
         $.put(form.action,
-            JSON.stringify(contentDetail),
+            dataToSend,
             function(data){
                 if (uploader != null) {
                     uploader.setData({extension: uploader.getCurrentFileExtension()});
-                    uploader.setAction('/content/content/' + data.id + '/IMAGE');
+                    uploader.setAction('/content/content/' + data.id + '/${type}');
 
-                    uploader.submit(function () {window.location.href = "/content/" + data.id + "/view.html";});
+                    uploader.submit(function () {
+                        $("#confirmationDialog").dialog('open');
+                        setTimeout(function(){
+                            $("#confirmationDialog").dialog('close');
+                            window.location.href = "/content/" + data.id + "/view.html";
+                        }, 2000);
+                    });
                 }
             }
         );
@@ -69,9 +81,9 @@ $(function() {
         action:'',
         multiple: false,
         onChange: function(file, ext) {
-            if (! (ext && /^(jpg|png|jpeg|gif)$/.test(ext))){
+            if (! (ext && /^(${extensions})$/.test(ext))){
                 // check for valid file extension
-                uploadStatus.text('Seuls les fichiers JPG, PNG ou GIF sont permis pour le moment');
+                uploadStatus.text("${extensionsMsgError}");
                 return false;
             }
             uploadStatus.text(file);
@@ -90,11 +102,6 @@ $(function() {
         },
         onComplete : function(file, response){
             window.clearInterval(interval);
-            //Add uploaded file to list
-            $("#confirmationDialog").dialog('open');
-            setTimeout(function(){
-                $("#confirmationDialog").dialog('close');
-            }, 2000);
         }
     });
 });

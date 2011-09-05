@@ -399,7 +399,7 @@ public class ContentDao {
         }
 
         BoolQueryBuilder disMaxQueryBuilder = QueryBuilders.boolQuery().must(QueryBuilders.inQuery("status", statuses.toArray()))
-                        .must(QueryBuilders.termQuery("author", 1000)); // TODO: replace 1000 by the current user id.
+                      .must(QueryBuilders.termQuery("author", 1000)); // TODO: replace 1000 by the current user id.
                 //.must(QueryBuilders.rangeQuery("lastModificationDate").lt(serverTimestamp)); // TODO: Use serverTImeStamp to filter
 
         if (!textToSearch.isEmpty()) {

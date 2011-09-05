@@ -44,7 +44,15 @@ public class GetViewContentRoute extends AbstractRoute {
                         break;
                     case IMAGE: template = "content/view-image.ftl";
                         break;
-                    default: template = "content/view-eeg.ftl";
+                    case DOCUMENT: template = "content/view-document.ftl";
+                        break;
+                    case AUDIO: template = "content/view-audio.ftl";
+                        break;
+                    case VIDEO: template = "content/view-video.ftl";
+                        break;
+                    case EEG: template = "content/view-eeg.ftl";
+                        break;
+                    default: template = "content/view-text.ftl";
                 }
 
                 request.respondHtml().content(Templates.process(template, params));
