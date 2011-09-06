@@ -23,7 +23,7 @@
 
     <h3>Création d'un contenu</h3>
 
-    <form id="createContent" action="/content/text" method="post">
+    <form id="createContent" action="/content" method="post">
         <p>Auteur : toto</p>
         <p><label for="title">Titre</label> : <input type="text" id="title" name="title" /></p>
         <p><label for="description">Description</label> :<br/><textarea rows="3" cols="100" id="description" name="description"></textarea></p>

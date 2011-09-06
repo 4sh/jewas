@@ -43,8 +43,13 @@ $(function() {
             }
         }
 
+        var dataToSend = {
+            type : 'TEXT',
+            contentDetail : JSON.stringify(contentDetail)
+        };
+
         $.put(form.action,
-            JSON.stringify(contentDetail),
+            dataToSend,
             function(data){
                 $.put('/content/content/' + data.id + '/TEXT',
                     {text: $('#content')[0].value},
