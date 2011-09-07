@@ -43,7 +43,7 @@ def ENV_PROPERTIES = [
            visioEegRootUrl: "http://nightly.visio.bbeeg.4sh.fr",
            contentFileRepository: ENV_DEMO_DEPLOY_ROOT_PATH+"/nightly"+"/contents/",
            h2ServerPort: 8082,
-           elasticSearchAdress: "localhost",
+           elasticSearchAdress: "192.168.0.200",
            elasticSearchPort: 9200
    ], qa: [
            targetDir: ENV_DEMO_DEPLOY_ROOT_PATH+"/qa",
@@ -51,7 +51,7 @@ def ENV_PROPERTIES = [
            visioEegRootUrl: "http://qa.visio.bbeeg.4sh.fr",
            contentFileRepository: ENV_DEMO_DEPLOY_ROOT_PATH+"/qa"+"/contents/",
            h2ServerPort: 8083,
-           elasticSearchAdress: "localhost",
+           elasticSearchAdress: "192.168.0.200",
            elasticSearchPort: 9201
    ]
 ]
@@ -186,7 +186,7 @@ task startElasticSearch(dependsOn: [initSsh, checkPropsForDeployment]) << {
 		command: """kill -9 \$(cat "${deployDirectory}/elasticSearch.pid")""", trust: true, failonerror: false)
     // TODO: pass the http port here...
     ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 2224,
-		command: """ ${deployDirectory}/elasticsearch-0.17.0/bin/elasticSearch \
+		command: """${deployDirectory}/elasticsearch-0.17.0/bin/elasticSearch \
 		    -f -Des.http.port=${executionPort} -Des.index.store.type=memory \
 		    & echo \$! > "${deployDirectory}/elasticSearch.pid" """,
         trust: true, failonerror: true)
