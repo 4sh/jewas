@@ -192,7 +192,7 @@ task startElasticSearch(dependsOn: [initSsh, checkPropsForDeployment]) << {
         trust: true, failonerror: true)
 }
 
-task startBBEEG(dependsOn: [initSsh, checkPropsForDeployment]) << {
+task startBBEEG(dependsOn: [initSsh, checkPropsForDeployment, startElasticSearch]) << {
     def deployDirectory = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].targetDir
     def executionPort = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].bbeegPort
     def visioRootUrl = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].visioEegRootUrl
