@@ -43,7 +43,7 @@ def ENV_PROPERTIES = [
            visioEegRootUrl: "http://nightly.visio.bbeeg.4sh.fr",
            contentFileRepository: ENV_DEMO_DEPLOY_ROOT_PATH+"/nightly"+"/contents/",
            h2ServerPort: 8082,
-           elasticSearchAdress: "192.168.0.200",
+           elasticSearchAdress: "localhost",
            elasticSearchPort: 9200
    ], qa: [
            targetDir: ENV_DEMO_DEPLOY_ROOT_PATH+"/qa",
@@ -51,7 +51,7 @@ def ENV_PROPERTIES = [
            visioEegRootUrl: "http://qa.visio.bbeeg.4sh.fr",
            contentFileRepository: ENV_DEMO_DEPLOY_ROOT_PATH+"/qa"+"/contents/",
            h2ServerPort: 8083,
-           elasticSearchAdress: "192.168.0.200",
+           elasticSearchAdress: "localhost",
            elasticSearchPort: 9201
    ]
 ]
