@@ -4,24 +4,7 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import fr.fsh.bbeeg.common.CliOptions;
 import fr.fsh.bbeeg.common.config.BBEEGConfiguration;
-import fr.fsh.bbeeg.content.routes.ContentStatusRoute;
-import fr.fsh.bbeeg.content.routes.CreateContentOfContentRoute;
-import fr.fsh.bbeeg.content.routes.CreateContentRoute;
-import fr.fsh.bbeeg.content.routes.EditContentRoute;
-import fr.fsh.bbeeg.content.routes.GetAddedContentRoute;
-import fr.fsh.bbeeg.content.routes.GetAdvancedSearchContent;
-import fr.fsh.bbeeg.content.routes.GetAuthorContentRoute;
-import fr.fsh.bbeeg.content.routes.GetContentCriteriasRoute;
-import fr.fsh.bbeeg.content.routes.GetContentOfContentRoute;
-import fr.fsh.bbeeg.content.routes.GetContentToTreatSearchScreenRoute;
-import fr.fsh.bbeeg.content.routes.GetContentTypeRoute;
-import fr.fsh.bbeeg.content.routes.GetPopularContentRoute;
-import fr.fsh.bbeeg.content.routes.GetSearchScreenRoute;
-import fr.fsh.bbeeg.content.routes.GetSimpleSearchContent;
-import fr.fsh.bbeeg.content.routes.GetTotalNumberOfContentRoute;
-import fr.fsh.bbeeg.content.routes.GetUserContentsSearchScreenRoute;
-import fr.fsh.bbeeg.content.routes.GetViewContentRoute;
-import fr.fsh.bbeeg.content.routes.GetViewedContentRoute;
+import fr.fsh.bbeeg.content.routes.*;
 import fr.fsh.bbeeg.domain.routes.GetAllDomainsRoute;
 import fr.fsh.bbeeg.domain.routes.GetPopularDomainRoute;
 import fr.fsh.bbeeg.security.routes.PostConnectionRoute;
@@ -62,19 +45,20 @@ public class Main {
         }
 
         // Registering cli options
-        BBEEGConfiguration.INSTANCE.cliOptions(options);
+        try {
+            BBEEGConfiguration.INSTANCE.cliOptions(options);
 
-        org.h2.tools.Server.createWebServer("-webPort",
-                BBEEGConfiguration.INSTANCE.cliOptions().h2ServerPort()).start();
-        Class.forName("org.h2.Driver");
-        Connection dbInitializationConnection = DriverManager.getConnection("jdbc:h2:mem:mytest", "sa", "");
-        ScriptRunner sr = new ScriptRunner(dbInitializationConnection, true, true);
-        sr.runScript(new InputStreamReader(Files.getInputStreamFromPath("fr/fsh/bbeeg/bbeeg_script.sql")));
+            org.h2.tools.Server.createWebServer("-webPort",
+                    BBEEGConfiguration.INSTANCE.cliOptions().h2ServerPort()).start();
+            Class.forName("org.h2.Driver");
+            Connection dbInitializationConnection = DriverManager.getConnection("jdbc:h2:mem:mytest", "sa", "");
+            ScriptRunner sr = new ScriptRunner(dbInitializationConnection, true, true);
+            sr.runScript(new InputStreamReader(Files.getInputStreamFromPath("fr/fsh/bbeeg/bbeeg_script.sql")));
 
-        Assembler assembler = new Assembler();
+            Assembler assembler = new Assembler();
 
-        final RestServer rs = RestServerFactory.createRestServer(options.httpPort());
-        rs.addRoutes(
+            final RestServer rs = RestServerFactory.createRestServer(options.httpPort());
+            rs.addRoutes(
                 new RedirectRoute("/", "/dashboard/dashboard.html"),
                 // Not really a static resource (located in webapp folder) since it is provided
                 // by jewas library. So it must be declared before the StaticResourcesRoute !
@@ -114,8 +98,12 @@ public class Main {
                 new GetAdvancedSearchContent(assembler.contentResource()),
                 new GetViewContentRoute(assembler.contentResource()),
                 new GetUserPreferredDomainsRoute(assembler.userResource())
-        ).start();
-        System.out.println("Ready, if you dare");
+            ).start();
+            System.out.println("Ready, if you dare");
+        }catch(Throwable t){
+            t.printStackTrace(System.err);
+            System.exit(-1);
+        }
     }
 
 }
