@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../VisioEEG/VisioEEG.iml" filepath="$PROJECT_DIR$/../VisioEEG/VisioEEG.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bb-eeg.iml" filepath="$PROJECT_DIR$/bb-eeg.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../jewas/jewas.iml" filepath="$PROJECT_DIR$/../jewas/jewas.iml" />
+    </modules>
+  </component>
+</project>
+
