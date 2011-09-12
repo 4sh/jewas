@@ -57,16 +57,24 @@ def ENV_PROPERTIES = [
 ]
 
 group = "fr.4sh.bbeeg"
-version = "0.1-SNAPSHOT"
+def versionBase = "0.1"
 
-// TODO: when releasing a version, do stuff here ...
-
-// Finally, if we are in a snapshot version, replace snapshot with timestamp
-if(version.contains("-SNAPSHOT")){
-    def unsnapshotedVersion = version.substring(0, version.length() - "-SNAPSHOT".length());
-    version = unsnapshotedVersion+"-"+timestamp;
+// handles releases gracefully
+gradle.taskGraph.whenReady {taskGraph ->
+   if (taskGraph.hasTask(':release')) {
+      version = versionBase
+   } else {
+      version = versionBase + '-SNAPSHOT'
+   }
+    jar {
+      manifest {
+        attributes 'Main-Class': 'fr.fsh.todos.Main'
+        attributes 'Implementation-Title': 'TODOs'
+        attributes 'Implementation-Version': version
+        attributes 'Implementation-Vendor': '4SH France'
+      }
+    }
 }
-
 
 repositories {
     // looking into maven local repo only if localRepo system property is set to true
@@ -112,15 +120,6 @@ sourceSets {
             srcDir "src/integration-test/resources"
         }
     }
-}
-
-jar {
-  manifest {
-    attributes 'Main-Class': 'fr.fsh.bbeeg.Main'
-    attributes 'Implementation-Title': 'BB-EEG'
-    attributes 'Implementation-Version': version
-    attributes 'Implementation-Vendor': '4SH France'
-  }
 }
 
 // Allows to generate USER_HOME idea variable uniformely on every OS
