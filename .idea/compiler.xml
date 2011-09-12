@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <option name="DEFAULT_COMPILER" value="Javac" />
+    <option name="DEFAULT_COMPILER" value="compAPI" />
     <resourceExtensions />
     <wildcardResourcePatterns>
       <entry name="*" />
     </wildcardResourcePatterns>
     <annotationProcessing enabled="false" useClasspath="true" />
+  </component>
+  <component name="EclipseCompilerSettings">
+    <option name="ADDITIONAL_OPTIONS_STRING" value="-source 1.7 -target 1.7" />
   </component>
 </project>
 
