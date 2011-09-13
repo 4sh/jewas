@@ -26,8 +26,8 @@ import java.util.List;
  * @author driccio
  */
 public class ContentResource {
-    private ContentDao contentDao;
-    private String contentPath;
+    private final ContentDao contentDao;
+    private final String contentPath;
 
     public ContentResource(ContentDao _contentDao, String _contentPath) {
         contentDao = _contentDao;
