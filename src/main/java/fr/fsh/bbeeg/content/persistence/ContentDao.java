@@ -1,12 +1,7 @@
 package fr.fsh.bbeeg.content.persistence;
 
 import fr.fsh.bbeeg.common.resources.Count;
-import fr.fsh.bbeeg.content.pojos.AdvancedSearchQueryObject;
-import fr.fsh.bbeeg.content.pojos.ContentDetail;
-import fr.fsh.bbeeg.content.pojos.ContentHeader;
-import fr.fsh.bbeeg.content.pojos.ContentStatus;
-import fr.fsh.bbeeg.content.pojos.ContentType;
-import fr.fsh.bbeeg.content.pojos.SimpleSearchQueryObject;
+import fr.fsh.bbeeg.content.pojos.*;
 import fr.fsh.bbeeg.domain.persistence.DomainDao;
 import fr.fsh.bbeeg.domain.pojos.Domain;
 import fr.fsh.bbeeg.user.persistence.UserDao;
@@ -54,6 +49,12 @@ public class ContentDao {
         userDao = _userDao;
         domainDao = _domainDao;
 
+        init(dataSource);
+    }
+
+    private void init(DataSource dataSource) {
+
+        // Initializing QueryTemplates
         this.contentHeaderQueryTemplate =
                 new QueryTemplate<ContentHeader>(dataSource, new ContentRowMapper())
                         .addQuery("selectById", "select * from Content where id = :id")
