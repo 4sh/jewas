@@ -60,11 +60,9 @@ public class ElasticSearchDao {
 
     public void asyncPrepareIndex(final String id, final XContentBuilderFactory contentFactory){
         // Indexing content asynchronously
-        /*
         indexingExecutors.submit(new Runnable() {
             @Override
             public void run() {
-            */
                 try {
                     System.out.println(String.format("indexing %s.%s with id %s ...", indexName, indexType, id));
                     XContentBuilder source = contentFactory.createXContentBuilder();
@@ -74,10 +72,8 @@ public class ElasticSearchDao {
                     // FIXME : queue another indexation here ?
                     throw new RuntimeException("Asynchronous index preparation failed : " + e.getMessage(), e);
                 }
-        /*
             }
         });
-        */
     }
 
     public String indexName(){
