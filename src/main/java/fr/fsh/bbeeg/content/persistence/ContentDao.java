@@ -24,6 +24,9 @@ import org.joda.time.DateMidnight;
 
 import javax.sql.DataSource;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -257,9 +260,25 @@ public class ContentDao {
                                 //.field("version", contentDetail.header().version())
                                 .field("author", contentDetail.header().author().id());
 
+                        // Indexing file content only if content.url is set
+                        if(contentDetail.url() != null){
+                            Path contentPath = Paths.get(contentDetail.url());
+                            // TODO : Optimize memory consumption here ???
+                            // This will potentially take a large amount of memory since file to index
+                            // should be entirely loaded into memory to be indexed by elastic search
+                            // I already tested rawField(ES_CONTENT_FIELD_FILECONTENT, Files.newInputStream(contentPath))
+                            // but it doesn't seem to work under elastic search 0.17.6
+                            xContentBuilder.field("fileContent", Files.readAllBytes(contentPath));
+                        }
+
                         return xContentBuilder;
                     }
                 });
+        
+        // uncomment this code to verify fileContent is correctly indexed
+        //        String searchTerms = "J2EE";
+        //        CountResponse res = client.count(countRequest(ES_INDEX_NAME).query(fieldQuery(ES_CONTENT_FIELD_FILECONTENT, searchTerms))).actionGet();
+        //        System.out.println(res.count());
     }
 
     public void updateContentOfContent(Long contentId, ContentType contentType, String url) {
@@ -293,7 +312,7 @@ public class ContentDao {
 
         if(ContentStatus.VALIDATED.equals(contentDetailFromDb.header().status()) ||
                 ContentStatus.REJECTED.equals(contentDetailFromDb.header().status())) {
-            
+
             contentDetailFromDb.header().ancestorId(contentDetailFromDb.header().id());
             contentIdToUse = createContent(contentDetailFromDb);
         } else {
