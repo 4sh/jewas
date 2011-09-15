@@ -12,6 +12,11 @@
     <option name="PASS_PARENT_ENVS" value="true" />
     <module name="bb-eeg" />
     <envs />
+    <RunnerSettings RunnerId="Debug">
+      <option name="DEBUG_PORT" value="59196" />
+      <option name="TRANSPORT" value="0" />
+      <option name="LOCAL" value="true" />
+    </RunnerSettings>
     <RunnerSettings RunnerId="JavaRebel">
       <option name="bootstrapPath" />
       <option name="jrebelArgs" value="" />
@@ -30,6 +35,8 @@
       <option name="LOCAL" value="true" />
     </RunnerSettings>
     <RunnerSettings RunnerId="Run" />
+    <ConfigurationWrapper RunnerId="Debug" />
+    <ConfigurationWrapper RunnerId="JavaRebel Debug" />
     <ConfigurationWrapper RunnerId="Run" />
     <method />
   </configuration>
