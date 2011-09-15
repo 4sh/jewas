@@ -50,7 +50,7 @@ public class Assembler {
                         BBEEGConfiguration.INSTANCE.cliOptions().elasticSearchPort()));
 
         esContentDao = new ElasticSearchDao(client, "bb-eeg", "content",
-                Executors.newFixedThreadPool(1));
+                Executors.newFixedThreadPool(options.numberOfESContentIndexingThreads()));
 
         i18nDao = new I18nDao(dataSource);
         domainDao = new DomainDao(dataSource, i18nDao);

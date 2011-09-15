@@ -21,6 +21,10 @@ public class CliOptions {
     @Parameter(names = "-elasticSearchPort", description = "Port of the elasticSearch server", required = true)
     private int elasticSearchPort;
 
+    @Parameter(names = "-numberOfESContentIndexingThreads",
+            description = "Number of threads used to asynchronously index Elastic search contents")
+    private int numberOfESContentIndexingThreads = 1;
+
     public int httpPort() {
         return this.httpPort;
     }
@@ -43,5 +47,9 @@ public class CliOptions {
     
     public int elasticSearchPort() {
         return this.elasticSearchPort;
+    }
+
+    public int numberOfESContentIndexingThreads(){
+        return this.numberOfESContentIndexingThreads;
     }
 }

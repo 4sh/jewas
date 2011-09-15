@@ -55,7 +55,7 @@ public class Main {
             ScriptRunner sr = new ScriptRunner(dbInitializationConnection, true, true);
             sr.runScript(new InputStreamReader(Files.getInputStreamFromPath("fr/fsh/bbeeg/bbeeg_script.sql")));
 
-            Assembler assembler = new Assembler();
+            Assembler assembler = new Assembler(options);
 
             final RestServer rs = RestServerFactory.createRestServer(options.httpPort());
             rs.addRoutes(
