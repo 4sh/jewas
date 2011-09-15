@@ -1,5 +1,6 @@
 package fr.fsh.bbeeg.content.persistence;
 
+import fr.fsh.bbeeg.common.persistence.ElasticSearches;
 import fr.fsh.bbeeg.common.resources.Count;
 import fr.fsh.bbeeg.content.pojos.*;
 import fr.fsh.bbeeg.domain.persistence.DomainDao;
@@ -112,6 +113,12 @@ public class ContentDao {
                         .addQuery("selectDomainIdsByContentId",
                                 "select domain_ref as ID from Content_Domain " +
                                         "where content_ref = :id");
+
+        // Initializing ES indexes
+        String mappingSource = String.format("{ \"%s\" : { \"properties\" : { \"%s\" : { \"type\" : \"attachment\" } } } }",
+                "content",
+                "fileContent");
+        ElasticSearches.createIndexIfNotExists(client, "bb-eeg", "content", mappingSource);
     }
 
     public ContentDetail getContentDetail(Long id) {
