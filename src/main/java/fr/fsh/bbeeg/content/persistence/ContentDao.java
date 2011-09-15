@@ -11,7 +11,6 @@ import jewas.persistence.QueryExecutionContext;
 import jewas.persistence.QueryTemplate;
 import jewas.persistence.rowMapper.LongRowMapper;
 import jewas.persistence.rowMapper.RowMapper;
-import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
@@ -222,42 +221,45 @@ public class ContentDao {
     }
 
     // This method is not optimized.
-    private void insertContentInElasticSearch(Long contentId) throws IOException {
-        // Get the content from DB.
-        ContentDetail contentDetail = contentDetailQueryTemplate.selectObject("selectById",
-                new QueryExecutionContext().buildParams()
-                        .bigint("id", contentId)
-                        .toContext()
-        );
+    private void insertContentInElasticSearch(final Long contentId) throws IOException {
+        ElasticSearches.instance().asyncPrepareIndex(client, "bb-eeg", "content", contentId.toString(),
+                new ElasticSearches.XContentBuilderFactory(){
+                    @Override
+                    public XContentBuilder createXContentBuilder() throws IOException {
+                        // Get the content from DB.
+                        ContentDetail contentDetail = contentDetailQueryTemplate.selectObject("selectById",
+                                new QueryExecutionContext().buildParams()
+                                        .bigint("id", contentId)
+                                        .toContext()
+                        );
 
-        // TODO use url to get the content and fetch it into ES
+                        // TODO use url to get the content and fetch it into ES
 
-        // Get all the id of the domains linked with the content.
-        List<Long> domainIds = new ArrayList<>();
+                        // Get all the id of the domains linked with the content.
+                        List<Long> domainIds = new ArrayList<>();
 
-        for (Domain domain: contentDetail.header().domains()) {
-            domainIds.add(domain.id());
-        }
+                        for (Domain domain: contentDetail.header().domains()) {
+                            domainIds.add(domain.id());
+                        }
 
-        // Build the query to store content into ES.
-        XContentBuilder xContentBuilder = XContentFactory.jsonBuilder()
-                .startObject()
-                .field("title", contentDetail.header().title())
-                .field("description", contentDetail.header().description())
-                .field("contentType", contentDetail.header().type().ordinal())
-                .field("creationDate", contentDetail.header().creationDate())
-                .field("lastModificationDate", contentDetail.header().lastModificationDate())
-                .field("domains", domainIds)
-                .field("status", contentDetail.header().status().ordinal())
-                .field("fileContent", "")
-                .field("ancestor", contentDetail.header().ancestorId())
-                //.field("version", contentDetail.header().version())
-                .field("author", contentDetail.header().author().id());
+                        // Build the query to store content into ES.
+                        XContentBuilder xContentBuilder = XContentFactory.jsonBuilder()
+                                .startObject()
+                                .field("title", contentDetail.header().title())
+                                .field("description", contentDetail.header().description())
+                                .field("contentType", contentDetail.header().type().ordinal())
+                                .field("creationDate", contentDetail.header().creationDate())
+                                .field("lastModificationDate", contentDetail.header().lastModificationDate())
+                                .field("domains", domainIds)
+                                .field("status", contentDetail.header().status().ordinal())
+                                .field("fileContent", "")
+                                .field("ancestor", contentDetail.header().ancestorId())
+                                //.field("version", contentDetail.header().version())
+                                .field("author", contentDetail.header().author().id());
 
-        IndexResponse iResponse = client.prepareIndex("bb-eeg", "content", contentId.toString())
-                .setSource(xContentBuilder.endObject())
-                .execute()
-                .actionGet();
+                        return xContentBuilder;
+                    }
+                });
     }
 
     public void updateContentOfContent(Long contentId, ContentType contentType, String url) {
