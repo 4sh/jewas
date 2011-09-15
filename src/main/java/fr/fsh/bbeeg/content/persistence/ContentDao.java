@@ -47,6 +47,23 @@ public class ContentDao {
     private UserDao userDao;
     private DomainDao domainDao;
 
+    // Elastic Search constants
+    private static final String ES_INDEX_NAME = "bb-eeg";
+
+    // CONTENT ES type fields
+    private static final String ES_CONTENT_TYPE = "content";
+    private static final String ES_CONTENT_FIELD_FILECONTENT = "fileContent";
+    private static final String ES_CONTENT_FIELD_AUTHOR = "author";
+    private static final String ES_CONTENT_FIELD_TITLE = "title";
+    private static final String ES_CONTENT_FIELD_DESCRIPTION = "description";
+    private static final String ES_CONTENT_FIELD_CONTENT_TYPE = "contentType";
+    private static final String ES_CONTENT_FIELD_CREATION_DATE = "creationDate";
+    private static final String ES_CONTENT_FIELD_LAST_MODIF_DATE = "lastModificationDate";
+    private static final String ES_CONTENT_FIELD_DOMAINS = "domains";
+    private static final String ES_CONTENT_FIELD_STATUS = "status";
+    private static final String ES_CONTENT_FIELD_ANCESTOR = "ancestor";
+
+
     public ContentDao(DataSource dataSource, Client _client, UserDao _userDao, DomainDao _domainDao) {
         client = _client;
         userDao = _userDao;
@@ -118,9 +135,10 @@ public class ContentDao {
 
         // Initializing ES indexes
         String mappingSource = String.format("{ \"%s\" : { \"properties\" : { \"%s\" : { \"type\" : \"attachment\" } } } }",
-                "content",
-                "fileContent");
-        ElasticSearches.createIndexIfNotExists(client, "bb-eeg", "content", mappingSource);
+                ES_CONTENT_TYPE,
+                ES_CONTENT_FIELD_FILECONTENT);
+        ElasticSearches.createIndexIfNotExists(client, ES_INDEX_NAME, ES_CONTENT_TYPE, mappingSource);
+
     }
 
     public ContentDetail getContentDetail(Long id) {
@@ -225,7 +243,7 @@ public class ContentDao {
 
     // This method is not optimized.
     private void insertContentInElasticSearch(final Long contentId) throws IOException {
-        ElasticSearches.instance().asyncPrepareIndex(client, "bb-eeg", "content", contentId.toString(),
+        ElasticSearches.instance().asyncPrepareIndex(client, ES_INDEX_NAME, ES_CONTENT_TYPE, contentId.toString(),
                 new ElasticSearches.XContentBuilderFactory(){
                     @Override
                     public XContentBuilder createXContentBuilder() throws IOException {
@@ -235,8 +253,6 @@ public class ContentDao {
                                         .bigint("id", contentId)
                                         .toContext()
                         );
-
-                        // TODO use url to get the content and fetch it into ES
 
                         // Get all the id of the domains linked with the content.
                         List<Long> domainIds = new ArrayList<>();
@@ -248,17 +264,16 @@ public class ContentDao {
                         // Build the query to store content into ES.
                         XContentBuilder xContentBuilder = XContentFactory.jsonBuilder()
                                 .startObject()
-                                .field("title", contentDetail.header().title())
-                                .field("description", contentDetail.header().description())
-                                .field("contentType", contentDetail.header().type().ordinal())
-                                .field("creationDate", contentDetail.header().creationDate())
-                                .field("lastModificationDate", contentDetail.header().lastModificationDate())
-                                .field("domains", domainIds)
-                                .field("status", contentDetail.header().status().ordinal())
-                                .field("fileContent", "")
-                                .field("ancestor", contentDetail.header().ancestorId())
+                                .field(ES_CONTENT_FIELD_TITLE, contentDetail.header().title())
+                                .field(ES_CONTENT_FIELD_DESCRIPTION, contentDetail.header().description())
+                                .field(ES_CONTENT_FIELD_CONTENT_TYPE, contentDetail.header().type().ordinal())
+                                .field(ES_CONTENT_FIELD_CREATION_DATE, contentDetail.header().creationDate())
+                                .field(ES_CONTENT_FIELD_LAST_MODIF_DATE, contentDetail.header().lastModificationDate())
+                                .field(ES_CONTENT_FIELD_DOMAINS, domainIds)
+                                .field(ES_CONTENT_FIELD_STATUS, contentDetail.header().status().ordinal())
+                                .field(ES_CONTENT_FIELD_ANCESTOR, contentDetail.header().ancestorId())
                                 //.field("version", contentDetail.header().version())
-                                .field("author", contentDetail.header().author().id());
+                                .field(ES_CONTENT_FIELD_AUTHOR, contentDetail.header().author().id());
 
                         // Indexing file content only if content.url is set
                         if(contentDetail.url() != null){
@@ -268,13 +283,13 @@ public class ContentDao {
                             // should be entirely loaded into memory to be indexed by elastic search
                             // I already tested rawField(ES_CONTENT_FIELD_FILECONTENT, Files.newInputStream(contentPath))
                             // but it doesn't seem to work under elastic search 0.17.6
-                            xContentBuilder.field("fileContent", Files.readAllBytes(contentPath));
+                            xContentBuilder.field(ES_CONTENT_FIELD_FILECONTENT, Files.readAllBytes(contentPath));
                         }
 
                         return xContentBuilder;
                     }
                 });
-        
+
         // uncomment this code to verify fileContent is correctly indexed
         //        String searchTerms = "J2EE";
         //        CountResponse res = client.count(countRequest(ES_INDEX_NAME).query(fieldQuery(ES_CONTENT_FIELD_FILECONTENT, searchTerms))).actionGet();
@@ -427,19 +442,19 @@ public class ContentDao {
                 // TODO
         }
 
-        BoolQueryBuilder disMaxQueryBuilder = QueryBuilders.boolQuery().must(QueryBuilders.inQuery("status", statuses.toArray()))
-                      .must(QueryBuilders.termQuery("author", 1000)); // TODO: replace 1000 by the current user id.
-                //.must(QueryBuilders.rangeQuery("lastModificationDate").lt(serverTimestamp)); // TODO: Use serverTImeStamp to filter
+        BoolQueryBuilder disMaxQueryBuilder = QueryBuilders.boolQuery().must(QueryBuilders.inQuery(ES_CONTENT_FIELD_STATUS, statuses.toArray()))
+                      .must(QueryBuilders.termQuery(ES_CONTENT_FIELD_AUTHOR, 1000)); // TODO: replace 1000 by the current user id.
+                //.must(QueryBuilders.rangeQuery(ES_CONTENT_LAST_MODIF_DATE).lt(serverTimestamp)); // TODO: Use serverTImeStamp to filter
 
         if (!textToSearch.isEmpty()) {
             disMaxQueryBuilder.must(QueryBuilders.disMaxQuery()
-                    .add(QueryBuilders.termQuery("title", textToSearch).boost(5))
-                    .add(QueryBuilders.termQuery("description", textToSearch).boost(3))
-                    .add(QueryBuilders.termQuery("fileContent", textToSearch).boost(4)));
+                    .add(QueryBuilders.termQuery(ES_CONTENT_FIELD_TITLE, textToSearch).boost(5))
+                    .add(QueryBuilders.termQuery(ES_CONTENT_FIELD_DESCRIPTION, textToSearch).boost(3))
+                    .add(QueryBuilders.termQuery(ES_CONTENT_FIELD_FILECONTENT, textToSearch).boost(4)));
         }
 
         // Search into elasticSearch.
-        SearchResponse sResponse = client.prepareSearch("bb-eeg")
+        SearchResponse sResponse = client.prepareSearch(ES_INDEX_NAME)
                 .setSearchType(SearchType.DFS_QUERY_AND_FETCH)
                 .setQuery(disMaxQueryBuilder)
                 .setFrom(query.startingOffset()).setSize(query.numberOfContents())
