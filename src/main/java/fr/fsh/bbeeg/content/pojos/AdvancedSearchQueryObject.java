@@ -1,18 +1,20 @@
 package fr.fsh.bbeeg.content.pojos;
 
+import jewas.collection.TypedArrayList;
+import jewas.collection.TypedList;
+
 import java.util.Date;
 
 /**
  * @author driccio
  */
-public class AdvancedSearchQueryObject {
+public class AdvancedSearchQueryObject extends SimpleSearchQueryObject {
     private Date from;
     private Date to;
-    private String[] searchTypes;
-    private String criterias;
-    private String[] authors;
-    private Integer startingOffset = -1;
-    private Integer numberOfContents = Integer.valueOf(10);
+    private TypedList<String> searchTypes = new TypedArrayList<String>(String.class);;
+    //private String criterias;
+    private TypedList<String> domains = new TypedArrayList<String>(String.class);
+    private TypedList<String> authors = new TypedArrayList<String>(String.class);
 
     public AdvancedSearchQueryObject from(Date _from){
         this.from = _from;
@@ -32,52 +34,39 @@ public class AdvancedSearchQueryObject {
         return this.to;
     }
 
-    public AdvancedSearchQueryObject searchTypes(String[] _searchTypes){
+    public AdvancedSearchQueryObject searchTypes(TypedList<String> _searchTypes){
         this.searchTypes = _searchTypes;
         return this;
     }
 
-    public String[] searchTypes(){
+    public TypedList<String> searchTypes(){
         return this.searchTypes;
     }
 
-    public AdvancedSearchQueryObject criterias(String _criterias){
+   /* public AdvancedSearchQueryObject criterias(String _criterias){
         this.criterias = _criterias;
         return this;
     }
 
     public String criterias(){
         return this.criterias;
+    } */
+
+    public AdvancedSearchQueryObject domains(TypedList<String> _domains){
+        this.domains = _domains;
+        return this;
     }
 
-    public AdvancedSearchQueryObject authors(String[] _authors){
+    public TypedList<String> domains(){
+        return this.domains;
+    }
+
+    public AdvancedSearchQueryObject authors(TypedList<String> _authors){
         this.authors = _authors;
         return this;
     }
 
-    public String[] authors(){
+    public TypedList<String> authors(){
         return this.authors;
-    }
-
-    public AdvancedSearchQueryObject startingOffset(Integer _startingOffset){
-        this.startingOffset = _startingOffset;
-        return this;
-    }
-
-    public Integer startingOffset(){
-        if (startingOffset < 1) {
-            return 1;
-        }
-
-        return this.startingOffset;
-    }
-
-    public AdvancedSearchQueryObject numberOfContents(Integer _numberOfContents){
-        this.numberOfContents = _numberOfContents;
-        return this;
-    }
-
-    public Integer numberOfContents(){
-        return this.numberOfContents;
     }
 }

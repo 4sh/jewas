@@ -182,14 +182,14 @@
         loadDomains();
         loadContentTypes();
 
-        $("#searchComponent").accordion({
-            autoHeight: false,
-            navigation: true,
-            changestart: function(event, ui){
-                ui.newContent.css('overflow', 'visible');
-                ui.oldContent.css('overflow', 'auto');
-            }
-        });
+
+        /* Switch between 'Simple search' and 'Advanced search' modes */
+        $('.accordion h3').click(function() {
+		    $('.accordion').toggle();
+            return false;
+	    }).next().hide();
+
+
         var dates = $( "#from, #to" ).datepicker({
 			defaultDate: "",
             dateFormat: "dd-mm-yy",
@@ -256,20 +256,26 @@
 </script>
 
 <div id="searchComponent">
-    <h3><a href="#">Recherche simple</a></h3>
+    <div class="accordion">
+        <h3><a href="#">Recherche simple</a></h3>
+    </div>
+    <div class="accordion simple" style="display:none">
+        <h3><a href="#">Recherche avancée</a></h3>
+    </div>
 
-    <div>
-        <form action="/content/search" id="simpleSearchForm">
+    <div class="accordion">
+         <form action="/content/search" id="simpleSearchForm">
             <label for="simpleSearchQuery">Recherche</label> : <input id="simpleSearchQuery" type="text" name="query" size="80" />
             <input id="simpleSearchButton" type="submit" value="Rechercher"/>
 
             <input name="searchMode" style="visibility: hidden;" value="${searchMode}"/>
-        </form>
+         </form>
     </div>
-    <h3><a href="#">Recherche avancée</a></h3>
 
-    <div>
+    <div class="accordion advanced" style="display:none">
         <form action="/content/advancedSearch" id="advancedSearchForm">
+            <label for="simpleSearchQuery">Recherche</label> : <input id="advancedSearchQuery" type="text" name="query" size="80" />
+
             <div class="criteria-line">
                 <label for="from">Date de création : Entre</label>
                 <input type="text" id="from" name="from" style="width: 175px;" />
@@ -283,7 +289,7 @@
                     </select>
                 </div>
             </div>
-            <div class="criteria-line">
+            <!--<div class="criteria-line">
                 <div class="criteria-label"><label for="adSearchCriterias">Critères </label> :</div>
                 <div class="criteria-field">
                     <input type="hidden" id="criterias" name="criterias" value="" />
@@ -296,7 +302,7 @@
                         </select>
                     </div>
                 </div>
-            </div>
+            </div>-->
             <div class="criteria-line">
                 <div class="criteria-label"><label for="adSearchDomains">Domaines</label> :</div>
                 <div class="criteria-field">
