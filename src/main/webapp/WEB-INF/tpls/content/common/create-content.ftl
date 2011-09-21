@@ -3,7 +3,6 @@
 <script type="application/javascript" src="/public/js/bbeeg/content/create-content.js"></script>
 <script type="text/javascript">
     $( function() {
-        console.log("bla");
         new ContentCreator("${type}", "${extensions}", "${extensionsMsgError}");
     });
 </script>
