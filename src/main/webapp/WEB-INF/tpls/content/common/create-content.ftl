@@ -1,7 +1,11 @@
 <#macro createContent url type extensions extensionsMsgError>
 
+<script type="application/javascript" src="/public/js/bbeeg/content/create-content.js"></script>
 <script type="text/javascript">
-    <#include "create-content.js" parse=true>
+    $( function() {
+        console.log("bla");
+        new ContentCreator("${type}", "${extensions}", "${extensionsMsgError}");
+    });
 </script>
 
     <script id="domainItemTemplate" type="text/x-jquery-tmpl">
