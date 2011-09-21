@@ -1,5 +1,6 @@
 package fr.fsh.bbeeg.content.persistence;
 
+import com.sun.security.ntlm.Client;
 import fr.fsh.bbeeg.common.persistence.ElasticSearchDao;
 import fr.fsh.bbeeg.common.resources.Count;
 import fr.fsh.bbeeg.content.pojos.*;
@@ -13,10 +14,10 @@ import jewas.persistence.rowMapper.LongRowMapper;
 import jewas.persistence.rowMapper.RowMapper;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
-import org.elasticsearch.client.Client;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortOrder;
 import org.joda.time.DateMidnight;
@@ -34,7 +35,9 @@ import java.util.List;
 import java.util.Map;
 
 import static fr.fsh.bbeeg.content.pojos.SearchMode.values;
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import static org.elasticsearch.index.query.QueryBuilders.termQuery;
+import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
+import static org.elasticsearch.index.query.QueryBuilders.inQuery;
 
 /**
  * @author driccio
@@ -400,7 +403,6 @@ public class ContentDao {
 
     public void fetchSearch(List<ContentHeader> contentHeaders, SimpleSearchQueryObject query) {
         Date serverTimestamp; // TODO: Don't forget to filter by server timestamp
-        String textToSearch;
 
         if (query.serverTimestamp() == null) {
             serverTimestamp = new DateMidnight().toDate();
@@ -408,19 +410,94 @@ public class ContentDao {
             serverTimestamp = query.serverTimestamp();
         }
 
-        if (query.query() == null) {
-            textToSearch = "";
+        List<Integer> statuses = filterContentStatuses(values()[query.searchMode()]);
+
+        BoolQueryBuilder elasticSearchQuery = createElasticSearchQuery(statuses);
+        configureFullTextQuery(elasticSearchQuery, query.query());
+
+        List<Long> contentIds = searchInElasticSearch(query, elasticSearchQuery);
+        fetchByIds(contentHeaders, contentIds);
+    }
+
+    public void fetchSearch(List<ContentHeader> contentHeaders, AdvancedSearchQueryObject query) {
+        Date serverTimestamp; // TODO: Don't forget to filter by server timestamp
+
+        if (query.serverTimestamp() == null) {
+            serverTimestamp = new DateMidnight().toDate();
         } else {
-            textToSearch = query.query();
+            serverTimestamp = query.serverTimestamp();
         }
 
-        if (query.searchMode() >= values().length) {
+        List<Integer> statuses = filterContentStatuses(values()[query.searchMode()]);
+
+        BoolQueryBuilder elasticSearchQuery = createElasticSearchQuery(statuses);
+        configureFullTextQuery(elasticSearchQuery, query.query());
+        configureDomainsQuery(elasticSearchQuery, query.domains());
+        configureContentTypeQuery(elasticSearchQuery, query.searchTypes());
+        configureCreationDateFilter(elasticSearchQuery, query.from(), query.to());
+
+        List<Long> contentIds = searchInElasticSearch(query, elasticSearchQuery);
+        fetchByIds(contentHeaders, contentIds);
+    }
+
+    private BoolQueryBuilder createElasticSearchQuery(List<Integer> statuses) {
+        return boolQuery().must(inQuery(ES_CONTENT_FIELD_STATUS, statuses.toArray()))
+                          .must(termQuery(ES_CONTENT_FIELD_AUTHOR, 1000));
+        // TODO: replace 1000 by the current user id.
+        //.must(QueryBuilders.rangeQuery(ES_CONTENT_LAST_MODIF_DATE).lt(serverTimestamp));
+        // TODO: Use serverTImeStamp to filter
+    }
+
+    /**
+     * Search in elastic search and returns the relational identifiers of the hits.
+     *
+     * @param query              the search query parameters
+     * @param elasticSearchQuery the elastic search
+     * @return a list of ids of matched contents in elastic search
+     */
+    private List<Long> searchInElasticSearch(SimpleSearchQueryObject query, BoolQueryBuilder elasticSearchQuery) {
+        SearchResponse sResponse = client.prepareSearch(esContentDao.indexName())
+                        .setSearchType(SearchType.DFS_QUERY_AND_FETCH)
+                        .setQuery(elasticSearchQuery)
+                        .setFrom(query.startingOffset()).setSize(query.numberOfContents())
+                        .addSort("_score", SortOrder.DESC)
+                        //.setMinScore(0.3f)
+                        .execute()
+                        .actionGet();
+
+        // Get the content ids from the result.
+        List<Long> contentIds = new ArrayList<Long>();
+
+        for (SearchHit searchHit : sResponse.getHits()) {
+            contentIds.add(Long.parseLong(searchHit.id()));
+        }
+        return contentIds;
+    }
+
+    /**
+     *
+     * @param elasticSearchQuery
+     * @param from
+     * @param to
+     */
+    private void configureCreationDateFilter(BoolQueryBuilder elasticSearchQuery, Date from, Date to) {
+        //TODO: implement
+    }
+
+    /**
+     * Filter the content by status depending on the search mode.
+     * @param searchMode the current mode of the search. Must not be null.
+     * @return the list of statuses that will be accepted by the search.
+     */
+    private List<Integer> filterContentStatuses(SearchMode searchMode) {
+
+        if (searchMode.ordinal() >= values().length) {
             // TODO: throw an exception
         }
 
         List<Integer> statuses = new ArrayList<Integer>();
 
-        switch (values()[query.searchMode()]) {
+        switch (searchMode) {
             case ALL_VALIDATED:
                 statuses.add(ContentStatus.VALIDATED.ordinal());
                 break;
@@ -438,44 +515,47 @@ public class ContentDao {
             default:
                 // TODO
         }
-
-        BoolQueryBuilder disMaxQueryBuilder = boolQuery().must(inQuery(ES_CONTENT_FIELD_STATUS, statuses.toArray()))
-                      .must(termQuery(ES_CONTENT_FIELD_AUTHOR, 1000)); // TODO: replace 1000 by the current user id.
-                //.must(QueryBuilders.rangeQuery(ES_CONTENT_LAST_MODIF_DATE).lt(serverTimestamp)); // TODO: Use serverTImeStamp to filter
-
-        if (!textToSearch.isEmpty()) {
-            disMaxQueryBuilder.must(disMaxQuery()
-                    .add(fieldQuery(ES_CONTENT_FIELD_TITLE, textToSearch).boost(5))
-                    .add(fieldQuery(ES_CONTENT_FIELD_DESCRIPTION, textToSearch).boost(3))
-                    .add(fieldQuery(ES_CONTENT_FIELD_FILECONTENT, textToSearch).boost(4)));
-        }
-
-        // Search into elasticSearch.
-        SearchResponse sResponse = client.prepareSearch(esContentDao.indexName())
-                .setSearchType(SearchType.DFS_QUERY_AND_FETCH)
-                .setQuery(disMaxQueryBuilder)
-                .setFrom(query.startingOffset()).setSize(query.numberOfContents())
-                .addSort("_score", SortOrder.DESC)
-                //.setMinScore(0.3f)
-                .execute()
-                .actionGet();
-
-
-
-        // Get the content ids from the result.
-        List<Long> contentIds = new ArrayList<Long>();
-
-        for (SearchHit searchHit : sResponse.getHits()) {
-            contentIds.add(Long.parseLong(searchHit.id()));
-        }
-
-        fetchByIds(contentHeaders, contentIds);
+        return statuses;
     }
 
-    public void fetchSearch(List<ContentHeader> results, AdvancedSearchQueryObject query) {
-        // TODO: implement it
+    /**
+     * Contribute to the elastic search query adding full text search on 'title', 'description' and 'fileContent'.
+     * @param elasticSearchQuery the elastic search query to contribute to.
+     * @param textToSearch the text to be searched
+     */
+    private void configureFullTextQuery(BoolQueryBuilder elasticSearchQuery,String textToSearch) {
+        if (textToSearch != null && !textToSearch.isEmpty()) {
+            elasticSearchQuery.must(QueryBuilders.disMaxQuery()
+                    .add(termQuery(ES_CONTENT_FIELD_TITLE, textToSearch).boost(5))
+                    .add(termQuery(ES_CONTENT_FIELD_DESCRIPTION, textToSearch).boost(3))
+                    .add(termQuery(ES_CONTENT_FIELD_FILECONTENT, textToSearch).boost(4)));
+        }
     }
-
+    
+    /**
+     * Contribute to the elastic search query adding search criteria on 'domains'.
+     * The match is made on the intersection of the list of searched domains and found contents domain list.
+     *
+     * @param elasticSearchQuery the elastic search query to contribute to.
+     * @param domains            the domains used to filter the returned contents
+     */
+    private void configureDomainsQuery(BoolQueryBuilder elasticSearchQuery, List<String> domains) {
+        if (domains != null && !domains.isEmpty()) {
+            elasticSearchQuery.must(QueryBuilders.termsQuery(ES_CONTENT_FIELD_DOMAINS, domains.toArray()));
+        }
+    }
+    
+    /**
+     * Contribute to the elastic search query adding search criteria on 'contentType'.
+     *
+     * @param elasticSearchQuery the elastic search query to contribute to.
+     * @param searchTypes        the content types used to filter the returned contents
+     */
+    private void configureContentTypeQuery(BoolQueryBuilder elasticSearchQuery, List<String> searchTypes) {
+        if (searchTypes != null && !searchTypes.isEmpty()) {
+            elasticSearchQuery.must(QueryBuilders.termsQuery(ES_CONTENT_FIELD_CONTENT_TYPE, searchTypes.toArray()));
+        }
+    }
 
     public String getContentUrl(Long contentId) {
         return contentHeaderQueryTemplate.selectString("selectUrl",
