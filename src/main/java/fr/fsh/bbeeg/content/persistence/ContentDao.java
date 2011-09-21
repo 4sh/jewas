@@ -1,6 +1,6 @@
 package fr.fsh.bbeeg.content.persistence;
 
-import com.sun.security.ntlm.Client;
+
 import fr.fsh.bbeeg.common.persistence.ElasticSearchDao;
 import fr.fsh.bbeeg.common.resources.Count;
 import fr.fsh.bbeeg.content.pojos.*;
@@ -14,6 +14,7 @@ import jewas.persistence.rowMapper.LongRowMapper;
 import jewas.persistence.rowMapper.RowMapper;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
+import org.elasticsearch.client.Client;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.index.query.BoolQueryBuilder;
