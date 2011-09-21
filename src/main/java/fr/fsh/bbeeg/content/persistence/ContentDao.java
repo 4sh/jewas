@@ -416,7 +416,7 @@ public class ContentDao {
         BoolQueryBuilder elasticSearchQuery = createElasticSearchQuery(statuses);
         configureFullTextQuery(elasticSearchQuery, query.query());
 
-        List<Long> contentIds = searchInElasticSearch(query, elasticSearchQuery);
+        List<Long> contentIds = searchInElasticSearch(query.startingOffset(), query.numberOfContents(), elasticSearchQuery);
         fetchByIds(contentHeaders, contentIds);
     }
 
@@ -437,7 +437,7 @@ public class ContentDao {
         configureContentTypeQuery(elasticSearchQuery, query.searchTypes());
         configureCreationDateFilter(elasticSearchQuery, query.from(), query.to());
 
-        List<Long> contentIds = searchInElasticSearch(query, elasticSearchQuery);
+        List<Long> contentIds = searchInElasticSearch(query.startingOffset(), query.numberOfContents(), elasticSearchQuery);
         fetchByIds(contentHeaders, contentIds);
     }
 
@@ -452,15 +452,16 @@ public class ContentDao {
     /**
      * Search in elastic search and returns the relational identifiers of the hits.
      *
-     * @param query              the search query parameters
+     * @param startingOffset     the starting offset used to set the from property of the elastic search query
+     * @param numberOfContents   the limit of results to return
      * @param elasticSearchQuery the elastic search
      * @return a list of ids of matched contents in elastic search
      */
-    private List<Long> searchInElasticSearch(SimpleSearchQueryObject query, BoolQueryBuilder elasticSearchQuery) {
+    private List<Long> searchInElasticSearch(Integer startingOffset, Integer numberOfContents, BoolQueryBuilder elasticSearchQuery) {
         SearchResponse sResponse = client.prepareSearch(esContentDao.indexName())
                         .setSearchType(SearchType.DFS_QUERY_AND_FETCH)
                         .setQuery(elasticSearchQuery)
-                        .setFrom(query.startingOffset()).setSize(query.numberOfContents())
+                        .setFrom(startingOffset).setSize(numberOfContents)
                         .addSort("_score", SortOrder.DESC)
                         //.setMinScore(0.3f)
                         .execute()
