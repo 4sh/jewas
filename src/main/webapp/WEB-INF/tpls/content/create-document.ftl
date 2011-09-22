@@ -4,7 +4,7 @@
                scripts=["/public/js/jewas/jewas-forms.js",
                         "/public/js/fileUpload/fileuploader.js"]
                stylesheets=["/public/css/fileUpload/fileuploader.css"]
-               useChosenCSS=true useChosenJS=true>
+               useChosen=true>
 
     <#include "common/create-content.ftl">
     <@createContent url="/content" type="DOCUMENT" extensions="pdf" extensionsMsgError="Seuls le format PDF est supporté"/>

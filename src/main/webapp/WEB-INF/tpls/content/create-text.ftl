@@ -3,7 +3,7 @@
 <@mainTemplate title="Création d'un contenu" selectedMenuItem="creation"
                scripts=["/public/js/jewas/jewas-forms.js",
                         "/public/js/bbeeg/content/create-text.js"]
-               useChosenCSS=true useChosenJS=true>
+               useChosen=true>
 
     <script id="domainItemTemplate" type="text/x-jquery-tmpl">
         <option value="{{= id}}"> {{= label}} </option>

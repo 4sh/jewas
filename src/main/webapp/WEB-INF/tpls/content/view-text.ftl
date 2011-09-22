@@ -3,7 +3,7 @@
 
 <@mainTemplate title="Consultation"
         selectedMenuItem=""
-        useChosenCSS=true useChosenJS=true>
+        useChosen=true>
     <script type="text/javascript">
         $(
             function () {

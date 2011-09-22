@@ -11,7 +11,7 @@
     selectedMenuItem=selectMenu
     scripts=["/public/js/bbeeg/search/search.js", "/public/js/bbeeg/common/widgets/chainedSelect.js"]
     stylesheets=["/public/css/bbeeg/search.css"]
-    useChosenCSS=true useChosenJS=true>
+    useChosen=true>
 <script>
     function updateStatus(containerId, contentId, status, comment, callback) {
         $.post('/content/' + contentId + '/status/' + status,

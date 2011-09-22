@@ -23,7 +23,7 @@
 
 <#macro mainTemplate title="" selectedMenuItem="dashboard"
         scripts=[] stylesheets=[]
-        useChosenJS=false useChosenCSS=false>
+        useChosen=false>
 <!DOCTYPE html>
 <html>
 <head>
@@ -34,7 +34,7 @@
     <link rel="stylesheet"
           href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/themes/ui-lightness/jquery-ui.css"/>
 
-    <#if useChosenCSS>
+    <#if useChosen>
         <link rel="stylesheet" href="/public/css/chosen/chosen.css"/>
         <#-- Overriding particular chosen classes for bbeeg look and feel -->
         <link rel="stylesheet" href="/public/css/chosen/chosen-bbeeg.css"/>
@@ -62,7 +62,7 @@
 
     <script type="application/javascript" src="/public/js/bbeeg/main.js"></script>
 
-    <#if useChosenJS>
+    <#if useChosen>
         <#if compressedJS == "true">
             <script type="application/javascript" src="/public/js/chosen/chosen.jquery.min.js"></script>
         <#else>

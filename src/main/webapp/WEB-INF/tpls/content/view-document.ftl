@@ -3,7 +3,7 @@
 
 <@mainTemplate title="Consultation"
         selectedMenuItem=""
-        useChosenCSS=true useChosenJS=true>
+        useChosen=true>
 
     <@viewContentHeaders content=content />
     <#--<p>Contenu :</p> <img src="${content.url()}" width="100%"/>-->

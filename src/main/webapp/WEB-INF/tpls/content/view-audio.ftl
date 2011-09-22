@@ -3,7 +3,7 @@
 
 <@mainTemplate title="Consultation"
         selectedMenuItem=""
-        useChosenCSS=true useChosenJS=true>
+        useChosen=true>
 
     <@viewContentHeaders content=content />
     <p>Contenu :</p> <audio controls="controls"> <source src="${content.url()}"/> </audio>

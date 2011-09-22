@@ -3,7 +3,7 @@
 
 <@mainTemplate title="Consultation"
         selectedMenuItem=""
-        useChosenCSS=true useChosenJS=true>
+        useChosen=true>
     <@viewContentHeaders content=content />
     <p>Contenu :</p> <video controls="controls" width="100%"> <source src="${content.url()}"/> </video>
 
