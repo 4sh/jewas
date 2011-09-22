@@ -16,12 +16,19 @@ function ChainedSelect(_configuration){
         updateSelectContentDependingOn(-1, null);
     };
 
-    function removeValue(valueToDelete, fullTargetFieldValue){
+    /**
+     * Will remove directoryName from path. It will remove directoryName's children
+     * in path, too.
+     * ie removeDirFromPath("bar", "foo/bar/baz") will return "foo"
+     * @param valueToDelete
+     * @param fullTargetFieldValue
+     */
+    function removeDirFromPath(directoryName, path){
         var result = "";
 
-        // Looking for valueToDelete
-        var values = fullTargetFieldValue.split(ChainedSelect.HIERARCHY_SEPARATOR);
-        for(var i=0; i<values.length && values[i] != valueToDelete; i++){
+        // Looking for directoryName
+        var values = path.split(ChainedSelect.HIERARCHY_SEPARATOR);
+        for(var i=0; i<values.length && values[i] != directoryName; i++){
             if(i != 0){
                 result += ChainedSelect.HIERARCHY_SEPARATOR;
             }
@@ -31,13 +38,18 @@ function ChainedSelect(_configuration){
         return result;
     }
 
-    function removeLastValue(fullTargetFieldValue){
-        var values = fullTargetFieldValue.split(ChainedSelect.HIERARCHY_SEPARATOR);
+    /**
+     * Will remove last path in given path and return the resulting path
+     * ie removeLastDir("foo/bar/baz") will return "foo/bar"
+     * @param fullTargetFieldValue
+     */
+    function removeLastDir(path){
+        var values = path.split(ChainedSelect.HIERARCHY_SEPARATOR);
         if(values.length == 1){
             return "";
         } else {
-            return fullTargetFieldValue.substring(0,
-                fullTargetFieldValue.length - ChainedSelect.HIERARCHY_SEPARATOR.length - values[values.length-1].length);
+            return path.substring(0,
+                path.length - ChainedSelect.HIERARCHY_SEPARATOR.length - values[values.length-1].length);
         }
     }
 
@@ -70,9 +82,9 @@ function ChainedSelect(_configuration){
                 // It's not perfect to put select value in hyperlink's name but heh .. doesn't have a better idea for
                 // the moment to keep things "templatable"
                 var valueToDelete = hyperlink.attr('name');
-                var newTargetFieldValue = removeValue(valueToDelete, configuration.targetFieldForSelectedOption().val());
+                var newTargetFieldValue = removeDirFromPath(valueToDelete, configuration.targetFieldForSelectedOption().val());
                 // Deleting last value since we will "re-add" it just after via addSelectedElement()
-                newTargetFieldValue = removeLastValue(newTargetFieldValue);
+                newTargetFieldValue = removeLastDir(newTargetFieldValue);
                 configuration.targetFieldForSelectedOption().val(newTargetFieldValue);
 
                 var currentLiTag = hyperlink.parents('li').first();
