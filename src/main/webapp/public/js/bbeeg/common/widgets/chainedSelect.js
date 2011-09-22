@@ -60,6 +60,9 @@ function ChainedSelect(_configuration){
         if(targetFieldValue != ""){
             targetFieldValue += ChainedSelect.HIERARCHY_SEPARATOR;
             currentDepth = targetFieldValue.split(ChainedSelect.HIERARCHY_SEPARATOR).length-1;
+        } else {
+            // When adding the first element, we should show the displaySelectionTarget div
+            configuration.displaySelectionTarget().show();
         }
         targetFieldValue += selectedOption.val();
         configuration.targetFieldForSelectedOption().val(targetFieldValue);
@@ -124,6 +127,13 @@ function ChainedSelect(_configuration){
     }
 
     function updateSelectContentDependingOn(currentDepth, selectedOption){
+        if(currentDepth == -1){
+            // Ensuring displaySelectionTarget div is hidden since when empty,
+            // we should display it (it there are border on the div, it will be ugly if
+            // displayed when empty)
+            configuration.displaySelectionTarget().hide();
+        }
+        
         // Updating select content
         var selectElement = $("select", configuration.selectMenuContainer()).first();
         selectElement.empty(); // Resetting select content
