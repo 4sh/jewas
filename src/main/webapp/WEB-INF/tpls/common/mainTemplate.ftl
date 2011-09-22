@@ -1,3 +1,4 @@
+<#-- Allows to say if you want to use compressed js files or not -->
 <#assign compressedJS = "false">
 
 <#macro rootMenuItem title="" id="" selected="false">
@@ -20,15 +21,24 @@
     <li id="${id}"><span>${title}</span></li>
 </#macro>
 
-<#macro mainTemplate title="" selectedMenuItem="dashboard" scripts=[] stylesheets=[]>
+<#macro mainTemplate title="" selectedMenuItem="dashboard"
+        scripts=[] stylesheets=[]
+        useChosenJS=false useChosenCSS=false>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
 
     <link rel="stylesheet" href="/public/css/bbeeg/bbeeg.css"/>
+
     <link rel="stylesheet"
           href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/themes/ui-lightness/jquery-ui.css"/>
+
+    <#if useChosenCSS>
+        <link rel="stylesheet" href="/public/css/chosen/chosen.css"/>
+        <#-- Overriding particular chosen classes for bbeeg look and feel -->
+        <link rel="stylesheet" href="/public/css/chosen/chosen-bbeeg.css"/>
+    </#if>
 
 <#list stylesheets as stylesheet>
     <link rel="stylesheet" href="${stylesheet}" />
@@ -51,6 +61,14 @@
 </#if>
 
     <script type="application/javascript" src="/public/js/bbeeg/main.js"></script>
+
+    <#if useChosenJS>
+        <#if compressedJS == "true">
+            <script type="application/javascript" src="/public/js/chosen/chosen.jquery.min.js"></script>
+        <#else>
+            <script type="application/javascript" src="/public/js/chosen/chosen.jquery.js"></script>
+        </#if>
+    </#if>
 
 <#list scripts as script>
     <script type="application/javascript" src="${script}"></script>

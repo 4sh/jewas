@@ -1,11 +1,5 @@
 <#include "../common/mainTemplate.ftl">
 
-<#if compressedJS == "true">
-    <#assign chosenJS = "/public/js/chosen/chosen.jquery.min.js">
-    <#else>
-        <#assign chosenJS = "/public/js/chosen/chosen.jquery.js">
-</#if>
-
 <#if searchMode == 0>
 <#assign selectMenu = "search">
 <#else>
@@ -15,8 +9,9 @@
 <@mainTemplate
     title="Ecran d'accueil"
     selectedMenuItem=selectMenu
-    scripts=[chosenJS, "/public/js/bbeeg/search/search.js", "/public/js/bbeeg/common/widgets/chainedSelect.js"]
-    stylesheets=["/public/css/chosen/chosen.css", "/public/css/bbeeg/search.css"]>
+    scripts=["/public/js/bbeeg/search/search.js", "/public/js/bbeeg/common/widgets/chainedSelect.js"]
+    stylesheets=["/public/css/bbeeg/search.css"]
+    useChosenCSS=true useChosenJS=true>
 <script>
     function updateStatus(containerId, contentId, status, comment, callback) {
         $.post('/content/' + contentId + '/status/' + status,
@@ -289,8 +284,8 @@
                 <div class="criteria-label"><label for="adSearchCriterias">Critères </label> :</div>
                 <div class="criteria-field">
                     <input type="hidden" id="criterias" name="criterias" value="" />
-                    <div class="chzn-container criteria-field">
-                        <ul class="chzn-choices selected-options" id="criteriasList">
+                    <div class="chzn-container-multi criteria-field">
+                        <ul class="chzn-choices" id="criteriasList" style="font-size: 13px;">
                         </ul>
                     </div>
                     <div id="searchCriteriaMenuContainer" class="criteria-field">
@@ -316,7 +311,7 @@
                 </div>
             </#if>
             <div class="criteria-line">
-                <input id="advancedSearchButton" type="submit" value="Rechercher"/>
+                <input id="advancedSearchButton" class="button" type="submit" value="Rechercher"/>
             </div>
 
             <input name="searchMode" style="visibility: hidden;" value="${searchMode}"/>
