@@ -1,12 +1,8 @@
 <#-- Allows to say if you want to use compressed js files or not -->
 <#assign compressedJS = "false">
 
-<#macro rootMenuItem title="" id="" selected="false">
-    <#if selected == "true">
-        <li id="${id}" class="inlined-block menu-item-selected"> <span class="menu-item-title">${title}</span> <span class="selection-indicator"/><#nested></li>
-    <#else>
-        <li id="${id}" class="inlined-block"><span class="menu-item-title">${title}</span><#nested></li>
-    </#if>
+<#macro rootMenuItem id="" additionnalClasses="">
+    <div class="menuright_item ${additionnalClasses}" id="${id}"><#nested></div>
 </#macro>
 
 <#macro subMenu id="" width="125">
@@ -77,87 +73,56 @@
     <title>${title}</title>
 </head>
 <body>
-    <div id="container">
-        <div id="header">
-            <ul id="applicationMenu" class="inlined-left-group">
-                <#if selectedMenuItem == "dashboard">
-                    <@rootMenuItem id="dashboardMenuItem" title="Accueil" selected="true"/>
-                <#else>
-                    <@rootMenuItem id="dashboardMenuItem" title="Accueil" selected="false"/>
-                </#if>
 
-                <#if selectedMenuItem == "search">
-                    <@rootMenuItem id="searchMenuItem" title="Recherche" selected="true"/>
-                <#else>
-                    <@rootMenuItem id="searchMenuItem" title="Recherche" selected="false"/>
-                </#if>
-                <#if selectedMenuItem == "creation">
-                    <@rootMenuItem id="creationMenuItem" title="Création" selected="true">
-                        <@subMenu id="creationSubMenu" width="125">
-                            <@subMenuItem id="createTextMenuItem" title="Texte" />
-                            <@subMenuItem id="createDocumentMenuItem" title="Document" />
-                            <@subMenuItem id="createImageMenuItem" title="Image" />
-                            <@subMenuItem id="createVideoMenuItem" title="Vidéo" />
-                            <@subMenuItem id="createAudioMenuItem" title="Audio" />
-                            <@subMenuItem id="createEegMenuItem" title="EEG" />
-                        </@subMenu>
-                    </@rootMenuItem>
-                <#else>
-                    <@rootMenuItem id="creationMenuItem" title="Création" selected="false">
-                        <@subMenu id="creationSubMenu" width="125">
-                            <@subMenuItem id="createTextMenuItem" title="Texte" />
-                            <@subMenuItem id="createDocumentMenuItem" title="Document" />
-                            <@subMenuItem id="createImageMenuItem" title="Image" />
-                            <@subMenuItem id="createVideoMenuItem" title="Vidéo" />
-                            <@subMenuItem id="createAudioMenuItem" title="Audio" />
-                            <@subMenuItem id="createEegMenuItem" title="EEG" />
-                        </@subMenu>
-                    </@rootMenuItem>
-                 </#if>
-            </ul>
+    <header>
+        <div id="menu">
+            <a href="/"><img src="/public/images/bbeeg/bbeeg_logo.png" onmouseout="src='/public/images/bbeeg/bbeeg_logo.png'" onmouseover="src='/public/images/bbeeg/bbeeg_logo_hover.png'" alt="Logo BBEEG"/></a>
 
-            <ul id="configurationMenu" class="inlined-right-group">
-                 <#if selectedMenuItem == "administration">
-                    <@rootMenuItem id="adminMenuItem" title="Administration" selected="true">
-                        <@subMenu id="adminSubMenu" width="125">
-                            <@subMenuItem id="createContentMenuItem" title="Créer un contenu" />
-                            <@subMenuItem id="manageMyContentsMenuItem" title="Gérer mes contenus" />
-                            <@subMenuItem id="adminContentsMenuItem" title="Administrer les contenus" />
-                        </@subMenu>
-                    </@rootMenuItem>
-                <#else>
-                    <@rootMenuItem id="adminMenuItem" title="Administration" selected="false">
-                        <@subMenu id="adminSubMenu" width="125">
-                            <@subMenuItem id="createContentMenuItem" title="Créer un contenu" />
-                            <@subMenuItem id="manageMyContentsMenuItem" title="Gérer mes contenus" />
-                            <@subMenuItem id="adminContentsMenuItem" title="Administrer les contenus" />
-                        </@subMenu>
-                    </@rootMenuItem>
-                 </#if>
-
-                <#if selectedMenuItem == "profile">
-                    <@rootMenuItem id="profileMenuItem" title='${statics["fr.fsh.bbeeg.security.resources.ConnectedUserResource"].instance().userNames()}' selected="true">
-                         <@subMenu id="profileSubMenu" width="125">
-                            <@subMenuItem id="parametersMenuItem" title="Paramètres" />
-                            <@subMenuItem id="disconnectMenuItem" title="Déconnexion" />
-                        </@subMenu>
-                    </@rootMenuItem>
-                <#else>
-                    <@rootMenuItem id="profileMenuItem" title='${statics["fr.fsh.bbeeg.security.resources.ConnectedUserResource"].instance().userNames()}' selected="false">
-                         <@subMenu id="profileSubMenu" width="125">
-                            <@subMenuItem id="parametersMenuItem" title="Paramètres" />
-                            <@subMenuItem id="disconnectMenuItem" title="Déconnexion" />
-                        </@subMenu>
-                    </@rootMenuItem>
-                </#if>
-            </ul>
+            <div id="menuright">
+                <@rootMenuItem id="input_recherche">
+                    <input type="text">
+                </@rootMenuItem>
+                <@rootMenuItem id="recherche_item">
+                    <img src="/public/images/bbeeg/loupe.png" alt="Recherche"/>
+                    <@subMenu id="adminSubMenu" width="150">
+                        <@subMenuItem id="searchMenuItem" title="Recherche" />
+                        <@subMenuItem id="manageMyContentsMenuItem" title="Gérer mes contenus" />
+                        <@subMenuItem id="adminContentsMenuItem" title="Administrer les contenus" />
+                        <@subMenuItem id="createTextMenuItem" title="Créer contenu Texte" />
+                        <@subMenuItem id="createDocumentMenuItem" title="Créer contenu Document" />
+                        <@subMenuItem id="createImageMenuItem" title="Créer contenu Image" />
+                        <@subMenuItem id="createVideoMenuItem" title="Créer contenu Vidéo" />
+                        <@subMenuItem id="createAudioMenuItem" title="Créer contenu Audio" />
+                        <@subMenuItem id="createEegMenuItem" title="Créer contenu EEG" />
+                    </@subMenu>
+                </@rootMenuItem>
+                <@rootMenuItem id="admin_arrow" additionnalClasses="fleche">
+                    <img src="/public/images/bbeeg/fleche.png" alt="Flèche menu déroulant"/>
+                </@rootMenuItem>
+                <@rootMenuItem id="sepa_menu" />
+                <@rootMenuItem id="userprofile">
+                    Bob Sponge
+                    <@subMenu id="profileSubMenu" width="125">
+                       <@subMenuItem id="parametersMenuItem" title="Paramètres" />
+                       <@subMenuItem id="disconnectMenuItem" title="Déconnexion" />
+                   </@subMenu>
+                </@rootMenuItem>
+                <@rootMenuItem id="userprofile_arrow" additionnalClasses="fleche">
+                    <img src="/public/images/bbeeg/fleche.png" alt="Flèche menu déroulant"/>
+                </@rootMenuItem>
+            </div>
         </div>
+    </header>
 
-        <div id="mainContent">
+    <div class="container">
+        <div class="grid">
             <#nested>
         </div>
     </div>
-    <div id="footer"> Plateforme d'eLearning BB-EEG v${statics["fr.fsh.bbeeg.common.config.BBEEGConfiguration"].INSTANCE.appVersion()}</div>
+
+    <footer>
+        <a href="#todo">Mentions L&eacute;gales</a> - BB-EEG v${statics["fr.fsh.bbeeg.common.config.BBEEGConfiguration"].INSTANCE.appVersion()}</a>
+    </footer>
 </body>
 </html>
 </#macro>

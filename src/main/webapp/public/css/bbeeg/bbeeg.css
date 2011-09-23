@@ -1,35 +1,298 @@
-/* *************** Main style *************** */
-html, body, #container {
-    height: 100%;
+/* Reset CSS extrait de boostrap */
+/*d�but*/
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+dd,
+dl,
+dt,
+li,
+ol,
+ul,
+fieldset,
+form,
+label,
+legend,
+button,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-weight: normal;
+  font-style: normal;
+  font-size: 100%;
+  line-height: 1;
+  font-family: inherit;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+ol, ul {
+  list-style: none;
+}
+q:before,
+q:after,
+blockquote:before,
+blockquote:after {
+  content: "";
+}
+html {
+  overflow-y: scroll;
+  font-size: 100%;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+}
+a:focus {
+  outline: thin dotted;
+}
+a:hover, a:active {
+  outline: 0;
+}
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+nav,
+section {
+  display: block;
+}
+audio, canvas, video {
+  display: inline-block;
+  *display: inline;
+  *zoom: 1;
+}
+audio:not([controls]) {
+  display: none;
+}
+sub, sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+sup {
+  top: -0.5em;
+}
+sub {
+  bottom: -0.25em;
+}
+img {
+  border: 0;
+  -ms-interpolation-mode: bicubic;
+}
+button,
+input,
+select,
+textarea {
+  font-size: 100%;
+  margin: 0;
+  vertical-align: baseline;
+  *vertical-align: middle;
+}
+button, input {
+  line-height: normal;
+  *overflow: visible;
+}
+button::-moz-focus-inner, input::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+button,
+input[type="button"],
+input[type="reset"],
+input[type="submit"] {
+  cursor: pointer;
+  -webkit-appearance: button;
+}
+input[type="search"] {
+  -webkit-appearance: textfield;
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+}
+input[type="search"]::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+textarea {
+  overflow: auto;
+  vertical-align: top;
+}
+/*fin*/
+
+/* Cr�ation d'un grille pour le positionnement CSS. Inspir� de boostrap */
+/*d�but*/
+.grid {
+  zoom: 1;
+  margin-left: -20px;
+}
+.grid:before, .grid:after {
+  display: table;
+  content: "";
+  zoom: 1;
+  *display: inline;
+}
+.grid:after {
+  clear: both;
+}
+[class*="column"] {
+  display: inline;
+  float: left;
+  margin-left: 20px;
+}
+/*fin*/
+/* -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-*/
+
+/* CSS BBEEG */
+/*Propi�t�s g�n�rales*/
+html {
+	overflow: visible;
+	/* Overide d'un propri�t� du reset pour �viter d'avoir une scrollbar toujours visible m�me lorsqu'il n'y a pas lieu d'�tre.*/
 }
 
 body {
-    background-color:#f1f1f1;
-    color:#434342;
-    margin: auto;
-    width: 1000px;
-    font-family: 'Trebuchet MS', Tahoma, Verdana, Arial, sans-serif;
-    font-size: 16px;
+	background-color:#f1f1f1;
+	color:#434342;
+	font-family: Arial,Helvetica,sans-serif;
+    font-size: 13px;
+    font-weight: normal;
+    line-height: 18px;
+
 }
 
-/* Container is needed for a sticky footer */
-body > #container {
-    height: auto;
-    min-height: 100%;
-    background-color: #FFFFFF;
+header {
+	height:50px;
+	background-image:url('/public/images/bbeeg/background_header.jpg');
+	background-repeat: repeat-x;
 }
 
-select {
-    width: 150px;
+#menu {
+	width: 940px;
+	margin:0 auto;
+	padding-top:3px;;
 }
 
-select[multiple]{
-    width: 400px;
+#menuright {
+	height:34px;
+	float:right;
+	padding-top: 5px;
+	line-height:30px;
+	vertical-align:middle;
 }
 
-h3 {
-    color: #eb8f00;
+.menuright_item {
+	float:left;
 }
+
+#input_recherche {
+	margin-top:-4px;
+	margin-right:4px;
+	margin-left:
+}
+
+#recherche_item {
+	margin-top:-1px;
+}
+
+#sepa_menu {
+	width:2px;
+	height:18px;
+	background-image:url('/public/images/bbeeg/sepa_menu.jpg');
+	background-repeat: repeat-y;
+	margin-top:2px;
+	margin-right:3px;
+}
+
+#userprofile{
+	margin-top:-4px;
+	margin-right:4px;
+	font-weight:bold;
+}
+
+.fleche {
+	margin-top:-1px;
+	margin-right:5px;
+    cursor: pointer;
+}
+
+
+.container {
+	width: 940px;
+	margin-left: auto;
+	margin-right: auto;
+	zoom: 1;
+}
+
+.columnleft {
+  width: 580px;
+}
+
+.columnright {
+  width: 340px;
+}
+
+footer {
+	height:25px;
+	background-image:url('/public/images/bbeeg/background_footer.jpg');
+	background-repeat: repeat-x;
+	padding: 10px 0 0 0;
+	font-size: 10px;
+    line-height: 15px;
+	text-align:center;
+}
+
+/*Aspect graphique des liens */
+a {
+	color:#434342;
+	text-decoration:none;
+}
+
+a:hover {color:#13adb8;}
+
+a:active {color:#0b666d;}
+
 
 input[type=text] {
   padding: 0 4px 0 4px;
@@ -163,6 +426,30 @@ button .selected {
 
 }
 
+/* AVANT REFONTE CSS IL Y AVAIT ... */
+#container {
+    height: 100%;
+}
+
+/* Container is needed for a sticky footer */
+body > #container {
+    height: auto;
+    min-height: 100%;
+    background-color: #FFFFFF;
+}
+
+select {
+    width: 150px;
+}
+
+select[multiple]{
+    width: 400px;
+}
+
+h3 {
+    color: #eb8f00;
+}
+
 #header {
     top: 0px;
     background-color: #000000;
@@ -217,6 +504,7 @@ div.submenu-container {
     z-index: 20;
     display:none;
     position:absolute;
+    top: 30px;
     border: 1px solid #cccccc;
 }
 
