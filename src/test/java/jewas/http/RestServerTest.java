@@ -16,8 +16,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
 
 import static com.jayway.restassured.RestAssured.*;
 import static org.hamcrest.CoreMatchers.*;
@@ -31,7 +29,7 @@ import static org.junit.Assert.*;
  */
 public class RestServerTest {
 
-    private static final int SERVER_PORT = 8086;
+    private static final int SERVER_PORT = 28086;
 
     private RestServer restServer = null;
 

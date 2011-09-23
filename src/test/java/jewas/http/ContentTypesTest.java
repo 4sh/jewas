@@ -1,21 +1,19 @@
 package jewas.http;
 
 import com.jayway.restassured.RestAssured;
-import jewas.configuration.JewasConfigurationForTest;
 import jewas.routes.StaticResourcesRoute;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import static com.jayway.restassured.RestAssured.expect;
-import static com.jayway.restassured.RestAssured.given;
 
 /**
  * @author fcamblor
  */
 public class ContentTypesTest {
 
-    private static final int SERVER_PORT = 8086;
+    private static final int SERVER_PORT = 28086;
 
     private RestServer restServer = null;
 

@@ -1,26 +1,12 @@
 package jewas.http;
 
 import com.jayway.restassured.RestAssured;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-
 import jewas.collection.TypedArrayList;
 import jewas.collection.TypedList;
 import jewas.http.data.BodyParameters;
 import jewas.http.data.FileUpload;
-import jewas.http.data.FormBodyParameters;
-import jewas.http.data.HttpData;
 import jewas.http.impl.AbstractRequestHandler;
-import jewas.http.util.HttpTestUtils;
-import jewas.routes.RedirectRoute;
-import jewas.routes.StaticResourcesRoute;
-import jewas.test.fakeapp.routes.FakeDeleteRoute;
-import jewas.test.fakeapp.routes.FakePutRoute;
-import jewas.test.fakeapp.routes.SimpleJSONFileRoute;
 import org.apache.commons.io.FileUtils;
-import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -28,22 +14,20 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.List;
 
-import static com.jayway.restassured.RestAssured.expect;
 import static com.jayway.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 /**
  * @author fcamblor
  */
 public class DefaultHttpRequestTest {
 
-    private static final int SERVER_PORT = 8086;
+    private static final int SERVER_PORT = 28086;
 
     private RestServer restServer = null;
 
