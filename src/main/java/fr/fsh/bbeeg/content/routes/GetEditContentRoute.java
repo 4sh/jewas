@@ -39,7 +39,7 @@ public class GetEditContentRoute extends AbstractRoute {
                         break;
                     case IMAGE: template = "content/edit-image.ftl";
                         break;
-                    case DOCUMENT: template = "content/edit-document.ftl";
+                    case DOCUMENT: template = "content/create-document.ftl";
                         break;
                     case AUDIO: template = "content/edit-audio.ftl";
                         break;
@@ -47,7 +47,7 @@ public class GetEditContentRoute extends AbstractRoute {
                         break;
                     case EEG: template = "content/edit-eeg.ftl";
                         break;
-                    default: template = "content/edit-text.ftl";
+                    default: template = "content/create-text.ftl";
                 }
 
                 request.respondHtml().content(Templates.process(template, params));
