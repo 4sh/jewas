@@ -203,6 +203,9 @@ task startElasticSearch(dependsOn: [initSsh, checkPropsForDeployment]) << {
 		    > "${deployDirectory}/elasticsearch.log" 2> "${deployDirectory}/elasticsearch.err.log" \
 		    & echo \$! > "${deployDirectory}/elasticsearch.pid" """,
         trust: true, failonerror: true)
+    
+    // Waiting 5s after start of elastic search
+    Object.sleep(5000)
 }
 
 task startBBEEG(dependsOn: [initSsh, checkPropsForDeployment, startElasticSearch]) << {
