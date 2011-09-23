@@ -26,6 +26,7 @@ $(
 
         // Clickable menu items
         $.each([
+                ['#searchMenuItem', '/content/search.html'],
                 ['#dashboardMenuItem', '/dashboard/dashboard.html'],
                 ['#searchMenuItem', '/content/search.html'],
                 ['#parametersMenuItem', '/user/profile.html'],
