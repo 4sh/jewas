@@ -272,9 +272,9 @@
         <form action="/content/advancedSearch" id="advancedSearchForm">
             <div class="criteria-line">
                 <label for="from">Date de création : Entre</label>
-                <input type="text" id="from" name="from" />
+                <input type="text" id="from" name="from" style="width: 175px;" />
                 <label for="to">et</label>
-                <input type="text" id="to" name="to"/>
+                <input type="text" id="to" name="to" style="width: 175px;"/>
             </div>
             <div class="criteria-line">
                 <div class="criteria-label"><label for="adSearchType">Types de contenu</label> :</div>
