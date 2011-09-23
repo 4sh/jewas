@@ -2,8 +2,6 @@ package jewas.http.data;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -65,5 +63,22 @@ public class FileUpload extends NamedHttpData<org.jboss.netty.handler.codec.http
      */
     public void toFile(File dest) throws IOException {
         toFile(0, dest);
+    }
+
+    /**
+     * @param index Index of file upload parameter
+     * @return the uploaded file at index
+     * @throws IOException
+     */
+    public File getFile(int index) throws IOException {
+        return this.values.get(index).getFile();
+    }
+
+    /**
+     * @return the first uploaded file.
+     * @throws IOException
+     */
+    public File getFile() throws IOException {
+        return getFile(0);
     }
 }
