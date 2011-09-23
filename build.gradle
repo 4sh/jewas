@@ -100,11 +100,12 @@ dependencies {
             [group: 'com.beust', name:'jcommander', version: '1.17', transitive: true],
             [group: 'commons-dbcp', name: 'commons-dbcp', version: '1.4'],
             [group: 'org.elasticsearch', name: 'elasticsearch', version: '0.17.6'],
-            [group: 'org.elasticsearch', name: 'elasticsearch-mapper-attachments', version: '0.17.6']
+            [group: 'org.elasticsearch', name: 'elasticsearch-mapper-attachments', version: '0.17.6'],
+            [group: 'com.jayway.restassured', name: 'rest-assured', version: '1.2.4-SNAPSHOT']
     )
     testCompile(
             [group: 'junit', name: 'junit', version: '4.8.2', transitive: true],
-            [group: 'com.jayway.restassured', name: 'rest-assured', version: '1.2.1'],
+            [group: 'com.jayway.restassured', name: 'rest-assured', version: '1.2.1']
     )
     testRuntime 'net.sourceforge.cobertura:cobertura:1.9.4.1'
     ssh 'org.apache.ant:ant-jsch:1.7.0'

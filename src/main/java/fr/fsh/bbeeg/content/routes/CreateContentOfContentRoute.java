@@ -1,5 +1,6 @@
 package fr.fsh.bbeeg.content.routes;
 
+import fr.fsh.bbeeg.common.config.BBEEGConfiguration;
 import fr.fsh.bbeeg.common.resources.FileQueryObject;
 import fr.fsh.bbeeg.common.resources.SuccessObject;
 import fr.fsh.bbeeg.content.pojos.ContentType;
@@ -13,10 +14,17 @@ import jewas.http.RequestHandler;
 import jewas.http.data.BodyParameters;
 import jewas.http.impl.AbstractRequestHandler;
 
+import java.io.File;
+import java.io.IOException;
+
+import static com.jayway.restassured.RestAssured.given;
+
 /**
  * @author driccio
  */
 public class CreateContentOfContentRoute extends AbstractRoute {
+    public static final String EDF_FILE_URL = "/eegFile";
+    public static final String VIDEO_URL = "/video";
     private ContentResource contentResource;
 
     public CreateContentOfContentRoute(ContentResource _contentResource){
@@ -74,8 +82,37 @@ public class CreateContentOfContentRoute extends AbstractRoute {
                     contentResource.updateContentOfContent(qo.id(), fqo.text());
                 } else {
                     FileQueryObject fqo = toContentObject(bodyParameters, FileQueryObject.class);
-                    contentResource.updateContentOfContent(qo.id(), ContentType.valueOf(qo.type()),
-                            fqo.file(), fqo.extension());
+
+                    // If the content type is EEG, then the route is a proxy to redirect the uplaod request to visio server.
+                    if (ContentType.EEG.name().equals(qo.type())) {
+                        File file = null;
+
+                        try {
+                            file = fqo.file().getFile();
+                        } catch (IOException e) {
+                            System.out.println(e.getMessage());
+                        }
+
+                        String url = BBEEGConfiguration.INSTANCE.cliOptions().visioRootUrl() + "/eeg/" + qo.id();
+
+                        if ("edf".equals(fqo.extension())) {
+                            url += EDF_FILE_URL;
+                        } else {
+                            url += VIDEO_URL;
+                        }
+
+                        // FIX ME : Here we use RestAssured which provides us a simple way to upload a file.
+                        given().
+                                formParam("extension", fqo.extension()).
+                                multiPart("file", file, fqo.extension()).
+                                when().
+                                post(url);
+
+                        request.respondJson().object(new SuccessObject().success(true));
+                    } else {
+                        contentResource.updateContentOfContent(qo.id(), ContentType.valueOf(qo.type()),
+                                fqo.file(), fqo.extension());
+                    }
                 }
 
                 request.respondJson().object(new SuccessObject().success(true));

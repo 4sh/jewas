@@ -80,6 +80,7 @@ public class Main {
                 new SimpleHtmlRoute("/content/audio/create.html", "content/create-audio.ftl"),
                 new SimpleHtmlRoute("/content/video/create.html", "content/create-video.ftl"),
                 new SimpleHtmlRoute("/content/document/create.html", "content/create-document.ftl"),
+                new SimpleHtmlRoute("/content/eeg/create.html", "content/create-eeg.ftl"),
                 new EditContentRoute(assembler.contentResource()),
                 new GetAddedContentRoute(assembler.contentResource()),
                 new GetViewedContentRoute(assembler.contentResource()),
