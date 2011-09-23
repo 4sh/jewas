@@ -3,18 +3,12 @@ package fr.fsh.bbeeg.content.routes;
 import fr.fsh.bbeeg.common.resources.ObjectId;
 import fr.fsh.bbeeg.content.pojos.ContentDetail;
 import fr.fsh.bbeeg.content.resources.ContentResource;
-import jewas.http.AbstractRoute;
-import jewas.http.HttpMethodMatcher;
-import jewas.http.HttpRequest;
-import jewas.http.Parameters;
-import jewas.http.PatternUriPathMatcher;
-import jewas.http.RequestHandler;
+import jewas.http.*;
 import jewas.http.data.BodyParameters;
-import jewas.http.data.HttpData;
 import jewas.http.impl.AbstractRequestHandler;
 import jewas.json.Json;
 
-import java.nio.ByteBuffer;
+import java.util.Date;
 
 /**
  * @author fcamblor
@@ -23,8 +17,31 @@ public class EditContentRoute extends AbstractRoute {
     private ContentResource contentResource;
 
     public EditContentRoute(ContentResource _contentResource){
-        super(HttpMethodMatcher.POST, new PatternUriPathMatcher("/content/[id]"));
+        super(HttpMethodMatcher.PUT, new PatternUriPathMatcher("/content/[id]"));
         contentResource = _contentResource;
+    }
+
+    public static class QueryObject {
+        private String type;
+        private String contentDetail;
+
+        public QueryObject type(String _type){
+            this.type = _type;
+            return this;
+        }
+
+        public String type(){
+            return this.type;
+        }
+
+        public QueryObject contentDetail(String _contentDetail){
+            this.contentDetail = _contentDetail;
+            return this;
+        }
+
+        public String contentDetail(){
+            return this.contentDetail;
+        }
     }
 
     @Override
@@ -32,26 +49,20 @@ public class EditContentRoute extends AbstractRoute {
         final ObjectId oi = toQueryObject(parameters, ObjectId.class);
 
         return new AbstractRequestHandler() {
+
             @Override
-            public void onRequest(HttpRequest request) {
-                // TODO: to complete !
-//                ContentDetail contentDetail = new ContentDetail().header(
-//                        new ContentHeader().id(oi.id())
-//                                .title(request.parameters().val("title"))
-//                                .description(request.parameters().val("description"))
-//                );
+            public void onReady(HttpRequest request, BodyParameters bodyParameters) {
+                super.onReady(request, bodyParameters);
 
-                ByteBuffer bytebuff = request.content();
-                byte[] bytearray = new byte[bytebuff.remaining()];
-                bytebuff.get(bytearray);
-                String text = new String(bytearray);
+                QueryObject qo = toContentObject(bodyParameters, QueryObject.class);
 
-                ContentDetail contentDetail = (ContentDetail) Json.instance().fromJsonString(text, ContentDetail.class);
+                ContentDetail contentDetail = (ContentDetail) Json.instance().fromJsonString(qo.contentDetail(), ContentDetail.class);
+                contentDetail.header().type(fr.fsh.bbeeg.content.pojos.ContentType.valueOf(qo.type()));
                 contentDetail.header().id(oi.id());
+                contentDetail.header().lastModificationDate(new Date());
 
                 contentResource.updateContent(contentDetail);
-
-                request.respondJson().object("Ok");
+                request.respondJson().object(new ObjectId().id(contentDetail.header().id()));
             }
         };
     }

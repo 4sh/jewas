@@ -1,9 +1,21 @@
-function loadDomains() {
+function loadDomains(domainIds) {
+    console.log("domainIds", domainIds);
     $.getJSON(
         '/domain/all',
         function success(data) {
             var container = $("#domains");
-                container.children().remove();
+            container.children().remove();
+            var selectedDomains = {};
+            for (var i=0; i < domainIds.length; i++) {
+                selectedDomains[domainIds[i]]=true;
+            }
+            for (var j=0; j < data.length; j++) {
+                if (selectedDomains[data[j].id]) {
+                    data[j].selected = true;
+                } else {
+                    data[j].selected = false;
+                }
+            }
             $("#domainItemTemplate").tmpl(data).appendTo(container);
             $("#domains").trigger("liszt:updated");
         }
@@ -13,15 +25,15 @@ function loadDomains() {
 function getDomains(domainIds) {
     var domains = [];
 
-    for (var i=0; i < domainIds.length; i++) {
-        domains.push({id: domainIds[i]});
+    if (domainIds !== null) {
+        for (var i=0; i < domainIds.length; i++) {
+            domains.push({id: domainIds[i]});
+        }
     }
-
     return domains;
 }
 
 $(function() {
-    loadDomains();
 
     $("#confirmationDialog").dialog({
         autoOpen: false,
@@ -64,8 +76,6 @@ $(function() {
                 );
             }
         );
-
-
         return false;
     });
 });

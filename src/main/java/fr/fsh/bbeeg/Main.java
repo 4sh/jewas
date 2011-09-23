@@ -98,6 +98,7 @@ public class Main {
                 new GetContentCriteriasRoute(assembler.contentResource()),
                 new GetAdvancedSearchContent(assembler.contentResource()),
                 new GetViewContentRoute(assembler.contentResource()),
+                new GetEditContentRoute(assembler.contentResource()),
                 new GetUserPreferredDomainsRoute(assembler.userResource())
             ).start();
             System.out.println("Ready, if you dare");

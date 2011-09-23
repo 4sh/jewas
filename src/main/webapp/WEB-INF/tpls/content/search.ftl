@@ -51,6 +51,36 @@
         }
     }
 
+    function editContent(containerId, contentId, status) {
+        var newStatus = null;
+
+        if (status === 'DRAFT') {
+            window.location = "/content/" + contentId + "/edit.html";
+            // Do not change the status just save the changes
+
+        } else if (status === 'VALIDATED') {
+            // if rejected duplicate the content and set the new version to draft
+        } else if (status === 'REJECTED') {
+            // if rejected duplicate the content and set the new version to draft
+        } else {
+            // edit should not be possible
+
+        }
+
+        if (newStatus !== null) {
+            sendUpdateStatus(containerId, contentId, newStatus, '');
+        }
+    }
+
+    function isContentEditable(contentStatus) {
+        if (contentStatus === 'DRAFT' || contentStatus === 'REJECTED' || contentStatus === 'VALIDATED') {
+            return true;
+        }
+        return false;
+    }
+
+
+
     function deleteContent(containerId, contentId, status) {
         var newStatus = null;
 
@@ -364,7 +394,12 @@
         <#if searchMode == 1>
             <button type="button"
                     class="edit-button"
-                    disabled="true">Editer</button>
+                    onclick="editContent('item-{{= id}}', {{= id}}, '{{= status}}')"
+                    {{if !(isContentEditable(status))}}
+                        disabled
+                    {{/if}}
+                    >Editer</button>
+
             <button type="button"
                     class="publish-button"
                     onclick="publishContent('item-{{= id}}', {{= id}}, '{{= status}}')"

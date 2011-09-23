@@ -325,7 +325,7 @@ public class ContentDao {
         );
 
         Long contentIdToUse;
-
+        // Content edition workflow: duplication on VALIDATED and REJECTED statuses
         if(ContentStatus.VALIDATED.equals(contentDetailFromDb.header().status()) ||
                 ContentStatus.REJECTED.equals(contentDetailFromDb.header().status())) {
 
@@ -349,6 +349,7 @@ public class ContentDao {
         // Get current domain ids that are linked with the content.
         List<Long> domainsIds = getDomainIds(contentIdToUse);
 
+        // Check added domains
         for (Domain domainToCheck : contentDetail.header().domains()) {
             newDomainIds.add(domainToCheck.id());
 
@@ -362,11 +363,12 @@ public class ContentDao {
             }
         }
 
+        // Check domains to remove
         for (Long domainIdToCheckForRemove : domainsIds) {
             boolean found = false;
 
             for (Domain domain : contentDetail.header().domains()) {
-                if (domainIdToCheckForRemove == domain.id()) {
+                if (domainIdToCheckForRemove.equals(domain.id())) {
                     found = true;
                     break;
                 }
