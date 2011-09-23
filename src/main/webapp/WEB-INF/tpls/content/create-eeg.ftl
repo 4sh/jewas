@@ -1,18 +1,11 @@
 <#include "../common/mainTemplate.ftl">
 <#include "common/create-content-header.ftl">
 
-<#if compressedJS == "true">
-    <#assign chosenJS = "/public/js/chosen/chosen.jquery.min.js">
-    <#else>
-        <#assign chosenJS = "/public/js/chosen/chosen.jquery.js">
-</#if>
 
 <@mainTemplate title="Création d'un contenu type EEG" selectedMenuItem="creation"
-               scripts=[chosenJS,
-                        "/public/js/jewas/jewas-forms.js",
+               scripts=["/public/js/jewas/jewas-forms.js",
                         "/public/js/fileUpload/fileuploader.js"]
-               stylesheets=["/public/css/chosen/chosen.css",
-                            "/public/css/fileUpload/fileuploader.css"]>
+               stylesheets=["/public/css/fileUpload/fileuploader.css"] useChosen=true>
 
     <script type="application/javascript" src="/public/js/bbeeg/content/create-eeg-content.js"></script>
     <script type="text/javascript">
