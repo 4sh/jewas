@@ -28,13 +28,18 @@ public class Properties<T> {
 	@SuppressWarnings("unchecked")
 	public static <B> Properties<B> properties(Class<B> clazz) {
 		List<Property<B,?>> properties = new ArrayList<Property<B,?>>();
-		for (Method m : clazz.getDeclaredMethods()) {
-			if (isGetter(m)) {
-				Method s = findSetter(clazz, m.getName(), m.getReturnType());
-				properties.add(new Property<B,Object>(m, s, m.getName(), 
-						clazz, (Class<Object>) m.getReturnType()));
-			}
-		}
+
+        Class currentClass = clazz;
+        while(currentClass != null) {
+            for (Method m : currentClass.getDeclaredMethods()) {
+                if (isGetter(m)) {
+                    Method s = findSetter(clazz, m.getName(), m.getReturnType());
+                    properties.add(new Property<B,Object>(m, s, m.getName(),
+                            clazz, (Class<Object>) m.getReturnType()));
+                }
+            }
+            currentClass = currentClass.getSuperclass();
+        }
 		return new Properties<B>(properties);
 	}
 
