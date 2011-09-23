@@ -1,11 +1,9 @@
 package fr.fsh.bbeeg.common.config;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 /**
  * @author fcamblor
@@ -13,6 +11,6 @@ import static org.junit.Assert.assertThat;
 public class BBEEGConfigurationTest {
     @Test
     public void shouldAppVersionBeExtractedFromManifest(){
-        assertThat(BBEEGConfiguration.INSTANCE.appVersion(), is(equalTo("version-dev")));
+        assertThat(BBEEGConfiguration.INSTANCE.appVersion(), is(equalTo("[version-dev]")));
     }
 }
