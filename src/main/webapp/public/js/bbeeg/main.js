@@ -45,15 +45,23 @@ $(
         );
 
         // Root menu item displaying a submenu
-        $.each([
-                ['#creationMenuItem', '#creationSubMenu'],
-                ['#adminMenuItem', '#adminSubMenu'],
-                ['#profileMenuItem', '#profileSubMenu']
-            ],function(index,value){
-                $(value[0]).mouseenter(function(evt){
-                    $(value[1]).show("drop", { direction: "right" }, 500);
-                }).mouseleave(function(evt){
-                    $(value[1]).hide("drop", { direction: "right" }, 500);
+        var rootMenuItemsWithSubmenu = [
+                ['#admin_arrow', '#adminSubMenu'],
+                ['#userprofile_arrow', '#profileSubMenu']
+            ];
+        $.each(rootMenuItemsWithSubmenu, function(index,value){
+                $(value[0]).click(function(evt){
+                    if($(value[1]).is(':visible')){
+                        $(value[1]).hide("drop", { direction: "right" }, 500);
+                    } else {
+                        // Hiding every other root menu item displayed
+                        $.each(rootMenuItemsWithSubmenu, function(othersIndex,othersValue){
+                            if(value[0] != othersValue[0] && $(othersValue[1]).is(':visible')){
+                                $(othersValue[1]).hide("drop", { direction: "right" }, 500);
+                            }
+                        });
+                        $(value[1]).show("drop", { direction: "right" }, 500);
+                    }
                 });
             }
         );
