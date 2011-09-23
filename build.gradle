@@ -61,16 +61,18 @@ def versionBase = "0.1"
 
 // handles releases gracefully
 gradle.taskGraph.whenReady {taskGraph ->
-   if (taskGraph.hasTask(':release')) {
-      version = versionBase
-   } else {
-      version = versionBase + '-SNAPSHOT'
-   }
+    if (taskGraph.hasTask(':release')) {
+        version = versionBase
+        versionForManifest = version
+    } else {
+        version = versionBase + '-SNAPSHOT'
+        versionForManifest = versionBase + "-" + timestamp
+    }
     jar {
       manifest {
         attributes 'Main-Class': 'fr.fsh.bbeeg.Main'
         attributes 'Implementation-Title': 'BB-EEG'
-        attributes 'Implementation-Version': version
+        attributes 'Implementation-Version': versionForManifest
         attributes 'Implementation-Vendor': '4SH France'
       }
     }
