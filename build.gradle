@@ -193,13 +193,13 @@ task startElasticSearch(dependsOn: [initSsh, checkPropsForDeployment]) << {
     def executionPort = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].elasticSearchPort
 
     ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 2224,
-		command: """kill -9 \$(cat "${deployDirectory}/elasticSearch.pid")""", trust: true, failonerror: false)
+		command: """kill -9 \$(cat "${deployDirectory}/elasticsearch.pid")""", trust: true, failonerror: false)
     // TODO: pass the http port here...
     ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 2224,
 		command: """${deployDirectory}/elasticsearch/bin/elasticsearch \
 		    -f -Des.transport.tcp.port=${executionPort} -Des.index.store.type=memory \
 		    > "${deployDirectory}/elasticsearch.log" 2> "${deployDirectory}/elasticsearch.err.log" \
-		    & echo \$! > "${deployDirectory}/elasticSearch.pid" """,
+		    & echo \$! > "${deployDirectory}/elasticsearch.pid" """,
         trust: true, failonerror: true)
 }
 
