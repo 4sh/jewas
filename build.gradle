@@ -183,7 +183,7 @@ task bootstrapElasticSearch() << {
 
     // Installing needed plugins
     ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 2224,
-		command: """${deployDirectory}/elasticsearch-0.17.0/bin/plugin \
+		command: """${deployDirectory}/elasticsearch/bin/plugin \
 		     install mapper-attachments""",
         trust: true, failonerror: true)
 }
@@ -196,7 +196,7 @@ task startElasticSearch(dependsOn: [initSsh, checkPropsForDeployment]) << {
 		command: """kill -9 \$(cat "${deployDirectory}/elasticSearch.pid")""", trust: true, failonerror: false)
     // TODO: pass the http port here...
     ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 2224,
-		command: """${deployDirectory}/elasticsearch-0.17.0/bin/elasticsearch \
+		command: """${deployDirectory}/elasticsearch/bin/elasticsearch \
 		    -f -Des.transport.tcp.port=${executionPort} -Des.index.store.type=memory \
 		    > "${deployDirectory}/elasticsearch.log" 2> "${deployDirectory}/elasticsearch.err.log" \
 		    & echo \$! > "${deployDirectory}/elasticSearch.pid" """,
