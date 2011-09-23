@@ -65,7 +65,7 @@ public class QueryObjectsTest {
 
     @Test
     public void shouldReflectionBeMadeCorrectlyOnObject(){
-        Map<String, List<String> > paramsMap = new HashMap<>();
+        Map<String, List<String> > paramsMap = new HashMap<String, List<String> >();
         paramsMap.put("a1", Arrays.asList("a1Value"));
         paramsMap.put("a2", Arrays.asList("1234"));
         paramsMap.put("a3", Arrays.asList("a3Value1", "a3Value2"));
@@ -82,7 +82,7 @@ public class QueryObjectsTest {
 
     @Test
     public void shouldReflectionBeMadeCorrectlyOnObjectWithAncestors(){
-        Map<String, List<String> > paramsMap = new HashMap<>();
+        Map<String, List<String> > paramsMap = new HashMap<String, List<String> >();
         paramsMap.put("a1", Arrays.asList("a1Value"));
         paramsMap.put("a2", Arrays.asList("1234"));
         paramsMap.put("a3", Arrays.asList("a3Value1", "a3Value2"));
