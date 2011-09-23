@@ -23,7 +23,7 @@
     </script>
 
 
-    <div id="userInformations">
+    <div id="userInformations" class="columnleft">
         <div id="dashboard">
             <div class="dashboard-group-fullline dashboard-group-linestart">
                 <div class="box">
@@ -95,7 +95,7 @@
         </div>
     </div>
 
-    <div id="generalInformations">
+    <div id="generalInformations" class="columnright">
         <div class="box">
             <div id="plateformInformationsPanel" class="panel">
                 <h3> Informations générales </h3>

@@ -1,7 +1,7 @@
 #userInformations {
     display: inline-block;
     vertical-align: top;
-    width: 720px;
+    width: 650px;
 }
 
 #dashboard {
@@ -10,7 +10,7 @@
 .dashboard-group {
     display: inline-block;
     vertical-align: top;
-    width: 230px;
+    width: 207px;
     margin-left: 6px;
     margin-top: 17px;
 }
@@ -18,7 +18,7 @@
 .dashboard-group-fullline {
     display: inline-block;
     vertical-align: top;
-    width: 710px;
+    width: 640px;
     margin-top: 17px;
     margin-left: 6px;
 }
