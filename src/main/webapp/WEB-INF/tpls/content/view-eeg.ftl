@@ -18,7 +18,7 @@
     </script>
 
     <@viewContentHeaders content=content />
-    <iframe src="${statics["fr.fsh.bbeeg.common.config.BBEEGConfiguration"].INSTANCE.cliOptions().visioRootUrl()}/${content.header().id()}/visio.html" width="100%" height="100%">
+    <iframe src="${statics["fr.fsh.bbeeg.common.config.BBEEGConfiguration"].INSTANCE.cliOptions().visioRootUrl()}/${content.header().id()?c}/visio.html" width="100%" height="100%">
       <p>Your browser does not support iframes.</p>
     </iframe>
 
