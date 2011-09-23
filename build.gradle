@@ -68,8 +68,8 @@ gradle.taskGraph.whenReady {taskGraph ->
    }
     jar {
       manifest {
-        attributes 'Main-Class': 'fr.fsh.todos.Main'
-        attributes 'Implementation-Title': 'TODOs'
+        attributes 'Main-Class': 'fr.fsh.bbeeg.Main'
+        attributes 'Implementation-Title': 'BB-EEG'
         attributes 'Implementation-Version': version
         attributes 'Implementation-Vendor': '4SH France'
       }
