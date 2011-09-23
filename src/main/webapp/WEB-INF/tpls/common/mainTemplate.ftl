@@ -28,7 +28,7 @@
     <link rel="stylesheet" href="/public/css/bbeeg/bbeeg.css"/>
 
     <link rel="stylesheet"
-          href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/themes/ui-lightness/jquery-ui.css"/>
+          href="/public/css/jquery/jquery-ui-1.8.16.custom.css"/>
 
     <#if useChosen>
         <link rel="stylesheet" href="/public/css/chosen/chosen.css"/>
