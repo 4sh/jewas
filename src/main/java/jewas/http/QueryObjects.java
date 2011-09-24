@@ -1,17 +1,20 @@
 package jewas.http;
 
+import jewas.collection.TypedList;
+import jewas.converters.Converters;
+import jewas.http.data.FileUpload;
+import jewas.http.data.FormBodyParameters;
+import jewas.http.data.NamedHttpData;
+import jewas.http.data.NamedString;
+import jewas.reflection.Properties;
+import jewas.reflection.Property;
+
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import jewas.collection.TypedList;
-import jewas.converters.Converters;
-import jewas.http.data.*;
-import jewas.lang.Strings;
-import jewas.reflection.Properties;
-import jewas.reflection.Property;
 
 public class QueryObjects {
 
@@ -55,7 +58,9 @@ public class QueryObjects {
             NamedHttpData d = bodyParameters.get(p.name());
 			if (d != null) {
                 if(TypedList.class.isAssignableFrom(p.type())){
-                    handleMultiValuedField(o, p, d);
+                    handleMultiValuedListField(o, p, d);
+                } else if(p.type().isArray()){
+                    handleMultiValuedArrayField(o, p, d);
                 } else {
                     handleSingleValuedField(o, p, d);
                 }
@@ -84,7 +89,7 @@ public class QueryObjects {
         p.set(o, fieldValue);
     }
 
-    private static <T> void handleMultiValuedField(T o, Property p, NamedHttpData d) {
+    private static <T> void handleMultiValuedListField(T o, Property p, NamedHttpData d) {
         if(!(d instanceof NamedString)){
             throw new IllegalStateException(String.format("Cannot map %s to TypedList %s.%s type !",
                     d.getClass().getCanonicalName(), p.type().getCanonicalName(), p.name()));
@@ -103,5 +108,23 @@ public class QueryObjects {
         for(String val : ns.values()){
             targetList.add(Converters.sconverter(targetList.getComponentType()).to(val));
         }
+    }
+
+    private static <T> void handleMultiValuedArrayField(T o, Property p, NamedHttpData d) {
+        if(!(d instanceof NamedString)){
+            throw new IllegalStateException(String.format("Cannot map %s to Arrayed %s.%s type !",
+                    d.getClass().getCanonicalName(), p.type().getCanonicalName(), p.name()));
+        }
+
+        NamedString ns = (NamedString)d;
+        Object array = Array.newInstance(p.type().getComponentType(), ns.values().size());
+
+        int i=0;
+        for(String val : ns.values()){
+            Array.set(array, i, Converters.sconverter(p.type().getComponentType()).to(val));
+            i++;
+        }
+
+        p.set(o, array);
     }
 }

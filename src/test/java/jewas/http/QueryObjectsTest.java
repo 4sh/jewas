@@ -22,6 +22,7 @@ public class QueryObjectsTest {
         private String a1;
         private Integer a2;
         private TypedList<String> a3 = new TypedArrayList<String>(String.class);
+        private String[] a4;
 
         public A a1(String _a1){
             this.a1 = _a1;
@@ -49,6 +50,15 @@ public class QueryObjectsTest {
         public TypedList<String> a3(){
             return this.a3;
         }
+
+        public A a4(String[] _a4){
+            this.a4 = _a4;
+            return this;
+        }
+
+        public String[] a4(){
+            return this.a4;
+        }
     }
 
     public static class B extends A {
@@ -69,6 +79,7 @@ public class QueryObjectsTest {
         paramsMap.put("a1", Arrays.asList("a1Value"));
         paramsMap.put("a2", Arrays.asList("1234"));
         paramsMap.put("a3", Arrays.asList("a3Value1", "a3Value2"));
+        paramsMap.put("a4", Arrays.asList("a4Value1", "a4Value2"));
         Parameters params = new Parameters(paramsMap);
         A a = QueryObjects.toQueryObject(params, A.class);
 
@@ -77,6 +88,7 @@ public class QueryObjectsTest {
         assertThat(a.a3().toArray(new String[0]),
                 is(equalTo(new TypedArrayList<String>(String.class, Arrays.<String>asList("a3Value1", "a3Value2")).toArray(new String[0]))
         ));
+        assertThat(a.a4(), is(equalTo(new String[]{ "a4Value1", "a4Value2" })));
     }
 
 
@@ -86,6 +98,7 @@ public class QueryObjectsTest {
         paramsMap.put("a1", Arrays.asList("a1Value"));
         paramsMap.put("a2", Arrays.asList("1234"));
         paramsMap.put("a3", Arrays.asList("a3Value1", "a3Value2"));
+        paramsMap.put("a4", Arrays.asList("a4Value1", "a4Value2"));
         paramsMap.put("b1", Arrays.asList("b1Value"));
         Parameters params = new Parameters(paramsMap);
         B b = QueryObjects.toQueryObject(params, B.class);
@@ -95,6 +108,7 @@ public class QueryObjectsTest {
         assertThat(b.a3().toArray(new String[0]),
                 is(equalTo(new TypedArrayList<String>(String.class, Arrays.<String>asList("a3Value1", "a3Value2")).toArray(new String[0]))
         ));
+        assertThat(b.a4(), is(equalTo(new String[]{ "a4Value1", "a4Value2" })));
         assertThat(b.b1(), is(equalTo("b1Value")));
     }
 }
