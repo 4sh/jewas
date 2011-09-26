@@ -37,7 +37,7 @@ public class GetEditContentRoute extends AbstractRoute {
                 switch (contentDetail.header().type()) {
                     case TEXT: template = "content/create-text.ftl";
                         break;
-                    case IMAGE: template = "content/edit-image.ftl";
+                    case IMAGE: template = "content/create-image.ftl";
                         break;
                     case DOCUMENT: template = "content/create-document.ftl";
                         break;

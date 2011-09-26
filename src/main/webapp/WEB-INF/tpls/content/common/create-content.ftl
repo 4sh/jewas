@@ -5,22 +5,58 @@
 <script type="application/javascript" src="/public/js/bbeeg/content/create-content.js"></script>
 <script type="text/javascript">
     $( function() {
-        new ContentCreator("${type}", "${extensions}", "${extensionsMsgError}");
+        var contentCreator = new ContentCreator("${type}", "${extensions}", "${extensionsMsgError}");
+
+        <#if content??>
+
+            // Load the author
+            // TODO: load the content author
+
+            // Load the title
+            $("#title").val("${content.header().title()}");
+
+            // Load the description
+            $("#description").append("${content.header().description()}");
+
+            // Load the content
+            $.ajax({
+                    url: "${content.url()}",
+                    success: function (data) {
+                        $("#content").append(data);
+                    }
+            });
+
+            // Load the domains
+            var domains = [];
+            <#list content.header().domains() as item>
+                domains.push(${item.id()?c});
+            </#list>
+            contentCreator.loadDomains(domains);
+        <#else>
+            contentCreator.loadDomains([]);
+        </#if>
     });
 </script>
 
-    <script id="domainItemTemplate" type="text/x-jquery-tmpl">
-        <option value="{{= id}}"> {{= label}} </option>
-    </script>
-
+<script id="domainItemTemplate" type="text/x-jquery-tmpl">
+    <option value="{{= id}}" {{if selected}} selected {{/if}}> {{= label}} </option>
+</script>
 
     <div id="confirmationDialog" title="Succès">
-        <p>Votre contenu a été créé avec succès !</p>
+        <#if content??>
+            <p>Votre contenu a été modifié avec succès !</p>
+        <#else>
+            <p>Votre contenu a été créé avec succès !</p>
+        </#if>
     </div>
 
-    <h3>Création d'un contenu</h3>
+    <#if content??>
+        <h3>Modification d'un contenu</h3>
+    <#else>
+        <h3>Création d'un contenu</h3>
+    </#if>
 
-    <form id="createContent" action="${url}" method="post">
+    <form id="createContent" action="<#if content??>/content/${content.header().id()?c}<#else>${url}</#if>" method="post">
         <@createContentHeader/>
 
         <p>
