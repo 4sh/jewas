@@ -543,9 +543,9 @@ public class ContentDao {
      * @param elasticSearchQuery the elastic search query to contribute to.
      * @param domains            the domains used to filter the returned contents
      */
-    private void configureDomainsQuery(BoolQueryBuilder elasticSearchQuery, List<String> domains) {
-        if (domains != null && !domains.isEmpty()) {
-            elasticSearchQuery.must(QueryBuilders.termsQuery(ES_CONTENT_FIELD_DOMAINS, domains.toArray()));
+    private void configureDomainsQuery(BoolQueryBuilder elasticSearchQuery, String[] domains) {
+        if (domains != null && domains.length > 0) {
+            elasticSearchQuery.must(QueryBuilders.termsQuery(ES_CONTENT_FIELD_DOMAINS, domains));
         }
     }
     
@@ -555,9 +555,9 @@ public class ContentDao {
      * @param elasticSearchQuery the elastic search query to contribute to.
      * @param searchTypes        the content types used to filter the returned contents
      */
-    private void configureContentTypeQuery(BoolQueryBuilder elasticSearchQuery, List<String> searchTypes) {
-        if (searchTypes != null && !searchTypes.isEmpty()) {
-            elasticSearchQuery.must(QueryBuilders.termsQuery(ES_CONTENT_FIELD_CONTENT_TYPE, searchTypes.toArray()));
+    private void configureContentTypeQuery(BoolQueryBuilder elasticSearchQuery, String[] searchTypes) {
+        if (searchTypes != null && searchTypes.length > 0) {
+            elasticSearchQuery.must(QueryBuilders.termsQuery(ES_CONTENT_FIELD_CONTENT_TYPE, searchTypes));
         }
     }
 
