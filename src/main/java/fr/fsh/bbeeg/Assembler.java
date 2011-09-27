@@ -5,6 +5,7 @@ import fr.fsh.bbeeg.common.config.BBEEGConfiguration;
 import fr.fsh.bbeeg.common.persistence.ElasticSearchDao;
 import fr.fsh.bbeeg.content.persistence.ContentDao;
 import fr.fsh.bbeeg.content.resources.ContentResource;
+import fr.fsh.bbeeg.content.resources.EegResource;
 import fr.fsh.bbeeg.domain.persistence.DomainDao;
 import fr.fsh.bbeeg.domain.resources.DomainResource;
 import fr.fsh.bbeeg.i18n.persistence.I18nDao;
@@ -41,6 +42,7 @@ public class Assembler {
     private DomainResource domainResource;
     private UserResource userResource;
     private ConnectedUserResource connectedUserResource;
+    private EegResource eegResource;
 
     public Assembler(CliOptions options) {
         dataSource = createDatasource();
@@ -62,6 +64,8 @@ public class Assembler {
         domainResource = new DomainResource(domainDao);
         userResource = new UserResource(userDao);
         connectedUserResource = ConnectedUserResource.instance().userDao(userDao);
+        eegResource = new EegResource(contentDao,
+                BBEEGConfiguration.INSTANCE.cliOptions().contentFileRepository());
     }
 
     private DataSource createDatasource() {
@@ -84,5 +88,9 @@ public class Assembler {
 
     public UserResource userResource() {
         return userResource;
+    }
+
+    public EegResource eegResource() {
+        return eegResource;
     }
 }

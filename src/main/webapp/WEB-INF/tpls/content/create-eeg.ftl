@@ -42,6 +42,29 @@
             </div>
         </p>
 
+        <p><label for="eegStart"> Début de l'EEG </label> <input id="eegStart" type="text"></p>
+        <p><label for="eegStop"> Fin de l'EEG </label> <input id="eegStop" type="text"></p>
+        <p><label for="zoom"> Niveau de zoom </label>
+            <select id="zoom">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="4">4</option>
+                <option value="8">8</option>
+                <option value="16">16</option>
+            </select>
+        </p>
+        <p><label for="frameDuration"> Durée de la fenêtre d'affichage </label>
+            <select id="frameDuration">
+                <option value="1000">1s</option>
+                <option value="5000">5s</option>
+                <option value="10000">10s</option>
+                <option value="20000">20s</option>
+                <option value="60000">1m</option>
+                <option value="300000">5m</option>
+                <option value="600000">10m</option>
+            </select>
+        </p>
+
         <p><input type="submit" value="Enregistrer" /></p>
     </form>
 

@@ -64,6 +64,53 @@ function EegContentCreator(eegUploaderId, videoUploaderId) {
         });
     }
 
+    function getEegSettings() {
+        var settings = {};
+
+        settings.eegStart = $('#eegStart')[0].value;
+        settings.eegStop = $('#eegStop')[0].value;
+        settings.zoom = $('#zoom')[0].value;
+        settings.frameDuration = $('#frameDuration')[0].value;
+
+        return settings;
+    }
+
+    function sendEegSettings(contentId, callAfter) {
+        var eegSettings = getEegSettings();
+
+        $.put('/content/eeg/settings/' + contentId,
+            eegSettings,
+            function(data){
+                callAfter(contentId);
+            }
+        );
+    }
+
+    function launchUploads(contentId) {
+        if (eegUploader != null) {
+            eegUploader.setData({extension: eegUploader.getCurrentFileExtension()});
+            eegUploader.setAction('/content/content/' + contentId + '/' + 'EEG');
+
+            eegUploader.submit(function () {
+
+                if (videoUploader != null) {
+                    videoUploader.setData({extension: videoUploader.getCurrentFileExtension()});
+                    videoUploader.setAction('/content/content/' + contentId + '/' + 'EEG');
+
+                    videoUploader.submit(function () {
+                        $("#confirmationDialog").dialog('open');
+                        setTimeout(function(){
+                            $("#confirmationDialog").dialog('close');
+                            window.location.href = "/content/" + contentId + "/view.html";
+                        }, 2000);
+                    });
+                }
+
+            });
+        }
+    }
+
+
     (function () {
         loadDomains();
 
@@ -96,28 +143,7 @@ function EegContentCreator(eegUploaderId, videoUploaderId) {
             $.put(form.action,
                 dataToSend,
                 function(data){
-                    console.log("send to bbeeg : success");
-                    if (eegUploader != null) {
-                        eegUploader.setData({extension: eegUploader.getCurrentFileExtension()});
-                        eegUploader.setAction('/content/content/' + data.id + '/' + 'EEG');
-
-                        eegUploader.submit(function () {
-
-                            if (videoUploader != null) {
-                                videoUploader.setData({extension: videoUploader.getCurrentFileExtension()});
-                                videoUploader.setAction('/content/content/' + data.id + '/' + 'EEG');
-
-                                videoUploader.submit(function () {
-                                    $("#confirmationDialog").dialog('open');
-                                    setTimeout(function(){
-                                        $("#confirmationDialog").dialog('close');
-                                        window.location.href = "/content/" + data.id + "/view.html";
-                                    }, 2000);
-                                });
-                            }
-
-                        });
-                    }
+                    sendEegSettings(data.id, launchUploads);
                 }
             );
 

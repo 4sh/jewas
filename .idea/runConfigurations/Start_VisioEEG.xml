@@ -3,7 +3,7 @@
     <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
     <option name="MAIN_CLASS_NAME" value="fr.fsh.visioeeg.Main" />
     <option name="VM_PARAMETERS" value="" />
-    <option name="PROGRAM_PARAMETERS" value=" -eegRepository $USER_HOME$/.visio/eegs/" />
+    <option name="PROGRAM_PARAMETERS" value=" -eegRepository $USER_HOME$/.visio/eegs/ -bbeegRootUrl http://localhost:8086" />
     <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
     <option name="ALTERNATIVE_JRE_PATH" value="" />
@@ -12,6 +12,11 @@
     <option name="PASS_PARENT_ENVS" value="true" />
     <module name="VisioEEG" />
     <envs />
+    <RunnerSettings RunnerId="Debug">
+      <option name="DEBUG_PORT" value="51936" />
+      <option name="TRANSPORT" value="0" />
+      <option name="LOCAL" value="true" />
+    </RunnerSettings>
     <RunnerSettings RunnerId="JavaRebel">
       <option name="bootstrapPath" />
       <option name="jrebelArgs" value="" />
@@ -30,6 +35,7 @@
       <option name="LOCAL" value="true" />
     </RunnerSettings>
     <RunnerSettings RunnerId="Run" />
+    <ConfigurationWrapper RunnerId="Debug" />
     <ConfigurationWrapper RunnerId="Run" />
     <method />
   </configuration>
