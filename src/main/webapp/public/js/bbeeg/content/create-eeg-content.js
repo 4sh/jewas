@@ -64,6 +64,39 @@ function EegContentCreator(eegUploaderId, videoUploaderId) {
         });
     }
 
+    function getMontages() {
+        var montages = [];
+
+        $('.montage').each(
+            function (montageIndex, montageElt) {
+                var montage = {signalsToDisplay:[], operations: []};
+
+                var signalsToDisplay = $(montageElt).find('.montage-signalsToDisplay')[0].value.split(',');
+                montage.signalsToDisplay = signalsToDisplay;
+
+                $(montageElt).find('.montage-operation').each(
+                    function (operationIndex, operationElt) {
+                        var s1 = $(operationElt).find('.montage-operation-s1')[0].value;
+                        var operator = $(operationElt).find('.montage-operation-operator')[0].value;
+                        var s2 = $(operationElt).find('.montage-operation-s2')[0].value;
+
+                        var operation = {'s1': s1,
+                            'operator': operator,
+                            's2': s2
+                        };
+
+                        montage.operations.push(operation);
+                    }
+                );
+
+                montages.push(montage);
+            }
+        );
+
+console.log("montages", montages);
+        return montages;
+    }
+
     function getEegSettings() {
         var settings = {};
 
@@ -71,6 +104,7 @@ function EegContentCreator(eegUploaderId, videoUploaderId) {
         settings.eegStop = $('#eegStop')[0].value;
         settings.zoom = $('#zoom')[0].value;
         settings.frameDuration = $('#frameDuration')[0].value;
+        settings.montages = getMontages();
 
         return settings;
     }
@@ -78,8 +112,10 @@ function EegContentCreator(eegUploaderId, videoUploaderId) {
     function sendEegSettings(contentId, callAfter) {
         var eegSettings = getEegSettings();
 
-        $.put('/content/eeg/settings/' + contentId,
-            eegSettings,
+        // Note the text is set as a query parameter because if set in data, then get an exception server side.
+        $.put('/content/eeg/settings/' + contentId + '?text='+JSON.stringify(eegSettings),
+            null,
+            //eegSettings,
             function(data){
                 callAfter(contentId);
             }

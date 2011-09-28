@@ -12,6 +12,7 @@ import jewas.http.PatternUriPathMatcher;
 import jewas.http.RequestHandler;
 import jewas.http.data.BodyParameters;
 import jewas.http.impl.AbstractRequestHandler;
+import jewas.json.Json;
 
 /**
  * @author driccio
@@ -40,13 +41,16 @@ public class CreateEegSettingsRoute extends AbstractRoute {
     @Override
     protected RequestHandler onMatch(HttpRequest request, Parameters parameters) {
         final ObjectId qo = toQueryObject(parameters, ObjectId.class);
+        final TextQueryObject tqo = toQueryObject(parameters, TextQueryObject.class);
 
         return new AbstractRequestHandler() {
             @Override
             public void onReady(HttpRequest request, BodyParameters bodyParameters) {
                 super.onReady(request, bodyParameters);
 
-                EegSettings eegSetting = toContentObject(bodyParameters, EegSettings.class);
+                
+                EegSettings eegSetting = (EegSettings) Json.instance().fromJsonString(tqo.text(), EegSettings.class);
+//EegSettings eegSetting = toContentObject(bodyParameters, EegSettings.class);
 
                 eegResource.updateEegSettings(qo.id(), eegSetting);
 
