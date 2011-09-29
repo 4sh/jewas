@@ -1,6 +1,13 @@
 function EegContentCreator(eegUploaderId, videoUploaderId) {
+    /* ***************************************************************************************************************
+     *  Private attributes
+     *****************************************************************************************************************/
     var eegUploader;
     var videoUploader;
+
+    /* ***************************************************************************************************************
+     *  Private methods
+     *****************************************************************************************************************/
 
     function loadDomains() {
         $.getJSON(
@@ -80,6 +87,8 @@ function EegContentCreator(eegUploaderId, videoUploaderId) {
                         var operator = $(operationElt).find('.montage-operation-operator')[0].value;
                         var s2 = $(operationElt).find('.montage-operation-s2')[0].value;
 
+                        console.log("operator", operator);
+
                         var operation = {'s1': s1,
                             'operator': operator,
                             's2': s2
@@ -93,7 +102,6 @@ function EegContentCreator(eegUploaderId, videoUploaderId) {
             }
         );
 
-console.log("montages", montages);
         return montages;
     }
 
@@ -146,6 +154,37 @@ console.log("montages", montages);
         }
     }
 
+    /* ***************************************************************************************************************
+     *  Public methods
+     *****************************************************************************************************************/
+
+    this.addMontage = function (container) {
+        var montage = $("#montageItemTemplate").tmpl(null);
+        montage.appendTo(container);
+        this.addMontageOperation(montage);
+    };
+
+    this.deleteMontage = function (element) {
+        $(element).remove();
+    };
+
+    this.addMontageOperation = function (container) {
+        var montageOperation = $("#montageOperationItemTemplate").tmpl(null);
+
+        var eegContentCreator = this;
+        montageOperation.find('.montage-operation-delete').bind('click', function () { eegContentCreator.deleteMontageOperation(montageOperation)});
+        montageOperation.find('.montage-operation-add').bind('click', function () { eegContentCreator.addMontageOperation(container)});
+
+        montageOperation.appendTo(container);
+    };
+
+    this.deleteMontageOperation = function (element) {
+        $(element).remove();
+    };
+
+    /* ***************************************************************************************************************
+     *  Constructor
+     *****************************************************************************************************************/
 
     (function () {
         loadDomains();

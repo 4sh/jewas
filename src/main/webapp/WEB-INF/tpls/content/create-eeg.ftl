@@ -9,8 +9,10 @@ stylesheets=["/public/css/fileUpload/fileuploader.css"] useChosen=true>
 
 <script type="application/javascript" src="/public/js/bbeeg/content/create-eeg-content.js"></script>
 <script type="text/javascript">
+    var eegContentCreator;
     $( function() {
-        new EegContentCreator("eeg-uploader", "video-uploader");
+        eegContentCreator = new EegContentCreator("eeg-uploader", "video-uploader");
+        eegContentCreator.addMontage($('#montages'));
     });
 </script>
 
@@ -18,6 +20,26 @@ stylesheets=["/public/css/fileUpload/fileuploader.css"] useChosen=true>
     <option value="{{= id}}"> {{= label}} </option>
 </script>
 
+<script id="montageItemTemplate" type="text/x-jquery-tmpl">
+    <div class="montage">
+        <h3>Montage</h3>
+        <p>
+            <label> Entrez les numéros des signaux (0-based) que vous souhaitez afficher (séparés par une virgule)</label>
+            <input class="montage-signalsToDisplay" type="text"/>
+        </p>
+    </div>
+</script>
+
+<script id="montageOperationItemTemplate" type="text/x-jquery-tmpl">
+    <p class="montage-operation">
+        Signal 1 <input class="montage-operation-s1" type="text"/>
+        Operateur (ADD ou SUB) <input class="montage-operation-operator" type="text"/>
+        Signal 2 <input class="montage-operation-s2" type="text"/>
+
+        <button class="montage-operation-delete" type="button"> - </button>
+        <button class="montage-operation-add"  type="button"> + </button>
+    </p>
+</script>
 
 <div id="confirmationDialog" title="Succès">
     <p>Votre contenu a été créé avec succès !</p>
@@ -27,6 +49,8 @@ stylesheets=["/public/css/fileUpload/fileuploader.css"] useChosen=true>
 
 <form id="createContent" action="/content">
 <@createContentHeader/>
+
+    <br />
 
     <p>
     <div id="eeg-uploader">
@@ -42,9 +66,17 @@ stylesheets=["/public/css/fileUpload/fileuploader.css"] useChosen=true>
     </div>
     </p>
 
-    <p><label for="eegStart"> Début de l'EEG </label> <input id="eegStart" type="text"></p>
-    <p><label for="eegStop"> Fin de l'EEG </label> <input id="eegStop" type="text"></p>
-    <p><label for="zoom"> Niveau de zoom </label>
+    <br />
+
+    <h4>Configuration de l'EEG</h4>
+
+    <p>
+        <label for="eegStart"> Début de l'EEG (en s) </label> <input id="eegStart" type="text">
+        <label for="eegStop"> Fin de l'EEG (en s) </label> <input id="eegStop" type="text">
+    </p>
+    <br />
+    <p>
+        <label for="zoom"> Niveau de zoom </label>
         <select id="zoom">
             <option value="1">1</option>
             <option value="2">2</option>
@@ -52,36 +84,22 @@ stylesheets=["/public/css/fileUpload/fileuploader.css"] useChosen=true>
             <option value="8">8</option>
             <option value="16">16</option>
         </select>
-    </p>
-    <p><label for="frameDuration"> Durée de la fenêtre d'affichage </label>
+        <label for="frameDuration"> Durée de la fenêtre d'affichage </label>
         <select id="frameDuration">
             <option value="1000">1s</option>
             <option value="5000">5s</option>
             <option value="10000">10s</option>
-            <option value="20000">20s</option>
+            <option value="20000" selected="true">20s</option>
             <option value="60000">1m</option>
             <option value="300000">5m</option>
             <option value="600000">10m</option>
         </select>
     </p>
 
-    <div class="montage">
-        <p>
-            <label> Entrez les numéros des signaux que vous souhaitez afficher (séparés par une virgule)</label>
-            <input class="montage-signalsToDisplay" type="text">
-        </p>
-        <p class="montage-operation">
-            Signal 1 <input class="montage-operation-s1" type="text">
-            Operateur <input class="montage-operation-operator" type="text">
-            Signal 2 <input class="montage-operation-s2" type="text">
-        </p>
-        <p class="montage-operation">
-            Signal 1 <input class="montage-operation-s1" type="text">
-            Operateur <input class="montage-operation-operator" type="text">
-            Signal 2 <input class="montage-operation-s2" type="text">
-        </p>
-    </div>
+    <br />
+    <div id="montages"></div>
 
+    <br />
     <p><input type="submit" value="Enregistrer" /></p>
 </form>
 
