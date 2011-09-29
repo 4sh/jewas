@@ -27,6 +27,8 @@ def ENV_DEMO_PASS = "4SHbbfr"
 // System property used to define target execution environnment used for deployment
 // See ENV_PROPERTIES map for the possible values to set in this system property
 def TARGET_ENV_SYS_PROPERTY = "deploy.target.env"
+// System property used to skip upload of artefact during start* tasks
+def SKIP_UPLOAD_SYS_PROPERTY = "deploy.skip.upload"
 
 if(!hasProperty("releasesRepoUsername")
         || !hasProperty("releasesRepoPassword")){
@@ -163,20 +165,24 @@ task initSsh << {
 }
 
 task uploadOnDemo(dependsOn: [initSsh, checkPropsForDeployment, test, build]) << {
-    def deployDirectory = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].targetDir
+    if(!System.properties[SKIP_UPLOAD_SYS_PROPERTY] == true){
+        def deployDirectory = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].targetDir
 
-	println "Deploying BB-EEG to $deployDirectory"
+        println "Deploying BB-EEG to $deployDirectory"
 
-    def libFiles = file(libsDir).listFiles().findAll { it =~ "\\.jar\$" }
-    libFiles.each { File f ->
-        println "Uploading ${f.name} (${f.size()/1000000} Mo) ..."
+        def libFiles = file(libsDir).listFiles().findAll { it =~ "\\.jar\$" }
+        libFiles.each { File f ->
+            println "Uploading ${f.name} (${f.size()/1000000} Mo) ..."
 
-        ant.scp2(file: f,
-                remoteTofile: "${ENV_DEMO_USER}:${ENV_DEMO_PASS}@${ENV_DEMO_HOST}:${deployDirectory}/bbeeg.jar",
-                port: 2224,
-                trust: true,
-                verbose: true
-        )
+            ant.scp2(file: f,
+                    remoteTofile: "${ENV_DEMO_USER}:${ENV_DEMO_PASS}@${ENV_DEMO_HOST}:${deployDirectory}/bbeeg.jar",
+                    port: 2224,
+                    trust: true,
+                    verbose: true
+            )
+        }
+    } else {
+        println "Upload of BB-EEG skipped !"
     }
 }
 
