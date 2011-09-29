@@ -43,6 +43,7 @@ def ENV_PROPERTIES = [
            targetDir: ENV_DEMO_DEPLOY_ROOT_PATH+"/nightly",
            bbeegPort: 18086,
            visioEegRootUrl: "http://nightly.visio.bbeeg.4sh.fr",
+           visioEegInternalUrl: "http://localhost:18087",
            contentFileRepository: ENV_DEMO_DEPLOY_ROOT_PATH+"/nightly"+"/contents/",
            h2ServerPort: 18082,
            elasticSearchAdress: "localhost",
@@ -51,6 +52,7 @@ def ENV_PROPERTIES = [
            targetDir: ENV_DEMO_DEPLOY_ROOT_PATH+"/qa",
            bbeegPort: 28086,
            visioEegRootUrl: "http://qa.visio.bbeeg.4sh.fr",
+           visioEegInternalUrl: "http://localhost:28087",
            contentFileRepository: ENV_DEMO_DEPLOY_ROOT_PATH+"/qa"+"/contents/",
            h2ServerPort: 28082,
            elasticSearchAdress: "localhost",
@@ -221,6 +223,7 @@ task startBBEEG(dependsOn: [initSsh, checkPropsForDeployment, startElasticSearch
     def deployDirectory = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].targetDir
     def executionPort = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].bbeegPort
     def visioRootUrl = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].visioEegRootUrl
+    def visioEegInternalUrl = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].visioEegInternalUrl
     def contentFileRepository = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].contentFileRepository
     def h2ServerPort = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].h2ServerPort
     def elasticSearchPort = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].elasticSearchPort
@@ -231,7 +234,8 @@ task startBBEEG(dependsOn: [initSsh, checkPropsForDeployment, startElasticSearch
     // TODO: pass the http port here...
     ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 2224,
 		command: """/usr/lib/jvm/jdk1.7.0/jre/bin/java -Xms256m -Xmx256m -Dfile.encoding=UTF-8 -jar "${deployDirectory}/bbeeg.jar" \
-		    -httpPort ${executionPort} -visioRootUrl ${visioRootUrl} -contentFileRepository ${contentFileRepository} \
+		    -httpPort ${executionPort} -visioRootUrl ${visioRootUrl} -visioEegInternalUrl ${visioEegInternalUrl} \
+		    -contentFileRepository ${contentFileRepository} \
 		    -h2ServerPort ${h2ServerPort} -elasticSearchAdress ${elasticSearchAdress} -elasticSearchPort ${elasticSearchPort} \
 		    > "${deployDirectory}/bbeeg.log" 2> "${deployDirectory}/bbeeg.err.log" \
 		    & echo \$! > "${deployDirectory}/bbeeg.pid" """,

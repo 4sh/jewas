@@ -65,7 +65,7 @@ public class CreateContentOfEegRoute extends AbstractRoute {
                     System.out.println(e.getMessage());
                 }
 
-                String url = BBEEGConfiguration.INSTANCE.cliOptions().visioRootUrl() + "/eeg/" + qo.id();
+                String url = BBEEGConfiguration.INSTANCE.cliOptions().visioEegInternalUrl() + "/eeg/" + qo.id();
 
                 if ("edf".equals(fqo.extension())) {
                     url += EDF_FILE_URL;

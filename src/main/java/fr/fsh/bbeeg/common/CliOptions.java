@@ -9,6 +9,9 @@ public class CliOptions {
     @Parameter(names = "-visioRootUrl", description = "Root URL of the EEG visualizer", required = true)
     private String visioRootUrl;
 
+    @Parameter(names = "-visioEegInternalUrl", description = "Internal URL of the EEG visualizer", required = true)
+    private String visioEegInternalUrl;
+
     @Parameter(names = "-contentFileRepository", description = "Repository of content files", required = true)
     private String contentFileRepository;
 
@@ -30,6 +33,10 @@ public class CliOptions {
     }
 
     public String visioRootUrl(){
+        return this.visioRootUrl;
+    }
+
+    public String visioEegInternalUrl(){
         return this.visioRootUrl;
     }
 
