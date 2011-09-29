@@ -1,18 +1,46 @@
 #userInformations {
     display: inline-block;
     vertical-align: top;
-    width: 650px;
+   /* width: 580px;*/
 }
 
 #dashboard {
+	width:609px;
+	height:644px;
+	/* TODO background-image:url('/public/images/bbeeg/background_dashboard.jpg');*/
+	background-image:url('/public/images/bbeeg/background_dashboard.jpg');
+	background-repeat: no-repeat;
+	border:none;
+	padding:12px 25px 27px 24px;
+	color:#fff;
+}
+
+#dashboard h3{
+	height:18px;
+	color:#fff;
+	font-size:13px;
+	padding-bottom:6px;
+}
+
+#dashboard a {
+	color:#ffffff;
+	text-decoration:none;
+}
+#dashboard a:hover {color: #93e4eb;}
+#dashboard a:active {color: #b3feff;}
+
+#dashboard_menu {
+}
+
+#dashboard_menuright{
+	float:right;
+	margin-top:-6px;
 }
 
 .dashboard-group {
-    display: inline-block;
+   display: inline-block;
     vertical-align: top;
-    width: 207px;
-    margin-left: 6px;
-    margin-top: 17px;
+	padding:1px;
 }
 
 .dashboard-group-fullline {
@@ -27,17 +55,48 @@
     clear: both;
 }
 
+#myContentsPanelLastViewed, #myContentsPanelLastAdded, #myContentsPanelPopulars, #myContentsPanelAdvisable {
+    height:256px;
+    width:256px;
+    padding:18px;
+    text-align:left;
+}
+
+#myContentsPanelLastViewed {
+	margin-top:3px;
+	margin-right:17px;
+}
+
+#myContentsPanelLastAdded {
+	margin-top:3px;
+}
+
+#myContentsPanelPopulars {
+	margin-right:17px;
+	margin-top:23px;
+}
+
+#myContentsPanelAdvisable {
+	margin-top:23px;
+}
+
+#user-contents-last-viewed, #user-contents-last-added, #user-contents-populars, #user-contents-advisable {
+	text-align:left;
+	margin-left:25px;
+}
+
+
 #generalInformations {
     display: inline-block;
     vertical-align: top;
-    width: 240px;
-    right: 0px;
+    width: 260px;
+    right: 0;
     float: right;
 }
 
 #generalInformations > div {
-    width: 239px;
-    margin-bottom: 10px;
+  /*  width: 239px;
+    margin-bottom: 10px;*/
     /*padding-left: 5px;*/
     /*border: 1px solid #ccc;*/
 }

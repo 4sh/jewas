@@ -87,17 +87,6 @@ function loadDomains() {
     );
 }
 
-function buildPanels() {
-    $.each(["#myContentsPanelLastAdded", "#myContentsPanelLastViewed", "#myContentsPanelPopulars",
-        "#myLessonsPanel", "#myTestsPanel", "#plateformInformationsPanel", "#domainsPanel", "#myDomainsPanel"],
-        function(index, value){
-            $(value).panel({
-                'collapsible':false
-            });
-        }
-    );
-}
-
 $(
     function() {
         loadUserDomains();
@@ -105,6 +94,5 @@ $(
         loadTotalNumberOfContents();
         loadLastAuthors();
         loadDomains();
-        buildPanels();
     }
 );

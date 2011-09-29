@@ -166,7 +166,7 @@ textarea {
 /*début*/
 .grid {
   zoom: 1;
-  margin-left: -20px;
+  margin-left:0;
 }
 .grid:before, .grid:after {
   display: table;
@@ -180,7 +180,6 @@ textarea {
 [class*="column"] {
   display: inline;
   float: left;
-  margin-left: 20px;
 }
 /*fin*/
 /* -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-*/
@@ -191,6 +190,7 @@ html {
     overflow: visible;
     /* Overide d'un propriété du reset pour éviter d'avoir une scrollbar toujours
     visible même lorsqu'il n'y a pas lieu d'être.*/
+    height:100%;
 }
 
 body {
@@ -200,7 +200,7 @@ body {
     font-size: 13px;
     font-weight: normal;
     line-height: 18px;
-
+    height:100%
 }
 
 header {
@@ -258,30 +258,65 @@ header {
     cursor: pointer;
 }
 
-
 .container {
 	width: 940px;
 	margin-left: auto;
 	margin-right: auto;
-	zoom: 1;
+    min-height: 90.5%;
+    padding-bottom: 35px;
 }
 
 .columnleft {
-  width: 580px;
+    width: 660px;
+    margin-left:5px;
 }
 
 .columnright {
-  width: 340px;
+    width: 340px;
+    margin-right: 5px;
 }
 
-footer {
-	height:25px;
+#columnrighttop {
+    width:260px;
+    height: 355px;
+    overflow: hidden;
+}
+
+.texts_columnright {
+    margin-bottom: 10px;
+    width:260px;
+}
+
+#columnrightbottom {
+    width:260px;
+    height:320px;
+}
+
+.title {
+    background-image:url('/public/images/bbeeg/background_title.jpg');
+    background-repeat: no-repeat;
+    text-align: center;
+}
+
+.sepa_horizontal {
+    background-image: url('/public/images/bbeeg/sepa_horizontal.jpg');
+    background-repeat: repeat-x;
+    height:2px;
+    margin-top:10px;
+    margin-bottom: 5px;
+}
+
+footer{
+    height:35px;
 	background-image:url('/public/images/bbeeg/background_footer.jpg');
 	background-repeat: repeat-x;
-	padding: 10px 0 0 0;
+    padding-top: 10px;
 	font-size: 10px;
     line-height: 15px;
 	text-align:center;
+    position:relative;
+    clear: both;
+    margin-top:-35px;
 }
 
 /*Aspect graphique des liens */
