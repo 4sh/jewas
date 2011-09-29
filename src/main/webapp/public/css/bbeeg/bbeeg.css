@@ -1,5 +1,5 @@
 /* Reset CSS extrait de boostrap */
-/*d�but*/
+/*début*/
 
 html, body {
   margin: 0;
@@ -162,8 +162,8 @@ textarea {
 }
 /*fin*/
 
-/* Cr�ation d'un grille pour le positionnement CSS. Inspir� de boostrap */
-/*d�but*/
+/* Création d'un grille pour le positionnement CSS. Inspiré de boostrap */
+/*début*/
 .grid {
   zoom: 1;
   margin-left: -20px;
@@ -186,10 +186,11 @@ textarea {
 /* -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-*/
 
 /* CSS BBEEG */
-/*Propi�t�s g�n�rales*/
+/*Propiétés générales*/
 html {
-	overflow: visible;
-	/* Overide d'un propri�t� du reset pour �viter d'avoir une scrollbar toujours visible m�me lorsqu'il n'y a pas lieu d'�tre.*/
+    overflow: visible;
+    /* Overide d'un propriété du reset pour éviter d'avoir une scrollbar toujours
+    visible même lorsqu'il n'y a pas lieu d'être.*/
 }
 
 body {
@@ -229,7 +230,7 @@ header {
 #input_recherche {
 	margin-top:-4px;
 	margin-right:4px;
-	margin-left:
+	/* margin-left: */
 }
 
 #recherche_item {
