@@ -125,38 +125,55 @@ public class HttpRequestHandlerTest {
         }
     }
 
+    private static class UploadHandlingRoute extends AbstractRoute {
+        private TemporaryFolder testFolder;
+        public List<String> retrievedFileUpload1Contents = new ArrayList<String>();
+        public List<String> retrievedFileUpload2Contents = new ArrayList<String>();
+        public List<String> retrievedParameters = new ArrayList<String>();
+
+        public UploadHandlingRoute(String uri, TemporaryFolder testFolder){
+            super(HttpMethodMatcher.ALL, uri);
+            this.testFolder = testFolder;
+        }
+
+        @Override
+        protected RequestHandler onMatch(HttpRequest request, Parameters parameters) {
+            return new AbstractRequestHandler() {
+
+                @Override
+                public void onReady(HttpRequest request, BodyParameters parameters) {
+                    final FileQueryObject qo = toContentObject(parameters, FileQueryObject.class);
+                    try {
+                        if(qo.fileupload() != null){
+                            for(int i=0; i<qo.fileupload().count(); i++){
+                                File uploadedFile = testFolder.newFile("uploadedFile");
+                                qo.fileupload().toFile(i, uploadedFile);
+                                retrievedFileUpload1Contents.add(FileUtils.readFileToString(uploadedFile));
+                                uploadedFile.delete();
+                            }
+                        }
+                        if(qo.fileupload2() != null){
+                            for(int i=0; i<qo.fileupload2().count(); i++){
+                                File uploadedFile = testFolder.newFile("uploadedFile");
+                                qo.fileupload2().toFile(i, uploadedFile);
+                                retrievedFileUpload2Contents.add(FileUtils.readFileToString(uploadedFile));
+                                uploadedFile.delete();
+                            }
+                        }
+                    } catch (IOException e) {
+                        throw new RuntimeException("Cannot read uploaded file content", e);
+                    }
+                    retrievedParameters.add(qo.param());
+                    request.respondHtml().content("ok");
+                }
+            };
+        }
+    }
+
     @Test
     public void shouldFileUploadBeHandledCorrectly() throws IOException {
-        final List<String> retrievedFileContentsInRoute = new ArrayList<String>();
-        final List<String> retrievedParameterInRoute = new ArrayList<String>();
-        List<Route> routes = new ArrayList<Route>();
-        restServer.addRoutes(
-                new AbstractRoute(HttpMethodMatcher.ALL, new PatternUriPathMatcher("/foo")) {
-                    @Override
-                    protected RequestHandler onMatch(HttpRequest request, Parameters parameters) {
-                        return new AbstractRequestHandler() {
-
-                            @Override
-                            public void onReady(HttpRequest request, BodyParameters parameters) {
-                                final FileQueryObject qo = toContentObject(parameters, FileQueryObject.class);
-                                try {
-                                    File uploadedFile = testFolder.newFile("uploadedFile");
-                                    qo.fileupload().toFile(uploadedFile);
-                                    retrievedFileContentsInRoute.add(FileUtils.readFileToString(uploadedFile));
-                                    File uploadedFile2 = testFolder.newFile("uploadedFile2");
-                                    qo.fileupload2().toFile(uploadedFile2);
-                                    retrievedFileContentsInRoute.add(FileUtils.readFileToString(uploadedFile2));
-                                } catch (IOException e) {
-                                    throw new RuntimeException("Cannot read uploaded file content", e);
-                                }
-                                retrievedParameterInRoute.add(qo.param());
-                                request.respondHtml().content("ok");
-                            }
-                        };
-                    }
-                }
-        );
-
+        UploadHandlingRoute uploadRoute = new UploadHandlingRoute("/foo", testFolder);
+        restServer.addRoutes(uploadRoute);
 
         File fileToUpload = new File(jewas.util.file.Files.getResourceFromPath(this.getClass(), "jewas/upload/rest-assured-khelg-2011.pdf").getFile());
         File fileToUpload2 = new File(jewas.util.file.Files.getResourceFromPath(this.getClass(), this.getClass().getCanonicalName().replaceAll("\\.", "/")+".class").getFile());
@@ -168,12 +185,15 @@ public class HttpRequestHandlerTest {
         when().
                 post("/foo");
 
-        assertThat(retrievedFileContentsInRoute.size(), is(equalTo(2)));
-        assertThat(retrievedFileContentsInRoute.get(0), is(equalTo(FileUtils.readFileToString(fileToUpload))));
-        assertThat(retrievedFileContentsInRoute.get(1), is(equalTo(FileUtils.readFileToString(fileToUpload2))));
+        assertThat(uploadRoute.retrievedFileUpload1Contents.size(), is(equalTo(1)));
+        assertThat(uploadRoute.retrievedFileUpload2Contents.size(), is(equalTo(1)));
+        assertThat(uploadRoute.retrievedFileUpload1Contents.get(0).length(), is(equalTo(FileUtils.readFileToString(fileToUpload).length())));
+        assertThat(uploadRoute.retrievedFileUpload1Contents.get(0), is(equalTo(FileUtils.readFileToString(fileToUpload))));
+        assertThat(uploadRoute.retrievedFileUpload2Contents.get(0).length(), is(equalTo(FileUtils.readFileToString(fileToUpload2).length())));
+        assertThat(uploadRoute.retrievedFileUpload2Contents.get(0), is(equalTo(FileUtils.readFileToString(fileToUpload2))));
 
-        assertThat(retrievedParameterInRoute.size(), is(equalTo(1)));
-        assertThat(retrievedParameterInRoute.get(0), is(equalTo("foo")));
+        assertThat(uploadRoute.retrievedParameters.size(), is(equalTo(1)));
+        assertThat(uploadRoute.retrievedParameters.get(0), is(equalTo("foo")));
     }
 
     @Test
@@ -211,33 +231,8 @@ public class HttpRequestHandlerTest {
 
     @Test
     public void shouldMultipleFileUploadsInParametersBeHandledCorrectlyInContentObjects() throws IOException {
-        final List<String> retrievedFileContentsInRoute = new ArrayList<String>();
-        List<Route> routes = new ArrayList<Route>();
-        restServer.addRoutes(
-                new AbstractRoute(HttpMethodMatcher.ALL, new PatternUriPathMatcher("/foo")) {
-                    @Override
-                    protected RequestHandler onMatch(HttpRequest request, Parameters parameters) {
-                        return new AbstractRequestHandler() {
-
-                            @Override
-                            public void onReady(HttpRequest request, BodyParameters parameters) {
-                                FileQueryObject valuedObject = toContentObject(parameters, FileQueryObject.class);
-                                try {
-                                    for(int i=0; i<valuedObject.fileupload().count(); i++){
-                                        File uploadedFile = testFolder.newFile("uploadedFile");
-                                        valuedObject.fileupload().toFile(i, uploadedFile);
-                                        retrievedFileContentsInRoute.add(FileUtils.readFileToString(uploadedFile));
-                                        uploadedFile.delete();
-                                    }
-                                } catch (IOException e) {
-                                    throw new RuntimeException("Cannot read uploaded file content", e);
-                                }
-                                request.respondHtml().content("ok");
-                            }
-                        };
-                    }
-                }
-        );
+        UploadHandlingRoute uploadRoute = new UploadHandlingRoute("/foo", testFolder);
+        restServer.addRoutes(uploadRoute);
 
         File fileToUpload = new File(jewas.util.file.Files.getResourceFromPath(this.getClass(), "jewas/upload/rest-assured-khelg-2011.pdf").getFile());
         File fileToUpload2 = new File(jewas.util.file.Files.getResourceFromPath(this.getClass(), this.getClass().getCanonicalName().replaceAll("\\.", "/")+".class").getFile());
@@ -248,9 +243,12 @@ public class HttpRequestHandlerTest {
         when().
                 post("/foo");
 
-        assertThat(retrievedFileContentsInRoute.size(), is(equalTo(2)));
-        assertThat(retrievedFileContentsInRoute.get(0), is(equalTo(FileUtils.readFileToString(fileToUpload))));
-        assertThat(retrievedFileContentsInRoute.get(1), is(equalTo(FileUtils.readFileToString(fileToUpload2))));
+        assertThat(uploadRoute.retrievedFileUpload1Contents.size(), is(equalTo(2)));
+        assertThat(uploadRoute.retrievedFileUpload2Contents.size(), is(equalTo(0)));
+        assertThat(uploadRoute.retrievedFileUpload1Contents.get(0).length(), is(equalTo(FileUtils.readFileToString(fileToUpload).length())));
+        assertThat(uploadRoute.retrievedFileUpload1Contents.get(0), is(equalTo(FileUtils.readFileToString(fileToUpload))));
+        assertThat(uploadRoute.retrievedFileUpload1Contents.get(1).length(), is(equalTo(FileUtils.readFileToString(fileToUpload2).length())));
+        assertThat(uploadRoute.retrievedFileUpload1Contents.get(1), is(equalTo(FileUtils.readFileToString(fileToUpload2))));
     }
 
     @Test
