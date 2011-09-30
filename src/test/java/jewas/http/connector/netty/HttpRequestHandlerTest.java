@@ -252,6 +252,23 @@ public class HttpRequestHandlerTest {
     }
 
     @Test
+    public void shouldFileUploadsWithParticularSizeBeHandledCorrectlyInContentObjects() throws IOException {
+        UploadHandlingRoute uploadRoute = new UploadHandlingRoute("/foo", testFolder);
+        restServer.addRoutes(uploadRoute);
+
+        File fileToUpload = new File(jewas.util.file.Files.getResourceFromPath(this.getClass(), "jewas/http/staticResources/problematicResource.jpg").getFile());
+
+        given().
+                multiPart("fileupload", fileToUpload, ContentType.IMG_JPG.value()).
+        when().
+                post("/foo");
+
+        assertThat(uploadRoute.retrievedFileUpload1Contents.size(), is(equalTo(1)));
+        assertThat(uploadRoute.retrievedFileUpload1Contents.get(0).length(), is(equalTo(FileUtils.readFileToString(fileToUpload).length())));
+        assertThat(uploadRoute.retrievedFileUpload1Contents.get(0), is(equalTo(FileUtils.readFileToString(fileToUpload))));
+    }
+
+    @Test
     public void shouldRequestHandlerCallbacksBeCalledOnlyOnceWithQueryParams(){
         RememberingCallsRoute rememberingCallsRoute = new RememberingCallsRoute("/rememberCall");
         restServer.addRoutes(rememberingCallsRoute);
