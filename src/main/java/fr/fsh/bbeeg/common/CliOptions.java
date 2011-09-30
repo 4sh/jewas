@@ -37,7 +37,7 @@ public class CliOptions {
     }
 
     public String visioEegInternalUrl(){
-        return this.visioRootUrl;
+        return this.visioEegInternalUrl;
     }
 
     public String contentFileRepository() {
