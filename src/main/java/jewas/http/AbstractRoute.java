@@ -11,6 +11,10 @@ public abstract class AbstractRoute implements Route {
 	private final UriPathMatcher pathMatcher;
 	private final static Pattern URI_PATTERN = Pattern.compile("^(/|(?:/([\\w\\.\\_\\-\\d]+))*)/*$");
 
+    public AbstractRoute(HttpMethodMatcher methodMatcher, String path){
+        this(methodMatcher, new PatternUriPathMatcher(path));
+    }
+
 	public AbstractRoute(HttpMethodMatcher methodMatcher,
 			UriPathMatcher pathMatcher) {
 		super();
