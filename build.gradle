@@ -169,7 +169,7 @@ task initSsh << {
 }
 
 task uploadOnDemo(dependsOn: [initSsh, checkPropsForDeployment, test, build]) << {
-    if(!(System.properties[SKIP_UPLOAD_SYS_PROPERTY] == true)){
+    if(!"true".equals(System.properties[SKIP_UPLOAD_SYS_PROPERTY])){
         def deployDirectory = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].targetDir
 
         println "Deploying BB-EEG to $deployDirectory"
