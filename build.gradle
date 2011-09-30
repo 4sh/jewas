@@ -44,6 +44,7 @@ repositories {
     mavenRepo urls: ["http://repo.4sh.fr/libs-release/"]
     // for rest assured snapshot
     mavenRepo urls: ["http://oss.sonatype.org/content/repositories/snapshots/"]
+    flatDir name: 'testLocalRepository', dirs: 'src/test/testRepository/'
 
 }
 
@@ -65,6 +66,7 @@ dependencies {
             //[group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.0.3']
     )
     testRuntime 'net.sourceforge.cobertura:cobertura:1.9.4.1'
+    testRuntime name:"resourcesInJar"
     // to use WebDav protocol on upload
     deployerJars "org.apache.maven.wagon:wagon-webdav-jackrabbit:1.0"
 }
