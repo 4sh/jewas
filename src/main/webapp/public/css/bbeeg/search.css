@@ -20,7 +20,7 @@
 }
 
 .content-result {
-    margin: 10px;
+   /*margin: 10px;*/
 }
 
 .content-result-title {
@@ -57,4 +57,49 @@ img.spinner {
 #ui-datepicker-div {
     /* Overriding datepicker z-index to display it above select menu */
     z-index: 20 !important;
+}
+
+.search_result {
+    width: 870px;
+    height: 60px;
+    border-radius: 10px;
+    margin-bottom: 5px;
+    padding-left: 10px;
+    padding-top: 15px;
+}
+
+.unpair_result {
+    background-color:#fcfcfc;
+}
+
+.pair_result {
+    background-color: #dfdfdf;
+}
+
+.content_type, .lesson_type, .test_type {
+    border-left:  20px solid;
+}
+
+.content_type {
+    border-color: #7f203b;
+}
+
+.lesson_type {
+    border-color: #1099a3;
+}
+
+.test_type {
+    border-color: #7fa62d;
+}
+
+.content_type:hover {
+    background-color: #cca5b0;
+}
+
+.lesson_type:hover {
+    background-color: #c1dddf;
+}
+
+.test_type:hover {
+    background-color: #c3ccae;
 }
