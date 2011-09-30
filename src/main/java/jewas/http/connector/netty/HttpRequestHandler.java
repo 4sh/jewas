@@ -1,24 +1,20 @@
 package jewas.http.connector.netty;
 
 import jewas.http.ContentType;
-import jewas.http.HttpMethod;
 import jewas.http.HttpStatus;
 import jewas.http.RequestHandler;
-import jewas.http.data.*;
-import jewas.http.data.HttpData;
+import jewas.http.data.BodyParameters;
+import jewas.http.data.NamedString;
 import jewas.http.impl.DefaultHttpRequest;
-import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.*;
 import org.jboss.netty.handler.codec.http.*;
-import org.jboss.netty.handler.codec.http.FileUpload;
 import org.jboss.netty.util.CharsetUtil;
 
 import java.io.IOException;
 import java.util.*;
 
 import static org.jboss.netty.handler.codec.http.HttpHeaders.Names.CONTENT_TYPE;
-import static org.jboss.netty.handler.codec.http.HttpHeaders.is100ContinueExpected;
 import static org.jboss.netty.handler.codec.http.HttpResponseStatus.CONTINUE;
 import static org.jboss.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
@@ -273,16 +269,10 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
                         e1.getMessage() + "\r\n");
                 return;
             }
-            if (value.length() > 100) {
-                System.out.println("\r\nBODY Attribute: " +
-                        attribute.getHttpDataType().name() + ": " +
-                        attribute.getName() + " data too long\r\n");
-            } else {
-                // TODO : Manage NamedString with multiple values for content parameters ???
-                NamedString stringData = new NamedString(data.getName(), value);
-                this.handler.offer(this.request, stringData);
-                this.contentData.add(stringData);
-            }
+            // TODO : Manage NamedString with multiple values for content parameters ???
+            NamedString stringData = new NamedString(data.getName(), value);
+            this.handler.offer(this.request, stringData);
+            this.contentData.add(stringData);
         } else {
             System.out.println("\r\nBODY FileUpload: " +
                     data.getHttpDataType().name() + ": " + data.toString() +
