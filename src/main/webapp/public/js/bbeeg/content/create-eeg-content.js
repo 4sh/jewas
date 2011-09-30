@@ -79,7 +79,9 @@ function EegContentCreator(eegUploaderId, videoUploaderId) {
                 var montage = {signalsToDisplay:[], operations: []};
 
                 var signalsToDisplay = $(montageElt).find('.montage-signalsToDisplay')[0].value.split(',');
-                montage.signalsToDisplay = signalsToDisplay;
+                if (!!signalsToDisplay) {
+                    montage.signalsToDisplay = signalsToDisplay;
+                }
 
                 $(montageElt).find('.montage-operation').each(
                     function (operationIndex, operationElt) {
@@ -87,18 +89,20 @@ function EegContentCreator(eegUploaderId, videoUploaderId) {
                         var operator = $(operationElt).find('.montage-operation-operator')[0].value;
                         var s2 = $(operationElt).find('.montage-operation-s2')[0].value;
 
-                        console.log("operator", operator);
+                        if (!!s1 && !!operator && !!s2) {
+                            var operation = {'s1': s1,
+                                'operator': operator,
+                                's2': s2
+                            };
 
-                        var operation = {'s1': s1,
-                            'operator': operator,
-                            's2': s2
-                        };
-
-                        montage.operations.push(operation);
+                            montage.operations.push(operation);
+                        }
                     }
                 );
 
-                montages.push(montage);
+                if (montage.signalsToDisplay.length !== 0 && montage.operations.length !== 0) {
+                    montages.push(montage);
+                }
             }
         );
 
@@ -109,7 +113,17 @@ function EegContentCreator(eegUploaderId, videoUploaderId) {
         var settings = {};
 
         settings.eegStart = $('#eegStart')[0].value;
+
+        if (!settings.eegStart) {
+            settings.eegStart = 0;
+        }
+
         settings.eegStop = $('#eegStop')[0].value;
+
+        if (!settings.eegStop) {
+            settings.eegStop = -1;
+        }
+
         settings.zoom = $('#zoom')[0].value;
         settings.frameDuration = $('#frameDuration')[0].value;
         settings.montages = getMontages();
