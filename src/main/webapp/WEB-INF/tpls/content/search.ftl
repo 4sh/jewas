@@ -382,7 +382,7 @@
     <button id="searchNext"><img src="/public/images/ajax/indicator.gif" class="spinner" />Résultats suivants</button>
 </script>
 <script id="contentLineResult" type="text/x-jquery-tmpl">
-    <div id="item-{{= id}}" class="content-result">
+    <div id="item-{{= id}}" class="content-result search_result pair_result content_type">
         <div class="content-result-title"><a href="/content/{{= id}}/view.html">{{= title}}</a></div>
         <div class="content-result-author">{{= author.name}}</div>
         <div class="content-result-creation-date">{{= creationDate}}</div>
