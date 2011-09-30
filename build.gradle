@@ -205,7 +205,13 @@ task startElasticSearch(dependsOn: [initSsh, checkPropsForDeployment]) << {
     ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 2224,
 		command: """kill -9 \$(cat "${deployDirectory}/elasticsearch.pid")""", trust: true, failonerror: false)
 
-    // Waiting 5s after start of elastic search
+    // Waiting 5s after kill of elastic search
+    Object.sleep(5000)
+
+    ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 2224,
+            command: """rm -R ${deployDirectory}/elasticsearch/data""", trust: true, failonerror: false)
+
+    // Waiting 5s after remove data folder of elastic search
     Object.sleep(5000)
 
     ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 2224,
