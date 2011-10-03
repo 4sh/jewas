@@ -1,9 +1,6 @@
 package jewas.util.file;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URL;
 import java.util.Enumeration;
 
@@ -130,6 +127,17 @@ public class Files {
         stream.close();
 
         return baos.toByteArray();
+    }
+
+    public static long copyStreamTo(InputStream in, OutputStream out) throws IOException {
+        byte[] buf = new byte[8192];
+        long count = 0;
+        int bytesRead = 0;
+        while(-1 != (bytesRead = in.read(buf))) {
+            out.write(buf, 0, bytesRead);
+            count += bytesRead;
+        }
+        return count;
     }
 
     /**
