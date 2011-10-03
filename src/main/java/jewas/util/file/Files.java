@@ -3,6 +3,7 @@ package jewas.util.file;
 import java.io.*;
 import java.net.URL;
 import java.util.Enumeration;
+import java.util.Stack;
 
 /**
  * Created by IntelliJ IDEA.
@@ -147,5 +148,25 @@ public class Files {
      */
     public static String getStringFromStream(InputStream stream) throws IOException {
         return new String(getBytesFromStream(stream));
+    }
+
+    /**
+     * Will create any intermediate non existing directory leading to f
+     */
+    public static void touchFileWithParents(File f) throws IOException {
+        Stack<File> filesToCreate = new Stack<File>();
+        File currentFile = f;
+        while(!currentFile.exists()){
+            filesToCreate.push(currentFile);
+            currentFile = currentFile.getParentFile();
+        }
+        while(!filesToCreate.empty()){
+            currentFile = filesToCreate.pop();
+            if(filesToCreate.empty()){ // Last chunk of path : it will be a file
+                currentFile.createNewFile();
+            } else { // otherwise, it will be a folder
+                currentFile.mkdir();
+            }
+        }
     }
 }
