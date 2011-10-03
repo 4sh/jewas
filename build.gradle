@@ -251,7 +251,9 @@ task startBBEEG(dependsOn: [initSsh, checkPropsForDeployment, startElasticSearch
     ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 2224,
 		command: """kill -9 \$(cat "${deployDirectory}/bbeeg.pid")""", trust: true, failonerror: false)
     ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 2224,
-		command: """rm -Rf ${cachedStaticResourcesRootDirectory} && mkdir ${cachedStaticResourcesRootDirectory}""", trust: true, failonerror: true)
+		command: """rm -Rf ${cachedStaticResourcesRootDirectory}""", trust: true, failonerror: false)
+    ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 2224,
+		command: """mkdir ${cachedStaticResourcesRootDirectory}""", trust: true, failonerror: true)
     // TODO: pass the http port here...
     ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 2224,
 		command: """/usr/lib/jvm/jdk1.7.0/jre/bin/java ${javaOpts} -jar "${deployDirectory}/bbeeg.jar" \
