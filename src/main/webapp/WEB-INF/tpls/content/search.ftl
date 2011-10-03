@@ -368,7 +368,7 @@
     <option value="{{= id}}"> {{= label}} </option>
 </script>
 <script id="authorItemTemplate" type="text/x-jquery-tmpl">
-    <option value="{{= id}}"> {{= name}} </option>
+   <option value="{{= id}}">{{= name}} </option>
 </script>
 <script id="contentTypeItemTemplate" type="text/x-jquery-tmpl">
     <option value="{{= id}}"> {{= title}} </option>
@@ -382,48 +382,104 @@
     <button id="searchNext"><img src="/public/images/ajax/indicator.gif" class="spinner" />Résultats suivants</button>
 </script>
 <script id="contentLineResult" type="text/x-jquery-tmpl">
-    <div id="item-{{= id}}" class="content-result search_result pair_result content_type">
-        <div class="content-result-title"><a href="/content/{{= id}}/view.html">{{= title}}</a></div>
-        <div class="content-result-author">{{= author.name}}</div>
-        <div class="content-result-creation-date">{{= creationDate}}</div>
+    <div id="item-{{= id}}" class="content-result search_result content_type">
+        <div class="tab_left"></div>
+        <div class="tab_right"
+        {{if status == 'VALIDATED'}}
+                       style="background-color: #7cbe2e;"
+                    {{else status == 'TO_BE_VALIDATED'}}
+                         style="background-color: #D94F00;"
+                    {{else status == 'TO_BE_DELETED' }}
+                         style="background-color: #7A1818;"
+                    {{else status == 'REJECTED'}}
+                         style="background-color: #ff2d00;"
+                    {{else status == 'DRAFT'}}
+                         style="background-color: #222526;"
+                    {{else}}
+                         style="background-color: #dfdfdf"
+                    {{/if}}>
 
-        <#if searchMode != 0>
-            <div class="content-result-status">{{= status}}</div>
-        </#if>
+            <#if searchMode != 0>
+                <div class="content-result-status"><span
+                    {{if status == 'VALIDATED'}}
+                        class="label validated"
+                    {{else status == 'TO_BE_VALIDATED'}}
+                        class="label to_validated"
+                    {{else status == 'TO_BE_DELETED' }}
+                        class="label to_deleted"
+                    {{else status == 'REJECTED'}}
+                        class="label rejected"
+                    {{else}}
+                        class="label"
+                    {{/if}}>
 
-        <#if searchMode == 1>
-            <button type="button"
-                    class="edit-button"
-                    onclick="editContent('item-{{= id}}', {{= id}}, '{{= status}}')"
-                    {{if !(isContentEditable(status))}}
-                        disabled
-                    {{/if}}
-                    >Editer</button>
+                    {{if status == 'VALIDATED'}}
+                        Validé
+                    {{else status == 'TO_BE_VALIDATED'}}
+                        A&nbsp;Valider
+                    {{else status == 'TO_BE_DELETED' }}
+                        A&nbsp;Supprimer
+                    {{else status == 'REJECTED'}}
+                         Rejeté
+                    {{else status == 'DRAFT'}}
+                         Brouillon
+                    {{else}}
+                        = "Error"
+                    {{/if}}</span></div>
+            </#if>
+        </div>
+        <div class="left_part">
+            <div class="icon_type"></div>
+            <div class="content-result-title"><a href="/content/{{= id}}/view.html">{{= title}}</a></div>
+            <div class="content-result-author"><img src="/public/images/bbeeg/author.png"/> {{= author.name}}</div>
+            <div class="content-result-creation-date"><img src="/public/images/bbeeg/calendar.png"/> {{= creationDate}}</div>
+        </div>
 
-            <button type="button"
-                    class="publish-button"
-                    onclick="publishContent('item-{{= id}}', {{= id}}, '{{= status}}')"
-                    {{if status != 'DRAFT'}}
-                        disabled
-                    {{/if}}
-                    >Publier</button>
-            <button type="button"
-                    class="delete-button"
-                    onclick="deleteContent('item-{{= id}}', {{= id}}, '{{= status}}')"
-                    {{if status == 'TO_BE_DELETED'}}
-                        disabled
-                    {{/if}}
-                    >Supprimer</button>
-        </#if>
+        <div class="right_part">
+            <div class="texts_zone">
+                <div class="content-result-description">{{= description}}</div>
+                <div class="keywords"><span class="label keyword_content">a dynamiser</span><span class="label keyword_content">a dynamiser</span><span class="label keyword_content">a dynamiser</span><span class="label keyword_content">a dynamiser</span></div>
+            </div>
+            <div id="settings_menu">
+                <#if searchMode == 1>
+                    <img src="/public/images/bbeeg/edit.png" alt="Editer"
+                            class="edit-button hand_cursor settings_item"
+                            onclick="editContent('item-{{= id}}', {{= id}}, '{{= status}}')"
+                            {{if !(isContentEditable(status))}}
+                                disabled
+                            {{/if}}
+                            />
+
+                    <img src="/public/images/bbeeg/publish.png" alt="Publier"
+                            class="publish-button hand_cursor settings_item"
+                            onclick="publishContent('item-{{= id}}', {{= id}}, '{{= status}}')"
+                            {{if status != 'DRAFT'}}
+                                disabled
+                            {{/if}}
+                            />
+                    <img src="/public/images/bbeeg/delete.png" alt="Supprimer"
+                            class="delete-button hand_cursor settings_item"
+                            onclick="deleteContent('item-{{= id}}', {{= id}}, '{{= status}}')"
+                            {{if status == 'TO_BE_DELETED'}}
+                                disabled
+                            {{/if}}
+                            />
+                </#if>
+            </div>
 
 
-        <#if searchMode == 2>
-            <button type="button" onclick="acceptContent('item-{{= id}}', {{= id}}, '{{= status}}')">Accepter</button>
-            <button type="button" onclick="rejectContent('item-{{= id}}', {{= id}}, '{{= status}}')">Rejeter</button>
-        </#if>
-        <div class="content-result-description">{{= description}}</div>
+            <#if searchMode == 2>
+                <button type="button" onclick="acceptContent('item-{{= id}}', {{= id}}, '{{= status}}')">Accepter</button>
+                <button type="button" onclick="rejectContent('item-{{= id}}', {{= id}}, '{{= status}}')">Rejeter</button>
+            </#if>
+
+        </div>
     </div>
+
+
 </script>
+
+
 
 <#if searchMode == 2>
 <div style="visibility: hidden">
