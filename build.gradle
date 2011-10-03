@@ -46,6 +46,7 @@ def ENV_PROPERTIES = [
            bbeegPort: 18086,
            visioEegRootUrl: "http://nightly.visio.bbeeg.4sh.fr",
            visioEegInternalUrl: "http://127.0.0.1:18087",
+           cachedStaticResourcesRootDirectory: ENV_DEMO_DEPLOY_ROOT_PATH+"/nightly/cachedStaticResources",
            contentFileRepository: ENV_DEMO_DEPLOY_ROOT_PATH+"/nightly"+"/contents/",
            h2ServerPort: 18082,
            elasticSearchAdress: "127.0.0.1",
@@ -55,6 +56,7 @@ def ENV_PROPERTIES = [
            bbeegPort: 28086,
            visioEegRootUrl: "http://qa.visio.bbeeg.4sh.fr",
            visioEegInternalUrl: "http://127.0.0.1:28087",
+           cachedStaticResourcesRootDirectory: ENV_DEMO_DEPLOY_ROOT_PATH+"/qa/cachedStaticResources",
            contentFileRepository: ENV_DEMO_DEPLOY_ROOT_PATH+"/qa"+"/contents/",
            h2ServerPort: 28082,
            elasticSearchAdress: "127.0.0.1",
@@ -228,14 +230,16 @@ task startElasticSearch(dependsOn: [initSsh, checkPropsForDeployment]) << {
 }
 
 task startBBEEG(dependsOn: [initSsh, checkPropsForDeployment, startElasticSearch]) << {
-    def deployDirectory = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].targetDir
-    def executionPort = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].bbeegPort
-    def visioRootUrl = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].visioEegRootUrl
-    def visioEegInternalUrl = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].visioEegInternalUrl
-    def contentFileRepository = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].contentFileRepository
-    def h2ServerPort = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].h2ServerPort
-    def elasticSearchPort = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].elasticSearchPort
-    def elasticSearchAdress = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].elasticSearchAdress
+    def targetEnv = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]]
+    def deployDirectory = targetEnv.targetDir
+    def executionPort = targetEnv.bbeegPort
+    def visioRootUrl = targetEnv.visioEegRootUrl
+    def visioEegInternalUrl = targetEnv.visioEegInternalUrl
+    def contentFileRepository = targetEnv.contentFileRepository
+    def h2ServerPort = targetEnv.h2ServerPort
+    def elasticSearchPort = targetEnv.elasticSearchPort
+    def elasticSearchAdress = targetEnv.elasticSearchAdress
+    def cachedStaticResourcesRootDirectory = targetEnv.cachedStaticResourcesRootDirectory
 
     def javaOpts = "-Xms256m -Xmx256m -Dfile.encoding=UTF-8"
 
@@ -246,11 +250,13 @@ task startBBEEG(dependsOn: [initSsh, checkPropsForDeployment, startElasticSearch
 
     ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 2224,
 		command: """kill -9 \$(cat "${deployDirectory}/bbeeg.pid")""", trust: true, failonerror: false)
+    ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 2224,
+		command: """rm -Rf ${cachedStaticResourcesRootDirectory} && mkdir ${cachedStaticResourcesRootDirectory}""", trust: true, failonerror: true)
     // TODO: pass the http port here...
     ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 2224,
 		command: """/usr/lib/jvm/jdk1.7.0/jre/bin/java ${javaOpts} -jar "${deployDirectory}/bbeeg.jar" \
 		    -httpPort ${executionPort} -visioRootUrl ${visioRootUrl} -visioEegInternalUrl ${visioEegInternalUrl} \
-		    -contentFileRepository ${contentFileRepository} \
+		    -contentFileRepository ${contentFileRepository} -cachedStaticResourcesRootDirectory ${cachedStaticResourcesRootDirectory} \
 		    -h2ServerPort ${h2ServerPort} -elasticSearchAdress ${elasticSearchAdress} -elasticSearchPort ${elasticSearchPort} \
 		    > "${deployDirectory}/bbeeg.log" 2> "${deployDirectory}/bbeeg.err.log" \
 		    & echo \$! > "${deployDirectory}/bbeeg.pid" """,

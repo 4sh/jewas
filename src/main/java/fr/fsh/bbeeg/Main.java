@@ -62,8 +62,8 @@ public class Main {
                 new RedirectRoute("/", "/dashboard/dashboard.html"),
                 // Not really a static resource (located in webapp folder) since it is provided
                 // by jewas library. So it must be declared before the StaticResourcesRoute !
-                new SimpleFileRoute("/public/js/jewas/jewas-forms.js", "js/jewas-forms.js"),
-                new StaticResourcesRoute("/public/", "public/"),
+                new SimpleFileRoute("/public/js/jewas/jewas-forms.js", "js/jewas-forms.js", options.cachedStaticResourcesRootDirectory()),
+                new StaticResourcesRoute("/public/", "public/", options.cachedStaticResourcesRootDirectory()),
                 new SimpleHtmlRoute("/dashboard/dashboard.html", "dashboard/dashboard.ftl"),
                 new GetSimpleSearchContent(assembler.contentResource()),
                 new GetSearchScreenRoute(),
