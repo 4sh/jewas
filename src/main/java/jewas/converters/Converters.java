@@ -3,6 +3,8 @@ package jewas.converters;
 import jewas.lang.Objects;
 import jewas.lang.Strings;
 
+import java.util.Date;
+
 public class Converters {
 	@SuppressWarnings("unchecked")
 	public static <T> Converter<String, T> sconverter(final Class<T> clazz) {
@@ -15,6 +17,9 @@ public class Converters {
         if (clazz == Long.class) {
 			return (Converter<String, T>) new LongConverter();
 		}
+        if (clazz == Date.class) {
+            return (Converter<String, T>) new DateConverter();
+        }
 		return new Converter<String, T>() {
 			@Override
 			public T to(String from) {
