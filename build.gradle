@@ -8,6 +8,8 @@ def cobSerFile = "${project.buildDir}/reports/tests/cobertura.ser"
 def srcOriginal = "${sourceSets.main.classesDir}"
 def srcCopy = "${srcOriginal}-copy"
 def COVERAGE_SYS_PROPERTY = "test.coverage.activated"
+// Sysprop allowing to ignore test failures during the build
+def IGNORE_TEST_FAILURES_SYS_PROPERTY = "test.ignore.failures";
 
 if(!hasProperty("releasesRepoUsername")
         || !hasProperty("releasesRepoPassword")){
@@ -34,6 +36,10 @@ gradle.taskGraph.whenReady {taskGraph ->
    } else {
       version = versionBase + '-SNAPSHOT'
    }
+}
+
+test {
+    ignoreFailures = "true".equalsIgnoreCase(System.getProperty(IGNORE_TEST_FAILURES_SYS_PROPERTY))
 }
 
 configurations {
