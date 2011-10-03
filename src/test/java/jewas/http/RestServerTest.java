@@ -10,10 +10,8 @@ import jewas.test.fakeapp.routes.FakePutRoute;
 import jewas.test.fakeapp.routes.SimpleJSONFileRoute;
 import jewas.util.file.Files;
 import junit.framework.Assert;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
+import org.junit.rules.TemporaryFolder;
 
 import java.io.IOException;
 
@@ -32,6 +30,8 @@ public class RestServerTest {
     private static final int SERVER_PORT = 28086;
 
     private RestServer restServer = null;
+    @Rule
+    public TemporaryFolder testFolder = new TemporaryFolder();
 
     public RestServerTest() {
     }
@@ -42,7 +42,7 @@ public class RestServerTest {
         restServer = RestServerFactory.createRestServer(SERVER_PORT);
         restServer.addRoutes(
                 new SimpleJSONFileRoute(),
-                new StaticResourcesRoute("/public/", "jewas/http/staticResources/"),
+                new StaticResourcesRoute("/public/", "jewas/http/staticResources/", testFolder.newFolder("resources")),
                 new FakeDeleteRoute(),
                 new FakePutRoute(),
                 new RedirectRoute("/helloFoo", "/root/toUpperCase/foo"),

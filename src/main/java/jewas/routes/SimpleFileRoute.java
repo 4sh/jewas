@@ -1,31 +1,30 @@
 package jewas.routes;
 
 import jewas.http.*;
-import jewas.http.impl.FileRequestHandler;
-import jewas.template.Templates;
-import jewas.util.file.Files;
 
-import java.io.IOException;
+import java.io.File;
 
 /**
  * Route which will serve a unique file resource from a given url.
  * File will be loaded from the classpath.
  * @author fcamblor
  */
-public class SimpleFileRoute extends AbstractRoute {
+public class SimpleFileRoute extends StaticResourcesRoute {
 
     private String filepath;
 
-    public SimpleFileRoute(String uri, String filepath) {
-        this(HttpMethodMatcher.ALL, new PatternUriPathMatcher(uri), filepath);
+    public SimpleFileRoute(String uri, String filepath, File cachedResourcesFileSystemRootDir) {
+        this(HttpMethodMatcher.ALL, new PatternUriPathMatcher(uri), filepath, cachedResourcesFileSystemRootDir);
     }
 
-    public SimpleFileRoute(HttpMethodMatcher methodMatcher, UriPathMatcher pathMatcher, String filepath) {
-        super(methodMatcher, pathMatcher);
+    public SimpleFileRoute(HttpMethodMatcher methodMatcher, UriPathMatcher pathMatcher, String filepath,
+                           File cachedResourcesFileSystemRootDir) {
+        super(methodMatcher, pathMatcher, null, cachedResourcesFileSystemRootDir);
         this.filepath = filepath;
     }
 
-    protected RequestHandler onMatch(HttpRequest request, Parameters parameters) {
-        return new FileRequestHandler(filepath);
+    @Override
+    protected String currentResourcePath(HttpRequest request, Parameters parameters){
+        return filepath;
     }
 }

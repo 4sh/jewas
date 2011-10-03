@@ -4,7 +4,9 @@ import com.jayway.restassured.RestAssured;
 import jewas.routes.StaticResourcesRoute;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import static com.jayway.restassured.RestAssured.expect;
 
@@ -16,6 +18,8 @@ public class ContentTypesTest {
     private static final int SERVER_PORT = 28086;
 
     private RestServer restServer = null;
+    @Rule
+    public TemporaryFolder testFolder = new TemporaryFolder();
 
     public ContentTypesTest() {
     }
@@ -25,7 +29,7 @@ public class ContentTypesTest {
         // Restserver without any route
         restServer = RestServerFactory.createRestServer(SERVER_PORT);
         restServer.addRoutes(
-                new StaticResourcesRoute("/public/", "jewas/http/staticResources/")
+                new StaticResourcesRoute("/public/", "jewas/http/staticResources/", testFolder.newFolder("resources"))
         );
         restServer.start();
         RestAssured.port = SERVER_PORT;

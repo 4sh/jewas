@@ -3,9 +3,10 @@ package jewas.http.impl;
 import jewas.http.HttpRequest;
 import jewas.http.HttpStatus;
 import jewas.http.RequestHandler;
+import jewas.util.file.Closeables;
 import jewas.util.file.Files;
 
-import java.io.IOException;
+import java.io.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -22,8 +23,15 @@ public class FileRequestHandler extends AbstractRequestHandler {
      */
     String path;
 
-    public FileRequestHandler(String path) {
+    /**
+     *  Directory that will be used to extract files from jar to the filesystem the first
+     *  time it is accessed
+     */
+    File cachedResourcesFileSystemRootDir;
+
+    public FileRequestHandler(File cachedResourcesFileSystemRootDir, String path) {
         this.path = path;
+        this.cachedResourcesFileSystemRootDir = cachedResourcesFileSystemRootDir;
     }
 
     /**
@@ -32,10 +40,26 @@ public class FileRequestHandler extends AbstractRequestHandler {
      */
     @Override
     public void onRequest(HttpRequest request) {
+        File extractedFileInCache = new File(cachedResourcesFileSystemRootDir.getAbsolutePath()+File.separator+path);
+        InputStream classloaderStream = null;
+        OutputStream filesystemStream = null;
         try {
-            request.respondFile().file(Files.getInputStreamFromPath(path));
+            if(!extractedFileInCache.exists()){
+                Files.touchFileWithParents(extractedFileInCache);
+                filesystemStream = new FileOutputStream(extractedFileInCache);
+                classloaderStream = Files.getInputStreamFromPath(path);
+
+                // Let's extract file from classpath...
+                Files.copyStreamTo(classloaderStream, filesystemStream);
+            }
+
+            request.respondFile().file(new FileInputStream(extractedFileInCache));
         } catch (IOException e) {
+            e.printStackTrace();
             request.respondError(HttpStatus.NOT_FOUND);
+        } finally {
+            Closeables.defensiveClose(classloaderStream);
+            Closeables.defensiveClose(filesystemStream);
         }
     }
 }
