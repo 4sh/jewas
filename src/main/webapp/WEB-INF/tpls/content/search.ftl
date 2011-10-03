@@ -222,7 +222,7 @@
 
         var dates = $( "#from, #to" ).datepicker({
 			defaultDate: "",
-            dateFormat: "dd-mm-yy",
+            dateFormat: "yy-mm-dd",
 			changeMonth: true,
 			numberOfMonths: 1,
 			onSelect: function( selectedDate ) {

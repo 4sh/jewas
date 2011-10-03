@@ -17,8 +17,7 @@ import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.*;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortOrder;
 import org.joda.time.DateMidnight;
@@ -36,9 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 import static fr.fsh.bbeeg.content.pojos.SearchMode.values;
-import static org.elasticsearch.index.query.QueryBuilders.termQuery;
-import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
-import static org.elasticsearch.index.query.QueryBuilders.inQuery;
+import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * @author driccio
@@ -437,11 +434,18 @@ public class ContentDao {
         configureFullTextQuery(elasticSearchQuery, query.query());
         configureDomainsQuery(elasticSearchQuery, query.domains());
         configureContentTypeQuery(elasticSearchQuery, query.searchTypes());
-        configureCreationDateFilter(elasticSearchQuery, query.from(), query.to());
 
-        List<Long> contentIds = searchInElasticSearch(query.startingOffset(), query.numberOfContents(), elasticSearchQuery);
+        RangeFilterBuilder rangeFilter = configureCreationDateFilter(query.from(), query.to());
+
+        List<Long> contentIds;
+        if (rangeFilter == null) {
+            contentIds = searchInElasticSearch(query.startingOffset(), query.numberOfContents(), elasticSearchQuery);
+        } else {
+            QueryBuilder filteredQuery = QueryBuilders.filteredQuery(elasticSearchQuery, rangeFilter);
+            contentIds = searchInElasticSearch(query.startingOffset(), query.numberOfContents(), filteredQuery);
+        }
         fetchByIds(contentHeaders, contentIds);
-    }
+   }
 
     private BoolQueryBuilder createElasticSearchQuery(List<Integer> statuses) {
         return boolQuery().must(inQuery(ES_CONTENT_FIELD_STATUS, statuses.toArray()))
@@ -459,7 +463,7 @@ public class ContentDao {
      * @param elasticSearchQuery the elastic search
      * @return a list of ids of matched contents in elastic search
      */
-    private List<Long> searchInElasticSearch(Integer startingOffset, Integer numberOfContents, BoolQueryBuilder elasticSearchQuery) {
+    private List<Long> searchInElasticSearch(Integer startingOffset, Integer numberOfContents, QueryBuilder elasticSearchQuery) {
         SearchResponse sResponse = client.prepareSearch(esContentDao.indexName())
                         .setSearchType(SearchType.DFS_QUERY_AND_FETCH)
                         .setQuery(elasticSearchQuery)
@@ -479,13 +483,23 @@ public class ContentDao {
     }
 
     /**
-     *
-     * @param elasticSearchQuery
-     * @param from
-     * @param to
+     * Returns a RangeFilterBuilder depending on the given range dates. If both dates are <code>null</code>, return <code>null</code>.
+     * @param from the from date filter
+     * @param to   the to date filter
      */
-    private void configureCreationDateFilter(BoolQueryBuilder elasticSearchQuery, Date from, Date to) {
-        //TODO: implement
+    private RangeFilterBuilder configureCreationDateFilter(Date from, Date to) {
+        RangeFilterBuilder rangeFilter = FilterBuilders.rangeFilter("creationDate");
+        if (from != null) {
+            rangeFilter.from(from);
+        }
+        if (to != null) {
+            rangeFilter.to(to);
+        }
+        if (from != null || to != null) {
+            return rangeFilter;
+        } else {
+            return null;
+        }
     }
 
     /**
