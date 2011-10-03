@@ -1,8 +1,10 @@
 package jewas.configuration;
 
+import jewas.util.file.Closeables;
 import jewas.util.file.Files;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 /**
@@ -23,11 +25,15 @@ public class DefaultJewasConfigurationDelegate implements JewasConfigurationDele
     public DefaultJewasConfigurationDelegate(String path) {
         properties = new Properties();
 
+        InputStream is = null;
         try {
-            properties.load(Files.getInputStreamFromPath(path));
+            is = Files.getInputStreamFromPath(path);
+            properties.load(is);
         } catch (IOException e) {
             // FIXME : log a warning here !... Or even throw a non checked exception ???
             System.err.println(e.getMessage());
+        } finally {
+            Closeables.defensiveClose(is);
         }
     }
 

@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Enumeration;
-import java.util.jar.Manifest;
 
 /**
  * Created by IntelliJ IDEA.
@@ -80,9 +79,7 @@ public class Files {
                 }catch(IOException e){
                     classFoundInClasspath = false;
                 } finally{
-                    if(tmpStream != null){
-                        tmpStream.close();
-                    }
+                    Closeables.defensiveClose(tmpStream);
                 }
 
                 if(classFoundInClasspath){
