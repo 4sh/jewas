@@ -56,8 +56,9 @@
 }
 
 .texts_zone {
-    width: 480px;
+    width: 485px;
     float: left;
+    margin-right: 3px;
 }
 
 /* Purpose of this class is to nullify some chzn-choices attributes */
@@ -76,7 +77,7 @@ img.spinner {
     z-index: 20 !important;
 }
 
-#settings_menu {
+.settings_menu {
     width: 15px;
     float: left;
     margin: 0 5px;
@@ -182,18 +183,13 @@ img.spinner {
 }
 
 .label {
-  padding: 1px 3px 2px;
-  background-color: #222526;
   font-size: 9.75px;
   font-weight: bold;
   color: #ffffff;
   text-transform: uppercase;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
-  margin-right: 3px;
 }
 
+/*
 .label.validated {
   background-color: #7cbe2e;
 }
@@ -206,10 +202,23 @@ img.spinner {
 .label.to_deleted {
   background-color: #7A1818;
 }
+  */
 
-.keywords {
+.keywords_container {
   float:left;
   margin-top: 5px;
+}
+
+.keyword {
+  padding: 1px 3px 2px;
+  font-size: 9.75px;
+  font-weight: bold;
+  color: #ffffff;
+  text-transform: uppercase;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  margin-right: 3px;
 }
 
 .keyword_content {

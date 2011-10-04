@@ -400,18 +400,7 @@
                     {{/if}}>
 
             <#if searchMode != 0>
-                <div class="content-result-status"><span
-                    {{if status == 'VALIDATED'}}
-                        class="label validated"
-                    {{else status == 'TO_BE_VALIDATED'}}
-                        class="label to_validated"
-                    {{else status == 'TO_BE_DELETED' }}
-                        class="label to_deleted"
-                    {{else status == 'REJECTED'}}
-                        class="label rejected"
-                    {{else}}
-                        class="label"
-                    {{/if}}>
+                <div class="content-result-status"><span class="label">
 
                     {{if status == 'VALIDATED'}}
                         Validé
@@ -438,9 +427,9 @@
         <div class="right_part">
             <div class="texts_zone">
                 <div class="content-result-description">{{= description}}</div>
-                <div class="keywords"><span class="label keyword_content">a dynamiser</span><span class="label keyword_content">a dynamiser</span><span class="label keyword_content">a dynamiser</span><span class="label keyword_content">a dynamiser</span></div>
+                <div class="keywords_container"><span class="keyword keyword_content">a dynamiser</span><span class="keyword keyword_content">a dynamiser</span><span class="keyword keyword_content">a dynamiser</span><span class="keyword keyword_content">a dynamiser</span></div>
             </div>
-            <div id="settings_menu">
+            <div class="settings_menu">
                 <#if searchMode == 1>
                     <img src="/public/images/bbeeg/edit.png" alt="Editer"
                             class="edit-button hand_cursor settings_item"
@@ -469,8 +458,10 @@
 
 
             <#if searchMode == 2>
-                <button type="button" onclick="acceptContent('item-{{= id}}', {{= id}}, '{{= status}}')">Accepter</button>
-                <button type="button" onclick="rejectContent('item-{{= id}}', {{= id}}, '{{= status}}')">Rejeter</button>
+                <div class="settings_menu">
+                    <img src="/public/images/bbeeg/validate.png" alt="Accepter" class="hand_cursor settings_item" onclick="acceptContent('item-{{= id}}', {{= id}}, '{{= status}}')"/>
+                    <img src="/public/images/bbeeg/rejected.png" alt="Rejeter" class="hand_cursor settings_item" onclick="rejectContent('item-{{= id}}', {{= id}}, '{{= status}}')"/>
+                </div>
             </#if>
 
         </div>
