@@ -63,14 +63,15 @@ $(function() {
         $.put(form.action,
             dataToSend,
             function(data){
-                $.put('/content/content/' + data.id + '/TEXT',
+                var contentId = data.id;
+                $.put('/content/' + contentId + '/content/text',
                     {text: $('#content')[0].value},
                     function(data){
                         $("#confirmationDialog").dialog('open');
                         setTimeout(function(){
                             $("#confirmationDialog").dialog('close');
                         }, 2000);
-                        form.reset();
+                        window.location.href = "/content/" + contentId + "/view.html";
                     },
                     'text'
                 );

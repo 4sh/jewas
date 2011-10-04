@@ -72,6 +72,7 @@ public class Main {
                 new GetContentToTreatSearchScreenRoute(),
                 new GetEegSettingsRoute(assembler.eegResource()),
                 new CreateEegSettingsRoute(assembler.eegResource()),
+                new CreateContentOfTextRoute(assembler.contentResource()),
                 new CreateContentOfEegRoute(assembler.eegResource()),
                 new CreateContentOfContentRoute(assembler.contentResource()),
                // new GetCreateContentRoute(assembler.contentResource()),
