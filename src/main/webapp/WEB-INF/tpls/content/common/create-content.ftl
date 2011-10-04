@@ -78,8 +78,10 @@
             <div id="previsualizationContainer">
             </div>
 
-        <p><input type="submit" value="Enregistrer" /></p>
-        <p><input id="cancelBtn" type="button" value="Annuler" /></p>
+        <p>
+            <input type="submit" value="Enregistrer" />
+            <button id="cancelBtn" type="button" >Annuler</button>
+        </p>
     </form>
 
 </#macro>
