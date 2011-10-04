@@ -294,7 +294,7 @@ public class ContentDao {
 //                System.out.println(res.count());
     }
 
-    public void updateContentOfContent(Long contentId, ContentType contentType, String url) {
+    public void updateContentOfContent(Long contentId, String url) {
         Date currentDate = new DateMidnight().toDate();
         contentHeaderQueryTemplate.update("updateContentUrl",
                 new QueryExecutionContext().buildParams()

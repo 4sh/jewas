@@ -1,7 +1,6 @@
 package fr.fsh.bbeeg.content.resources;
 
 import fr.fsh.bbeeg.content.persistence.ContentDao;
-import fr.fsh.bbeeg.content.pojos.ContentType;
 import fr.fsh.bbeeg.content.pojos.EegSettings;
 import jewas.json.Json;
 
@@ -32,7 +31,7 @@ public class EegResource {
             System.out.println(e.getMessage());
         }
 
-        contentDao.updateContentOfContent(contentId, ContentType.EEG, path.toString());
+        contentDao.updateContentOfContent(contentId, path.toString());
     }
 
     public String getEegSettings(Long contentId) {

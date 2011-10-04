@@ -20,6 +20,9 @@ public class CliOptions {
     @Parameter(names = "-contentFileRepository", description = "Repository of content files", required = true)
     private String contentFileRepository;
 
+    @Parameter(names = "-tmpContentFileRepository", description = "Repository of temporary content files", required = true)
+    private String tmpContentFileRepository;
+
     @Parameter(names = "-h2ServerPort", description = "Port of the h2 server", required = true)
     private String h2ServerPort;
 
@@ -53,6 +56,10 @@ public class CliOptions {
 
     public String contentFileRepository() {
         return this.contentFileRepository;
+    }
+
+    public String tmpContentFileRepository() {
+        return this.tmpContentFileRepository;
     }
 
     public String h2ServerPort() {

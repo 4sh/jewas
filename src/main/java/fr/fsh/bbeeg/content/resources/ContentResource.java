@@ -1,10 +1,17 @@
 package fr.fsh.bbeeg.content.resources;
 
+import fr.fsh.bbeeg.common.persistence.TempFiles;
 import fr.fsh.bbeeg.common.resources.Author;
 import fr.fsh.bbeeg.common.resources.Count;
 import fr.fsh.bbeeg.common.resources.LimitedOrderedQueryObject;
 import fr.fsh.bbeeg.content.persistence.ContentDao;
-import fr.fsh.bbeeg.content.pojos.*;
+import fr.fsh.bbeeg.content.pojos.AdvancedSearchQueryObject;
+import fr.fsh.bbeeg.content.pojos.ContentDetail;
+import fr.fsh.bbeeg.content.pojos.ContentHeader;
+import fr.fsh.bbeeg.content.pojos.ContentStatus;
+import fr.fsh.bbeeg.content.pojos.ContentType;
+import fr.fsh.bbeeg.content.pojos.ContentTypeResultObject;
+import fr.fsh.bbeeg.content.pojos.SimpleSearchQueryObject;
 import fr.fsh.bbeeg.user.pojos.User;
 import jewas.http.data.FileUpload;
 
@@ -13,6 +20,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 /**
@@ -83,34 +91,44 @@ public class ContentResource {
         return contentDao.createContent(contentDetail);
     }
 
-    public void updateContentOfContent(Long contentId, String text) {
+    public String temporaryUpdateContentOfContent(String text) {
+        return TempFiles.store(text);
+    }
+
+    public String temporaryUpdateContentOfContent(FileUpload fileUpload, String extension) {
+        return TempFiles.store(fileUpload, extension);
+    }
+
+    public void updateContentOfContent(Long contentId, String fileId) {
         // TODO: take into account contentType
-        String url = contentPath + contentId + ".txt";
-        Path path = Paths.get(url);
+        Path sourcePath = TempFiles.getPath(fileId);
+
+        String extension = fileId.split("\\.")[1];
+        String url = contentPath + contentId + "." + extension;
+        Path targetPath = Paths.get(url);
 
         try {
-            Files.write(path, text.getBytes());
+            Files.move(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        contentDao.updateContentOfContent(contentId, ContentType.TEXT, url);
+        contentDao.updateContentOfContent(contentId, targetPath.toString());
     }
-
-     public void updateContentOfContent(Long contentId, ContentType contentType,
-                                        FileUpload fileUpload, String extension) {
-        // TODO: take into account contentType
-        String url = contentPath + contentId + "." + extension;
-        Path path = Paths.get(url);
-
-         try {
-             fileUpload.toFile(path.toFile());
-         } catch (IOException e) {
-             e.printStackTrace();
-         }
-
-        contentDao.updateContentOfContent(contentId, contentType, url);
-    }
+//
+//     public void updateContentOfContent(Long contentId, String fileId) {
+//        // TODO: take into account contentType
+//        String url = contentPath + contentId + "." + extension;
+//        Path path = Paths.get(url);
+//
+//         try {
+//             fileUpload.toFile(path.toFile());
+//         } catch (IOException e) {
+//             e.printStackTrace();
+//         }
+//
+//        contentDao.updateContentOfContent(contentId, contentType, url);
+//    }
 
     public InputStream getContentOfContent(Long contentId) {
         String url = contentDao.getContentUrl(contentId);

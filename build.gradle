@@ -48,6 +48,7 @@ def ENV_PROPERTIES = [
            visioEegInternalUrl: "http://127.0.0.1:18087",
            cachedStaticResourcesRootDirectory: ENV_DEMO_DEPLOY_ROOT_PATH+"/nightly/bbeeg_cachedStaticResources",
            contentFileRepository: ENV_DEMO_DEPLOY_ROOT_PATH+"/nightly"+"/contents/",
+           tmpContentFileRepository: ENV_DEMO_DEPLOY_ROOT_PATH+"/nightly"+"/tmp/",
            h2ServerPort: 18082,
            elasticSearchAdress: "127.0.0.1",
            elasticSearchPort: 19200
@@ -58,6 +59,7 @@ def ENV_PROPERTIES = [
            visioEegInternalUrl: "http://127.0.0.1:28087",
            cachedStaticResourcesRootDirectory: ENV_DEMO_DEPLOY_ROOT_PATH+"/qa/bbeeg_cachedStaticResources",
            contentFileRepository: ENV_DEMO_DEPLOY_ROOT_PATH+"/qa"+"/contents/",
+           tmpContentFileRepository: ENV_DEMO_DEPLOY_ROOT_PATH+"/qa"+"/tmp/",
            h2ServerPort: 28082,
            elasticSearchAdress: "127.0.0.1",
            elasticSearchPort: 29200
@@ -106,7 +108,7 @@ configurations {
 dependencies {
     compile(
             [group: 'com.h2database', name: 'h2', version: '1.3.158'],
-            [group: 'fr.4sh.jewas', name: 'jewas', version: '0.1-SNAPSHOT', transitive: true, changing: true],
+            [group: 'fr.4sh.jewas', name: 'jewas', version: '0.1-SNAPSHOT', transitive: true],
             [group: 'com.beust', name:'jcommander', version: '1.17', transitive: true],
             [group: 'commons-dbcp', name: 'commons-dbcp', version: '1.4'],
             [group: 'org.elasticsearch', name: 'elasticsearch', version: '0.17.6'],
@@ -236,6 +238,7 @@ task startBBEEG(dependsOn: [initSsh, checkPropsForDeployment, startElasticSearch
     def visioRootUrl = targetEnv.visioEegRootUrl
     def visioEegInternalUrl = targetEnv.visioEegInternalUrl
     def contentFileRepository = targetEnv.contentFileRepository
+    def tmpContentFileRepository = targetEnv.tmpContentFileRepository
     def h2ServerPort = targetEnv.h2ServerPort
     def elasticSearchPort = targetEnv.elasticSearchPort
     def elasticSearchAdress = targetEnv.elasticSearchAdress
@@ -250,15 +253,11 @@ task startBBEEG(dependsOn: [initSsh, checkPropsForDeployment, startElasticSearch
 
     ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 2224,
 		command: """kill -9 \$(cat "${deployDirectory}/bbeeg.pid")""", trust: true, failonerror: false)
-    ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 2224,
-		command: """rm -Rf ${cachedStaticResourcesRootDirectory}""", trust: true, failonerror: false)
-    ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 2224,
-		command: """mkdir ${cachedStaticResourcesRootDirectory}""", trust: true, failonerror: true)
     // TODO: pass the http port here...
     ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 2224,
 		command: """/usr/lib/jvm/jdk1.7.0/jre/bin/java ${javaOpts} -jar "${deployDirectory}/bbeeg.jar" \
 		    -httpPort ${executionPort} -visioRootUrl ${visioRootUrl} -visioEegInternalUrl ${visioEegInternalUrl} \
-		    -contentFileRepository ${contentFileRepository} -cachedStaticResourcesRootDirectory ${cachedStaticResourcesRootDirectory} \
+		    -contentFileRepository ${contentFileRepository} -tmpContentFileRepository ${tmpContentFileRepository} -cachedStaticResourcesRootDirectory ${cachedStaticResourcesRootDirectory} \
 		    -h2ServerPort ${h2ServerPort} -elasticSearchAdress ${elasticSearchAdress} -elasticSearchPort ${elasticSearchPort} \
 		    > "${deployDirectory}/bbeeg.log" 2> "${deployDirectory}/bbeeg.err.log" \
 		    & echo \$! > "${deployDirectory}/bbeeg.pid" """,

@@ -1,4 +1,6 @@
-function ContentCreator(type, extensions, extensionsMsgError) {
+function ContentCreator(type, extensions, extensionsMsgError, previsualizationContainerId, createPrevisualizationObject) {
+    var uploadedFiles = [];
+    var currentUploadedFileId;
 
     this.loadDomains = function(domainIds) {
         console.log("domainIds", domainIds);
@@ -36,6 +38,13 @@ function ContentCreator(type, extensions, extensionsMsgError) {
     }
 
 
+    this.removeUploadedFiles = function () {
+        $.delete(
+            '/upload',
+             {fileNames : JSON.stringify(uploadedFiles)}
+        );
+    };
+
     (function () {
 
         $("#confirmationDialog").dialog({
@@ -67,18 +76,19 @@ function ContentCreator(type, extensions, extensionsMsgError) {
             $.put(form.action,
                 dataToSend,
                 function(data){
-                    if (uploader != null) {
-                        uploader.setData({extension: uploader.getCurrentFileExtension()});
-                        uploader.setAction('/content/content/' + data.id + '/' + type);
 
-                        uploader.submit(function () {
+                    $.post("/content/" + data.id + "/content/" + currentUploadedFileId,
+                        null,
+                        function () {
                             $("#confirmationDialog").dialog('open');
                             setTimeout(function(){
                                 $("#confirmationDialog").dialog('close');
                                 window.location.href = "/content/" + data.id + "/view.html";
                             }, 2000);
-                        });
-                    }
+                        }
+                    );
+
+
                 }
             );
 
@@ -105,6 +115,11 @@ function ContentCreator(type, extensions, extensionsMsgError) {
                 }
                 uploadStatus.text(file);
                 uploader = this;
+
+                uploader.setData({extension: uploader.getCurrentFileExtension()});
+                uploader.setAction('/upload/' + type);
+
+                uploader.submit(null);
             },
             onSubmit: function(file, ext){
                 uploadStatus.text('Transfert en cours ');
@@ -118,6 +133,16 @@ function ContentCreator(type, extensions, extensionsMsgError) {
                 }, 200);
             },
             onComplete : function(file, response){
+                currentUploadedFileId = response.fileId;
+
+                uploadedFiles.push(response.fileId);
+
+                uploadStatus.text('Transfert terminé');
+
+                var child = createPrevisualizationObject("/content/content/" + currentUploadedFileId);
+
+                $('#previsualizationContainer').empty().append(child);
+
                 window.clearInterval(interval);
             }
         });

@@ -102,7 +102,9 @@ public class Main {
                 new GetAdvancedSearchContent(assembler.contentResource()),
                 new GetViewContentRoute(assembler.contentResource()),
                 new GetEditContentRoute(assembler.contentResource()),
-                new GetUserPreferredDomainsRoute(assembler.userResource())
+                new GetUserPreferredDomainsRoute(assembler.userResource()),
+                new UploadRoute(assembler.contentResource()),
+                new RemoveUploadedFilesRoute()
             ).start();
             System.out.println("Ready, if you dare");
         }catch(Throwable t){

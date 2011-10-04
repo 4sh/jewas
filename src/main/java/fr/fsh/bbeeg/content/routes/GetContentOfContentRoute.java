@@ -1,6 +1,6 @@
 package fr.fsh.bbeeg.content.routes;
 
-import fr.fsh.bbeeg.common.resources.ObjectId;
+import fr.fsh.bbeeg.common.persistence.TempFiles;
 import fr.fsh.bbeeg.content.resources.ContentResource;
 import jewas.http.AbstractRoute;
 import jewas.http.ContentType;
@@ -11,7 +11,10 @@ import jewas.http.PatternUriPathMatcher;
 import jewas.http.RequestHandler;
 import jewas.http.impl.AbstractRequestHandler;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * @author driccio
@@ -24,6 +27,19 @@ public class GetContentOfContentRoute extends AbstractRoute {
         contentResource = _contentResource;
     }
 
+    public static class ObjectId {
+        private String id;
+
+        public ObjectId id(String _id){
+            this.id = _id;
+            return this;
+        }
+
+        public String id(){
+            return this.id;
+        }
+    }
+
     @Override
     protected RequestHandler onMatch(HttpRequest request, Parameters parameters) {
         final ObjectId oi = toQueryObject(parameters, ObjectId.class);
@@ -32,10 +48,27 @@ public class GetContentOfContentRoute extends AbstractRoute {
             @Override
             public void onRequest(HttpRequest request) {
 
-                InputStream content = contentResource.getContentOfContent(oi.id());
+                InputStream content = null;
+                String extension;
+
+                if (oi.id().startsWith("tmp_")) {
+                    Path filePath = TempFiles.getPath(oi.id());
+
+                    try {
+                        content = Files.newInputStream(filePath);
+                    } catch (IOException e) {
+                        System.out.println(e.getMessage());
+                    }
+
+                    extension = oi.id().split("\\.")[1];
+                } else {
+                    content = contentResource.getContentOfContent(Long.parseLong(oi.id()));
+                    extension = contentResource.getContentOfContentExtension(Long.parseLong(oi.id()));
+                }
+
                 ContentType contentType;
 
-                switch (contentResource.getContentOfContentExtension(oi.id())) {
+                switch (extension) {
                     case "pdf":
                         contentType = ContentType.APP_PDF;
                        break;

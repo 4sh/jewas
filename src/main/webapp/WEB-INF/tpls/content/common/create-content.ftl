@@ -1,11 +1,19 @@
 <#include "create-content-header.ftl">
 
-<#macro createContent url type extensions extensionsMsgError>
+<#macro createContent url type extensions extensionsMsgError createPrevisualizationObject>
 
 <script type="application/javascript" src="/public/js/bbeeg/content/create-content.js"></script>
 <script type="text/javascript">
     $( function() {
-        var contentCreator = new ContentCreator("${type}", "${extensions}", "${extensionsMsgError}");
+        var contentCreator = new ContentCreator("${type}", "${extensions}", "${extensionsMsgError}", "previsualizationContainer", ${createPrevisualizationObject});
+
+        $("#cancelBtn").bind('click', function () {
+            contentCreator.removeUploadedFiles();
+
+            console.log(history);
+            //window.location.href =
+            history.go(-1);
+        });
 
         <#if content??>
 
@@ -66,7 +74,12 @@
                 <ul id="media"></ul>
             </div>
         </p>
+
+            <div id="previsualizationContainer">
+            </div>
+
         <p><input type="submit" value="Enregistrer" /></p>
+        <p><input id="cancelBtn" type="button" value="Annuler" /></p>
     </form>
 
 </#macro>
