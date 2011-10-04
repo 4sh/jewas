@@ -14,8 +14,12 @@ import java.nio.file.Paths;
 public class TempFiles {
     private static final String TMP_FILE_PREFIX = "tmp_";
 
+    private static Integer generateId() {
+        return new Double(Math.random() * Integer.MAX_VALUE).intValue();
+    }
+
     public static String store(FileUpload fileUpload, String extension) {
-        Integer id = new Double(Math.random() * Integer.MAX_VALUE).intValue();
+        Integer id = generateId();
         String fileName = TMP_FILE_PREFIX + id + "." + extension;
         String url = BBEEGConfiguration.INSTANCE.cliOptions().tmpContentFileRepository() + fileName;
         Path path = Paths.get(url);
@@ -30,7 +34,7 @@ public class TempFiles {
     }
 
     public static String store(String text) {
-        Double id = Math.random() * Double.MAX_VALUE;
+        Integer id = generateId();
         String fileName = TMP_FILE_PREFIX + id + ".txt";
         String url = BBEEGConfiguration.INSTANCE.cliOptions().tmpContentFileRepository() + fileName;
         Path path = Paths.get(url);
