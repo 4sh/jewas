@@ -195,17 +195,23 @@ img.spinner {
   text-transform: uppercase;
 }
 
-.label.validated {
+.label_validated {
   background-color: #7cbe2e;
 }
-.label.to_validated {
+.label_to_validated {
   background-color: #D94F00;
 }
-.label.rejected {
+.label_rejected {
   background-color: #ff2d00;
 }
-.label.to_deleted {
+.label_to_deleted {
   background-color: #7A1818;
+}
+.label_draft {
+  background-color: #222526;
+}
+.label_hidden {
+  background-color: #dfdfdf;
 }
 
 .keywords_container {
