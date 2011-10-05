@@ -301,9 +301,8 @@ header {
 .sepa_horizontal {
     background-image: url('/public/images/bbeeg/sepa_horizontal.jpg');
     background-repeat: repeat-x;
-    height:2px;
-    margin-top:10px;
-    margin-bottom: 5px;
+    height: 2px;
+    margin: 10px;
 }
 
 footer{
@@ -484,7 +483,7 @@ select[multiple]{
 
 h3 {
     color: #13adb8;
-    font-size: 130%;
+    font-size: 120%;
     font-weight: bold;
     margin-bottom: 10px;
     margin-top: 4px;

@@ -1,5 +1,50 @@
-#searchResultsComponent > h3 {
+#searchResultsComponent > h3, .accordion > h3 {
     color: #222526;
+}
+
+.advanced_search_button {
+    padding: 0 5px;
+    font-size: 13px;
+    font-weight: bold;
+    color: #ffffff;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    background-color: #222526;
+    width: 20px;
+}
+
+.advanced_button {
+    margin-left: 10px;
+    margin-top: 6px;
+    float: left;
+}
+
+.search_container {
+    width: 940px;
+    margin-left: 35px;
+    float: left;
+}
+
+.advanced_search_options {
+    background-color: #f7f7f7;
+    float: left;
+    width: 648px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    border:  1px solid #949494;
+    padding: 8px 5px;
+}
+
+.search_input {
+    float: left;
+}
+
+.search_button {
+    float: left;
+    margin-left: 10px;
+    margin-top: -1px;
 }
 
 .criteria-line {
@@ -10,11 +55,14 @@
 
 .criteria-label {
     float: left;
+    margin-top: 8px;
+    margin-bottom: 5px;
 }
 
 .criteria-field {
-    float: left;
+    float: right;
     padding-left: 10px;
+    margin-bottom: 6px;
 }
 
 .search-results-component {
@@ -23,7 +71,7 @@
 }
 
 .content-result {
-   /*margin: 10px;*/
+    /*margin: 10px;*/
 }
 
 .content-result-title {
@@ -49,9 +97,9 @@
 }
 
 .content-result-status {
-  -webkit-transform:rotate(90deg);
-  -moz-transform: rotate(90deg);
-  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=1);
+    -webkit-transform:rotate(90deg);
+    -moz-transform: rotate(90deg);
+    filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=1);
 }
 
 .content-result-description {
@@ -188,11 +236,11 @@ img.spinner {
 }
 
 .label {
-  padding-left: 2px;
-  font-size: 9.75px;
-  font-weight: bold;
-  color: #ffffff;
-  text-transform: uppercase;
+    padding-left: 2px;
+    font-size: 9.75px;
+    font-weight: bold;
+    color: #ffffff;
+    text-transform: uppercase;
 }
 
 .label_validated {
@@ -215,20 +263,20 @@ img.spinner {
 }
 
 .keywords_container {
-  float:left;
-  margin-top: 5px;
+    float:left;
+    margin-top: 5px;
 }
 
 .keyword {
-  padding: 1px 3px 2px;
-  font-size: 9.75px;
-  font-weight: bold;
-  color: #ffffff;
-  text-transform: uppercase;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
-  margin-right: 3px;
+    padding: 1px 3px 2px;
+    font-size: 9.75px;
+    font-weight: bold;
+    color: #ffffff;
+    text-transform: uppercase;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    margin-right: 3px;
 }
 
 .keyword_content {

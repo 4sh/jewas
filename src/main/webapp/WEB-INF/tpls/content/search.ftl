@@ -336,73 +336,84 @@
 </script>
 
 <div id="searchComponent">
-    <div class="accordion">
-        <h3><a href="#">Recherche simple</a></h3>
-    </div>
-    <div class="accordion simple" style="display:none">
-        <h3><a href="#">Recherche avancée</a></h3>
-    </div>
 
-    <div class="accordion">
-         <form action="/content/search" id="simpleSearchForm">
-            <label for="simpleSearchQuery">Recherche</label> : <input id="simpleSearchQuery" type="text" name="query" size="80" />
-            <input id="simpleSearchButton" type="submit" value="Rechercher"/>
+
+
+    <div class='toggle'>
+        <form action="/content/search" id="simpleSearchForm">
+            <div class="search_container">
+                <div class="search_input"><input id="simpleSearchQuery" type="text" name="query" style="width:650px;"/></div>
+                <div class="search_button"><input id="simpleSearchButton" type="submit" value="Rechercher"/></div>
+                <div class="advanced_button">
+                    <a href="#"class="advanced_search_button">+</a>
+                </div>
+            </div>
+
 
             <input name="searchMode" style="visibility: hidden;" value="${searchMode}"/>
          </form>
     </div>
 
-    <div class="accordion advanced" style="display:none">
+    <div class="advanced toggle" style="display:none">
         <form action="/content/advancedSearch" id="advancedSearchForm">
-            <label for="simpleSearchQuery">Recherche</label> : <input id="advancedSearchQuery" type="text" name="query" size="80" />
+            <div class="search_container">
+                 <div class="search_input"><input id="advancedSearchQuery" type="text" name="query" style="width:650px;" /></div>
+                <div class="search_button"><input id="advancedSearchButton" class="button" type="submit" value="Rechercher"/></div>
+                <div class="advanced_button">
+                    <a href="#" class="advanced_search_button">&#8211</a>
+                </div>
 
-            <div class="criteria-line">
-                <label for="from">Date de création : Entre</label>
-                <input type="text" id="from" name="from" style="width: 175px;" />
-                <label for="to">et</label>
-                <input type="text" id="to" name="to" style="width: 175px;"/>
-            </div>
-            <div class="criteria-line">
-                <div class="criteria-label"><label for="adSearchType">Types de contenu</label> :</div>
-                <div class="criteria-field">
-                    <select id="adSearchType" name="searchTypes" class="chzn-select side-by-side clearfix" multiple>
-                    </select>
-                </div>
-            </div>
-            <!--<div class="criteria-line">
-                <div class="criteria-label"><label for="adSearchCriterias">Critères </label> :</div>
-                <div class="criteria-field">
-                    <input type="hidden" id="criterias" name="criterias" value="" />
-                    <div class="chzn-container-multi criteria-field">
-                        <ul class="chzn-choices" id="criteriasList" style="font-size: 13px;">
-                        </ul>
+                <div class="advanced_search_options">
+                    <div class="criteria-line">
+                        <label for="from">Date de création : Entre</label>
+                        <input type="text" id="from" name="from" style="width: 100px;" />
+                        <label for="to">et</label>
+                        <input type="text" id="to" name="to" style="width: 100px;"/>
                     </div>
-                    <div id="searchCriteriaMenuContainer" class="criteria-field">
-                        <select id="adSearchCriterias">
-                        </select>
-                    </div>
-                </div>
-            </div>-->
-            <div class="criteria-line">
-                <div class="criteria-label"><label for="adSearchDomains">Domaines</label> :</div>
-                <div class="criteria-field">
-                    <select id="adSearchDomains" name="domains" class="chzn-select side-by-side clearfix" multiple>
-                    </select>
-                </div>
-            </div>
-            <#if searchMode != 1>
-                <div class="criteria-line">
-                    <div class="criteria-label"><label for="adSearchAuthors">Auteur</label> :</div>
-                    <div class="criteria-field">
-                        <select id="adSearchAuthors" name="authors" class="chzn-select side-by-side clearfix" multiple>
-                        </select>
-                    </div>
-                </div>
-            </#if>
-            <div class="criteria-line">
-                <input id="advancedSearchButton" class="button" type="submit" value="Rechercher"/>
-            </div>
 
+                    <div class="sepa_horizontal"></div>
+
+                    <div class="criteria-line">
+                        <div class="criteria-label"><label for="adSearchType">Types de contenu</label> :</div>
+                        <div class="criteria-field">
+                            <select id="adSearchType" name="searchTypes" class="chzn-select side-by-side clearfix" multiple style="width:450px">
+                            </select>
+                        </div>
+                    </div>
+                    <!--<div class="criteria-line">
+                        <div class="criteria-label"><label for="adSearchCriterias">Critères </label> :</div>
+                        <div class="criteria-field">
+                            <input type="hidden" id="criterias" name="criterias" value="" />
+                            <div class="chzn-container-multi criteria-field">
+                                <ul class="chzn-choices" id="criteriasList" style="font-size: 13px;">
+                                </ul>
+                            </div>
+                            <div id="searchCriteriaMenuContainer" class="criteria-field">
+                                <select id="adSearchCriterias">
+                                </select>
+                            </div>
+                        </div>
+                    </div>-->
+                    <div class="criteria-line">
+                        <div class="criteria-label"><label for="adSearchDomains">Domaines</label> :</div>
+                        <div class="criteria-field">
+                            <select id="adSearchDomains" name="domains" class="chzn-select side-by-side clearfix" multiple style="width:450px">
+                            </select>
+                        </div>
+                    </div>
+
+                    <#if searchMode != 1>
+                        <div class="criteria-line">
+                            <div class="criteria-label"><label for="adSearchAuthors">Auteur</label> :</div>
+                            <div class="criteria-field">
+                                <select id="adSearchAuthors" name="authors" class="chzn-select side-by-side clearfix" multiple style="width:450px">
+                                </select>
+                            </div>
+                        </div>
+                    </#if>
+
+                </div>
+            </div>
             <input name="searchMode" style="visibility: hidden;" value="${searchMode}"/>
         </form>
     </div>
@@ -424,8 +435,6 @@
     <option value="{{= id}}"> {{= title}} </option>
 </script>
 <script id="contentResult" type="text/x-jquery-tmpl">
-    <h3>Résultats de la recherche</h3>
-
     <div id="contentResults">
         {{tmpl(results) "#contentLineResult"}}
     </div>
