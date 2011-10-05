@@ -237,11 +237,11 @@
             loadContentTypes();
 
 
-            /* Switch between 'Simple search' and 'Advanced search' modes */
-            $('.accordion h3').click(function() {
-                $('.accordion').toggle();
-                return false;
-            }).next().hide();
+        /* Switch between 'Simple search' and 'Advanced search' modes */
+        $('.advanced_search_button').click(function() {
+		    $('.toggle').toggle();
+            return false;
+	    }).next().hide();
 
 
             var dates = $( "#from, #to" ).datepicker({
