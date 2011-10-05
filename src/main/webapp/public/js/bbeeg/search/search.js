@@ -53,13 +53,13 @@ function SearchQuery() {
     }
 
     this.search = function(searchContext) {
-        contentSearch(searchContext, searchContext.targetForm().serialize(), searchContext.globalResultTemplate(), false);
+        contentSearch(searchContext, searchContext.targetForm().serialize(), searchContext.globalResultTemplate(), false, searchContext.process());
     }
 
     this.searchNext = function() {
         // In append mode, retrieving searchContext from lastQueryParameters
         var searchContext = lastQueryParameters.searchContext();
-        contentSearch(searchContext, lastQueryParameters.generateNextQueryParameters(), searchContext.resultElementTemplate(), true);
+        contentSearch(searchContext, lastQueryParameters.generateNextQueryParameters(), searchContext.resultElementTemplate(), true, searchContext.process());
     }
 
     /**
@@ -71,7 +71,7 @@ function SearchQuery() {
      * (that is to say : will we reset the results or append results to the end of displayed results ?)
      *
      */
-    function contentSearch(searchContext, queryParams, templateApplied, appendResults) {
+    function contentSearch(searchContext, queryParams, templateApplied, appendResults, processResults) {
         $.get(searchContext.targetForm().attr('action'), queryParams, function(data) {
             $(searchContext.selectorForClickableOfSearchNext()).each(function() {
                 $(".spinner", this).css('display', 'none');
@@ -85,16 +85,24 @@ function SearchQuery() {
                     .serverTimestamp(data.serverTimestamp)
                     .searchContext(searchContext);
             }
-
             // Updating last offset of lastQueryParameters
+
             lastQueryParameters.endingOffset(data.endingOffset);
+                       // In append mode, we want to directly pass to the template the search results
+                       // since we want to append only new results
 
-            var templateParams = data;
-
-            // In append mode, we want to directly pass to the template the search results
-            // since we want to append only new results
+            var templateParams;
             if (appendResults) {
-                templateParams = data.results;
+                if (processResults === null) {
+                    templateParams = data.results;
+                }else {
+                    templateParams = processResults(data.results);
+                }
+            } else {
+                if (processResults !== null) {
+                    data.results = processResults(data.results);
+                }
+                templateParams = data;
             }
 
             // Inserting things via a template
@@ -233,6 +241,16 @@ SearchQuery.SearchContext = function() {
                 return this;
             }
         };
+
+        var _process;
+        this.process = function(__process) {
+            if (__process == null) {
+                return _process;
+            } else {
+                _process = __process;
+                return this;
+            }
+        }
     }
 
     return SearchContextConstructor;

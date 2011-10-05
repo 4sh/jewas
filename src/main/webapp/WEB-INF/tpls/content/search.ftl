@@ -31,8 +31,11 @@
                         $("#" + containerId).remove();
                     } else {
                         $("#" + containerId + ' .publish-button')[0].disabled = true;
-                        $("#" + containerId + ' .content-result-status').text(status);
+                        var statusStyle = getStatusStyle(status);
+                        $('#' + containerId).find('.tab_right').removeClass().addClass('tab_right ' + statusStyle.class);
+                        $('#' + containerId).find('.label').html(statusStyle.label)
                     }
+
                 }
         );
     }
@@ -181,6 +184,144 @@
         }
     </#if>
 
+    function process(results) {
+        $(results).each(
+            function (i, e) {
+                if(!e) {
+                    return;
+                }
+                var statusStyle = getStatusStyle(e.status);
+                e.statusLabel = statusStyle.label;
+                e.statusClass = statusStyle.class;
+            }
+    );
+        return results;
+    }
+
+    function getStatusStyle(status) {
+        var statusStyle = {};
+        
+        switch (status) {
+            case 'VALIDATED':
+                statusStyle.label = "Validé";
+                statusStyle.class = "label_validated";
+                break;
+            case 'TO_BE_VALIDATED':
+                statusStyle.label = "A&nbsp;Valider";
+                statusStyle.class = "label_to_validated";
+                break;
+            case 'TO_BE_DELETED':
+                statusStyle.label = "A&nbsp;Supprimer";
+                statusStyle.class = "label_to_deleted"
+                break;
+            case 'REJECTED':
+                statusStyle.label = "Rejeté";
+                statusStyle.class = "label_rejected";
+                break;
+            case 'DRAFT':
+                statusStyle.label = "Brouillon";
+                statusStyle.class = "label_draft";
+                break;
+            default:
+                statusStyle.label = "Error";
+                statusStyle.class = "label_hidden";
+        }
+        return statusStyle;
+    }
+
+        $(function() {
+            <#if searchMode != 1>
+                loadAuthors();
+            </#if>
+            loadDomains();
+            loadContentTypes();
+
+
+            /* Switch between 'Simple search' and 'Advanced search' modes */
+            $('.accordion h3').click(function() {
+                $('.accordion').toggle();
+                return false;
+            }).next().hide();
+
+
+            var dates = $( "#from, #to" ).datepicker({
+                defaultDate: "",
+                dateFormat: "yy-mm-dd",
+                changeMonth: true,
+                numberOfMonths: 1,
+                onSelect: function( selectedDate ) {
+                    var option = this.id == "from" ? "minDate" : "maxDate",
+                            instance = $( this ).data( "datepicker" ),
+                            date = $.datepicker.parseDate(
+                                    instance.settings.dateFormat ||
+                                            $.datepicker._defaults.dateFormat,
+                                    selectedDate, instance.settings );
+                    dates.not( this ).datepicker( "option", option, date );
+                }
+            });
+            $("#adSearchType").chosen();
+            $("#adSearchCriterias").chosen();
+            $("#adSearchDomains").chosen();
+            $("#adSearchAuthors").chosen();
+            SearchQuery.bindSearchToForm(
+                    new SearchQuery.SearchContext().targetForm($("#simpleSearchForm"))
+                            .resultElement($("#searchResultsComponent"))
+                            .process(process)
+                            .globalResultTemplate($("#contentResult"))
+                            .resultElementTemplate($("#contentLineResult"))
+                            .selectorForClickableOfSearchNext("#searchNext")
+                            .selectorWhereResultsWillBeAppended("#contentResults")
+            );
+            SearchQuery.bindSearchToForm(
+                    new SearchQuery.SearchContext().targetForm($("#advancedSearchForm"))
+                            .resultElement($("#searchResultsComponent"))
+                            .process(process)
+                            .globalResultTemplate($("#contentResult"))
+                            .resultElementTemplate($("#contentLineResult"))
+                            .selectorForClickableOfSearchNext("#searchNext")
+                            .selectorWhereResultsWillBeAppended("#contentResults")
+            );
+            $("#adSearchCriterias").chainedSelect(
+                    {
+                        'ajaxUrlsPerDepth' : [
+                            "/content/criterias?depth=0",
+                            "/content/criterias?depth=1&parent={value}",
+                            "/content/criterias?depth=2&parent={value}",
+                            "/content/criterias?depth=3&parent={value}"
+                        ],
+                        'targetFieldForSelectedOption' : $("#criterias"),
+                        'displaySelectionTarget' : $("#criteriasList"),
+                        'templateForDisplaySelectionItem' : $("#criteriaSelectedItem"),
+                        'selectorForClosingLinkInDisplaySelectionItemTemplate' : "a.search-choice-close",
+                        'selectMenuContainer' : $("#searchCriteriaMenuContainer")
+                    }
+            );
+
+            // Enabling auto query when scrollbar is at the bottom of the window
+            var SCROLLBAR_THRESHOLD = 100; // 100 pixels before the bottom of the screen, we consider the scrollbar is at the bottom
+            $(window).scroll(function(args){
+                if($("#searchResultsComponent #searchNext").length != 0 // Button "searchNext" exists and is not disabled
+                        && $("#searchResultsComponent #searchNext").attr('disabled') != "disabled"){
+                    var scrollbarIsAtBottom = $(window).scrollTop() + SCROLLBAR_THRESHOLD >= $(document).height() - $(window).height();
+                    if(scrollbarIsAtBottom){
+                        $("#searchNext").click();
+                    }
+                }
+            });
+        });
+
+        function loadDomains() {
+            $.getJSON(
+                    '/domain/all',
+                    function success(data) {
+                        var container = $("#adSearchDomains");
+                        container.children().remove();
+                        $("#domainItemTemplate").tmpl(data).appendTo(container);
+                        $("#adSearchDomains").trigger("liszt:updated");
+                    }
+            );
+        }
+
     function loadContentTypes() {
         $.getJSON(
             '/content/type/all',
@@ -192,97 +333,6 @@
             }
         );
     }
-
-      function loadDomains() {
-        $.getJSON(
-            '/domain/all',
-            function success(data) {
-                var container = $("#adSearchDomains");
-                container.children().remove();
-                $("#domainItemTemplate").tmpl(data).appendTo(container);
-                $("#adSearchDomains").trigger("liszt:updated");
-            }
-        );
-    }
-
-    $(function() {
-        <#if searchMode != 1>
-            loadAuthors();
-        </#if>
-        loadDomains();
-        loadContentTypes();
-
-
-        /* Switch between 'Simple search' and 'Advanced search' modes */
-        $('.accordion h3').click(function() {
-		    $('.accordion').toggle();
-            return false;
-	    }).next().hide();
-
-
-        var dates = $( "#from, #to" ).datepicker({
-			defaultDate: "",
-            dateFormat: "yy-mm-dd",
-			changeMonth: true,
-			numberOfMonths: 1,
-			onSelect: function( selectedDate ) {
-				var option = this.id == "from" ? "minDate" : "maxDate",
-					instance = $( this ).data( "datepicker" ),
-					date = $.datepicker.parseDate(
-						instance.settings.dateFormat ||
-						$.datepicker._defaults.dateFormat,
-						selectedDate, instance.settings );
-				dates.not( this ).datepicker( "option", option, date );
-			}
-		});
-        $("#adSearchType").chosen();
-        $("#adSearchCriterias").chosen();
-        $("#adSearchDomains").chosen();
-        $("#adSearchAuthors").chosen();
-        SearchQuery.bindSearchToForm(
-                new SearchQuery.SearchContext().targetForm($("#simpleSearchForm"))
-                        .resultElement($("#searchResultsComponent"))
-                        .globalResultTemplate($("#contentResult"))
-                        .resultElementTemplate($("#contentLineResult"))
-                        .selectorForClickableOfSearchNext("#searchNext")
-                        .selectorWhereResultsWillBeAppended("#contentResults")
-        );
-        SearchQuery.bindSearchToForm(
-                new SearchQuery.SearchContext().targetForm($("#advancedSearchForm"))
-                        .resultElement($("#searchResultsComponent"))
-                        .globalResultTemplate($("#contentResult"))
-                        .resultElementTemplate($("#contentLineResult"))
-                        .selectorForClickableOfSearchNext("#searchNext")
-                        .selectorWhereResultsWillBeAppended("#contentResults")
-        );
-        $("#adSearchCriterias").chainedSelect(
-                {
-                   'ajaxUrlsPerDepth' : [
-                      "/content/criterias?depth=0",
-                      "/content/criterias?depth=1&parent={value}",
-                      "/content/criterias?depth=2&parent={value}",
-                      "/content/criterias?depth=3&parent={value}"
-                    ],
-                    'targetFieldForSelectedOption' : $("#criterias"),
-                    'displaySelectionTarget' : $("#criteriasList"),
-                    'templateForDisplaySelectionItem' : $("#criteriaSelectedItem"),
-                    'selectorForClosingLinkInDisplaySelectionItemTemplate' : "a.search-choice-close",
-                    'selectMenuContainer' : $("#searchCriteriaMenuContainer")
-                }
-        );
-
-        // Enabling auto query when scrollbar is at the bottom of the window
-        var SCROLLBAR_THRESHOLD = 100; // 100 pixels before the bottom of the screen, we consider the scrollbar is at the bottom
-        $(window).scroll(function(args){
-            if($("#searchResultsComponent #searchNext").length != 0 // Button "searchNext" exists and is not disabled
-                      && $("#searchResultsComponent #searchNext").attr('disabled') != "disabled"){
-                var scrollbarIsAtBottom = $(window).scrollTop() + SCROLLBAR_THRESHOLD >= $(document).height() - $(window).height();
-                if(scrollbarIsAtBottom){
-                    $("#searchNext").click();
-                }
-            }
-        });
-    });
 </script>
 
 <div id="searchComponent">
@@ -384,37 +434,12 @@
 <script id="contentLineResult" type="text/x-jquery-tmpl">
     <div id="item-{{= id}}" class="content-result search_result content_type">
         <div class="tab_left"></div>
-        <div class="tab_right"
-        {{if status == 'VALIDATED'}}
-                       style="background-color: #7cbe2e;"
-                    {{else status == 'TO_BE_VALIDATED'}}
-                         style="background-color: #D94F00;"
-                    {{else status == 'TO_BE_DELETED' }}
-                         style="background-color: #7A1818;"
-                    {{else status == 'REJECTED'}}
-                         style="background-color: #ff2d00;"
-                    {{else status == 'DRAFT'}}
-                         style="background-color: #222526;"
-                    {{else}}
-                         style="background-color: #dfdfdf"
-                    {{/if}}>
 
             <#if searchMode != 0>
-                <div class="content-result-status"><span class="label">
-
-                    {{if status == 'VALIDATED'}}
-                        Validé
-                    {{else status == 'TO_BE_VALIDATED'}}
-                        A&nbsp;Valider
-                    {{else status == 'TO_BE_DELETED' }}
-                        A&nbsp;Supprimer
-                    {{else status == 'REJECTED'}}
-                         Rejeté
-                    {{else status == 'DRAFT'}}
-                         Brouillon
-                    {{else}}
-                        = "Error"
-                    {{/if}}</span></div>
+                <div class="tab_right {{= statusClass}}">
+                <div class="content-result-status"><span class="label">{{= statusLabel}}</span></div>
+            <#else>
+                <div class="tab_right label_hidden">
             </#if>
         </div>
         <div class="left_part">
