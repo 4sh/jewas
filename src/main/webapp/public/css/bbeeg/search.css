@@ -56,12 +56,15 @@
 
 .content-result-description {
     clear: both;
+    height: 48px;
 }
 
 .texts_zone {
     width: 485px;
     float: left;
     margin-right: 3px;
+    line-height: 15px;
+
 }
 
 /* Purpose of this class is to nullify some chzn-choices attributes */
@@ -138,7 +141,7 @@ img.spinner {
 .icon_type {
     width: 30px;
     height: 30px;
-    background-image: url('/public/images/bbeeg/icon_doc.png');
+    background-image: url('/public/images/bbeeg/icon_text.png');
     float:left;
     margin-top: 3px;
 }
@@ -185,7 +188,7 @@ img.spinner {
 }
 
 .label {
-  padding-left: 5px;
+  padding-left: 2px;
   font-size: 9.75px;
   font-weight: bold;
   color: #ffffff;
