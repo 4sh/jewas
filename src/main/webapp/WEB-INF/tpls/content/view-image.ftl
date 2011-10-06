@@ -3,6 +3,7 @@
 
 <@mainTemplate title="Consultation"
         selectedMenuItem=""
+        stylesheets=["/public/css/bbeeg/view.css"]
         useChosen=true>
 
     <@viewContentHeaders content=content />

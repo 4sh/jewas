@@ -2,6 +2,7 @@
 <#include "common/view-content-headers.ftl">
 
 <@mainTemplate title="Consultation"
+        stylesheets=["/public/css/bbeeg/view.css"]
         selectedMenuItem=""
         useChosen=true>
 
