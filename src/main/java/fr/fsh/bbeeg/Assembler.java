@@ -10,6 +10,8 @@ import fr.fsh.bbeeg.domain.persistence.DomainDao;
 import fr.fsh.bbeeg.domain.resources.DomainResource;
 import fr.fsh.bbeeg.i18n.persistence.I18nDao;
 import fr.fsh.bbeeg.security.resources.ConnectedUserResource;
+import fr.fsh.bbeeg.tag.persistence.TagDao;
+import fr.fsh.bbeeg.tag.resources.TagResource;
 import fr.fsh.bbeeg.user.persistence.UserDao;
 import fr.fsh.bbeeg.user.resources.UserResource;
 import org.apache.commons.dbcp.BasicDataSource;
@@ -35,11 +37,13 @@ public class Assembler {
     private ContentDao contentDao;
     private UserDao userDao;
     private DomainDao domainDao;
+    private TagDao tagDao;
     private I18nDao i18nDao;
 
     /* Resources */
     private ContentResource contentResource;
     private DomainResource domainResource;
+    private TagResource tagResource;
     private UserResource userResource;
     private ConnectedUserResource connectedUserResource;
     private EegResource eegResource;
@@ -56,12 +60,14 @@ public class Assembler {
 
         i18nDao = new I18nDao(dataSource);
         domainDao = new DomainDao(dataSource, i18nDao);
+        tagDao = new TagDao(dataSource);
         userDao = new UserDao(dataSource, domainDao);
-        contentDao = new ContentDao(dataSource, client, userDao, domainDao, esContentDao);
+        contentDao = new ContentDao(dataSource, client, userDao, domainDao, esContentDao, tagDao);
 
         contentResource = new ContentResource(contentDao,
                 BBEEGConfiguration.INSTANCE.cliOptions().contentFileRepository());
         domainResource = new DomainResource(domainDao);
+        tagResource = new TagResource(tagDao);
         userResource = new UserResource(userDao);
         connectedUserResource = ConnectedUserResource.instance().userDao(userDao);
         eegResource = new EegResource(contentDao,
@@ -84,6 +90,10 @@ public class Assembler {
 
     public DomainResource domainResource() {
         return domainResource;
+    }
+
+    public TagResource tagResource() {
+        return tagResource;
     }
 
     public UserResource userResource() {

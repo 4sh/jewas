@@ -10,5 +10,12 @@
             </select>
         </div>
     </div>
+    <div class="criteria-line">
+        <div class="criteria-label"><label for="tags">Mots clés</label> :</div>
+        <div class="criteria-field">
+            <select id="tags" name="tags" class="chzn-select side-by-side clearfix chzn-extendable" multiple>
+            </select>
+        </div>
+    </div>
 
 </#macro>

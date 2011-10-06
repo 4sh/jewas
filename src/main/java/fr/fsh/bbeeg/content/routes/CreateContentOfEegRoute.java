@@ -56,7 +56,7 @@ public class CreateContentOfEegRoute extends AbstractRoute {
 
                 FileQueryObject fqo = toContentObject(bodyParameters, FileQueryObject.class);
 
-                // If the content type is EEG, then the route is a proxy to redirect the upload request to visio server.
+                // If the content type is EEG, then the routes is a proxy to redirect the upload request to visio server.
                 File file = null;
 
                 try {

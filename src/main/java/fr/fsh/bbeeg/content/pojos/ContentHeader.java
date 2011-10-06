@@ -22,6 +22,7 @@ public class ContentHeader {
     private ContentType type;
     private User author;
     private List<Domain> domains;
+    private List<String> tags;
 
     // TODO: add index criteria
 
@@ -107,6 +108,14 @@ public class ContentHeader {
         return this.domains;
     }
 
+    public ContentHeader tags(List<String> _tags){
+        this.tags = _tags;
+        return this;
+    }
+
+    public List<String> tags(){
+        return this.tags;
+    }
 //    public ContentHeader version(Integer _version){
 //        this.version = _version;
 //        return this;

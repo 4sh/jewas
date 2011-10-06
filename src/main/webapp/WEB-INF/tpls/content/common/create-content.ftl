@@ -40,14 +40,25 @@
                 domains.push(${item.id()?c});
             </#list>
             contentCreator.loadDomains(domains);
+
+            // Load the tags
+            var tags = [];
+            <#list content.header().tags() as item>
+                tags.push("${item}");
+            </#list>
+            contentCreator.loadTags(tags)
         <#else>
             contentCreator.loadDomains([]);
+            contentCreator.loadTags([]);
         </#if>
     });
 </script>
 
 <script id="domainItemTemplate" type="text/x-jquery-tmpl">
     <option value="{{= id}}" {{if selected}} selected {{/if}}> {{= label}} </option>
+</script>
+<script id="tagItemTemplate" type="text/x-jquery-tmpl">
+    <option value="{{= tag}}" {{if selected}} selected {{/if}}> {{= tag}} </option>
 </script>
 
     <div id="confirmationDialog" title="Succès">

@@ -6,6 +6,7 @@ import fr.fsh.bbeeg.common.resources.Count;
 import fr.fsh.bbeeg.content.pojos.*;
 import fr.fsh.bbeeg.domain.persistence.DomainDao;
 import fr.fsh.bbeeg.domain.pojos.Domain;
+import fr.fsh.bbeeg.tag.persistence.TagDao;
 import fr.fsh.bbeeg.user.persistence.UserDao;
 import fr.fsh.bbeeg.user.pojos.User;
 import jewas.persistence.QueryExecutionContext;
@@ -29,10 +30,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static fr.fsh.bbeeg.content.pojos.SearchMode.values;
 import static org.elasticsearch.index.query.QueryBuilders.*;
@@ -44,9 +42,10 @@ public class ContentDao {
     private Client client;
     private QueryTemplate<ContentHeader> contentHeaderQueryTemplate;
     private QueryTemplate<ContentDetail> contentDetailQueryTemplate;
-    private QueryTemplate<Long> idQueryTemplate;
+     private QueryTemplate<Long> idQueryTemplate;
     private UserDao userDao;
     private DomainDao domainDao;
+    private TagDao tagDao;
     private ElasticSearchDao esContentDao;
 
     private static final String ES_CONTENT_FIELD_FILECONTENT = "fileContent";
@@ -57,15 +56,17 @@ public class ContentDao {
     private static final String ES_CONTENT_FIELD_CREATION_DATE = "creationDate";
     private static final String ES_CONTENT_FIELD_LAST_MODIF_DATE = "lastModificationDate";
     private static final String ES_CONTENT_FIELD_DOMAINS = "domains";
+    private static final String ES_CONTENT_FIELD_TAGS = "tags";
     private static final String ES_CONTENT_FIELD_STATUS = "status";
     private static final String ES_CONTENT_FIELD_ANCESTOR = "ancestor";
 
 
-    public ContentDao(DataSource dataSource, Client _client, UserDao _userDao, DomainDao _domainDao, ElasticSearchDao _esContentDao) {
+    public ContentDao(DataSource dataSource, Client _client, UserDao _userDao, DomainDao _domainDao, ElasticSearchDao _esContentDao, TagDao _tagDao) {
         client = _client;
         userDao = _userDao;
         domainDao = _domainDao;
         esContentDao = _esContentDao;
+        tagDao = _tagDao;
 
         init(dataSource);
     }
@@ -104,13 +105,13 @@ public class ContentDao {
                                         " ) where ROWNUM <= :endOffset) " +
                                         "where rnum >= :beginOffset")
                         .addQuery("count", "select count(*) as COUNT from Content where status = :status")
-                        .addQuery("insert", "INSERT INTO CONTENT (ID, TITLE, DESCRIPTION, CREATION_DATE, LAST_MODIFICATION_DATE, STATUS, CONTENT_TYPE, AUTHOR_REF, CONTENT_ANCESTOR_REF) " +
-                                "VALUES (CONTENT_SEQ.nextval, :title, :description, :creationDate, :lastModificationDate, 0, :contentType, :authorId, :ancestorId)")
+                        .addQuery("insert", "INSERT INTO CONTENT (ID, TITLE, DESCRIPTION, CREATION_DATE, LAST_MODIFICATION_DATE, STATUS, CONTENT_TYPE, AUTHOR_REF, CONTENT_ANCESTOR_REF, TAGS) " +
+                                "VALUES (CONTENT_SEQ.nextval, :title, :description, :creationDate, :lastModificationDate, 0, :contentType, :authorId, :ancestorId, :tags)")
                         .addQuery("updateContentUrl", "UPDATE CONTENT " +
                                 "SET FILE_URI = :url, STATUS = 0, LAST_MODIFICATION_DATE = :lastModificationDate " +
                                 "WHERE ID = :id")
                         .addQuery("updateContent", "UPDATE CONTENT " +
-                                "SET TITLE = :title, DESCRIPTION = :description, STATUS = 0, LAST_MODIFICATION_DATE = :lastModificationDate " +
+                                "SET TITLE = :title, DESCRIPTION = :description, STATUS = 0, LAST_MODIFICATION_DATE = :lastModificationDate, TAGS = :tags " +
                                 "WHERE ID = :id")
                         .addQuery("addLinkWithDomain", "INSERT INTO CONTENT_DOMAIN (CONTENT_REF, DOMAIN_REF) " +
                                 "VALUES (:contentId, :domainId)")
@@ -209,6 +210,7 @@ public class ContentDao {
                         new QueryExecutionContext().buildParams()
                                 .string("title", contentDetail.header().title())
                                 .string("description", contentDetail.header().description())
+                                .string("tags", listTagsToString(contentDetail.header().tags()))
                                 .integer("contentType", contentDetail.header().type().ordinal())
                                 .bigint("authorId", 1000) // TODO: change 1000 with the current connected user id
                                 .integer("status", ContentStatus.DRAFT.ordinal())
@@ -227,6 +229,14 @@ public class ContentDao {
                             .bigint("contentId", Long.valueOf(genKeys.get("id")))
                             .bigint("domainId", domain.id())
                             .toContext());
+        }
+
+        // Update TAGS table
+        Collection<String> tags = contentDetail.header().tags();
+        if (tags != null) {
+            for (String tag : tags) {
+                tagDao.createOrUpdateTag(tag);
+            }
         }
 
         try {
@@ -267,6 +277,7 @@ public class ContentDao {
                                 .field(ES_CONTENT_FIELD_CREATION_DATE, contentDetail.header().creationDate())
                                 .field(ES_CONTENT_FIELD_LAST_MODIF_DATE, contentDetail.header().lastModificationDate())
                                 .field(ES_CONTENT_FIELD_DOMAINS, domainIds)
+                                .field(ES_CONTENT_FIELD_TAGS, contentDetail.header().tags())
                                 .field(ES_CONTENT_FIELD_STATUS, contentDetail.header().status().ordinal())
                                 .field(ES_CONTENT_FIELD_ANCESTOR, contentDetail.header().ancestorId())
                                         //.field("version", contentDetail.header().version())
@@ -337,11 +348,17 @@ public class ContentDao {
                 new QueryExecutionContext().buildParams()
                         .string("title", contentDetail.header().title())
                         .string("description", contentDetail.header().description())
+                        .string("tags", listTagsToString(contentDetail.header().tags()))
                         .bigint("id", contentIdToUse)
                         .date("lastModificationDate", currentDate)
                         .toContext());
 
         List<Long> newDomainIds = new ArrayList<Long>();
+
+        // Check tags
+        for (String tag : contentDetail.header().tags()) {
+            tagDao.createOrUpdateTag(tag);
+        }
 
         // Get current domain ids that are linked with the content.
         List<Long> domainsIds = getDomainIds(contentIdToUse);
@@ -641,6 +658,27 @@ public class ContentDao {
         return domainDao.getDomains(getDomainIds(contentId));
     }
 
+    private List<String> stringTagsToList(String tags) {
+        if (tags == null) {
+            return Collections.emptyList();
+        }
+        return Arrays.asList(tags.split(";"));
+    }
+
+    private String listTagsToString(List<String> tags) {
+        if (tags == null) {
+            return "";
+        } else {
+            StringBuilder sb = new StringBuilder();
+            for(String tag : tags) {
+                sb.append(tag);
+                sb.append(";");
+            }
+        sb.deleteCharAt(sb.lastIndexOf(";"));
+        return sb.toString();
+        }
+    }
+
     private class ContentRowMapper implements RowMapper<ContentHeader> {
         @Override
         public ContentHeader processRow(ResultSet rs) throws SQLException {
@@ -653,7 +691,8 @@ public class ContentDao {
                     .lastModificationDate(rs.getDate("LAST_MODIFICATION_DATE"))
                     .type(ContentType.values()[rs.getInt("CONTENT_TYPE")])
                     .author(userDao.getUser(rs.getLong("AUTHOR_REF")))
-                    .domains(getDomains(rs.getLong("ID")));
+                    .domains(getDomains(rs.getLong("ID")))
+                    .tags(stringTagsToList(rs.getString("TAGS")));
         }
     }
 

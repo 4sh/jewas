@@ -26,6 +26,32 @@ function ContentCreator(type, extensions, extensionsMsgError, previsualizationCo
         );
     }
 
+    this.loadTags = function(tags) {
+        console.log("selected tags:", tags);
+        $.getJSON(
+            '/tags/all',
+            function success(data) {
+                var container = $("#tags");
+                container.children().remove();
+
+                var selectedTags = {};
+
+                for (var i = 0; i < tags.length; i++) {
+                    selectedTags[tags[i]] = true;
+                }
+                for (var j = 0; j < data.length; j++) {
+                    if (selectedTags[data[j].tag]) {
+                        data[j].selected = true;
+                    } else {
+                        data[j].selected = false;
+                    }
+                }
+                $("#tagItemTemplate").tmpl(data).appendTo(container);
+                $("#tags").trigger("liszt:updated");
+            }
+        );
+    }
+
     function getDomains(domainIds) {
         var domains = [];
 
@@ -55,6 +81,7 @@ function ContentCreator(type, extensions, extensionsMsgError, previsualizationCo
         });
 
         $("#domains").chosen();
+        $("#tags").chosen();
 
         $("#createContent").submit(function(){
             var form = this;
@@ -63,7 +90,8 @@ function ContentCreator(type, extensions, extensionsMsgError, previsualizationCo
                 header: {
                     title: $("#title").val(),
                     description: $("#description").val(),
-                    domains: getDomains($("#domains").val())
+                    domains: getDomains($("#domains").val()),
+                    tags: $("#tags").val()
                 }
             }
 

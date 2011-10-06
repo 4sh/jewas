@@ -440,6 +440,11 @@
     </div>
     <button id="searchNext" class="next_result"><img src="/public/images/ajax/indicator.gif" class="spinner" />Résultats suivants</button>
 </script>
+<script id="tagItemTemplate" type="text/x-jquery-tmpl">
+    <span class="keyword keyword_content"></span>
+</script>
+
+
 <script id="contentLineResult" type="text/x-jquery-tmpl">
     <div id="item-{{= id}}" class="content-result search_result content_type">
         <div class="tab_left"></div>
@@ -461,7 +466,13 @@
         <div class="right_part">
             <div class="texts_zone">
                 <div class="content-result-description">{{= description}}</div>
-                <div class="keywords_container"><span class="keyword keyword_content">a dynamiser</span><span class="keyword keyword_content">a dynamiser</span><span class="keyword keyword_content">a dynamiser</span><span class="keyword keyword_content">a dynamiser</span></div>
+                <div class="keywords_container">
+                    {{each(i, tag) tags}}
+                        {{if i < 5}}
+                            <span class="keyword keyword_content">{{= tag}}</span>
+                        {{/if}}
+                    {{/each}}
+                </div>
             </div>
             <div class="settings_menu">
                 <#if searchMode == 1>

@@ -17,6 +17,9 @@
         <option value="{{= id}}" {{if selected}} selected {{/if}}> {{= label}} </option>
     </script>
 
+    <script id="tagItemTemplate" type="text/x-jquery-tmpl">
+        <option value="{{= tag}}" {{if selected}} selected {{/if}}> {{= tag}} </option>
+    </script>
 
         <script type="text/javascript">
             $(
@@ -45,8 +48,16 @@
                             domains.push(${item.id()?c});
                         </#list>
                         loadDomains(domains);
+
+                         // Load the tags
+                        var tags = [];
+                        <#list content.header().tags() as item>
+                            tags.push("${item}");
+                        </#list>
+                        loadTags(tags);
                     <#else>
                         loadDomains([]);
+                        loadTags([]);
                     </#if>
                     }
             );

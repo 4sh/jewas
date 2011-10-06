@@ -8,6 +8,7 @@ import fr.fsh.bbeeg.content.routes.*;
 import fr.fsh.bbeeg.domain.routes.GetAllDomainsRoute;
 import fr.fsh.bbeeg.domain.routes.GetPopularDomainRoute;
 import fr.fsh.bbeeg.security.routes.PostConnectionRoute;
+import fr.fsh.bbeeg.tag.routes.GetAllTagsRoute;
 import fr.fsh.bbeeg.user.routes.GetLastConnectionDateRoute;
 import fr.fsh.bbeeg.user.routes.GetUserInformationsRoute;
 import fr.fsh.bbeeg.user.routes.GetUserPreferredDomainsRoute;
@@ -60,7 +61,7 @@ public class Main {
             final RestServer rs = RestServerFactory.createRestServer(options.httpPort());
             rs.addRoutes(
                 new RedirectRoute("/", "/dashboard/dashboard.html"),
-                // Not really a static resource (located in webapp folder) since it is provided
+                // Not really a static resources (located in webapp folder) since it is provided
                 // by jewas library. So it must be declared before the StaticResourcesRoute !
                 new SimpleFileRoute("/public/js/jewas/jewas-forms.js", "js/jewas-forms.js", options.cachedStaticResourcesRootDirectory()),
                 new StaticResourcesRoute("/public/", "public/", options.cachedStaticResourcesRootDirectory()),
@@ -93,6 +94,7 @@ public class Main {
                 new GetTotalNumberOfContentRoute(assembler.contentResource()),
                 new GetAuthorContentRoute(assembler.contentResource()),
                 new GetAllDomainsRoute(assembler.domainResource()),
+                new GetAllTagsRoute(assembler.tagResource()),
                 new GetPopularDomainRoute(assembler.domainResource()),
                 new SimpleHtmlRoute("/user/profile.html", "user/profile.ftl"),
                 new GetUserInformationsRoute(),
