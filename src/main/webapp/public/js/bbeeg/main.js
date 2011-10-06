@@ -66,5 +66,33 @@ $(
                 });
             }
         );
+
+        // Bind the search bar on the search page
+        $('#searchLoop').click(function() {
+            var searchUrl = '/content/search.html';
+            var fullTextSearch = $('#searchInput').val();
+
+            if (window.location.pathname.match('/content/search.html')) {
+                var simpleSearchPageInput = $('#simpleSearchQuery');
+                var simpleSearchButton = $('#simpleSearchButton');
+
+                if (simpleSearchPageInput === null) {
+                    console.log("Simple search input not found. Location:", window.location);
+                }
+
+                if (simpleSearchButton === null) {
+                    console.log("Simple search button not found. Location:", window.location);
+                }
+
+                simpleSearchPageInput.val(fullTextSearch);
+                simpleSearchButton.click();
+            } else {
+                var targetUrl = searchUrl;
+                if (fullTextSearch !== "") {
+                    targetUrl += '#' + fullTextSearch;
+                }
+                window.location = targetUrl;
+            }
+        });
     }
 );

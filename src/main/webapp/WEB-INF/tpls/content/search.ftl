@@ -198,9 +198,24 @@
         return results;
     }
 
+    function extractSearchCriterionFromUrl() {
+        var url = window.location.href;
+        if (url.indexOf('#') !== -1) {
+            var splittedUrl = url.split('#');
+
+            if (splittedUrl.length !== 2) {
+                console.log("Error url should only contain one #. url:", url);
+                return;
+            }
+
+            $('#simpleSearchQuery').val(splittedUrl[1]);
+            $('#simpleSearchButton').click();
+        }
+    }
+
     function getStatusStyle(status) {
         var statusStyle = {};
-        
+
         switch (status) {
             case 'VALIDATED':
                 statusStyle.label = "Validé";
@@ -229,98 +244,17 @@
         return statusStyle;
     }
 
-        $(function() {
-            <#if searchMode != 1>
-                loadAuthors();
-            </#if>
-            loadDomains();
-            loadContentTypes();
-
-
-        /* Switch between 'Simple search' and 'Advanced search' modes */
-        $('.advanced_search_button').click(function() {
-		    $('.toggle').toggle();
-            return false;
-	    }).next().hide();
-
-
-            var dates = $( "#from, #to" ).datepicker({
-                defaultDate: "",
-                dateFormat: "yy-mm-dd",
-                changeMonth: true,
-                numberOfMonths: 1,
-                onSelect: function( selectedDate ) {
-                    var option = this.id == "from" ? "minDate" : "maxDate",
-                            instance = $( this ).data( "datepicker" ),
-                            date = $.datepicker.parseDate(
-                                    instance.settings.dateFormat ||
-                                            $.datepicker._defaults.dateFormat,
-                                    selectedDate, instance.settings );
-                    dates.not( this ).datepicker( "option", option, date );
-                }
-            });
-            $("#adSearchType").chosen();
-            $("#adSearchCriterias").chosen();
-            $("#adSearchDomains").chosen();
-            $("#adSearchAuthors").chosen();
-            SearchQuery.bindSearchToForm(
-                    new SearchQuery.SearchContext().targetForm($("#simpleSearchForm"))
-                            .resultElement($("#searchResultsComponent"))
-                            .process(process)
-                            .globalResultTemplate($("#contentResult"))
-                            .resultElementTemplate($("#contentLineResult"))
-                            .selectorForClickableOfSearchNext("#searchNext")
-                            .selectorWhereResultsWillBeAppended("#contentResults")
-            );
-            SearchQuery.bindSearchToForm(
-                    new SearchQuery.SearchContext().targetForm($("#advancedSearchForm"))
-                            .resultElement($("#searchResultsComponent"))
-                            .process(process)
-                            .globalResultTemplate($("#contentResult"))
-                            .resultElementTemplate($("#contentLineResult"))
-                            .selectorForClickableOfSearchNext("#searchNext")
-                            .selectorWhereResultsWillBeAppended("#contentResults")
-            );
-            $("#adSearchCriterias").chainedSelect(
-                    {
-                        'ajaxUrlsPerDepth' : [
-                            "/content/criterias?depth=0",
-                            "/content/criterias?depth=1&parent={value}",
-                            "/content/criterias?depth=2&parent={value}",
-                            "/content/criterias?depth=3&parent={value}"
-                        ],
-                        'targetFieldForSelectedOption' : $("#criterias"),
-                        'displaySelectionTarget' : $("#criteriasList"),
-                        'templateForDisplaySelectionItem' : $("#criteriaSelectedItem"),
-                        'selectorForClosingLinkInDisplaySelectionItemTemplate' : "a.search-choice-close",
-                        'selectMenuContainer' : $("#searchCriteriaMenuContainer")
-                    }
-            );
-
-            // Enabling auto query when scrollbar is at the bottom of the window
-            var SCROLLBAR_THRESHOLD = 100; // 100 pixels before the bottom of the screen, we consider the scrollbar is at the bottom
-            $(window).scroll(function(args){
-                if($("#searchResultsComponent #searchNext").length != 0 // Button "searchNext" exists and is not disabled
-                        && $("#searchResultsComponent #searchNext").attr('disabled') != "disabled"){
-                    var scrollbarIsAtBottom = $(window).scrollTop() + SCROLLBAR_THRESHOLD >= $(document).height() - $(window).height();
-                    if(scrollbarIsAtBottom){
-                        $("#searchNext").click();
-                    }
-                }
-            });
-        });
-
-        function loadDomains() {
-            $.getJSON(
-                    '/domain/all',
-                    function success(data) {
-                        var container = $("#adSearchDomains");
-                        container.children().remove();
-                        $("#domainItemTemplate").tmpl(data).appendTo(container);
-                        $("#adSearchDomains").trigger("liszt:updated");
-                    }
-            );
-        }
+    function loadDomains() {
+        $.getJSON(
+            '/domain/all',
+            function success(data) {
+                var container = $("#adSearchDomains");
+                container.children().remove();
+                $("#domainItemTemplate").tmpl(data).appendTo(container);
+                $("#adSearchDomains").trigger("liszt:updated");
+            }
+        );
+    }
 
     function loadContentTypes() {
         $.getJSON(
@@ -333,6 +267,93 @@
             }
         );
     }
+
+    $(function() {
+
+        <#if searchMode != 1>
+            loadAuthors();
+        </#if>
+        loadDomains();
+        loadContentTypes();
+
+        /* Switch between 'Simple search' and 'Advanced search' modes */
+        $('.advanced_search_button').click(function() {
+		    $('.toggle').toggle();
+            return false;
+	    }).next().hide();
+
+        var dates = $( "#from, #to" ).datepicker({
+            defaultDate: "",
+            dateFormat: "yy-mm-dd",
+            changeMonth: true,
+            numberOfMonths: 1,
+            onSelect: function( selectedDate ) {
+                var option = this.id == "from" ? "minDate" : "maxDate",
+                    instance = $( this ).data( "datepicker" ),
+                    date = $.datepicker.parseDate(
+                        instance.settings.dateFormat ||
+                            $.datepicker._defaults.dateFormat,
+                            selectedDate, instance.settings );
+                    dates.not( this ).datepicker( "option", option, date );
+                }
+        });
+
+        $("#adSearchType").chosen();
+        $("#adSearchCriterias").chosen();
+        $("#adSearchDomains").chosen();
+        $("#adSearchAuthors").chosen();
+
+        SearchQuery.bindSearchToForm(
+            new SearchQuery.SearchContext().targetForm($("#simpleSearchForm"))
+                .resultElement($("#searchResultsComponent"))
+                .process(process)
+                .globalResultTemplate($("#contentResult"))
+                .resultElementTemplate($("#contentLineResult"))
+                .selectorForClickableOfSearchNext("#searchNext")
+                .selectorWhereResultsWillBeAppended("#contentResults")
+        );
+
+        SearchQuery.bindSearchToForm(
+            new SearchQuery.SearchContext().targetForm($("#advancedSearchForm"))
+                .resultElement($("#searchResultsComponent"))
+                .process(process)
+                .globalResultTemplate($("#contentResult"))
+                .resultElementTemplate($("#contentLineResult"))
+                .selectorForClickableOfSearchNext("#searchNext")
+                .selectorWhereResultsWillBeAppended("#contentResults")
+        );
+
+        $("#adSearchCriterias").chainedSelect(
+            {
+                'ajaxUrlsPerDepth' : [
+                    "/content/criterias?depth=0",
+                    "/content/criterias?depth=1&parent={value}",
+                    "/content/criterias?depth=2&parent={value}",
+                    "/content/criterias?depth=3&parent={value}"
+                ],
+                'targetFieldForSelectedOption' : $("#criterias"),
+                'displaySelectionTarget' : $("#criteriasList"),
+                'templateForDisplaySelectionItem' : $("#criteriaSelectedItem"),
+                'selectorForClosingLinkInDisplaySelectionItemTemplate' : "a.search-choice-close",
+                'selectMenuContainer' : $("#searchCriteriaMenuContainer")
+            }
+        );
+
+        // Enabling auto query when scrollbar is at the bottom of the window
+        var SCROLLBAR_THRESHOLD = 100; // 100 pixels before the bottom of the screen, we consider the scrollbar is at the bottom
+        $(window).scroll(function(args){
+            if($("#searchResultsComponent #searchNext").length != 0 // Button "searchNext" exists and is not disabled
+                && $("#searchResultsComponent #searchNext").attr('disabled') != "disabled"){
+                var scrollbarIsAtBottom = $(window).scrollTop() + SCROLLBAR_THRESHOLD >= $(document).height() - $(window).height();
+                if(scrollbarIsAtBottom){
+                    $("#searchNext").click();
+                }
+            }
+        });
+        
+        extractSearchCriterionFromUrl();
+
+    });
 </script>
 
 <div id="searchComponent">

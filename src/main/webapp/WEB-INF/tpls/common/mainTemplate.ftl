@@ -82,10 +82,10 @@
 
             <div id="menuright">
                 <@rootMenuItem id="input_recherche">
-                    <input type="text">
+                    <input id="searchInput" type="text">
                 </@rootMenuItem>
                 <@rootMenuItem id="recherche_item">
-                    <img src="/public/images/bbeeg/loupe.png" alt="Recherche"/>
+                    <img id="searchLoop" src="/public/images/bbeeg/loupe.png" alt="Recherche" class="hand_cursor"/>
                     <@subMenu id="adminSubMenu" width="150">
                         <@subMenuItem id="searchMenuItem" title="Recherche" />
                         <@subMenuItem id="manageMyContentsMenuItem" title="Gérer mes contenus" />
