@@ -73,6 +73,8 @@ $(
             var fullTextSearch = $('#searchInput').val();
 
             if (window.location.pathname.match('/content/search.html')) {
+
+                // If the current page is already the search page, performs a simple search
                 var simpleSearchPageInput = $('#simpleSearchQuery');
                 var simpleSearchButton = $('#simpleSearchButton');
 
@@ -87,6 +89,7 @@ $(
                 simpleSearchPageInput.val(fullTextSearch);
                 simpleSearchButton.click();
             } else {
+                // If we are are on a non search page, configure the search and then navigate to show results
                 var targetUrl = searchUrl;
                 if (fullTextSearch !== "") {
                     targetUrl += '#' + fullTextSearch;
