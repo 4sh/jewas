@@ -291,3 +291,9 @@ img.spinner {
 .keyword_test {
     background-color: #7fa62d;
 }
+
+.next_result {
+    float: right;
+    margin-right: 35px;
+    margin-top: 5px;
+}

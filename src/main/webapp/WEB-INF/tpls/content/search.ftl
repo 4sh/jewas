@@ -438,7 +438,7 @@
     <div id="contentResults">
         {{tmpl(results) "#contentLineResult"}}
     </div>
-    <button id="searchNext"><img src="/public/images/ajax/indicator.gif" class="spinner" />Résultats suivants</button>
+    <button id="searchNext" class="next_result"><img src="/public/images/ajax/indicator.gif" class="spinner" />Résultats suivants</button>
 </script>
 <script id="contentLineResult" type="text/x-jquery-tmpl">
     <div id="item-{{= id}}" class="content-result search_result content_type">
