@@ -82,7 +82,7 @@ function loadTags() {
         function success(data) {
             var items = [];
             $.each(data, function(index, value) {
-                items.push({text: value.tag, weight: value.weight, url: ""});
+                items.push({text: value.tag, weight: value.weight, url: "/content/search.html#" + value.tag});
             });
 
             var container = $("#domainCloud");
