@@ -5,6 +5,8 @@ function EegContentCreator(eegUploaderId, videoUploaderId) {
     var eegUploader;
     var videoUploader;
 
+    var eegId;
+
     /* ***************************************************************************************************************
      *  Private methods
      *****************************************************************************************************************/
@@ -31,10 +33,45 @@ function EegContentCreator(eegUploaderId, videoUploaderId) {
         return domains;
     }
 
+    function createEegUploader(uploaderSetter) {
+        // Create uploader
+        // onChange: clean eegsettings, disabled buttons, send request to rename uploaded eeg and videos...
+        // onSubmit: enabled buttons
+        // TODO
 
-    function createUploader(setUploader, uploaderId, extensions, extensionsMsgError) {
-        var btnUpload=$( '#' + uploaderId + ' .upload');
-        var uploadStatus=$( '#' + uploaderId + ' .upload-status');
+        createUploader(
+            uploaderSetter,
+            $('#' + eegUploaderId),
+            {
+                extensions: 'edf',
+                extensionsMsgError: 'Seul le format EDF est accepté.',
+                onChangeCallback: function (uploader) {
+                    uploader.setData({extension: eegUploader.getCurrentFileExtension()});
+                    uploader.setAction('/content/content/EEG');
+                    uploader.submit();
+                },
+                onSubmitCallback: function (uploader) {
+// Nothing to do
+                },
+                onCompleteCallback: function (uploader, response) {
+                    eegId = response.fileId;
+// TODO: enable eeg settings form
+                }
+            }
+        );
+    }
+
+    /*
+     * options an object that can contains these properties :
+     * - extensions
+     * - extensionsMsgError
+     * - onChangeCallback
+     * - onSubmitCallback
+     * - onCompleteCallback
+     */
+    function createUploader(uploaderSetter, uploaderComponent, options) {
+        var btnUpload = uploaderComponent.find('.upload');
+        var uploadStatus = uploaderComponent.find('.upload-status');
         var interval;
 
         new AjaxUpload(btnUpload, {
@@ -44,15 +81,29 @@ function EegContentCreator(eegUploaderId, videoUploaderId) {
             action:'',
             multiple: false,
             onChange: function(file, ext) {
-                var regexp = new RegExp('^(' + extensions + ')$');
+                var regexp = null;
 
-                if (! (ext && regexp.test(ext))){
+                if (!!options.extensions) {
+                    regexp = new RegExp('^(' + options.extensions + ')$');
+                }
+
+                if (regexp !== null && !(ext && regexp.test(ext))){
                     // check for valid file extension
+                    var extensionsMsgError = "Extensions not supported";
+
+                    if (!!options.extensionsMsgError) {
+                        extensionsMsgError = options.extensionsMsgError;
+                    }
+                    
                     uploadStatus.text(extensionsMsgError);
                     return false;
                 }
                 uploadStatus.text(file);
-                setUploader(this);
+                uploaderSetter(this);
+
+                if (!!options.onChangeCallback) {
+                    options.onChangeCallback(this);
+                }
             },
             onSubmit: function(file, ext){
                 uploadStatus.text('Transfert en cours ');
@@ -64,11 +115,44 @@ function EegContentCreator(eegUploaderId, videoUploaderId) {
                         uploadStatus.text('Transfert en cours ');
                     }
                 }, 200);
+
+                if (!!options.onSubmitCallback) {
+                    options.onSubmitCallback(this);
+                }
+
             },
             onComplete : function(file, response){
                 window.clearInterval(interval);
+
+                if (!!options.onCompleteCallback) {
+                    options.onCompleteCallback(this, response);
+                }
             }
         });
+    }
+
+    function getVideos() {
+        var videos = [];
+
+        $('.video-uploader').each(
+            function (videoIndex, videoElt) {
+                var video = {};
+
+                var start = $(videoElt).find('.video-start').val();
+                var stop = $(videoElt).find('.video-stop').val();
+
+                // TODO add controls
+
+                video.start = start;
+                video.stop = stop;
+                // TODO: use the right uploader.
+                video.fileName = videoUploader.videoId;
+
+                videos.push(video);
+            }
+        );
+
+        return videos;
     }
 
     function getMontages() {
@@ -128,6 +212,8 @@ function EegContentCreator(eegUploaderId, videoUploaderId) {
         settings.frameDuration = $('#frameDuration')[0].value;
         settings.montages = getMontages();
 
+        settings.videos = getVideos();
+
         return settings;
     }
 
@@ -139,38 +225,67 @@ function EegContentCreator(eegUploaderId, videoUploaderId) {
             null,
             //eegSettings,
             function(data){
-                callAfter(contentId);
+                if (!!callAfter) {
+                    callAfter(contentId);
+                }
             }
         );
     }
 
-    function launchUploads(contentId) {
-        if (eegUploader != null) {
-            eegUploader.setData({extension: eegUploader.getCurrentFileExtension()});
-            eegUploader.setAction('/content/content/' + contentId + '/' + 'EEG');
-
-            eegUploader.submit(function () {
-
-                if (videoUploader != null) {
-                    videoUploader.setData({extension: videoUploader.getCurrentFileExtension()});
-                    videoUploader.setAction('/content/content/' + contentId + '/' + 'EEG');
-
-                    videoUploader.submit(function () {
-                        $("#confirmationDialog").dialog('open');
-                        setTimeout(function(){
-                            $("#confirmationDialog").dialog('close');
-                            window.location.href = "/content/" + contentId + "/view.html";
-                        }, 2000);
-                    });
-                }
-
-            });
-        }
-    }
+//    function launchUploads(contentId) {
+//        if (eegUploader != null) {
+//            eegUploader.setData({extension: eegUploader.getCurrentFileExtension()});
+//            eegUploader.setAction('/content/content/' + contentId + '/' + 'EEG');
+//
+//            eegUploader.submit(function () {
+//
+//                if (videoUploader != null) {
+//                    videoUploader.setData({extension: videoUploader.getCurrentFileExtension()});
+//                    videoUploader.setAction('/content/content/' + contentId + '/' + 'EEG');
+//
+//                    videoUploader.submit(function () {
+//                        $("#confirmationDialog").dialog('open');
+//                        setTimeout(function(){
+//                            $("#confirmationDialog").dialog('close');
+//                            window.location.href = "/content/" + contentId + "/view.html";
+//                        }, 2000);
+//                    });
+//                }
+//
+//            });
+//        }
+//    }
 
     /* ***************************************************************************************************************
      *  Public methods
      *****************************************************************************************************************/
+
+    this.addVideo = function (container) {
+        var videoItem = $("#videoItemTemplate").tmpl();
+
+         videoItem.appendTo(container);
+
+        createUploader(
+            function (uploader) {
+                videoUploader = uploader;
+            },
+            videoItem,
+            {
+                extensions: 'mp4',
+                extensionsMsgError: 'Seul le format MP4 est accepté.',
+                onChangeCallback: function (uploader) {
+                    uploader.setData({extension: videoUploader.getCurrentFileExtension()});
+                    uploader.setAction('/content/content/EEG/' + eegId);
+                    uploader.submit();
+                },
+                onCompleteCallback: function (uploader, response) {
+                    uploader.videoId = response.fileId;
+                }
+            }
+        );
+
+
+    };
 
     this.addMontage = function (container) {
         var montage = $("#montageItemTemplate").tmpl(null);
@@ -223,7 +338,6 @@ function EegContentCreator(eegUploaderId, videoUploaderId) {
                 }
             }
 
-
             var dataToSend = {
                 type : 'EEG',
                 contentDetail : JSON.stringify(contentDetail)
@@ -232,7 +346,22 @@ function EegContentCreator(eegUploaderId, videoUploaderId) {
             $.put(form.action,
                 dataToSend,
                 function(data){
-                    sendEegSettings(data.id, launchUploads);
+                    var contentId = data.id;
+                    sendEegSettings(
+                        contentId,
+                        function () {
+                            $.put("/content/eeg/" + eegId + "/" + contentId,
+                                null,
+                                function () {
+                                    $("#confirmationDialog").dialog('open');
+                                    setTimeout(function(){
+                                        $("#confirmationDialog").dialog('close');
+                                        window.location.href = "/content/" + contentId + "/view.html";
+                                    }, 2000);
+                                }
+                            );
+                        }
+                    );
                 }
             );
 
@@ -240,9 +369,27 @@ function EegContentCreator(eegUploaderId, videoUploaderId) {
         });
 
         eegUploader = null;
-        createUploader(function (uploader){eegUploader = uploader;}, eegUploaderId, 'edf', 'Seul le format EDF est accepté.');
+        createEegUploader(
+            function (uploader){
+                eegUploader = uploader;
+            }
+        );
 
         videoUploader = null;
-        createUploader(function (uploader){videoUploader = uploader;}, videoUploaderId, 'mp4', 'Seuls le format MP4 est accepté.');
+//        createUploader(
+//            function (uploader){
+//                videoUploader = uploader;
+//            },
+//            $('#'+videoUploaderId),
+//            {
+//                extensions: 'mp4',
+//                extensionsMsgError: 'Seuls le format MP4 est accepté.',
+//                onChangeCallback: function (uploader) {
+//                    uploader.setData({extension: videoUploader.getCurrentFileExtension()});
+//                    uploader.setAction('/content/content/EEG/' + eegId);
+//                    uploader.submit();
+//                }
+//            }
+//        );
     })();
 }

@@ -9,6 +9,7 @@ public class EegSettings {
     private Integer zoom;
     private Integer frameDuration;
     private Montage[] montages;
+    private Video[] videos;
 
     public EegSettings eegStart(Integer _eegStart){
         this.eegStart = _eegStart;
@@ -54,5 +55,15 @@ public class EegSettings {
 
     public Montage[] montages(){
         return this.montages;
+    }
+
+
+    public EegSettings videos(Video[] _videos){
+        this.videos = _videos;
+        return this;
+    }
+
+    public Video[] videos(){
+        return this.videos;
     }
 }

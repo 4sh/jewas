@@ -1,5 +1,6 @@
 package fr.fsh.bbeeg.content.routes;
 
+import com.jayway.restassured.response.Response;
 import fr.fsh.bbeeg.common.config.BBEEGConfiguration;
 import fr.fsh.bbeeg.common.resources.FileQueryObject;
 import fr.fsh.bbeeg.common.resources.ObjectId;
@@ -13,6 +14,7 @@ import jewas.http.PatternUriPathMatcher;
 import jewas.http.RequestHandler;
 import jewas.http.data.BodyParameters;
 import jewas.http.impl.AbstractRequestHandler;
+import jewas.json.Json;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,26 +30,27 @@ public class CreateContentOfEegRoute extends AbstractRoute {
     private EegResource eegResource;
 
     public CreateContentOfEegRoute(EegResource _eegResource){
-        super(HttpMethodMatcher.POST_OR_PUT, new PatternUriPathMatcher("/content/content/[id]/EEG"));
+        super(HttpMethodMatcher.POST_OR_PUT, new PatternUriPathMatcher("/content/content/EEG/[id]"));
         eegResource = _eegResource;
     }
 
-    public static class TextQueryObject {
-        private String text;
+    public static class SuccessFileUploadObject extends SuccessObject {
+        private String fileId;
 
-        public TextQueryObject text(String _text){
-            this.text = _text;
+        public SuccessFileUploadObject fileId(String _fileId){
+            this.fileId = _fileId;
             return this;
         }
 
-        public String text(){
-            return this.text;
+        public String fileId(){
+            return this.fileId;
         }
     }
 
+
     @Override
     protected RequestHandler onMatch(HttpRequest request, Parameters parameters) {
-        final ObjectId qo = toQueryObject(parameters, ObjectId.class);
+        final ObjectId objectId = toQueryObject(parameters, ObjectId.class);
 
         return new AbstractRequestHandler() {
             @Override
@@ -56,7 +59,7 @@ public class CreateContentOfEegRoute extends AbstractRoute {
 
                 FileQueryObject fqo = toContentObject(bodyParameters, FileQueryObject.class);
 
-                // If the content type is EEG, then the routes is a proxy to redirect the upload request to visio server.
+                // As the content type is EEG, then the route is a proxy to redirect the upload request to visio server.
                 File file = null;
 
                 try {
@@ -65,7 +68,7 @@ public class CreateContentOfEegRoute extends AbstractRoute {
                     System.out.println(e.getMessage());
                 }
 
-                String url = BBEEGConfiguration.INSTANCE.cliOptions().visioEegInternalUrl() + "/eeg/" + qo.id();
+                String url = BBEEGConfiguration.INSTANCE.cliOptions().visioEegInternalUrl() + "/eeg";
 
                 if ("edf".equals(fqo.extension())) {
                     url += EDF_FILE_URL;
@@ -73,14 +76,21 @@ public class CreateContentOfEegRoute extends AbstractRoute {
                     url += VIDEO_URL;
                 }
 
+                if (objectId.id() != null) {
+                    url += "/" + objectId.id().toString();
+                }
+
                 // FIX ME : Here we use RestAssured which provides us a simple way to upload a file.
-                given().
+                Response response = given().
                         formParam("extension", fqo.extension()).
                         multiPart("file", file, fqo.extension()).
                         when().
                         post(url);
 
-                request.respondJson().object(new SuccessObject().success(true));
+                SuccessFileUploadObject sfuo = (SuccessFileUploadObject)
+                        Json.instance().fromJsonString(response.getBody().asString(), SuccessFileUploadObject.class);
+
+                request.respondJson().object(sfuo);
             }
         };
     }

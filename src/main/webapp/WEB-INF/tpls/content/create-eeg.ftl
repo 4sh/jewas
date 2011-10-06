@@ -13,11 +13,21 @@ stylesheets=["/public/css/fileUpload/fileuploader.css"] useChosen=true>
     $( function() {
         eegContentCreator = new EegContentCreator("eeg-uploader", "video-uploader");
         eegContentCreator.addMontage($('#montages'));
+        eegContentCreator.addVideo($('#videos'));
     });
 </script>
 
 <script id="domainItemTemplate" type="text/x-jquery-tmpl">
     <option value="{{= id}}"> {{= label}} </option>
+</script>
+
+<script id="videoItemTemplate" type="text/x-jquery-tmpl">
+    <div class="video-uploader">
+            <span href="#" class="upload">Selectionner votre fichier video : </span>
+            <span class="upload-status"></span>
+            <label> Début de la vidéo (en ms) </label> <input class="video-start" type="text">
+            <label> Fin de la vidéo (en ms) </label> <input class="video-stop" type="text">
+        </div>
 </script>
 
 <script id="montageItemTemplate" type="text/x-jquery-tmpl">
@@ -53,17 +63,10 @@ stylesheets=["/public/css/fileUpload/fileuploader.css"] useChosen=true>
     <br />
 
     <p>
-    <div id="eeg-uploader">
-        <span href="#" class="upload">Selectionner votre fichier Eeg: </span>
-        <span class="upload-status"></span>
-    </div>
-    </p>
-
-    <p>
-    <div id="video-uploader">
-        <span href="#" class="upload">Selectionner votre fichier video : </span>
-        <span class="upload-status"></span>
-    </div>
+        <div id="eeg-uploader">
+            <span href="#" class="upload">Selectionner votre fichier Eeg: </span>
+            <span class="upload-status"></span>
+        </div>
     </p>
 
     <br />
@@ -74,6 +77,8 @@ stylesheets=["/public/css/fileUpload/fileuploader.css"] useChosen=true>
         <label for="eegStart"> Début de l'EEG (en s) </label> <input id="eegStart" type="text">
         <label for="eegStop"> Fin de l'EEG (en s) </label> <input id="eegStop" type="text">
     </p>
+    <br />
+    <div id="videos"></div>
     <br />
     <p>
         <label for="zoom"> Niveau de zoom </label>
