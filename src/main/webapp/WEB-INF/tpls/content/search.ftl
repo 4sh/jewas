@@ -268,6 +268,11 @@
         );
     }
 
+    function formatDescription(text) {
+        if (text !== null) {
+            return text.substring(0,220).concat(" ...");
+        }
+    }
     $(function() {
 
         <#if searchMode != 1>
@@ -486,7 +491,7 @@
 
         <div class="right_part">
             <div class="texts_zone">
-                <div class="content-result-description">{{= description}}</div>
+                <div class="content-result-description">{{= formatDescription(description)}}</div>
                 <div class="keywords_container">
                     {{each(i, tag) tags}}
                         {{if i < 5}}

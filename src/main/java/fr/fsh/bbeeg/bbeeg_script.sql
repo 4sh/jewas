@@ -39,11 +39,11 @@ CREATE TABLE USER (
 
 CREATE TABLE CONTENT (
                 ID INT(10) NOT NULL,
-                TITLE CHAR(100),
+                TITLE CHAR(64),
                 CREATION_DATE DATE NOT NULL,
                 LAST_MODIFICATION_DATE DATE NOT NULL,
                 STATUS INT(2) NOT NULL,
-                DESCRIPTION VARCHAR(200),
+                DESCRIPTION VARCHAR(500),
 				CONTENT_TYPE INT(2) NOT NULL,
                 AUTHOR_REF INT(10) NOT NULL,
                 FILE_URI CHAR(100),
