@@ -208,7 +208,7 @@
                 return;
             }
 
-            $('#simpleSearchQuery').val(splittedUrl[1]);
+            $('#simpleSearchQuery').val(decodeURI(splittedUrl[1]));
             $('#simpleSearchButton').click();
         }
     }
