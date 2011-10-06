@@ -112,6 +112,7 @@
     float: left;
     margin-right: 3px;
     line-height: 15px;
+    text-align: justify;
 
 }
 
@@ -186,14 +187,6 @@ img.spinner {
     padding-top: 5px;
 }
 
-.icon_type {
-    width: 30px;
-    height: 30px;
-    background-image: url('/public/images/bbeeg/icon_text.png');
-    float:left;
-    margin-top: 3px;
-}
-
 .search_result {
     background-color: #dfdfdf;
     width: 870px;
@@ -265,31 +258,6 @@ img.spinner {
 .keywords_container {
     float:left;
     margin-top: 5px;
-}
-
-.keyword {
-    padding: 1px 3px 2px;
-    font-size: 9.75px;
-    font-weight: bold;
-    color: #ffffff;
-    text-transform: uppercase;
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    border-radius: 3px;
-    margin-right: 3px;
-}
-
-.keyword_content {
-    background-color: #1099a3;
-
-}
-
-.keyword_lesson {
-    background-color: #7f203b;
-}
-
-.keyword_test {
-    background-color: #7fa62d;
 }
 
 .next_result {

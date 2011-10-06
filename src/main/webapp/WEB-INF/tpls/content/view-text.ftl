@@ -3,6 +3,7 @@
 
 <@mainTemplate title="Consultation"
         selectedMenuItem=""
+        stylesheets=["/public/css/bbeeg/view.css"]
         useChosen=true>
     <script type="text/javascript">
         $(
@@ -18,6 +19,6 @@
     </script>
 
     <@viewContentHeaders content=content />
-    <p>Contenu :</p> <textarea id="content" rows="5" cols="100" readonly="true"></textarea>
+    <p>Contenu :</p> <div id="content"></div>
 
 </@mainTemplate>
