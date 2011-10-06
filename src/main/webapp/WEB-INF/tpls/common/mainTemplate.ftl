@@ -25,7 +25,7 @@
 <head>
     <meta charset="UTF-8">
 
-    <link rel="icon" type="image/png" href="/public/images/bbeeg/favicon.png"/>
+    <link rel="shortcut icon" type="image/x-icon" href="/public/images/bbeeg/favicon.ico"/>
 
     <link rel="stylesheet" href="/public/css/bbeeg/bbeeg.css"/>
 
