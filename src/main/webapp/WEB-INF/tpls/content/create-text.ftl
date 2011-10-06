@@ -32,7 +32,7 @@
                         $("#title").val("${content.header().title()}");
 
                         // Load the description
-                        $("#description").append("${content.header().description()}");
+                        $("#description").text("${content.header().description()}");
 
                         // Load the content
                         $.ajax({
@@ -80,7 +80,7 @@
     <form id="createContent" action="<#if content??>/content/${content.header().id()?c}<#else>/content</#if>" method="post">
     <@createContentHeader/>
 
-        <p><label for="content">Contenu</label> :<br/><textarea rows="8" cols="100" id="content"></textarea></p>
+        <p><label for="content">Contenu</label> :<br/><textarea rows="8" cols="100" id="content" required="required"></textarea></p>
         <p><input type="submit" value="Enregistrer" /></p>
     </form>
 
