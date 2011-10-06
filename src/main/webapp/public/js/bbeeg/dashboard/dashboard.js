@@ -76,13 +76,18 @@ function loadLastAuthors() {
     );
 }
 
-function loadDomains() {
+function loadTags() {
     $.getJSON(
-        '/domain/popular?number=20',
+        '/tag/popular?number=20',
         function success(data) {
+            var items = [];
+            $.each(data, function(index, value) {
+                items.push({text: value.tag, weight: value.weight, url: ""});
+            });
+
             var container = $("#domainCloud");
             container.children().remove();
-            container.jQCloud(data);
+            container.jQCloud(items);
         }
     );
 }
@@ -93,6 +98,6 @@ $(
         loadMyContents();
         loadTotalNumberOfContents();
         loadLastAuthors();
-        loadDomains();
+        loadTags();
     }
 );

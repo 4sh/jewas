@@ -33,7 +33,8 @@ public class TagDao {
                     .addQuery("selectAll", "SELECT * FROM TAGS")
                     .addQuery("insert", "INSERT INTO TAGS (TAG, WEIGHT) VALUES (:tag, :weight)")
                     .addQuery("updateWeight", "UPDATE TAGS SET WEIGHT = :weight WHERE TAG = :tag")
-                    .addQuery("findTagWeight", "SELECT WEIGHT FROM TAGS WHERE TAG = :tag");
+                    .addQuery("findTagWeight", "SELECT WEIGHT FROM TAGS WHERE TAG = :tag")
+                    .addQuery("selectLimitedPopular", "SELECT * FROM (SELECT * FROM TAGS ORDER BY WEIGHT) WHERE ROWNUM<= :limit");
     }
 
     private class TagRowMapper implements RowMapper<Tag> {
@@ -45,9 +46,16 @@ public class TagDao {
         }
     }
 
-     public void fetchAllTags(List<Tag> tags) {
+    public void fetchAllTags(List<Tag> tags) {
         tagQueryTemplate.select(tags, "selectAll", new QueryExecutionContext().buildParams().toContext());
-     }
+    }
+
+    public void fetchPopularTags(List<Tag> tags, int limit) {
+        tagQueryTemplate.select(tags, "selectLimitedPopular",
+                new QueryExecutionContext().buildParams()
+                        .integer("limit", limit)
+                        .toContext());
+    }
 
     public void createOrUpdateTag(String tag) {
         Long weight = tagQueryTemplate.selectLong("findTagWeight", new QueryExecutionContext().

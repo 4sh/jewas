@@ -1,5 +1,6 @@
 package fr.fsh.bbeeg.tag.resources;
 
+import fr.fsh.bbeeg.common.resources.LimitedOrderedQueryObject;
 import fr.fsh.bbeeg.tag.persistence.TagDao;
 import fr.fsh.bbeeg.tag.pojos.Tag;
 
@@ -22,6 +23,10 @@ public class TagResource {
 
     public void fetchAllTags(List<Tag> results) {
         tagDao.fetchAllTags(results);
+    }
+
+    public void getPopularTags(List<Tag> results, LimitedOrderedQueryObject loqo) {
+        tagDao.fetchPopularTags(results, loqo.number());
     }
 
 }
