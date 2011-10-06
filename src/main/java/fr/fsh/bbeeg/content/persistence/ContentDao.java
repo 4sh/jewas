@@ -554,7 +554,7 @@ public class ContentDao {
     }
 
     /**
-     * Contribute to the elastic search query adding full text search on 'title', 'description' and 'fileContent'.
+     * Contribute to the elastic search query adding full text search on 'title', 'description', 'fileContent' and 'tags'.
      * @param elasticSearchQuery the elastic search query to contribute to.
      * @param textToSearch the text to be searched
      */
@@ -563,7 +563,8 @@ public class ContentDao {
             elasticSearchQuery.must(QueryBuilders.disMaxQuery()
                     .add(termQuery(ES_CONTENT_FIELD_TITLE, textToSearch).boost(5))
                     .add(termQuery(ES_CONTENT_FIELD_DESCRIPTION, textToSearch).boost(3))
-                    .add(termQuery(ES_CONTENT_FIELD_FILECONTENT, textToSearch).boost(4)));
+                    .add(termQuery(ES_CONTENT_FIELD_FILECONTENT, textToSearch).boost(4))
+                    .add(termQuery(ES_CONTENT_FIELD_TAGS, textToSearch).boost(5)));
         }
     }
     
