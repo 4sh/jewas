@@ -24,8 +24,8 @@
             </div>
 
             <div class="view_keyword"><b>Mot(s) clef(s) :</b>
-                <#list content.header().domains() as item>
-                    <span class="keyword keyword_content">${item.label()}</span>
+                <#list content.header().tags() as item>
+                    <span class="keyword keyword_content">${item}</span>
                 </#list>
             </div>
 
