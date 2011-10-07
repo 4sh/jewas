@@ -1,4 +1,4 @@
-function EegContentCreator(eegUploaderId, videoUploaderId) {
+function EegContentCreator(eegUploaderId, previsualizationInfos) {
     /* ***************************************************************************************************************
      *  Private attributes
      *****************************************************************************************************************/
@@ -217,11 +217,18 @@ function EegContentCreator(eegUploaderId, videoUploaderId) {
         return settings;
     }
 
-    function sendEegSettings(contentId, callAfter) {
+    function sendEegSettings(contentId, callAfter, mode) {
         var eegSettings = getEegSettings();
 
+        var url = '/content/eeg/settings/'+ contentId;
+
+        if (!mode ||'tmp' === mode) {
+            url += '/' + mode;
+        }
+
         // Note the text is set as a query parameter because if set in data, then get an exception server side.
-        $.put('/content/eeg/settings/' + contentId + '?text='+JSON.stringify(eegSettings),
+        // TODO: Can be changed now
+        $.put(url + '?text='+JSON.stringify(eegSettings),
             null,
             //eegSettings,
             function(data){
@@ -232,29 +239,22 @@ function EegContentCreator(eegUploaderId, videoUploaderId) {
         );
     }
 
-//    function launchUploads(contentId) {
-//        if (eegUploader != null) {
-//            eegUploader.setData({extension: eegUploader.getCurrentFileExtension()});
-//            eegUploader.setAction('/content/content/' + contentId + '/' + 'EEG');
-//
-//            eegUploader.submit(function () {
-//
-//                if (videoUploader != null) {
-//                    videoUploader.setData({extension: videoUploader.getCurrentFileExtension()});
-//                    videoUploader.setAction('/content/content/' + contentId + '/' + 'EEG');
-//
-//                    videoUploader.submit(function () {
-//                        $("#confirmationDialog").dialog('open');
-//                        setTimeout(function(){
-//                            $("#confirmationDialog").dialog('close');
-//                            window.location.href = "/content/" + contentId + "/view.html";
-//                        }, 2000);
-//                    });
-//                }
-//
-//            });
-//        }
-//    }
+    function buildPrevisualization() {
+        // Create the iframe to previsualize with the eeg pevisualization url
+        var iframe = document.createElement('iframe');
+
+        iframe.width = '100%';
+        iframe.height = '100%';
+
+        iframe.src = previsualizationInfos.previsualizationUrl + '/' + eegId + '/previsualization.html';
+
+        $('#' + previsualizationInfos.previsualizationContainerId).empty().append(iframe);
+    }
+
+    function previsualizeAction() {
+        //Save eeg settings in tmp mode
+        sendEegSettings( eegId, buildPrevisualization, 'tmp');
+    }
 
     /* ***************************************************************************************************************
      *  Public methods
@@ -376,20 +376,7 @@ function EegContentCreator(eegUploaderId, videoUploaderId) {
         );
 
         videoUploader = null;
-//        createUploader(
-//            function (uploader){
-//                videoUploader = uploader;
-//            },
-//            $('#'+videoUploaderId),
-//            {
-//                extensions: 'mp4',
-//                extensionsMsgError: 'Seuls le format MP4 est accepté.',
-//                onChangeCallback: function (uploader) {
-//                    uploader.setData({extension: videoUploader.getCurrentFileExtension()});
-//                    uploader.setAction('/content/content/EEG/' + eegId);
-//                    uploader.submit();
-//                }
-//            }
-//        );
+
+        $('#' + previsualizationInfos.previsualizeButtonId).bind('click', previsualizeAction);
     })();
 }

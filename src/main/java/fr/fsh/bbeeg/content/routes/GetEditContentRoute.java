@@ -1,8 +1,10 @@
 package fr.fsh.bbeeg.content.routes;
 
 import fr.fsh.bbeeg.common.resources.ObjectId;
-import fr.fsh.bbeeg.content.pojos.ContentDetail;
+import fr.fsh.bbeeg.content.pojos.*;
+import fr.fsh.bbeeg.content.pojos.ContentType;
 import fr.fsh.bbeeg.content.resources.ContentResource;
+import fr.fsh.bbeeg.content.resources.EegResource;
 import jewas.http.*;
 import jewas.http.impl.AbstractRequestHandler;
 import jewas.template.Templates;
@@ -15,10 +17,12 @@ import java.util.Map;
  */
 public class GetEditContentRoute extends AbstractRoute {
     private ContentResource contentResource;
+    private EegResource eegResource;
 
-    public GetEditContentRoute(ContentResource _contentResource){
+    public GetEditContentRoute(ContentResource _contentResource, EegResource _eegResource){
         super(HttpMethodMatcher.GET, new PatternUriPathMatcher("/content/[id]/edit.html"));
         contentResource = _contentResource;
+        eegResource = _eegResource;
     }
 
     @Override
@@ -48,6 +52,10 @@ public class GetEditContentRoute extends AbstractRoute {
                     case EEG: template = "content/edit-eeg.ftl";
                         break;
                     default: template = "content/create-text.ftl";
+                }
+
+                if (ContentType.EEG.equals(contentDetail.header().type())) {
+                    eegResource.cleanTmp(oi.id());
                 }
 
                 request.respondHtml().content(Templates.process(template, params));

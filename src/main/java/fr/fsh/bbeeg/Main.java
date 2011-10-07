@@ -107,7 +107,7 @@ public class Main {
                 new GetContentCriteriasRoute(assembler.contentResource()),
                 new GetAdvancedSearchContent(assembler.contentResource()),
                 new GetViewContentRoute(assembler.contentResource()),
-                new GetEditContentRoute(assembler.contentResource()),
+                new GetEditContentRoute(assembler.contentResource(), assembler.eegResource()),
                 new GetUserPreferredDomainsRoute(assembler.userResource()),
                 new UploadRoute(assembler.contentResource()),
                 new RemoveUploadedFilesRoute()

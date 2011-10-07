@@ -11,7 +11,14 @@ stylesheets=["/public/css/fileUpload/fileuploader.css"] useChosen=true>
 <script type="text/javascript">
     var eegContentCreator;
     $( function() {
-        eegContentCreator = new EegContentCreator("eeg-uploader", "video-uploader");
+        eegContentCreator = new EegContentCreator(
+                "eeg-uploader",
+                {
+                    previsualizeButtonId : "previsualizeBtn",
+                    previsualizationContainerId : "previsualizationContainer",
+                    previsualizationUrl : "${statics["fr.fsh.bbeeg.common.config.BBEEGConfiguration"].INSTANCE.cliOptions().visioRootUrl()}"
+                }
+        );
         eegContentCreator.addMontage($('#montages'));
         eegContentCreator.addVideo($('#videos'));
     });
@@ -105,7 +112,14 @@ stylesheets=["/public/css/fileUpload/fileuploader.css"] useChosen=true>
     <div id="montages"></div>
 
     <br />
-    <p><input type="submit" value="Enregistrer" /></p>
+
+    <p> Si vous souhaitez prévisualiser l'EEG avec votre configuration <button id="previsualizeBtn" type="button"> cliquez ici </button></p>
+    <div id="previsualizationContainer">
+
+    </div>
+
+    <br />
+    <p><input type="submit" value="Enregistrer" /> </p>
 </form>
 
 </@mainTemplate>
