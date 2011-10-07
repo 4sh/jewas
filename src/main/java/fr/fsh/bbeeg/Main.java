@@ -109,6 +109,7 @@ public class Main {
                 new GetViewContentRoute(assembler.contentResource()),
                 new GetEditContentRoute(assembler.contentResource(), assembler.eegResource()),
                 new GetUserPreferredDomainsRoute(assembler.userResource()),
+                new RemoveUploadedEegRoute(assembler.eegResource()),
                 new UploadRoute(assembler.contentResource()),
                 new RemoveUploadedFilesRoute()
             ).start();

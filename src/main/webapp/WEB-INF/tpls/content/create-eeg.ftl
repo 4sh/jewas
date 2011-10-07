@@ -21,6 +21,11 @@ stylesheets=["/public/css/fileUpload/fileuploader.css"] useChosen=true>
         );
         eegContentCreator.addMontage($('#montages'));
         eegContentCreator.addVideo($('#videos'));
+
+        $("#cancelBtn").bind('click', function () {
+            eegContentCreator.removeUploadedFiles();
+            history.go(-1);
+        });
     });
 </script>
 
@@ -124,7 +129,10 @@ stylesheets=["/public/css/fileUpload/fileuploader.css"] useChosen=true>
     </div>
 
     <br />
-    <p><input type="submit" value="Enregistrer" /> </p>
+    <p>
+        <input type="submit" value="Enregistrer" />
+        <button id="cancelBtn" type="button" >Annuler</button>
+    </p>
 </form>
 
 </@mainTemplate>

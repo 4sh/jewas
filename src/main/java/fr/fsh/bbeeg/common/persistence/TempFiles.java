@@ -59,19 +59,18 @@ public class TempFiles {
     }
 
     public static void removeFile(String fileName) {
-        Path filePath = getPath(fileName);
+        if (tmpFileExists(fileName)) {
+            Path filePath = getPath(fileName);
 
-        try {
-            Files.delete(filePath);
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
+            try {
+                Files.delete(filePath);
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+            }
         }
     }
 
      public static boolean tmpFileExists(String fileName) {
-        String folderUrl = BBEEGConfiguration.INSTANCE.cliOptions().tmpContentFileRepository();
-        Path path = Paths.get(folderUrl, fileName);
-
-        return Files.exists(path);
+        return Files.exists(getPath(fileName));
     }
 }

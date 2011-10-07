@@ -9,9 +9,6 @@
 
         $("#cancelBtn").bind('click', function () {
             contentCreator.removeUploadedFiles();
-
-            console.log(history);
-            //window.location.href =
             history.go(-1);
         });
 

@@ -313,6 +313,12 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
         $(element).remove();
     };
 
+    this.removeUploadedFiles = function () {
+        $.delete(
+            '/upload/eeg/' + eegId
+        );
+    };
+
     /* ***************************************************************************************************************
      *  Constructor
      *****************************************************************************************************************/
