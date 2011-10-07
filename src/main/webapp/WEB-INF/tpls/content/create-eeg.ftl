@@ -30,11 +30,14 @@ stylesheets=["/public/css/fileUpload/fileuploader.css"] useChosen=true>
 
 <script id="videoItemTemplate" type="text/x-jquery-tmpl">
     <div class="video-uploader">
-            <span href="#" class="upload">Selectionner votre fichier video : </span>
-            <span class="upload-status"></span>
-            <label> Début de la vidéo (en ms) </label> <input class="video-start" type="text">
-            <label> Fin de la vidéo (en ms) </label> <input class="video-stop" type="text">
-        </div>
+        Sélectionnez votre fichier video :
+        <input class="upload-file-info" type="text">
+        <button class="upload" href="#">Parcourir</button>
+        <span class="upload-status"></span>
+
+        <label> Début de la vidéo (en ms) </label> <input class="video-start" type="text">
+        <label> Fin de la vidéo (en ms) </label> <input class="video-stop" type="text">
+    </div>
 </script>
 
 <script id="montageItemTemplate" type="text/x-jquery-tmpl">
@@ -71,7 +74,9 @@ stylesheets=["/public/css/fileUpload/fileuploader.css"] useChosen=true>
 
     <p>
         <div id="eeg-uploader">
-            <span href="#" class="upload">Selectionner votre fichier Eeg: </span>
+            Sélectionnez votre fichier Eeg :
+            <input class="upload-file-info" type="text">
+            <button class="upload" href="#">Parcourir</button>
             <span class="upload-status"></span>
         </div>
     </p>

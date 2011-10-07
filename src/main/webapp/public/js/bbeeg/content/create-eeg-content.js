@@ -72,6 +72,7 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
     function createUploader(uploaderSetter, uploaderComponent, options) {
         var btnUpload = uploaderComponent.find('.upload');
         var uploadStatus = uploaderComponent.find('.upload-status');
+        var uploadFileInfo = uploaderComponent.find('.upload-file-info');
         var interval;
 
         new AjaxUpload(btnUpload, {
@@ -98,7 +99,7 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
                     uploadStatus.text(extensionsMsgError);
                     return false;
                 }
-                uploadStatus.text(file);
+                uploadFileInfo.val(file);
                 uploaderSetter(this);
 
                 if (!!options.onChangeCallback) {
@@ -119,9 +120,10 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
                 if (!!options.onSubmitCallback) {
                     options.onSubmitCallback(this);
                 }
-
             },
             onComplete : function(file, response){
+                uploadStatus.text('Transfert terminé');
+
                 window.clearInterval(interval);
 
                 if (!!options.onCompleteCallback) {

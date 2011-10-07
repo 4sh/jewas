@@ -80,9 +80,10 @@
 
         <p>
             <div id="file-uploader">
-                <span id="upload" href="#" class="          ">Selectionner votre fichier : </span>
+                Sélectionnez votre fichier :
+                <input id="upload-file-info" type="text">
+                <button id="upload" href="#">Parcourir</button>
                 <span id="upstatus"></span>
-                <ul id="media"></ul>
             </div>
         </p>
 

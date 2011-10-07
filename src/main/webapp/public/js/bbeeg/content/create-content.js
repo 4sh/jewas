@@ -125,6 +125,8 @@ function ContentCreator(type, extensions, extensionsMsgError, previsualizationCo
 
         var btnUpload=$('#upload');
         var uploadStatus=$('#upstatus');
+        var uploadFileInfo = $('#upload-file-info');
+
         var interval;
         var uploader = null;
         new AjaxUpload(btnUpload, {
@@ -141,7 +143,7 @@ function ContentCreator(type, extensions, extensionsMsgError, previsualizationCo
                     uploadStatus.text(extensionsMsgError);
                     return false;
                 }
-                uploadStatus.text(file);
+                uploadFileInfo.val(file);
                 uploader = this;
 
                 uploader.setData({extension: uploader.getCurrentFileExtension()});
