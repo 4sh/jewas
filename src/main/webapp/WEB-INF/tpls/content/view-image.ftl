@@ -7,6 +7,6 @@
         useChosen=true>
 
     <@viewContentHeaders content=content />
-    <div class="content_picture"><img src="${content.url()}"/></div>
+    <div class="content_picture"><img src="${content.url()}" class="max_width"/></div>
 
 </@mainTemplate>

@@ -99,7 +99,7 @@
 
 /* Content type : Text */
 #content {
-    width: 600px;
+    width: 900px;
     text-align: justify;
 }
 
@@ -113,6 +113,22 @@
 .content_audio {
     width: 500px;
     text-align: center;
+}
+
+.max_width {
+    max-width: 100%;
+}
+
+.colonnes {
+	text-align: justify;
+}
+.twocols {
+	-moz-column-count: 2;		/* nombre de cols */
+	-moz-column-gap: 2em;		/* largeur de la gouttière entre colonnes */
+	-moz-column-rule: 1px solid #949494; 	/* filet entre colonnes */
+    -webkit-column-count: 2;		/* nombre de cols */
+	-webkit-column-gap: 2em;		/* largeur de la gouttière entre colonnes */
+	-webkit-column-rule: 1px solid #949494; 	/* filet entre colonnes */
 }
 
 

@@ -19,6 +19,6 @@
     </script>
 
     <@viewContentHeaders content=content />
-    <div id="content"></div>
+    <div class="colonnes"><div id="content" class="twocols"></div></div>
 
 </@mainTemplate>

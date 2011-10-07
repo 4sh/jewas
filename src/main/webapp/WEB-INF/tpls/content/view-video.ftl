@@ -6,6 +6,6 @@
         stylesheets=["/public/css/bbeeg/view.css"]
         useChosen=true>
     <@viewContentHeaders content=content />
-    <div class="content_video"><video controls="controls"> <source src="${content.url()}"/> </video></div>
+    <div class="content_video"><video controls="controls"> <source src="${content.url()}" class="max_width"/> </video></div>
 
 </@mainTemplate>
