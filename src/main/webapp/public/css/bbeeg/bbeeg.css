@@ -322,15 +322,32 @@ footer{
 .icon_type {
     width: 30px;
     height: 30px;
-    background-image: url('/public/images/bbeeg/icon_text.png');
     float:left;
     margin-top: 3px;
 }
 
-.settings_menu {
-    width: 15px;
-    float: right;
-    margin: 0 5px;
+.icon_type_text {
+    background-image: url('/public/images/bbeeg/icon_text.png');
+}
+
+.icon_type_document {
+    background-image: url('/public/images/bbeeg/icon_doc.png');
+}
+
+.icon_type_image {
+    background-image: url('/public/images/bbeeg/icon_picture.png');
+}
+
+.icon_type_audio {
+    background-image: url('/public/images/bbeeg/icon_audio.png');
+}
+
+.icon_type_video {
+    background-image: url('/public/images/bbeeg/icon_movie.png');
+}
+
+.icon_type_eeg {
+    background-image: url('/public/images/bbeeg/icon_eeg.png');
 }
 
 .settings_item {
