@@ -7,6 +7,6 @@
         useChosen=true>
 
     <@viewContentHeaders content=content />
-    <p>Contenu :</p> <audio controls="controls"> <source src="${content.url()}"/> </audio>
+    <div class="content_audio"><audio controls="controls"> <source src="${content.url()}"/> </audio></div>
 
 </@mainTemplate>

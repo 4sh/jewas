@@ -1,3 +1,5 @@
+/* HEADER COMMON CSS CLASSES */
+/* Beginning =====> */
 .view_common_header {
     background-color: #dfdfdf;
     height: 165px;
@@ -84,3 +86,34 @@
     margin-left: 8px;
     margin-right: 2px;
 }
+/* <===== End */
+
+/* INDIVIDUAL VIEW CSS CLASSES */
+/* Beginning =====>  */
+
+/* Common properties */
+#content, .content_picture, .content_audio, .content_video, .content_document {
+    margin:  0 auto;
+    padding: 15px 0 0 0;
+}
+
+/* Content type : Text */
+#content {
+    width: 600px;
+    text-align: justify;
+}
+
+/* Content type : Picture and Video */
+.content_picture, .content_video {
+    width: 800px;
+    text-align: center;
+}
+
+/* Content type: Audio */
+.content_audio {
+    width: 500px;
+    text-align: center;
+}
+
+
+/* <===== End */

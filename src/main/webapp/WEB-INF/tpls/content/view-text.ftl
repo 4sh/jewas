@@ -19,6 +19,6 @@
     </script>
 
     <@viewContentHeaders content=content />
-    <p>Contenu :</p> <div id="content"></div>
+    <div id="content"></div>
 
 </@mainTemplate>
