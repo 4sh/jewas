@@ -145,8 +145,8 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
 
                 // TODO add controls
 
-                video.start = start;
-                video.stop = stop;
+                video.start = start * 1000;
+                video.stop = stop * 1000;
                 // TODO: use the right uploader.
                 video.fileName = videoUploader.videoId;
 
@@ -198,13 +198,13 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
     function getEegSettings() {
         var settings = {};
 
-        settings.eegStart = $('#eegStart')[0].value;
+        settings.eegStart = $('#eegStart')[0].value * 1000;
 
         if (!settings.eegStart) {
             settings.eegStart = 0;
         }
 
-        settings.eegStop = $('#eegStop')[0].value;
+        settings.eegStop = $('#eegStop')[0].value * 1000;
 
         if (!settings.eegStop) {
             settings.eegStop = -1;

@@ -39,9 +39,9 @@ stylesheets=["/public/css/fileUpload/fileuploader.css"] useChosen=true>
         <input class="upload-file-info" type="text">
         <button class="upload" href="#">Parcourir</button>
         <span class="upload-status"></span>
-
-        <label> Début de la vidéo (en ms) </label> <input class="video-start" type="text">
-        <label> Fin de la vidéo (en ms) </label> <input class="video-stop" type="text">
+        <br/>
+        <label> Début de la vidéo (en s) </label> <input class="video-start" type="text">
+        <label> Fin de la vidéo (en s) </label> <input class="video-stop" type="text">
     </div>
 </script>
 
