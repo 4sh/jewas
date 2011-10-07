@@ -22,6 +22,34 @@
         );
     }
 
+    function getIcon(type) {
+
+        var className;
+        switch (type) {
+            case 'TEXT':
+                className = "icon_type_text";
+                break;
+            case 'IMAGE':
+               className = "icon_type_image";
+                break;
+            case 'AUDIO':
+                className = "icon_type_audio";
+                break;
+            case 'VIDEO':
+                className = "icon_type_video";
+                break;
+            case 'DOCUMENT':
+                className = "icon_type_document";
+                break;
+            case 'EEG':
+                className = "icon_type_eeg";
+                break;
+            default:
+                className = "";
+        }
+        return className;
+    }
+
     <#if searchMode == 1>
     function sendUpdateStatus(containerId, contentId, status, comment) {
         updateStatus(containerId, contentId, status, comment,
@@ -483,7 +511,7 @@
             </#if>
         </div>
         <div class="left_part">
-            <div class="icon_type"></div>
+            <div class="icon_type {{= getIcon(type)}}"></div>
             <div class="content-result-title"><a href="/content/{{= id}}/view.html">{{= title}}</a></div>
             <div class="content-result-author"><img src="/public/images/bbeeg/author.png"/> {{= author.name}}</div>
             <div class="content-result-creation-date"><img src="/public/images/bbeeg/calendar.png"/> {{= creationDate}}</div>
