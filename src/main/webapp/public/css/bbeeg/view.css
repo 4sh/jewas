@@ -1,6 +1,6 @@
 .view_common_header {
     background-color: #dfdfdf;
-    height: 160px;
+    height: 165px;
     -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
     border-radius: 10px;
@@ -10,7 +10,7 @@
 .tab_view {
     background-color: #1099a3;
     width: 20px;
-    height: 160px;
+    height: 165px;
     -webkit-border-top-left-radius: 10px;
     -webkit-border-bottom-left-radius: 10px;
     -moz-border-radius-topleft: 10px;
@@ -79,4 +79,8 @@
 
 .view_description {
     text-align: justify;
+    width: 510px;
+    float: left;
+    margin-left: 8px;
+    margin-right: 2px;
 }
