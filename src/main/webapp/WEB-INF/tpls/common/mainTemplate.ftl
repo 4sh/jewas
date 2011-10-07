@@ -50,6 +50,8 @@
     <script type="application/javascript"
             src="http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
 <#else>
+    <#--<script type="application/javascript"-->
+            <#--src="/public/js/jquery/jquery-1.6.2.js"></script>-->
     <script type="application/javascript"
             src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js"></script>
     <script type="application/javascript"
@@ -123,7 +125,7 @@
     </div>
 
     <footer>
-        <a href="#todo">Mentions L&eacute;gales</a> - BB-EEG v${statics["fr.fsh.bbeeg.common.config.BBEEGConfiguration"].INSTANCE.appVersion()}</a>
+        <a href="#todo">Mentions L&eacute;gales - BB-EEG v${statics["fr.fsh.bbeeg.common.config.BBEEGConfiguration"].INSTANCE.appVersion()}</a>
     </footer>
 </body>
 </html>

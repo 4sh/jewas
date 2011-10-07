@@ -32,7 +32,7 @@
                     } else {
                         $("#" + containerId + ' .publish-button')[0].disabled = true;
                         var statusStyle = getStatusStyle(status);
-                        $('#' + containerId).find('.tab_right').removeClass().addClass('tab_right ' + statusStyle.class);
+                        $('#' + containerId).find('.tab_right').removeClass().addClass('tab_right ' + statusStyle.className);
                         $('#' + containerId).find('.label').html(statusStyle.label)
                     }
 
@@ -192,7 +192,7 @@
                 }
                 var statusStyle = getStatusStyle(e.status);
                 e.statusLabel = statusStyle.label;
-                e.statusClass = statusStyle.class;
+                e.statusClass = statusStyle.className;
             }
     );
         return results;
@@ -219,27 +219,27 @@
         switch (status) {
             case 'VALIDATED':
                 statusStyle.label = "Validé";
-                statusStyle.class = "label_validated";
+                statusStyle.className = "label_validated";
                 break;
             case 'TO_BE_VALIDATED':
                 statusStyle.label = "A&nbsp;Valider";
-                statusStyle.class = "label_to_validated";
+                statusStyle.className = "label_to_validated";
                 break;
             case 'TO_BE_DELETED':
                 statusStyle.label = "A&nbsp;Supprimer";
-                statusStyle.class = "label_to_deleted"
+                statusStyle.className = "label_to_deleted"
                 break;
             case 'REJECTED':
                 statusStyle.label = "Rejeté";
-                statusStyle.class = "label_rejected";
+                statusStyle.className = "label_rejected";
                 break;
             case 'DRAFT':
                 statusStyle.label = "Brouillon";
-                statusStyle.class = "label_draft";
+                statusStyle.className = "label_draft";
                 break;
             default:
                 statusStyle.label = "Error";
-                statusStyle.class = "label_hidden";
+                statusStyle.className = "label_hidden";
         }
         return statusStyle;
     }
