@@ -350,6 +350,12 @@ footer{
     background-image: url('/public/images/bbeeg/icon_eeg.png');
 }
 
+.settings_menu {
+    width: 25px;
+    float: right;
+    margin-left: 5px;
+}
+
 .settings_item {
     margin: 3px 0;
 }
