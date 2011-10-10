@@ -1,11 +1,14 @@
 <#macro viewContentHeaders content>
+    <script type="text/javascript" src="/public/js/bbeeg/content/contentHeaderHelper.js"></script>
+
     <script type="text/javascript">
         $(
             function() {
-                $("#domains").chosen();
+                $('.icon_type').addClass(contentHeaderHelper.getIcon('${content.header().type()}'));
             }
-        );
+        )
     </script>
+
     <div class="view_common_header">
         <div class="tab_view"></div>
         <div class="left_part">

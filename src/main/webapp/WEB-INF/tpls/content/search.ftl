@@ -9,7 +9,7 @@
 <@mainTemplate
     title="Ecran d'accueil"
     selectedMenuItem=selectMenu
-    scripts=["/public/js/bbeeg/search/search.js", "/public/js/bbeeg/common/widgets/chainedSelect.js"]
+    scripts=["/public/js/bbeeg/search/search.js", "/public/js/bbeeg/content/contentHeaderHelper.js", "/public/js/bbeeg/common/widgets/chainedSelect.js"]
     stylesheets=["/public/css/bbeeg/search.css"]
     useChosen=true>
 <script>
@@ -22,34 +22,6 @@
         );
     }
 
-    function getIcon(type) {
-
-        var className;
-        switch (type) {
-            case 'TEXT':
-                className = "icon_type_text";
-                break;
-            case 'IMAGE':
-               className = "icon_type_image";
-                break;
-            case 'AUDIO':
-                className = "icon_type_audio";
-                break;
-            case 'VIDEO':
-                className = "icon_type_video";
-                break;
-            case 'DOCUMENT':
-                className = "icon_type_document";
-                break;
-            case 'EEG':
-                className = "icon_type_eeg";
-                break;
-            default:
-                className = "";
-        }
-        return className;
-    }
-
     <#if searchMode == 1>
     function sendUpdateStatus(containerId, contentId, status, comment) {
         updateStatus(containerId, contentId, status, comment,
@@ -59,7 +31,7 @@
                         $("#" + containerId).remove();
                     } else {
                         $("#" + containerId + ' .publish-button')[0].disabled = true;
-                        var statusStyle = getStatusStyle(status);
+                        var statusStyle = contentHeaderHelper.getStatusStyle(status);
                         $('#' + containerId).find('.tab_right').removeClass().addClass('tab_right ' + statusStyle.className);
                         $('#' + containerId).find('.label').html(statusStyle.label)
                     }
@@ -218,7 +190,7 @@
                 if(!e) {
                     return;
                 }
-                var statusStyle = getStatusStyle(e.status);
+                var statusStyle = contentHeaderHelper.getStatusStyle(e.status);
                 e.statusLabel = statusStyle.label;
                 e.statusClass = statusStyle.className;
             }
@@ -239,37 +211,6 @@
             $('#simpleSearchQuery').val(decodeURI(splittedUrl[1]));
             $('#simpleSearchButton').click();
         }
-    }
-
-    function getStatusStyle(status) {
-        var statusStyle = {};
-
-        switch (status) {
-            case 'VALIDATED':
-                statusStyle.label = "Validé";
-                statusStyle.className = "label_validated";
-                break;
-            case 'TO_BE_VALIDATED':
-                statusStyle.label = "A&nbsp;Valider";
-                statusStyle.className = "label_to_validated";
-                break;
-            case 'TO_BE_DELETED':
-                statusStyle.label = "A&nbsp;Supprimer";
-                statusStyle.className = "label_to_deleted"
-                break;
-            case 'REJECTED':
-                statusStyle.label = "Rejeté";
-                statusStyle.className = "label_rejected";
-                break;
-            case 'DRAFT':
-                statusStyle.label = "Brouillon";
-                statusStyle.className = "label_draft";
-                break;
-            default:
-                statusStyle.label = "Error";
-                statusStyle.className = "label_hidden";
-        }
-        return statusStyle;
     }
 
     function loadDomains() {
@@ -511,7 +452,7 @@
             </#if>
         </div>
         <div class="left_part">
-            <div class="icon_type {{= getIcon(type)}}"></div>
+            <div class="icon_type {{= contentHeaderHelper.getIcon(type)}}"></div>
             <div class="content-result-title"><a href="/content/{{= id}}/view.html">{{= title}}</a></div>
             <div class="content-result-author"><img src="/public/images/bbeeg/author.png"/> {{= author.name}}</div>
             <div class="content-result-creation-date"><img src="/public/images/bbeeg/calendar.png"/> {{= creationDate}}</div>
