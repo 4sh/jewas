@@ -26,6 +26,33 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
         );
     }
 
+    function loadTags(tags) {
+    console.log("selected tags:", tags);
+    $.getJSON(
+        '/tags/all',
+        function success(data) {
+            var container = $("#tags");
+            container.children().remove();
+
+            var selectedTags = {};
+
+            for (var i = 0; i < tags.length; i++) {
+                selectedTags[tags[i]] = true;
+            }
+            for (var j = 0; j < data.length; j++) {
+                if (selectedTags[data[j].tag]) {
+                    data[j].selected = true;
+                } else {
+                    data[j].selected = false;
+                }
+            }
+           // $("#tagItemTemplate").tmpl(data).appendTo(container);
+            $("#tags").trigger("liszt:updated");
+        }
+    );
+}
+
+
     function getDomains(domainIds) {
         var domains = [];
 
@@ -377,6 +404,7 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
 
     (function () {
         loadDomains();
+        loadTags([]) ;
 
         $("#confirmationDialog").dialog({
             autoOpen: false,
@@ -386,6 +414,11 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
         });
 
         $("#domains").chosen();
+        $("#tags").chosen();
+        $("#zoom").chosen();
+        $("#frameDuration").chosen();
+
+
 
         $("#createContent").submit(function(){
             var form = this;

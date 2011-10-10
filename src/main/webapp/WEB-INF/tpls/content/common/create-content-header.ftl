@@ -1,21 +1,25 @@
 <#macro createContentHeader>
 
-    <p>Auteur : toto</p>
-    <p><label for="title">Titre</label> : <input type="text" id="title" name="title" maxlength="64" required="required"/></p>
-    <p><label for="description">Description</label> :<br/><textarea rows="3" cols="100" id="description" name="description" maxlength="500" required="required"></textarea></p>
-    <div class="criteria-line">
-        <div class="criteria-label"><label for="domains">Domaines</label> :</div>
-        <div class="criteria-field">
-            <select id="domains" name="domains" class="chzn-select side-by-side clearfix" multiple>
-            </select>
-        </div>
+    <div><label for="author" class="style_label">Auteur</label> : toto</div>
+
+    <div class="create_line">
+        <div class="create_label"><label for="title" class="style_label">Titre</label> :</div>
+        <div class="create_field"><input type="text" id="title" name="title" maxlength="64" required="required" style="width:557px;"/></div>
     </div>
-    <div class="criteria-line">
-        <div class="criteria-label"><label for="tags">Mots clés</label> :</div>
-        <div class="criteria-field">
-            <select id="tags" name="tags" class="chzn-select side-by-side clearfix chzn-extendable" multiple>
-            </select>
-        </div>
+
+    <div>
+        <div><label for="description" class="style_label">Description</label> :</div>
+        <div class="create_textarea"><textarea rows="4" cols="80" id="description" name="description" maxlength="500" required="required"></textarea></div>
+    </div>
+
+    <div class="create_line">
+        <div class="create_label"><label for="domains" class="style_label">Domaines</label> :</div>
+        <div class="create_field"><select id="domains" name="domains" class="chzn-select side-by-side clearfix" multiple style="width:567px;"></select></div>
+    </div>
+
+    <div class="create_line">
+        <div class="create_label"><label for="tags" class="style_label">Mots clés</label> : </div>
+        <div class="create_field"><select id="tags" name="tags" class="chzn-select side-by-side clearfix chzn-extendable" multiple style="width:567px;"></select></div>
     </div>
 
 </#macro>

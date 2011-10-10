@@ -352,7 +352,7 @@
     <div class="advanced toggle" style="display:none">
         <form action="/content/advancedSearch" id="advancedSearchForm">
             <div class="search_container">
-                 <div class="search_input"><input id="advancedSearchQuery" type="text" name="query" style="width:650px;" /></div>
+                <div class="search_input"><input id="advancedSearchQuery" type="text" name="query" style="width:650px;" /></div>
                 <div class="search_button"><input id="advancedSearchButton" class="button" type="submit" value="Rechercher"/></div>
                 <div class="advanced_button">
                     <a href="#" class="advanced_search_button">&#8211</a>

@@ -5,18 +5,33 @@
                         "/public/js/fileUpload/fileuploader.js"]
                stylesheets=["/public/css/fileUpload/fileuploader.css"]
                useChosen=true>
+    <div class="create_center">
+        <script type="text/javascript">
+            function createImagePrevisualizationObject(url) {
+                var object = document.createElement("img");
+                object.src = url;
+                object.style.width = "100%";
 
-    <script type="text/javascript">
-        function createImagePrevisualizationObject(url) {
-            var object = document.createElement("img");
-            object.src = url;
-            object.style.width = "100%";
+                return object;
+            }
+        </script>
 
-            return object;
-        }
-    </script>
+        <div id="confirmationDialog" title="Succès">
+            <#if content??>
+                <p>Votre image a été modifiée avec succès !</p>
+                <#else>
+                <p>Votre image a été créée avec succès !</p>
+            </#if>
+        </div>
 
-    <#include "common/create-content.ftl">
-    <@createContent url="/content" type="IMAGE" extensions="png|jpg|pjeg|gif" extensionsMsgError="Seuls les formats PNG, JPEG et GIF sont supportés" createPrevisualizationObject="createImagePrevisualizationObject"/>
+        <#if content??>
+            <h3>Modification d'une image</h3>
+        <#else>
+            <h3>Création d'une image</h3>
+        </#if>
 
+        <#include "common/create-content.ftl">
+        <@createContent url="/content" type="IMAGE" extensions="png|jpg|pjeg|gif" extensionsMsgError="Seuls les formats PNG, JPEG et GIF sont supportés" createPrevisualizationObject="createImagePrevisualizationObject"/>
+
+    </div>
 </@mainTemplate>

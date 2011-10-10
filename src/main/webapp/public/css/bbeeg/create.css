@@ -1,0 +1,78 @@
+.style_label {
+    font-weight: bolder;
+}
+
+.style_clock {
+    font-style: italic;
+}
+
+.sepa_element, .sepa_signal {
+    font-size: 14px;
+    font-weight: bolder;
+    margin: 0 10px;
+}
+
+.create_line {
+    clear: both;
+    display: block;
+    width: 662px;
+    height: 35px;
+    margin:  10px 0 4px 0;
+}
+
+.create_label {
+    float: left;
+    padding-top: 7px
+}
+
+.create_field {
+    float: right;
+}
+
+.create_textarea {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.create_center {
+    width: 662px;
+    margin:  0 auto;
+}
+
+.create_upload {
+    margin-top: 15px;
+    margin-bottom: 25px;
+}
+
+.create_buttons {
+    width: 662px;
+    height: 45px;
+    text-align: right;
+    margin-right: 3px;
+    margin-top: 20px;
+}
+
+#upload {
+    margin-top: -2px;
+}
+
+.signal_label {
+    margin-top: 7px;
+    margin-right: 5px;
+}
+
+.sepa_signal {
+    margin-top: 6px;
+}
+
+.new_signal_line {
+    float: right;
+}
+
+.bottom_space {
+    margin-bottom: 12px;
+}
+
+.floatLeft {
+    float: left;
+}
