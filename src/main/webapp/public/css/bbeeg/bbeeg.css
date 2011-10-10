@@ -510,6 +510,32 @@ input[type=submit]:active, button:active {
 	box-shadow        : 0 0 5px rgba(16,153,163,0.70), 0 2px 3px rgba(0,0,0,0.35) inset;
 }
 
+
+textarea {
+  background-color: #fcfcfc;
+  border: 1px solid #949494;
+  color : #434342;
+  -webkit-border-radius: 5px;
+  -moz-border-radius   : 5px;
+  border-radius        : 5px;
+  outline: none;
+  -webkit-box-shadow: 0 1px 4px rgba(0,0,0,.10) inset;
+  -moz-box-shadow   : 0 1px 4px rgba(0,0,0,.1) inset;
+  -o-box-shadow     : 0 1px 4px rgba(0,0,0,.1) inset;
+  box-shadow        : 0 1px 4px rgba(0,0,0,.1) inset;
+}
+
+textarea:focus {
+    border: 1px solid #89c8cd;
+	background-color: #fff;
+	-webkit-box-shadow: 0 0 5px rgba(115,202,193,.3);
+	-moz-box-shadow   : 0 0 5px rgba(115,201,193,.3);
+	-o-box-shadow     : 0 0 5px rgba(115,202,193,.3);
+	box-shadow        : 0 0 5px rgba(115,202,193,.3);
+
+}
+
+
 /* Pas utilisé pour le moment ... au cas où  */
 button .selected {
   background-image: -moz-linear-gradient(center bottom, #0e848d 50%, #13adb8 50%);
