@@ -150,17 +150,15 @@ useChosen=true>
     <br />
     <div id="montages"></div>
 
-    <br />
-
-    <div id="previsualizationContainer">
-    </div>
-
-    <br />
+    <br /><br />
     <div class="create_buttons">
-        <button id="previsualizeBtn" type="button"> Prévisualiser </button>        
+        <button id="previsualizeBtn" type="button"> Prévisualiser </button>
         <input type="submit" value="Enregistrer" />
         <button id="cancelBtn" type="button" >Annuler</button>
     </div>
 </form>
 </div>
+         <br /><br /><br />
+    <div id="previsualizationContainer">
+    </div>
 </@mainTemplate>

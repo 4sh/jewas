@@ -309,8 +309,9 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
         // Create the iframe to previsualize with the eeg pevisualization url
         var iframe = document.createElement('iframe');
 
-        iframe.width = '100%';
-        iframe.height = '100%';
+        iframe.width = '102%';
+        iframe.height = '80%';
+        iframe.frameBorder = '0';
 
         iframe.src = previsualizationInfos.previsualizationUrl + '/' + eegId + '/previsualization.html';
 
