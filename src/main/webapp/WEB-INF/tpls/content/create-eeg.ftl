@@ -114,7 +114,7 @@ useChosen=true>
             </div>
         </div>
 
-    <label for="eegStartHours" class="style_label"> Début de l'EEG : </label> <input id="eegStartHours" type="text" style="width: 20px;"><span class="style_clock">h</span><input id="eegStartMinutes" type="text" style="width: 20px;"/> <span class="style_clock">min</span> <input id="eegStartSeconds" type="text" style="width: 30px;"/> <span class="style_clock">s</span>
+    <label for="eegStartHours" class="style_label"> Début de l'EEG : </label> <input id="eegStartHours" type="text" style="width: 20px;"> <span class="style_clock">h</span> <input id="eegStartMinutes" type="text" style="width: 20px;"/> <span class="style_clock">min</span> <input id="eegStartSeconds" type="text" style="width: 30px;"/> <span class="style_clock">s</span>
     <span class="sepa_element">&mdash;</span>
     <label for="eegStopHours" class="style_label"> Fin de l'EEG : </label> <input id="eegStopHours" type="text" style="width: 20px;"/> <span class="style_clock">h</span> <input id="eegStopMinutes" type="text" style="width: 20px;"/> <span class="style_clock">min</span> <input id="eegStopSeconds" type="text" style="width: 30px;"/> <span class="style_clock">s</span>
     
