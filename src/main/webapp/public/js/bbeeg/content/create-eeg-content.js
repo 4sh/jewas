@@ -27,7 +27,7 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
     }
 
     function loadTags(tags) {
-    console.log("selected tags:", tags);
+
     $.getJSON(
         '/tags/all',
         function success(data) {
@@ -46,7 +46,7 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
                     data[j].selected = false;
                 }
             }
-           // $("#tagItemTemplate").tmpl(data).appendTo(container);
+            $("#tagItemTemplate").tmpl(data).appendTo(container);
             $("#tags").trigger("liszt:updated");
         }
     );
@@ -247,25 +247,37 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
         return montages;
     }
 
+    function parseTimeInputs(hoursInput, minutesInput, secondsInput) {
+        var result = 0;
+
+        //Handle start hours input value
+        if (hoursInput && hoursInput.val()) {
+            result += hoursInput.val() * 3600000;
+        }
+        if (minutesInput && minutesInput.val()) {
+            result += minutesInput.val() * 60000;
+        }
+        if (secondsInput && secondsInput.val()) {
+            result += secondsInput.val() * 1000;
+        }
+        console.log("parseTimeInputs:: result:", result);
+        return result;
+    }
+
+
     function getEegSettings() {
         var settings = {};
 
-        settings.eegStart = $('#eegStart')[0].value * 1000;
+        settings.eegStart = parseTimeInputs($('#eegStartHours'), $('#eegStartMinutes'), $('#eegStartSeconds'));
+        settings.eegStop = parseTimeInputs($('#eegStopHours'), $('#eegStopMinutes'), $('#eegStopSeconds'));
 
-        if (!settings.eegStart) {
-            settings.eegStart = 0;
-        }
-
-        settings.eegStop = $('#eegStop')[0].value * 1000;
-
-        if (!settings.eegStop) {
+        if (settings.eegStop === 0) {
             settings.eegStop = -1;
         }
 
         settings.zoom = $('#zoom')[0].value;
         settings.frameDuration = $('#frameDuration')[0].value;
         settings.montages = getMontages();
-
         settings.videos = getVideos();
 
         return settings;
@@ -306,8 +318,8 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
     }
 
     function previsualizeAction() {
-        //Save eeg settings in tmp mode
-        sendEegSettings( eegId, buildPrevisualization, 'tmp');
+        // Save eeg settings in tmp mode
+        sendEegSettings(eegId, buildPrevisualization, 'tmp');
     }
 
     function addVideo(container) {
@@ -427,7 +439,8 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
                 header: {
                     title: $("#title").val(),
                     description: $("#description").val(),
-                    domains: getDomains($("#domains").val())
+                    domains: getDomains($("#domains").val()),
+                    tags: getTags().val()
                 }
             }
 

@@ -33,6 +33,10 @@ useChosen=true>
     <option value="{{= id}}"> {{= label}} </option>
 </script>
 
+<script id="tagItemTemplate" type="text/x-jquery-tmpl">
+    <option value="{{= tag}}" {{if selected}} selected {{/if}}> {{= tag}} </option>
+</script>
+
 <script id="videoItemTemplate" type="text/x-jquery-tmpl">
     <div class="sepa_horizontal"></div>
    
@@ -74,7 +78,7 @@ useChosen=true>
         <div class="style_label floatLeft"><div class="signal_label floatLeft"> Signal 1 : </div><select class="montage-operation-s1 chzn-select" style="width:170px;"></select></div>
         <span class="sepa_signal floatLeft">&mdash;</span>
         <div class="floatLeft">
-            <select id="addorsub" style="width:45px;">
+            <select id="addorsub" style="width:45px;" class="montage-operation-operator">
                 <option value="+">+</option>
                 <option value="-">-</option>
             </select>
@@ -110,9 +114,9 @@ useChosen=true>
             </div>
         </div>
 
-    <label for="eegStart" class="style_label"> Début de l'EEG : </label> <input id="eegStart" type="text" style="width: 20px;"><span class="style_clock">h</span><input type="text" style="width: 20px;"/> <span class="style_clock">min</span> <input type="text" style="width: 30px;"/> <span class="style_clock">s</span>
+    <label for="eegStartHours" class="style_label"> Début de l'EEG : </label> <input id="eegStartHours" type="text" style="width: 20px;"><span class="style_clock">h</span><input id="eegStartMinutes" type="text" style="width: 20px;"/> <span class="style_clock">min</span> <input id="eegStartSeconds" type="text" style="width: 30px;"/> <span class="style_clock">s</span>
     <span class="sepa_element">&mdash;</span>
-    <label for="eegStop" class="style_label"> Fin de l'EEG : </label> <input id="eegStop" type="text" style="width: 20px;"/> <span class="style_clock">h</span> <input type="text" style="width: 20px;"/> <span class="style_clock">min</span> <input type="text" style="width: 30px;"/> <span class="style_clock">s</span>
+    <label for="eegStopHours" class="style_label"> Fin de l'EEG : </label> <input id="eegStopHours" type="text" style="width: 20px;"/> <span class="style_clock">h</span> <input id="eegStopMinutes" type="text" style="width: 20px;"/> <span class="style_clock">min</span> <input id="eegStopSeconds" type="text" style="width: 30px;"/> <span class="style_clock">s</span>
     
     <br />
     <div id="videos"></div>
