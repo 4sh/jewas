@@ -76,3 +76,7 @@
 .floatLeft {
     float: left;
 }
+
+.previewCenter {
+    text-align: center;
+}

@@ -10,7 +10,7 @@
             function createImagePrevisualizationObject(url) {
                 var object = document.createElement("img");
                 object.src = url;
-                object.style.width = "100%";
+                object.style.maxWidth = "100%";
 
                 return object;
             }

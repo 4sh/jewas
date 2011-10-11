@@ -10,7 +10,7 @@
             function createVideoPrevisualizationObject(url) {
                 var object = document.createElement("video");
                 object.controls = true;
-                object.style.width = "100%";
+                object.style.maxWidth = "100%";
 
                 var source = document.createElement("source");
                 source.src = url;

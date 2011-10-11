@@ -88,13 +88,16 @@
             </div>
         </div>
 
-            <div id="previsualizationContainer">
-            </div>
 
-        <div class="create_buttons">
+        <div class="create_buttons bottom_space">
             <input type="submit" value="Enregistrer" />
             <button id="cancelBtn" type="button" >Annuler</button>
         </div>
+
+        <div id="previsualizationContainer" class="previewCenter">
+
+        </div>
+
     </form>
 
 </#macro>

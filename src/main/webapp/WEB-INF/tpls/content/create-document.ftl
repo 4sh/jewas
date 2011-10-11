@@ -11,9 +11,10 @@
             function createDocumentPrevisualizationObject(url) {
                 var object = document.createElement("object");
                 object.type = "application/pdf";
-                object.data = url;
+                object.data = url + "#view=Fit";
                 object.width = "100%";
                 object.height = "100%";
+                object.pdf
 
                 return object;
             }
@@ -35,5 +36,6 @@
 
         <#include "common/create-content.ftl">
         <@createContent url="/content" type="DOCUMENT" extensions="pdf" extensionsMsgError="Seuls le format PDF est supporté" createPrevisualizationObject="createDocumentPrevisualizationObject"/>
+
     </div>
 </@mainTemplate>
