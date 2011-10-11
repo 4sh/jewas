@@ -19,8 +19,8 @@ stylesheets=["/public/css/fileUpload/fileuploader.css"] useChosen=true>
                     previsualizationUrl : "${statics["fr.fsh.bbeeg.common.config.BBEEGConfiguration"].INSTANCE.cliOptions().visioRootUrl()}"
                 }
         );
-        eegContentCreator.addMontage($('#montages'));
-        eegContentCreator.addVideo($('#videos'));
+        //eegContentCreator.addMontage($('#montages'));
+        //eegContentCreator.addVideo($('#videos'));
 
         $("#cancelBtn").bind('click', function () {
             eegContentCreator.removeUploadedFiles();
@@ -45,21 +45,27 @@ stylesheets=["/public/css/fileUpload/fileuploader.css"] useChosen=true>
     </div>
 </script>
 
+<script id="signalItemTemplate" type="text/x-jquery-tmpl">
+    <option value="{{= id}}"> {{= label}} </option>
+</script>
+
 <script id="montageItemTemplate" type="text/x-jquery-tmpl">
     <div class="montage">
+        <hr/>
         <h3>Montage</h3>
         <p>
-            <label> Entrez les numéros des signaux (0-based) que vous souhaitez afficher (séparés par une virgule)</label>
-            <input class="montage-signalsToDisplay" type="text"/>
+            <label> Séléctionnez les signaux que vous souhaitez afficher : </label>
+            <br />
+            <select class="montage-signalsToDisplay chzn-select side-by-side clearfix" multiple></select>
         </p>
     </div>
 </script>
 
 <script id="montageOperationItemTemplate" type="text/x-jquery-tmpl">
     <p class="montage-operation">
-        Signal 1 <input class="montage-operation-s1" type="text"/>
-        Operateur (ADD ou SUB) <input class="montage-operation-operator" type="text"/>
-        Signal 2 <input class="montage-operation-s2" type="text"/>
+        <label>Signal 1</label> <select class="montage-operation-s1 chzn-select"></select>
+        <label>Operateur (ADD ou SUB)</label> <input class="montage-operation-operator" type="text"/>
+        <label>Signal 2</label> <select class="montage-operation-s2 chzn-select side-by-side clearfix"></select>
 
         <button class="montage-operation-delete" type="button"> - </button>
         <button class="montage-operation-add"  type="button"> + </button>
@@ -88,7 +94,8 @@ stylesheets=["/public/css/fileUpload/fileuploader.css"] useChosen=true>
 
     <br />
 
-    <h4>Configuration de l'EEG</h4>
+    <hr/>
+    <h3>Configuration de l'EEG</h3>
 
     <p>
         <label for="eegStart"> Début de l'EEG (en s) </label> <input id="eegStart" type="text">
@@ -122,7 +129,7 @@ stylesheets=["/public/css/fileUpload/fileuploader.css"] useChosen=true>
     <div id="montages"></div>
 
     <br />
-
+    <hr/>
     <p> Si vous souhaitez prévisualiser l'EEG avec votre configuration <button id="previsualizeBtn" type="button"> cliquez ici </button></p>
     <div id="previsualizationContainer">
 
