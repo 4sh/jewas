@@ -173,7 +173,7 @@
     <#if searchMode != 1>
         function loadAuthors() {
             $.getJSON(
-                    '/content/author/all',
+                    '/users/authors/all',
                     function success(data) {
                         var container = $("#adSearchAuthors");
                         container.children().remove();
@@ -424,7 +424,7 @@
     <option value="{{= id}}"> {{= label}} </option>
 </script>
 <script id="authorItemTemplate" type="text/x-jquery-tmpl">
-   <option value="{{= id}}">{{= name}} </option>
+   <option value="{{= id}}">{{= name}}, {{= surname}}</option>
 </script>
 <script id="contentTypeItemTemplate" type="text/x-jquery-tmpl">
     <option value="{{= id}}"> {{= title}} </option>
@@ -454,7 +454,7 @@
         <div class="left_part">
             <div class="icon_type {{= contentHeaderHelper.getIcon(type)}}"></div>
             <div class="content-result-title"><a href="/content/{{= id}}/view.html">{{= title}}</a></div>
-            <div class="content-result-author"><img src="/public/images/bbeeg/author.png"/> {{= author.name}}</div>
+            <div class="content-result-author"><img src="/public/images/bbeeg/author.png"/>{{= author.surname}} {{= author.name}}</div>
             <div class="content-result-creation-date"><img src="/public/images/bbeeg/calendar.png"/> {{= creationDate}}</div>
         </div>
 

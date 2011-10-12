@@ -79,7 +79,9 @@
     <title>${title}</title>
 </head>
 <body>
-
+<script id="userConnectedNameTemplate" type="text/x-jquery-tmpl">
+    <span class="hand_cursor">{{= surname}} {{= name}}</span>
+</script>
     <header>
         <div id="menu">
             <a href="/"><img src="/public/images/bbeeg/bbeeg_logo.png" onmouseout="src='/public/images/bbeeg/bbeeg_logo.png'" onmouseover="src='/public/images/bbeeg/bbeeg_logo_hover.png'" alt="Logo BBEEG"/></a>
@@ -107,13 +109,13 @@
                 </@rootMenuItem>
                 <@rootMenuItem id="sepa_menu" />
                 <@rootMenuItem id="userprofile">
-                    Bob Sponge
+                    <div id="connectedUser" class="userprofile"></div>
                     <@subMenu id="profileSubMenu" width="125">
                        <@subMenuItem id="parametersMenuItem" title="Paramètres" />
                        <@subMenuItem id="disconnectMenuItem" title="Déconnexion" />
                    </@subMenu>
                 </@rootMenuItem>
-                <@rootMenuItem id="userprofile_arrow" additionnalClasses="fleche">
+                <@rootMenuItem id="userprofile_arrow" additionnalClasses="fleche userprofile">
                     <img src="/public/images/bbeeg/fleche.png" alt="Flèche menu déroulant"/>
                 </@rootMenuItem>
             </div>

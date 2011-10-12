@@ -1,6 +1,7 @@
 package fr.fsh.bbeeg.user.resources;
 
 import fr.fsh.bbeeg.common.resources.DateResultObject;
+import fr.fsh.bbeeg.common.resources.LimitedOrderedQueryObject;
 import fr.fsh.bbeeg.domain.pojos.Domain;
 import fr.fsh.bbeeg.user.persistence.UserDao;
 import fr.fsh.bbeeg.user.pojos.User;
@@ -22,17 +23,26 @@ public class UserResource {
         return new DateResultObject(new DateMidnight());
     }
 
-    public static User getUserInformations() {
-        // TODO : should not return a User object but something else instead
-        User user = new User();
-        user.name("Bob").surname("Sponge").email("pacific_33@sea.gl")
-                .lastConnectionDate(new DateMidnight().toDate());
+    public User getUserInformations(String securityToken) {
+        // TODO : Add lastConnection date to User table in DB and remove this mock
+        User user =  userDao.getUser(securityToken);
+        user.lastConnectionDate(new DateMidnight().toDate());
         return user;
     }
 
     public void fetchDomains(List<Domain> results, Integer number, User user) {
         userDao.fetchDomains(results, number, user);
     }
+
+    public void fetchAuthors(List<User> authors, LimitedOrderedQueryObject loqo) {
+
+            if ("all".equals(loqo.ordering())) {
+                userDao.fetchAllAuthors(authors, 25);
+            } else {
+                userDao.fetchAllAuthors(authors, loqo.number());
+            }
+
+        }
 
     public User getUser(Long id) {
         return userDao.getUser(id);

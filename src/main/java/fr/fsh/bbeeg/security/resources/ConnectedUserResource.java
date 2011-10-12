@@ -1,5 +1,7 @@
 package fr.fsh.bbeeg.security.resources;
 
+import fr.fsh.bbeeg.security.persistence.SecurityDao;
+import fr.fsh.bbeeg.security.pojos.Security;
 import fr.fsh.bbeeg.user.persistence.UserDao;
 import fr.fsh.bbeeg.user.pojos.User;
 
@@ -9,6 +11,7 @@ import fr.fsh.bbeeg.user.pojos.User;
 public class ConnectedUserResource {
 
     private UserDao userDao;
+    private SecurityDao securityDao;
 
     public static ConnectedUserResource instance;
 
@@ -22,17 +25,18 @@ public class ConnectedUserResource {
         return instance;
     }
 
-    public ConnectedUserResource userDao(UserDao userDao) {
-        this.userDao = userDao;
+    public ConnectedUserResource userDao(UserDao _userDao, SecurityDao _securityDao) {
+        this.userDao = _userDao;
+        this.securityDao = _securityDao;
         return this;
     }
 
-    public String userNames() {
-        //FIXME: should use cookie to guess the currently connected user if any
-        User connectedUser = userDao.getUser(1000L);
-        if (connectedUser == null) {
-            return "anonymous";
-        }
-        return connectedUser.surname() + " " + connectedUser.name();
+    public Security getUserSecurity(String securityToken) {
+        return securityDao.getSecurity(securityToken);
     }
+
+    public User getUser(String securityToken) {
+        return userDao.getUser(securityToken);
+    }
+
 }

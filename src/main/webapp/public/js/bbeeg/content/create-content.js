@@ -63,6 +63,14 @@ function ContentCreator(type, extensions, extensionsMsgError, previsualizationCo
         return domains;
     }
 
+    function getConnectedUserNames(container) {
+        $.getJSON(
+            '/connectedUser',
+            function (data) {
+                $(container).children().remove();
+                $("#authorItemTemplate").tmpl(data).appendTo(container);
+            });
+    }
 
     this.removeUploadedFiles = function () {
         $.delete(
@@ -79,6 +87,8 @@ function ContentCreator(type, extensions, extensionsMsgError, previsualizationCo
             show: 'drop',
             hide: 'drop'
         });
+
+        getConnectedUserNames($("#author"));
 
         $("#domains").chosen();
         $("#tags").chosen();

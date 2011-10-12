@@ -7,10 +7,13 @@ import fr.fsh.bbeeg.common.config.BBEEGConfiguration;
 import fr.fsh.bbeeg.content.routes.*;
 import fr.fsh.bbeeg.domain.routes.GetAllDomainsRoute;
 import fr.fsh.bbeeg.domain.routes.GetPopularDomainRoute;
+import fr.fsh.bbeeg.security.routes.GetConnectedUserRoute;
 import fr.fsh.bbeeg.security.routes.PostConnectionRoute;
+import fr.fsh.bbeeg.security.routes.SecurityRoute;
 import fr.fsh.bbeeg.tag.routes.GetAllTagsRoute;
 import fr.fsh.bbeeg.tag.routes.GetPopularTagRoute;
 import fr.fsh.bbeeg.user.routes.GetLastConnectionDateRoute;
+import fr.fsh.bbeeg.user.routes.GetUserAuthorRoute;
 import fr.fsh.bbeeg.user.routes.GetUserInformationsRoute;
 import fr.fsh.bbeeg.user.routes.GetUserPreferredDomainsRoute;
 import jewas.http.RestServer;
@@ -53,12 +56,15 @@ public class Main {
 
             final RestServer rs = RestServerFactory.createRestServer(options.httpPort());
             rs.addRoutes(
-                new RedirectRoute("/", "/dashboard/dashboard.html"),
+                new PostConnectionRoute(assembler.securityResource()),
+                new SecurityRoute(),
+                new RedirectRoute("/", "/login.html"),
                 // Not really a static resources (located in webapp folder) since it is provided
                 // by jewas library. So it must be declared before the StaticResourcesRoute !
                 new SimpleFileRoute("/public/js/jewas/jewas-forms.js", "js/jewas-forms.js", options.cachedStaticResourcesRootDirectory()),
                 new StaticResourcesRoute("/public/", "public/", options.cachedStaticResourcesRootDirectory()),
                 new SimpleHtmlRoute("/dashboard/dashboard.html", "dashboard/dashboard.ftl"),
+                new GetConnectedUserRoute(assembler.connectedUserResource()),
                 new GetSimpleSearchContent(assembler.contentResource()),
                 new GetSearchScreenRoute(),
                 new ContentStatusRoute(assembler.contentResource()),
@@ -87,15 +93,14 @@ public class Main {
                 new GetPopularContentRoute(assembler.contentResource()),
                 new GetLastConnectionDateRoute(),
                 new GetTotalNumberOfContentRoute(assembler.contentResource()),
-                new GetAuthorContentRoute(assembler.contentResource()),
+                new GetUserAuthorRoute(assembler.userResource()),
                 new GetAllDomainsRoute(assembler.domainResource()),
                 new GetAllTagsRoute(assembler.tagResource()),
                 new GetPopularDomainRoute(assembler.domainResource()),
                 new GetPopularTagRoute(assembler.tagResource()),
                 new SimpleHtmlRoute("/user/profile.html", "user/profile.ftl"),
-                new GetUserInformationsRoute(),
+                new GetUserInformationsRoute(assembler.userResource()),
                 new SimpleHtmlRoute("/login.html", "login.ftl"),
-                new PostConnectionRoute(),
                 new GetContentTypeRoute(assembler.contentResource()),
                 new GetContentCriteriasRoute(assembler.contentResource()),
                 new GetAdvancedSearchContent(assembler.contentResource()),

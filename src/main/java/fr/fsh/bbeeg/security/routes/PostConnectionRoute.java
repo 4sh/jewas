@@ -1,24 +1,24 @@
 package fr.fsh.bbeeg.security.routes;
 
 import com.google.gson.reflect.TypeToken;
+import fr.fsh.bbeeg.security.pojos.Security;
 import fr.fsh.bbeeg.security.resources.ConnectionInformation;
 import fr.fsh.bbeeg.security.resources.ConnectionResultObject;
 import fr.fsh.bbeeg.security.resources.SecurityResource;
-import jewas.http.AbstractRoute;
-import jewas.http.HttpMethodMatcher;
-import jewas.http.HttpRequest;
-import jewas.http.Parameters;
-import jewas.http.PatternUriPathMatcher;
-import jewas.http.RequestHandler;
+import jewas.http.*;
 import jewas.http.impl.AbstractRequestHandler;
 
 /**
  * @author driccio
  */
 public class PostConnectionRoute extends AbstractRoute {
-    public PostConnectionRoute(){
+
+    private SecurityResource securityResource;
+
+    public PostConnectionRoute(SecurityResource _securityResource){
         // TODO: use POST
         super(HttpMethodMatcher.GET, new PatternUriPathMatcher("/connection/[login]/[password]"));
+        this.securityResource = _securityResource;
     }
 
     @Override
@@ -28,17 +28,21 @@ public class PostConnectionRoute extends AbstractRoute {
         return new AbstractRequestHandler() {
             @Override
             public void onRequest(HttpRequest request) {
-                Boolean connected = SecurityResource.connectUser(infos);
+                Security security = securityResource.connectUser(infos);
 
-                if (connected) {
+                if (security != null) {
                     ConnectionResultObject<ConnectionResultObject.SuccessObject> resultObject =
                             new ConnectionResultObject<ConnectionResultObject.SuccessObject>();
 
                     resultObject.status(ConnectionResultObject.ConnectionStatus.SUCCESS)
                             .object(new ConnectionResultObject.SuccessObject().url("/dashboard/dashboard.html"));
 
-                    request.respondJson().object(resultObject,
-                            new TypeToken<ConnectionResultObject<ConnectionResultObject.SuccessObject>>(){}.getType());
+                    JsonResponse jsonResponse = request.respondJson();
+                    jsonResponse.addHeader(HttpHeaders.SET_COOKIE, "login=" + security.login() + ":expires=Wed, 12 Oct 2011 20:00");
+                    jsonResponse.object(resultObject,
+                            new TypeToken<ConnectionResultObject<ConnectionResultObject.SuccessObject>>() {
+                            }.getType());
+
                 } else {
                     ConnectionResultObject<ConnectionResultObject.FailureObject> resultObject =
                             new ConnectionResultObject<ConnectionResultObject.FailureObject>();
@@ -49,10 +53,11 @@ public class PostConnectionRoute extends AbstractRoute {
                     request.respondJson().object(resultObject,
                             new TypeToken<ConnectionResultObject<ConnectionResultObject.FailureObject>>(){}.getType());
                 }
-
-                //request.respondHtml().content(Templates.process(page, null));
-                //request.redirect().location(page);
+                //request.respondHtml().content(Templates.process("dashboard/dashboard.ftl", null));
+//                request.redirect().location(page);
             }
         };
     }
+
+
 }

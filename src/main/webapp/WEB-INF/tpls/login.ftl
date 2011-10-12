@@ -19,19 +19,18 @@
                     dataType: 'json',
                     data: $('#loginForm').serialize(),
                     success: function success(response) {
-                                if (response.status === "SUCCESS") {
-                                    window.location = response.object.url;
-                                } else {
-                                    $('#msg').text(response.object.msg);
-                                }
-
-                                setTimeout(cleanMessageError, 5000);
-                             }
+                    if (response.status === "SUCCESS") {
+                        window.location = response.object.url;
+                    } else {
+                        $('#msg').text(response.object.msg);
+                    }
+                    setTimeout(cleanMessageError, 5000);
+                    }
                 }
             );
         }
     </script>
-
+    <link rel="shortcut icon" type="image/x-icon" href="/public/images/bbeeg/favicon.ico"/>
     <title> Page de connexion </title>
 </head>
 <body>
@@ -46,7 +45,6 @@
         <p> Mot de passe <br/>
             <input name="password" type="password"/>
         </p>
-
         <button type="button" onclick="validate()"> Valider </button>
     </form>
 </body>

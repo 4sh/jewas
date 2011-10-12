@@ -212,7 +212,7 @@ public class ContentDao {
                                 .string("description", contentDetail.header().description())
                                 .string("tags", listTagsToString(contentDetail.header().tags()))
                                 .integer("contentType", contentDetail.header().type().ordinal())
-                                .bigint("authorId", 1000) // TODO: change 1000 with the current connected user id
+                                .bigint("authorId", contentDetail.header().author().id())
                                 .integer("status", ContentStatus.DRAFT.ordinal())
                                 .date("creationDate", contentDetail.header().creationDate())
                                 .date("lastModificationDate",
@@ -434,7 +434,7 @@ public class ContentDao {
 
         BoolQueryBuilder elasticSearchQuery = createElasticSearchQuery(statuses);
         configureFullTextQuery(elasticSearchQuery, query.query());
-
+        configureAuthorsQuery(elasticSearchQuery, query.authors());
         List<Long> contentIds = searchInElasticSearch(query.startingOffset(), query.numberOfContents(), elasticSearchQuery);
         fetchByIds(contentHeaders, contentIds);
     }
@@ -452,6 +452,7 @@ public class ContentDao {
 
         BoolQueryBuilder elasticSearchQuery = createElasticSearchQuery(statuses);
         configureFullTextQuery(elasticSearchQuery, query.query());
+        configureAuthorsQuery(elasticSearchQuery, query.authors());
         configureDomainsQuery(elasticSearchQuery, query.domains());
         configureContentTypeQuery(elasticSearchQuery, query.searchTypes());
 
@@ -467,10 +468,14 @@ public class ContentDao {
         fetchByIds(contentHeaders, contentIds);
    }
 
+    private void configureAuthorsQuery(BoolQueryBuilder elasticSearchQuery, String[] authors) {
+        if (authors != null && authors.length > 0) {
+            elasticSearchQuery.must(QueryBuilders.termsQuery(ES_CONTENT_FIELD_AUTHOR, authors));
+        }
+    }
+
     private BoolQueryBuilder createElasticSearchQuery(List<Integer> statuses) {
-        return boolQuery().must(inQuery(ES_CONTENT_FIELD_STATUS, statuses.toArray()))
-                          .must(termQuery(ES_CONTENT_FIELD_AUTHOR, 1000));
-        // TODO: replace 1000 by the current user id.
+        return boolQuery().must(inQuery(ES_CONTENT_FIELD_STATUS, statuses.toArray()));
         //.must(QueryBuilders.rangeQuery(ES_CONTENT_LAST_MODIF_DATE).lt(serverTimestamp));
         // TODO: Use serverTImeStamp to filter
     }

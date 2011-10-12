@@ -1,17 +1,10 @@
 package fr.fsh.bbeeg.content.resources;
 
 import fr.fsh.bbeeg.common.persistence.TempFiles;
-import fr.fsh.bbeeg.common.resources.Author;
 import fr.fsh.bbeeg.common.resources.Count;
 import fr.fsh.bbeeg.common.resources.LimitedOrderedQueryObject;
 import fr.fsh.bbeeg.content.persistence.ContentDao;
-import fr.fsh.bbeeg.content.pojos.AdvancedSearchQueryObject;
-import fr.fsh.bbeeg.content.pojos.ContentDetail;
-import fr.fsh.bbeeg.content.pojos.ContentHeader;
-import fr.fsh.bbeeg.content.pojos.ContentStatus;
-import fr.fsh.bbeeg.content.pojos.ContentType;
-import fr.fsh.bbeeg.content.pojos.ContentTypeResultObject;
-import fr.fsh.bbeeg.content.pojos.SimpleSearchQueryObject;
+import fr.fsh.bbeeg.content.pojos.*;
 import fr.fsh.bbeeg.user.pojos.User;
 import jewas.http.data.FileUpload;
 
@@ -56,22 +49,6 @@ public class ContentResource {
 
     public ContentDetail getContentDetail(Long id) {
         return contentDao.getContentDetail(id);
-    }
-
-    public void fetchAuthors(List<Author> authors, LimitedOrderedQueryObject loqo) {
-        int count;
-
-        if ("all".equals(loqo.ordering())) {
-            count = 25;
-        } else {
-            count = loqo.number();
-        }
-
-        for (int i = 0; i < count; i++) {
-            Author author = new Author();
-            author.id(new Long(i)).name("Auteur " + i);
-            authors.add(author);
-        }
     }
 
     public void fetchContentTypes(List<ContentTypeResultObject> results, LimitedOrderedQueryObject loqo) {

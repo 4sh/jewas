@@ -33,6 +33,15 @@ function getDomains(domainIds) {
     return domains;
 }
 
+function getAuthorUserNames(container) {
+    $.getJSON(
+        '/connectedUser',
+        function (data) {
+            $(container).children().remove();
+            $("#authorItemTemplate").tmpl(data).appendTo(container);
+        });
+}
+
 function loadTags(tags) {
     console.log("selected tags:", tags);
     $.getJSON(
@@ -68,6 +77,7 @@ $(function() {
         hide: 'drop'
     });
 
+    getAuthorUserNames($("#author"));
     $("#domains").chosen();
     $("#tags").chosen();
 

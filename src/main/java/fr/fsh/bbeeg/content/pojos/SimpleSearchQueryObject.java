@@ -8,6 +8,7 @@ public class SimpleSearchQueryObject {
     private Integer startingOffset = -1;
     private Integer numberOfContents = Integer.valueOf(10);
     private Integer searchMode;
+    private String[] authors;
 
     public SimpleSearchQueryObject query(String _query) {
         this.query = _query;
@@ -59,5 +60,14 @@ public class SimpleSearchQueryObject {
             return 0;
         }
         return this.searchMode;
+    }
+
+    public SimpleSearchQueryObject authors(String[] _authors){
+        this.authors = _authors;
+        return this;
+    }
+
+    public String[] authors(){
+        return this.authors;
     }
 }

@@ -4,6 +4,9 @@ import fr.fsh.bbeeg.common.resources.ObjectId;
 import fr.fsh.bbeeg.content.pojos.ContentDetail;
 import fr.fsh.bbeeg.content.pojos.ContentType;
 import fr.fsh.bbeeg.content.resources.ContentResource;
+import fr.fsh.bbeeg.security.resources.ConnectedUserResource;
+import fr.fsh.bbeeg.security.resources.HttpRequestHelper;
+import fr.fsh.bbeeg.user.pojos.User;
 import jewas.http.AbstractRoute;
 import jewas.http.HttpMethodMatcher;
 import jewas.http.HttpRequest;
@@ -59,6 +62,8 @@ public class CreateContentRoute extends AbstractRoute {
 
                 ContentDetail contentDetail = (ContentDetail) Json.instance().fromJsonString(qo.contentDetail(), ContentDetail.class);
                 contentDetail.header().type(ContentType.valueOf(qo.type()));
+                User author = ConnectedUserResource.instance().getUser(HttpRequestHelper.getSecurityToken(request));
+                contentDetail.header().author(author);
 
                 Long id = contentResource.createContent(contentDetail);
                 request.respondJson().object(new ObjectId().id(id));

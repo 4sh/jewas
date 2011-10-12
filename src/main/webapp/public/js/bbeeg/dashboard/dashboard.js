@@ -33,12 +33,23 @@ function createMostPopular(container) {
 //    );
 //}
 
-function loadUserDomains() {
+/*function loadUserDomains() {
     $.getJSON(
         '/user/domains/5',
         function (data) {
             $('#user-domains').children().remove();
             $("#userDomainItemTemplate").tmpl(data).appendTo($('#user-domains'));
+        }
+    );
+}*/
+
+function loadMyActions() {
+    $.getJSON(
+        '/myActions/',
+        function success(data) {
+            var container = $("#myActions");
+            container.children().remove();
+            $("#actionItemTemplate").tmpl(data).appendTo(container);
         }
     );
 }
@@ -68,7 +79,7 @@ function loadTotalNumberOfContents() {
 
 function loadLastAuthors() {
     $.getJSON(
-        '/content/author/last?number=5',
+        '/users/authors/last?number=5',
         function success(data) {
             var container = $("#lastAuthors");
             container.children().remove();
@@ -95,7 +106,7 @@ function loadTags() {
 
 $(
     function() {
-        loadUserDomains();
+        //loadMyActions();
         loadMyContents();
         loadTotalNumberOfContents();
         loadLastAuthors();

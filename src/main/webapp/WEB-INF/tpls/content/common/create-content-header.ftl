@@ -1,6 +1,6 @@
 <#macro createContentHeader>
 
-    <div><label for="author" class="style_label">Auteur</label> : toto</div>
+    <div id="author"></div>
 
     <div class="create_line">
         <div class="create_label"><label for="title" class="style_label">Titre</label> :</div>

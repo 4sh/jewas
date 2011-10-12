@@ -1,5 +1,6 @@
 package fr.fsh.bbeeg.user.routes;
 
+import fr.fsh.bbeeg.security.resources.HttpRequestHelper;
 import fr.fsh.bbeeg.user.resources.UserResource;
 import jewas.http.*;
 import jewas.http.impl.AbstractRequestHandler;
@@ -8,8 +9,12 @@ import jewas.http.impl.AbstractRequestHandler;
  * @author driccio
  */
 public class GetUserInformationsRoute extends AbstractRoute {
-    public GetUserInformationsRoute() {
+
+    private final UserResource userResource;
+
+    public GetUserInformationsRoute(UserResource _userResource) {
         super(HttpMethodMatcher.GET, new PatternUriPathMatcher("/user/infos"));
+        this.userResource = _userResource;
     }
 
     @Override
@@ -17,7 +22,8 @@ public class GetUserInformationsRoute extends AbstractRoute {
         return new AbstractRequestHandler() {
             @Override
             public void onRequest(HttpRequest request) {
-                request.respondJson().object(UserResource.getUserInformations());
+                String securityToken = HttpRequestHelper.getSecurityToken(request);
+                request.respondJson().object(userResource.getUserInformations(securityToken));
             }
         };
     }

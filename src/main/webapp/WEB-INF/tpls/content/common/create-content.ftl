@@ -15,9 +15,6 @@
 
         <#if content??>
 
-            // Load the author
-            // TODO: load the content author
-
             // Load the title
             $("#title").val("${content.header().title()}");
 
@@ -51,7 +48,9 @@
         </#if>
     });
 </script>
-
+<script id="authorItemTemplate" type="text/x-jquery-tmpl">
+    <label class="style_label">Auteur : </label>{{= surname}} {{= name}}
+</script>
 <script id="domainItemTemplate" type="text/x-jquery-tmpl">
     <option value="{{= id}}" {{if selected}} selected {{/if}}> {{= label}} </option>
 </script>

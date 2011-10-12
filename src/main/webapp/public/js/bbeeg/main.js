@@ -1,5 +1,16 @@
+function getConnectedUserNames(container) {
+    $.getJSON(
+        '/connectedUser',
+        function (data) {
+            $(container).children().remove();
+            $("#userConnectedNameTemplate").tmpl(data).appendTo(container);
+        });
+}
+
 $(
     function() {
+        getConnectedUserNames($('#connectedUser'));
+
         /*
         var applicationMenu = $('#applicationMenu');
         var configurationMenu = $('#configurationMenu');
@@ -48,7 +59,7 @@ $(
         // Root menu item displaying a submenu
         var rootMenuItemsWithSubmenu = [
                 ['#admin_arrow', '#adminSubMenu'],
-                ['#userprofile_arrow', '#profileSubMenu']
+                ['.userprofile', '#profileSubMenu']
             ];
         $.each(rootMenuItemsWithSubmenu, function(index,value){
                 $(value[0]).click(function(evt){

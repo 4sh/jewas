@@ -9,7 +9,9 @@ import fr.fsh.bbeeg.content.resources.EegResource;
 import fr.fsh.bbeeg.domain.persistence.DomainDao;
 import fr.fsh.bbeeg.domain.resources.DomainResource;
 import fr.fsh.bbeeg.i18n.persistence.I18nDao;
+import fr.fsh.bbeeg.security.persistence.SecurityDao;
 import fr.fsh.bbeeg.security.resources.ConnectedUserResource;
+import fr.fsh.bbeeg.security.resources.SecurityResource;
 import fr.fsh.bbeeg.tag.persistence.TagDao;
 import fr.fsh.bbeeg.tag.resources.TagResource;
 import fr.fsh.bbeeg.user.persistence.UserDao;
@@ -39,6 +41,7 @@ public class Assembler {
     private DomainDao domainDao;
     private TagDao tagDao;
     private I18nDao i18nDao;
+    private SecurityDao securityDao;
 
     /* Resources */
     private ContentResource contentResource;
@@ -47,6 +50,7 @@ public class Assembler {
     private UserResource userResource;
     private ConnectedUserResource connectedUserResource;
     private EegResource eegResource;
+    private SecurityResource securityResource;
 
     public Assembler(CliOptions options) {
         dataSource = createDatasource();
@@ -63,15 +67,18 @@ public class Assembler {
         tagDao = new TagDao(dataSource);
         userDao = new UserDao(dataSource, domainDao);
         contentDao = new ContentDao(dataSource, client, userDao, domainDao, esContentDao, tagDao);
+        securityDao = new SecurityDao(dataSource);
 
         contentResource = new ContentResource(contentDao,
                 BBEEGConfiguration.INSTANCE.cliOptions().contentFileRepository());
         domainResource = new DomainResource(domainDao);
         tagResource = new TagResource(tagDao);
         userResource = new UserResource(userDao);
-        connectedUserResource = ConnectedUserResource.instance().userDao(userDao);
+        connectedUserResource = ConnectedUserResource.instance().userDao(userDao, securityDao);
         eegResource = new EegResource(contentDao,
                 BBEEGConfiguration.INSTANCE.cliOptions().contentFileRepository());
+        securityResource = new SecurityResource(securityDao);
+
     }
 
     private DataSource createDatasource() {
@@ -102,5 +109,13 @@ public class Assembler {
 
     public EegResource eegResource() {
         return eegResource;
+    }
+
+    public SecurityResource securityResource() {
+        return securityResource;
+    }
+
+    public ConnectedUserResource connectedUserResource() {
+        return connectedUserResource;
     }
 }

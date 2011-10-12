@@ -7,6 +7,7 @@ import java.util.Date;
  */
 public class User {
     private Long id;
+    private String login;
     private String name;
     private String surname;
     private String email;
@@ -19,6 +20,15 @@ public class User {
 
     public Long id(){
         return this.id;
+    }
+
+    public String login() {
+        return this.login;
+    }
+
+    public User login(String _login) {
+        this.login = _login;
+        return this;
     }
 
     public User name(String _name){

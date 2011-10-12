@@ -11,7 +11,6 @@ public class AdvancedSearchQueryObject extends SimpleSearchQueryObject {
     private String[] searchTypes;
     //private String criterias;
     private String[] domains;
-    private String[] authors;
 
     public AdvancedSearchQueryObject from(Date _from){
         this.from = _from;
@@ -58,12 +57,4 @@ public class AdvancedSearchQueryObject extends SimpleSearchQueryObject {
         return this.domains;
     }
 
-    public AdvancedSearchQueryObject authors(String[] _authors){
-        this.authors = _authors;
-        return this;
-    }
-
-    public String[] authors(){
-        return this.authors;
-    }
 }
