@@ -19,12 +19,8 @@ import jewas.routes.RedirectRoute;
 import jewas.routes.SimpleFileRoute;
 import jewas.routes.SimpleHtmlRoute;
 import jewas.routes.StaticResourcesRoute;
-import jewas.util.file.Files;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 /**
@@ -53,10 +49,6 @@ public class Main {
             org.h2.tools.Server.createWebServer("-webPort",
                     BBEEGConfiguration.INSTANCE.cliOptions().h2ServerPort()).start();
             Class.forName("org.h2.Driver");
-            Connection dbInitializationConnection = DriverManager.getConnection("jdbc:h2:mem:mytest", "sa", "");
-            ScriptRunner sr = new ScriptRunner(dbInitializationConnection, true, true);
-            sr.runScript(new InputStreamReader(Files.getInputStreamFromPath("fr/fsh/bbeeg/bbeeg_script.sql")));
-
             Assembler assembler = new Assembler(options);
 
             final RestServer rs = RestServerFactory.createRestServer(options.httpPort());

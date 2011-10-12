@@ -76,10 +76,10 @@ public class Assembler {
 
     private DataSource createDatasource() {
         BasicDataSource ds = new BasicDataSource();
-        ds.setUrl("jdbc:h2:mem:mytest");
+        ds.setUrl("jdbc:h2:file:~/bbeegDB");
         ds.setDriverClassName("org.h2.Driver");
         ds.setUsername("sa");
-        ds.setPassword("");
+        ds.setPassword("sa");
         return ds;
     }
 
