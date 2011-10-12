@@ -19,10 +19,9 @@
         <li> {{= name}} </li>
     </script>
 
-    <script id="userDomainItemTemplate" type="text/html">
-        <li class="inlined-li"> {{= label}} </li>
+    <script id="actionItemTemplate" type="text/html">
+        <li> {{= action}} </li>
     </script>
-
 
     <div id="userInformations" class="columnleft">
         <div id="dashboard">
@@ -85,10 +84,12 @@
                         <h3>Mon espace</h3>
                     </div>
                     <div class="texts_columnright">
-                        <p>kghsdfjklghdflgbjdfljgkdfbj</p>
-                        <p>kghsdfjklghdflgbjdfljgkdfbj</p>
-                        <p>kghsdfjklghdflgbjdfljgkdfbj</p>
-                        <p>kghsdfjklghdflgbjdfljgkdfbj</p>
+                        <ul id="myActions">
+                        </ul
+                        <p></p>
+                        <p></p>
+                        <p></p>
+                        <p></p>
                     </div>
                 </div>
             </div>
