@@ -2,7 +2,8 @@
 <#include "common/view-content-headers.ftl">
 
 <@mainTemplate title="Consultation"
-        selectedMenuItem="">
+        selectedMenuItem=""
+        stylesheets=["/public/css/bbeeg/view.css"]>
 
     <script type="text/javascript">
         $(

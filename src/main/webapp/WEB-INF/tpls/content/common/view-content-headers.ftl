@@ -35,7 +35,7 @@
         </div>
         <div class="right_part">
             <div class="view_description">${content.header().description()}</div>
-            <div class="settings_menu">
+            <!--<div class="settings_menu">
             <img src="/public/images/bbeeg/edit.png" alt="Editer"
                  class="edit-button hand_cursor settings_item"
                  onclick="editContent('item-{{= id}}', {{= id}}, '{{= status}}')"
@@ -58,7 +58,7 @@
             disabled
             {{/if}}
             />
-            </div>
+            </div>-->
         </div>
           <#-- A compléter avec les champs présents dans la spec ... -->
     </div>
