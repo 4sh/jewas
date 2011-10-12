@@ -78,7 +78,7 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
                 // TODO: enable eeg settings form
 
                 addVideo($('#videos'));
-                addMontage($('#montages'));
+                addMontage($('#displayConfig'));
 
                 var max = eegInformations.eegDuration / 1000;
                 $('#eegStop').keyup(function () {
@@ -376,7 +376,7 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
 
         montage.find('.montage-signalsToDisplay').chosen();
 
-        addMontageOperation(montage);
+        addMontageOperation($('#montages'));
     };
 
     function deleteMontage(element) {
@@ -431,7 +431,17 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
         $("#zoom").chosen();
         $("#frameDuration").chosen();
 
-
+       /* $('#allSignals').live('click', (function() {
+           if ($(this).attr('checked')) {
+               signals = [];
+               $('.montage-signalsToDisplay').attr('disabled', 'true');
+               $('.montage-signalsToDisplay').val([]);
+               $('.montage-signalsToDisplay').trigger("liszt:updated");
+           } else {
+               $('.montage-signalsToDisplay').removeAttr('disabled');
+               $('.montage-signalsToDisplay').trigger("liszt:updated");
+           }
+        })); */
 
         $("#createContent").submit(function(){
             var form = this;

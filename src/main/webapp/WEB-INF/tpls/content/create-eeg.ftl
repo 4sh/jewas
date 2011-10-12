@@ -19,9 +19,6 @@ useChosen=true>
                     previsualizationUrl : "${statics["fr.fsh.bbeeg.common.config.BBEEGConfiguration"].INSTANCE.cliOptions().visioRootUrl()}"
                 }
         );
-        //eegContentCreator.addMontage($('#montages'));
-        //eegContentCreator.addVideo($('#videos'));
-
         $("#cancelBtn").bind('click', function () {
             eegContentCreator.removeUploadedFiles();
             history.go(-1);
@@ -61,20 +58,47 @@ useChosen=true>
 </script>
 
 <script id="montageItemTemplate" type="text/x-jquery-tmpl">
-    <div class="montage">
-        <h5>Montage</h5>
-        <div>
-            <div class="style_label bottom_space">Sélectionnez les signaux à afficher :</div>
-            <div class="bottom_space"><select class="montage-signalsToDisplay chzn-select side-by-side clearfix" multiple style="width:567px;"></select></div>
-        </div>
-        <div class="bottom_space">
-             <input type="radio" /> <span class="style_clock">Afficher tous les signaux.</span>
+     <h4>3 - Configuration de l'affichage</h4>
+    <div class="bottom_space">
+        <label for="zoom" class="style_label"> Niveau de zoom : </label>
+        <select id="zoom" style="width:70px;">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="4">4</option>
+            <option value="8">8</option>
+            <option value="16">16</option>
+        </select>
+        <span class="sepa_element">&mdash;</span>
+        <label for="frameDuration" class="style_label"> Durée de la fenêtre d'affichage : </label>
+        <select id="frameDuration" style="width:70px;">
+            <option value="1000">1s</option>
+            <option value="5000">5s</option>
+            <option value="10000">10s</option>
+            <option value="20000" selected="true">20s</option>
+            <option value="60000">1m</option>
+            <option value="300000">5m</option>
+            <option value="600000">10m</option>
+        </select>
+    </div>
+    <div id="montages">
+        <div class="montage">
+            <h5>Montage</h5>
+            <div class="bottom_space">
+                 <input id="allSignals" type="checkbox" checked/> <span class="style_clock">Afficher tous les signaux.</span>
+            </div>
+            <div>
+                <div class="style_label bottom_space">Sélectionnez les signaux à afficher :</div>
+                <div class="bottom_space"><select class="montage-signalsToDisplay chzn-select side-by-side clearfix" disabled multiple style="width:567px;"></select></div>
+            </div>
         </div>
     </div>
 </script>
 
+
+
+
 <script id="montageOperationItemTemplate" type="text/x-jquery-tmpl">
-    <div class="montage-operation">
+     <div class="montage-operation">
         <div class="style_label floatLeft"><div class="signal_label floatLeft"> Signal 1 : </div><select class="montage-operation-s1 chzn-select" style="width:170px;"></select></div>
         <span class="sepa_signal floatLeft">&mdash;</span>
         <div class="floatLeft">
@@ -83,9 +107,9 @@ useChosen=true>
                 <option value="-">-</option>
             </select>
         </div>
-        <span class="sepa_signal floatLeft">&mdash;</span>    
+        <span class="sepa_signal floatLeft">&mdash;</span>
         <div class="style_label floatLeft"><div class="signal_label floatLeft">Signal 2 : </div><select class="montage-operation-s2 chzn-select side-by-side clearfix" style="width:170px;"></select></div>
-       
+
         <div class="new_signal_line">
             <button class="montage-operation-delete" type="button"> - </button>
             <button class="montage-operation-add"  type="button"> + </button>
@@ -123,32 +147,9 @@ useChosen=true>
     <br />
     
     <div class="sepa_horizontal"></div>
-        
-    <h4>3 - Configuration de l'affichage</h4>
-    <div class="bottom_space">
-        <label for="zoom" class="style_label"> Niveau de zoom : </label>
-        <select id="zoom" style="width:70px;">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="4">4</option>
-            <option value="8">8</option>
-            <option value="16">16</option>
-        </select>
-        <span class="sepa_element">&mdash;</span>
-        <label for="frameDuration" class="style_label"> Durée de la fenêtre d'affichage : </label>
-        <select id="frameDuration" style="width:70px;">
-            <option value="1000">1s</option>
-            <option value="5000">5s</option>
-            <option value="10000">10s</option>
-            <option value="20000" selected="true">20s</option>
-            <option value="60000">1m</option>
-            <option value="300000">5m</option>
-            <option value="600000">10m</option>
-        </select>
-    </div>
 
     <br />
-    <div id="montages"></div>
+    <div id="displayConfig"></div>
 
     <br /><br />
     <div class="create_buttons">
