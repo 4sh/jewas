@@ -78,13 +78,17 @@
     width: 250px;
     height: 35px;
     float:left;
-    font-size: 16px;
+    font-size: 110%;
     margin-left: 5px;
 }
 
-.content-result-title a {
+.content-result-title > a {
     color: #1099a3;
     font-weight: bold;
+}
+
+.content-result-title > a:hover {
+    color: #1f7984;
 }
 
 .content-result-author {

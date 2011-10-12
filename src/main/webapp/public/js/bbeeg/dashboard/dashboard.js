@@ -56,6 +56,7 @@ function loadMyContents() {
     createLastAdded($("#user-contents-last-added"));
     createLastViewed($("#user-contents-last-viewed"));
     createMostPopular($("#user-contents-populars"));
+    createMostPopular($("#user-contents-advisable"));
 }
 
 function loadTotalNumberOfContents() {

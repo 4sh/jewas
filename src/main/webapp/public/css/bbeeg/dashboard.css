@@ -8,26 +8,28 @@
 	width:609px;
 	height:644px;
 	/* TODO background-image:url('/public/images/bbeeg/background_dashboard.jpg');*/
-	background-image:url('/public/images/bbeeg/background_dashboard.jpg');
+	/*background-image:url('/public/images/bbeeg/background_dashboard.jpg');*/
 	background-repeat: no-repeat;
 	border:none;
 	padding:12px 25px 27px 24px;
-	color:#fff;
+	/*color:#fff;*/
 }
 
 #dashboard h3{
 	height:18px;
-	color:#fff;
-	font-size:13px;
+	/*color:#fff;*/
+	font-size:105%;
 	padding-bottom:6px;
 }
 
+/*
 #dashboard a {
 	color:#ffffff;
 	text-decoration:none;
 }
 #dashboard a:hover {color: #93e4eb;}
 #dashboard a:active {color: #b3feff;}
+*/
 
 #dashboard_menu {
 }
@@ -57,9 +59,19 @@
 
 #myContentsPanelLastViewed, #myContentsPanelLastAdded, #myContentsPanelPopulars, #myContentsPanelAdvisable {
     height:256px;
-    width:256px;
-    padding:18px;
+    width:264px;
+    padding:18px 13px 18px 13px;
     text-align:left;
+    background-color: #eaeaea;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    border: 1px solid #ffffff;
+    -webkit-box-shadow: 0 0 7px rgba(0,0,0,.3);
+	-moz-box-shadow   : 0 0 7px rgba(0,0,0,.3);
+	-o-box-shadow     : 0 0 7px rgba(0,0,0,.3);
+	box-shadow        : 0 0 7px rgba(0,0,0,.3);
+    background-image: url('/public/images/bbeeg/background_panel.png');
 }
 
 #myContentsPanelLastViewed {
@@ -82,7 +94,7 @@
 
 #user-contents-last-viewed, #user-contents-last-added, #user-contents-populars, #user-contents-advisable {
 	text-align:left;
-	margin-left:25px;
+	/*margin-left:25px;*/
 }
 
 
@@ -106,4 +118,94 @@
 
 #domainCloud {
     height: 240px;
+}
+
+.dashboard_tab {
+    width: 20px;
+    height: 292px;
+    background-color: #1099a3;
+    /*background-color: #3d3d3d;*/
+    float: left;
+    -webkit-border-top-left-radius: 10px;
+    -webkit-border-bottom-left-radius: 10px;
+    -moz-border-radius-topleft: 10px;
+    -moz-border-radius-bottomleft: 10px;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+.title_panel {
+    height: 30px;
+    width: 232px;
+    padding-top: 5px;
+    padding-left: 17px;
+    background-color: #eaeaea;
+    -webkit-border-radius: 7px;
+    -moz-border-radius: 7px;
+    border-radius: 7px;
+    margin-bottom: 10px;
+    border: 1px solid #ffffff;
+    -webkit-box-shadow: 0 0 7px rgba(0,0,0,.3);
+	-moz-box-shadow   : 0 0 7px rgba(0,0,0,.3);
+	-o-box-shadow     : 0 0 7px rgba(0,0,0,.3);
+	box-shadow        : 0 0 7px rgba(0,0,0,.3);
+    background-image: url('/public/images/bbeeg/background_title.png');
+}
+
+.title_tab {
+    margin-top: 1px;
+    margin-left: 1px;
+    width: 12px;
+    height: 35px;
+    /*background-color: #1099a3;*/
+    background-color: #3d3d3d;
+    float: left;
+    -webkit-border-top-left-radius: 7px;
+    -webkit-border-bottom-left-radius: 7px;
+    -moz-border-radius-topleft: 7px;
+    -moz-border-radius-bottomleft: 7px;
+    border-top-left-radius: 7px;
+    border-bottom-left-radius: 7px;
+}
+
+.box_info {
+    float: left;
+}
+
+.ui-panel-content-text {
+    background-color: #dfdfdf;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    border:  1px solid #ffffff;
+}
+
+.ui-panel-content-text:hover {
+    background-color: #c1dddf;
+}
+
+.ui-panel-content-text > a {
+    color: #1099a3;
+    font-weight: bold;
+}
+
+.ui-panel-content-text > a:hover {
+    color: #1f7984;
+}
+
+.mini_tabs {
+    margin-top: 1px;
+    margin-left: 1px;
+    width: 10px;
+    height: 38px;
+    background-color: #1099a3;
+    margin-right: 3px;
+    float: left;
+    -webkit-border-top-left-radius: 5px;
+    -webkit-border-bottom-left-radius: 5px;
+    -moz-border-radius-topleft: 5px;
+    -moz-border-radius-bottomleft: 5px;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
 }

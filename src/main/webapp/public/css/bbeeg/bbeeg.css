@@ -196,8 +196,8 @@ html {
 body {
 	background-color:#f1f1f1;
 	color:#434342;
-	font-family: Arial,Helvetica,sans-serif;
-    font-size: 13px;
+	font-family: calibri, tahoma, arial, sans-serif;
+    font-size: 95%;
     font-weight: normal;
     line-height: 18px;
     height:100%
@@ -279,12 +279,12 @@ header {
 #columnrighttop {
     width:260px;
     height: 355px;
-    overflow: hidden;
 }
 
 .texts_columnright {
     margin-bottom: 10px;
     width:260px;
+    margin-left: 15px;
 }
 
 #columnrightbottom {
@@ -293,7 +293,7 @@ header {
 }
 
 .title {
-    background-image:url('/public/images/bbeeg/background_title.jpg');
+    /*background-image:url('/public/images/bbeeg/background_title.jpg');*/
     background-repeat: no-repeat;
     text-align: center;
 }
@@ -388,6 +388,43 @@ footer{
 
 .keyword_test {
     background-color: #7fa62d;
+}
+
+.mini_clock {
+    font-size: 80%;
+}
+
+h2 {
+    color: #222526;
+    font-size: 130%;
+    font-weight: bold;
+    margin-bottom: 10px;
+
+}
+
+
+h3 {
+    /*color: #13adb8;*/
+    color: #222526;
+    font-size: 120%;
+    font-weight: bold;
+    margin-bottom: 10px;
+    margin-top: 4px;
+}
+
+h4 {
+    font-size: 110%;
+    font-weight: bold;
+    color: #222526;
+    margin-bottom: 15px;
+}
+
+
+h5 {
+    font-size: 105%;
+    font-weight: bold;
+    color: #222526;
+    margin-bottom: 15px;
 }
 
 /*Aspect graphique des liens */
@@ -602,31 +639,6 @@ select {
 select[multiple]{
     width: 400px;
 }
-
-h3 {
-    /*color: #13adb8;*/
-    color: #222526;
-    font-size: 120%;
-    font-weight: bold;
-    margin-bottom: 10px;
-    margin-top: 4px;
-}
-
-h4 {
-    font-size: 110%;
-    font-weight: bold;
-    color: #222526;
-    margin-bottom: 15px;
-}
-
-
-h5 {
-    font-size: 105%;
-    font-weight: bold;
-    color: #222526;
-    margin-bottom: 15px;
-}
-
 
 #header {
     top: 0px;

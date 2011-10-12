@@ -27,6 +27,8 @@
 
     <link rel="shortcut icon" type="image/x-icon" href="/public/images/bbeeg/favicon.ico"/>
 
+    <link href='http://fonts.googleapis.com/css?family=Muli:300' rel='stylesheet' type='text/css'>
+
     <link rel="stylesheet" href="/public/css/bbeeg/bbeeg.css"/>
 
     <link rel="stylesheet"
