@@ -223,12 +223,15 @@ public class ContentDao {
 
         contentDetail.header().id(Long.parseLong(genKeys.get("id")));
 
-        for (Domain domain : contentDetail.header().domains()) {
-            contentHeaderQueryTemplate.insert("addLinkWithDomain",
-                    new QueryExecutionContext().buildParams()
-                            .bigint("contentId", Long.valueOf(genKeys.get("id")))
-                            .bigint("domainId", domain.id())
-                            .toContext());
+        Collection<Domain> domains = contentDetail.header().domains();
+        if (domains != null) {
+            for (Domain domain : domains) {
+                contentHeaderQueryTemplate.insert("addLinkWithDomain",
+                        new QueryExecutionContext().buildParams()
+                                .bigint("contentId", Long.valueOf(genKeys.get("id")))
+                                .bigint("domainId", domain.id())
+                                .toContext());
+            }
         }
 
         // Update TAGS table
