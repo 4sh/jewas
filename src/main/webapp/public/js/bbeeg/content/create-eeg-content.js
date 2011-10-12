@@ -56,10 +56,11 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
     function getDomains(domainIds) {
         var domains = [];
 
-        for (var i=0; i < domainIds.length; i++) {
-            domains.push({id: domainIds[i]});
+        if (domainIds !== null) {
+            for (var i=0; i < domainIds.length; i++) {
+                domains.push({id: domainIds[i]});
+            }
         }
-
         return domains;
     }
 
@@ -451,7 +452,7 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
                     title: $("#title").val(),
                     description: $("#description").val(),
                     domains: getDomains($("#domains").val()),
-                    tags: getTags().val()
+                    tags: $("#tags").val()
                 }
             }
 

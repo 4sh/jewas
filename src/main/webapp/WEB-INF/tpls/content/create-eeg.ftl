@@ -94,9 +94,6 @@ useChosen=true>
     </div>
 </script>
 
-
-
-
 <script id="montageOperationItemTemplate" type="text/x-jquery-tmpl">
      <div class="montage-operation">
         <div class="style_label floatLeft"><div class="signal_label floatLeft"> Signal 1 : </div><select class="montage-operation-s1 chzn-select" style="width:170px;"></select></div>
