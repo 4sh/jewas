@@ -53,7 +53,7 @@ public class Assembler {
     private SecurityResource securityResource;
 
     public Assembler(CliOptions options) {
-        dataSource = createDatasource();
+        dataSource = createDatasource(options);
         client = new TransportClient().addTransportAddress(
                 new InetSocketTransportAddress(
                         BBEEGConfiguration.INSTANCE.cliOptions().elasticSearchAdress(),
@@ -81,9 +81,9 @@ public class Assembler {
 
     }
 
-    private DataSource createDatasource() {
+    private DataSource createDatasource(CliOptions options) {
         BasicDataSource ds = new BasicDataSource();
-        ds.setUrl("jdbc:h2:file:~/bbeegDB");
+        ds.setUrl("jdbc:h2:file:"+options.h2DbPath());
         ds.setDriverClassName("org.h2.Driver");
         ds.setUsername("sa");
         ds.setPassword("sa");

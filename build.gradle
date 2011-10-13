@@ -53,6 +53,7 @@ def ENV_PROPERTIES = [
            contentFileRepository: ENV_DEMO_DEPLOY_ROOT_PATH+"/nightly"+"/contents/",
            tmpContentFileRepository: ENV_DEMO_DEPLOY_ROOT_PATH+"/nightly"+"/tmp/",
            h2ServerPort: 18082,
+           h2DbPath: ENV_DEMO_DEPLOY_ROOT_PATH+"/nightly/bbeegDB",
            elasticSearchAdress: "127.0.0.1",
            elasticSearchPort: 19200
    ], qa: [
@@ -64,6 +65,7 @@ def ENV_PROPERTIES = [
            contentFileRepository: ENV_DEMO_DEPLOY_ROOT_PATH+"/qa"+"/contents/",
            tmpContentFileRepository: ENV_DEMO_DEPLOY_ROOT_PATH+"/qa"+"/tmp/",
            h2ServerPort: 28082,
+           h2DbPath: ENV_DEMO_DEPLOY_ROOT_PATH+"/qa/bbeegDB",
            elasticSearchAdress: "127.0.0.1",
            elasticSearchPort: 29200
    ]
@@ -243,6 +245,7 @@ task startBBEEG(dependsOn: [initSsh, checkPropsForDeployment, startElasticSearch
     def contentFileRepository = targetEnv.contentFileRepository
     def tmpContentFileRepository = targetEnv.tmpContentFileRepository
     def h2ServerPort = targetEnv.h2ServerPort
+    def h2DbPath = targetEnv.h2DbPath
     def elasticSearchPort = targetEnv.elasticSearchPort
     def elasticSearchAdress = targetEnv.elasticSearchAdress
     def cachedStaticResourcesRootDirectory = targetEnv.cachedStaticResourcesRootDirectory
@@ -270,7 +273,8 @@ task startBBEEG(dependsOn: [initSsh, checkPropsForDeployment, startElasticSearch
 		command: """/usr/lib/jvm/jdk1.7.0/jre/bin/java ${javaOpts} -jar "${deployDirectory}/bbeeg.jar" \
 		    -httpPort ${executionPort} -visioRootUrl ${visioRootUrl} -visioEegInternalUrl ${visioEegInternalUrl} \
 		    -contentFileRepository ${contentFileRepository} -tmpContentFileRepository ${tmpContentFileRepository} -cachedStaticResourcesRootDirectory ${cachedStaticResourcesRootDirectory} \
-		    -h2ServerPort ${h2ServerPort} -elasticSearchAdress ${elasticSearchAdress} -elasticSearchPort ${elasticSearchPort} \
+		    -h2ServerPort ${h2ServerPort} -h2DbPath ${h2DbPath} \
+		    -elasticSearchAdress ${elasticSearchAdress} -elasticSearchPort ${elasticSearchPort} \
 		    > "${deployDirectory}/bbeeg.log" 2> "${deployDirectory}/bbeeg.err.log" \
 		    & echo \$! > "${deployDirectory}/bbeeg.pid" """,
         trust: true, failonerror: true)

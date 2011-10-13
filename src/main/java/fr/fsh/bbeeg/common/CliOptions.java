@@ -42,6 +42,11 @@ public class CliOptions {
             validateWith = EmptyDirectoryValidator.class */ )
     private File cachedStaticResourcesRootDirectory;
 
+    @Parameter(names = "-h2DbPath",
+            description = "Path where will reside h2 database file",
+            required = true)
+    private File h2DbPath;
+
     public int httpPort() {
         return this.httpPort;
     }
@@ -80,6 +85,10 @@ public class CliOptions {
 
     public File cachedStaticResourcesRootDirectory(){
         return this.cachedStaticResourcesRootDirectory;
+    }
+
+    public File h2DbPath(){
+        return this.h2DbPath;
     }
 
     public static class EmptyDirectoryValidator implements IParameterValidator {
