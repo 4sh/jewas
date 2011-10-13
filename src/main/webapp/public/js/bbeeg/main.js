@@ -48,7 +48,8 @@ $(
                 ['#createImageMenuItem', '/content/image/create.html'],
                 ['#createVideoMenuItem', '/content/video/create.html'],
                 ['#createAudioMenuItem', '/content/audio/create.html'],
-                ['#createEegMenuItem', '/content/eeg/create.html']
+                ['#createEegMenuItem', '/content/eeg/create.html'],
+                ['#disconnectMenuItem', '/login.html']
             ],function(index, value){
                 $(value[0]).click(function(){
                     loadMenuItem(this, value[1]);
