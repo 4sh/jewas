@@ -55,7 +55,8 @@ def ENV_PROPERTIES = [
            h2ServerPort: 18082,
            h2DbPath: ENV_DEMO_DEPLOY_ROOT_PATH+"/nightly/bbeegDB",
            elasticSearchAdress: "127.0.0.1",
-           elasticSearchPort: 19200
+           elasticSearchPort: 19200,
+           specificJavaOpts: "-Xmx256m"
    ], qa: [
            targetDir: ENV_DEMO_DEPLOY_ROOT_PATH+"/qa",
            bbeegPort: 28086,
@@ -67,7 +68,8 @@ def ENV_PROPERTIES = [
            h2ServerPort: 28082,
            h2DbPath: ENV_DEMO_DEPLOY_ROOT_PATH+"/qa/bbeegDB",
            elasticSearchAdress: "127.0.0.1",
-           elasticSearchPort: 29200
+           elasticSearchPort: 29200,
+           specificJavaOpts: "-Xmx512m"
    ]
 ]
 
@@ -249,8 +251,9 @@ task startBBEEG(dependsOn: [initSsh, checkPropsForDeployment, startElasticSearch
     def elasticSearchPort = targetEnv.elasticSearchPort
     def elasticSearchAdress = targetEnv.elasticSearchAdress
     def cachedStaticResourcesRootDirectory = targetEnv.cachedStaticResourcesRootDirectory
+    def specificJavaOpts = targetEnv.specificJavaOpts
 
-    def javaOpts = "-Xms256m -Xmx256m -Dfile.encoding=UTF-8"
+    def javaOpts = "-Xms256m -Dfile.encoding=UTF-8 ${specificJavaOpts} "
 
     if(System.properties[DEBUG_PORT_SYS_PROPERTY] != null
         && !"".equals(System.properties[DEBUG_PORT_SYS_PROPERTY])){
