@@ -1,17 +1,11 @@
 package fr.fsh.bbeeg.content.resources;
 
-import fr.fsh.bbeeg.common.config.BBEEGConfiguration;
 import fr.fsh.bbeeg.common.persistence.TempFiles;
 import fr.fsh.bbeeg.content.persistence.ContentDao;
 import fr.fsh.bbeeg.content.pojos.EegSettings;
 import jewas.json.Json;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -86,7 +80,7 @@ public class EegResource {
 
         StringBuilder content = new StringBuilder();
 
-        try {
+        /*try {
             URL url = new URL(BBEEGConfiguration.INSTANCE.cliOptions().visioEegInternalUrl() + "/clean/" + eegId);
 
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
@@ -106,6 +100,6 @@ public class EegResource {
             System.out.println(e.getMessage());
         } catch (IOException e) {
             System.out.println(e.getMessage());
-        }
+        }*/
     }
 }

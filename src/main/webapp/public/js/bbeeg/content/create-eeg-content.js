@@ -82,11 +82,11 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
                 addMontage($('#displayConfig'));
 
                 var max = eegInformations.eegDuration / 1000;
-                $('#eegStop').keyup(function () {
+               /* $('#eegStop').keyup(function () {
                     if(Number(this.value) > max) {
                         this.value = max;
                     }
-                });
+                });*/
             }
         );
     }
@@ -186,15 +186,39 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
         });
     }
 
+    function getTimeInSeconds(startHours, startMinuts, startSeconds) {
+        var start = 0;
+        if (!!startHours) {
+            start += Number(startHours) * 3600;
+        }
+
+        if (!!startMinuts) {
+            start += Number(startMinuts) * 60;
+        }
+
+        if (!!startSeconds) {
+            start += Number(startSeconds);
+        }
+        return start;
+    }
+
     function getVideos() {
         var videos = [];
 
-        $('.video-uploader').each(
+        $('.video').each(
             function (videoIndex, videoElt) {
                 var video = {};
 
-                var start = $(videoElt).find('.video-start').val();
-                var stop = $(videoElt).find('.video-stop').val();
+                var startHours = $(videoElt).find('.video-start-hours').val();
+                var startMinuts = $(videoElt).find('.video-start-minuts').val();
+                var startSeconds = $(videoElt).find('.video-start-seconds').val();
+
+                var stopHours = $(videoElt).find('.video-stop-hours').val();
+                var stopMinuts = $(videoElt).find('.video-stop-minuts').val();
+                var stopSeconds = $(videoElt).find('.video-stop-seconds').val();
+
+                var start = getTimeInSeconds(startHours, startMinuts, startSeconds);
+                var stop = getTimeInSeconds(stopHours, stopMinuts, stopSeconds);
 
                 if (!!start && !!stop && (!!videoUploader && !!videoUploader.videoId)) {
                     video.start = start * 1000;
@@ -432,7 +456,7 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
         $("#zoom").chosen();
         $("#frameDuration").chosen();
 
-       /* $('#allSignals').live('click', (function() {
+        /*$('#allSignals').live('click', (function() {
            if ($(this).attr('checked')) {
                signals = [];
                $('.montage-signalsToDisplay').attr('disabled', 'true');
@@ -442,7 +466,7 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
                $('.montage-signalsToDisplay').removeAttr('disabled');
                $('.montage-signalsToDisplay').trigger("liszt:updated");
            }
-        })); */
+        }));*/
 
         $("#createContent").submit(function(){
             var form = this;

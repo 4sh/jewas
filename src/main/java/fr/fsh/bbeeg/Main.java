@@ -9,7 +9,6 @@ import fr.fsh.bbeeg.domain.routes.GetAllDomainsRoute;
 import fr.fsh.bbeeg.domain.routes.GetPopularDomainRoute;
 import fr.fsh.bbeeg.security.routes.GetConnectedUserRoute;
 import fr.fsh.bbeeg.security.routes.PostConnectionRoute;
-import fr.fsh.bbeeg.security.routes.SecurityRoute;
 import fr.fsh.bbeeg.tag.routes.GetAllTagsRoute;
 import fr.fsh.bbeeg.tag.routes.GetPopularTagRoute;
 import fr.fsh.bbeeg.user.routes.GetLastConnectionDateRoute;
@@ -57,7 +56,7 @@ public class Main {
             final RestServer rs = RestServerFactory.createRestServer(options.httpPort());
             rs.addRoutes(
                 new PostConnectionRoute(assembler.securityResource()),
-                new SecurityRoute(),
+                //new SecurityRoute(),
                 new RedirectRoute("/", "/login.html"),
                 // Not really a static resources (located in webapp folder) since it is provided
                 // by jewas library. So it must be declared before the StaticResourcesRoute !

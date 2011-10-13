@@ -38,19 +38,21 @@ useChosen=true>
     <div class="sepa_horizontal"></div>
    
     <h4>2 - Configuration de la vidéo</h4>
-    
-    <div class="create_upload">
-        <div class="video-uploader">
-            <span class="style_label">Sélectionnez votre fichier video :</span>
-            <input class="upload-file-info" type="text" style="width:300px;"/>
-            <button class="upload" href="#">Parcourir</button>
-            <span class="upload-status"></span>
-            <br/>
+    <div class="video">
+        <div class="create_upload">
+            <div class="video-uploader">
+                <span class="style_label">Sélectionnez votre fichier video :</span>
+                <input class="upload-file-info" type="text" style="width:300px;"/>
+                <button class="upload" href="#">Parcourir</button>
+                <span class="upload-status"></span>
+                <br/>
+            </div>
+        </div>
+        <div class='video-conf'>
+            <label class="style_label"> Début de la vidéo : </label> <input class="video-start-hours" type="text" style="width: 20px;"/> <span class="style_clock">h</span> <input class="video-start-minuts" type="text" style="width: 20px;"/> <span class="style_clock">min</span> <input class="video-start-seconds" type="text" style="width: 30px;"/> <span class="style_clock">s</span>
+            <span class="sepa_element">&mdash;</span><label class="style_label"> Fin de la vidéo : </label> <input class="video-stop-hours" type="text" style="width: 20px;"/> <span class="style_clock">h</span> <input class="video-stop-minuts" type="text" style="width: 20px;"/> <span class="style_clock">min</span> <input class="video-stop-seconds" type="text" style="width: 30px;"/> <span class="style_clock">s</span>
         </div>
     </div>
-    
-    <label class="style_label"> Début de la vidéo : </label> <input type="text" style="width: 20px;"/> <span class="style_clock">h</span> <input type="text" style="width: 20px;"/> <span class="style_clock">min</span> <input type="text" style="width: 30px;"/> <span class="style_clock">s</span>
-    <span class="sepa_element">&mdash;</span><label class="style_label"> Fin de la vidéo : </label> <input type="text" style="width: 20px;"/> <span class="style_clock">h</span> <input type="text" style="width: 20px;"/> <span class="style_clock">min</span> <input type="text" style="width: 30px;"/> <span class="style_clock">s</span>
 </script>
 
 <script id="signalItemTemplate" type="text/x-jquery-tmpl">
@@ -84,7 +86,7 @@ useChosen=true>
         <div class="montage">
             <h5>Montage</h5>
             <div class="bottom_space">
-                 <input id="allSignals" type="checkbox" checked/> <span class="style_clock">Afficher tous les signaux.</span>
+                 <input id="allSignals" type="checkbox" checked disabled/> <span class="style_clock">Afficher tous les signaux.</span>
             </div>
             <div>
                 <div class="style_label bottom_space">Sélectionnez les signaux à afficher :</div>
