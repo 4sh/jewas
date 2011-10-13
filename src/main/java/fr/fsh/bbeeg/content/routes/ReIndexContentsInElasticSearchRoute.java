@@ -6,10 +6,10 @@ import jewas.http.*;
 import jewas.http.impl.AbstractRequestHandler;
 
 
-public class ReIndexContentsRoute extends AbstractRoute {
+public class ReIndexContentsInElasticSearchRoute extends AbstractRoute {
     private ContentResource contentResource;
 
-    public ReIndexContentsRoute(ContentResource _contentResource){
+    public ReIndexContentsInElasticSearchRoute(ContentResource _contentResource){
         super(HttpMethodMatcher.GET, new PatternUriPathMatcher("/content/reindex"));
         contentResource = _contentResource;
     }

@@ -109,7 +109,7 @@ public class Main {
                 new RemoveUploadedEegRoute(assembler.eegResource()),
                 new UploadRoute(assembler.contentResource()),
                 new RemoveUploadedFilesRoute(),
-                new ReIndexContentsRoute(assembler.contentResource())
+                new ReIndexContentsInElasticSearchRoute(assembler.contentResource())
             ).start();
             System.out.println("Ready, if you dare");
         }catch(Throwable t){
