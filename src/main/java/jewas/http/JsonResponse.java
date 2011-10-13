@@ -22,4 +22,8 @@ public class JsonResponse {
         httpResponse.content(Json.instance().toJsonString(o, parameterizedType));
     }
 
+    public void addHeader(String header, Object value) {
+        this.httpResponse.addHeader(header, value);
+    }
+
 }
