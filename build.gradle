@@ -31,6 +31,9 @@ def TARGET_ENV_SYS_PROPERTY = "deploy.target.env"
 def SKIP_UPLOAD_SYS_PROPERTY = "deploy.skip.upload"
 // System property used to define an XDebug java port to launch remote app in debug mode
 def DEBUG_PORT_SYS_PROPERTY = "deploy.debug.port"
+// System property used to start NewRelic monitoring on app if needed
+def NEW_RELIC_MONITORING_SYS_PROPERTY = "monitor.with.new.relic"
+def NEW_RELIC_AGENT_PATH = "/home/bbeeg/tools/newrelic/newrelic.jar"
 
 if(!hasProperty("releasesRepoUsername")
         || !hasProperty("releasesRepoPassword")){
@@ -249,6 +252,11 @@ task startBBEEG(dependsOn: [initSsh, checkPropsForDeployment, startElasticSearch
     if(System.properties[DEBUG_PORT_SYS_PROPERTY] != null
         && !"".equals(System.properties[DEBUG_PORT_SYS_PROPERTY])){
         javaOpts += " -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address="+System.properties[DEBUG_PORT_SYS_PROPERTY]+" -Xnoagent -Djava.compiler=NONE"
+    }
+
+    if(System.properties[NEW_RELIC_MONITORING_SYS_PROPERTY] != null
+        && "true".equals(System.properties[NEW_RELIC_MONITORING_SYS_PROPERTY])){
+        javaOpts += " -javaagent:"+NEW_RELIC_AGENT_PATH
     }
 
     ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 2224,
