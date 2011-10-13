@@ -87,7 +87,7 @@
 
             <div>
                 <div><label for="content" class="style_label">Contenu</label> : </div>
-                <div class="create_textarea"><textarea rows="8" cols="91" id="content" required="required"></textarea></div>
+                <div class="create_textarea"><textarea class="textarea_content" id="content" required="required"></textarea></div>
             </div>
             <div class="create_buttons"><input type="submit" value="Enregistrer" /></div>
         </form>

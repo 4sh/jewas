@@ -695,6 +695,19 @@ button .selected {
     height: 200px;
 }
 
+.textarea_description, .textarea_content {
+    width: 655px;
+}
+
+.textarea_description {
+    height: 55px;
+}
+
+.textarea_content {
+    height: 130px;
+}
+
+
 /* AVANT REFONTE CSS IL Y AVAIT ... */
 #container {
     height: 100%;
