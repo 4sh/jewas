@@ -157,4 +157,8 @@ public class ContentResource {
     public void updateContentStatus(Long id, ContentStatus status, String comment) {
         contentDao.updateContentStatus(id, status, comment);
     }
+
+    public void reIndexAllInElasticSearch() {
+        contentDao.reIndexAllInElasticSearch();
+    }
 }

@@ -108,7 +108,8 @@ public class Main {
                 new GetUserPreferredDomainsRoute(assembler.userResource()),
                 new RemoveUploadedEegRoute(assembler.eegResource()),
                 new UploadRoute(assembler.contentResource()),
-                new RemoveUploadedFilesRoute()
+                new RemoveUploadedFilesRoute(),
+                new ReIndexContentsRoute(assembler.contentResource())
             ).start();
             System.out.println("Ready, if you dare");
         }catch(Throwable t){

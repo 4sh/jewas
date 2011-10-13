@@ -124,7 +124,8 @@ public class ContentDao {
 
        this.contentDetailQueryTemplate =
                new QueryTemplate<ContentDetail>(dataSource, new ContentDetailRowMapper())
-                        .addQuery("selectById", "select * from Content where id = :id");
+                        .addQuery("selectById", "select * from Content where id = :id")
+                        .addQuery("selectAll", "select * from Content");
 
         this.idQueryTemplate =
                 new QueryTemplate<Long>(dataSource, new LongRowMapper())
@@ -249,6 +250,20 @@ public class ContentDao {
         }
 
         return Long.valueOf(genKeys.get("id"));
+    }
+
+    public void reIndexAllInElasticSearch() {
+        List<ContentDetail> contents = new ArrayList<ContentDetail>();
+        contentDetailQueryTemplate.select(contents, "selectAll",
+                new QueryExecutionContext().buildParams().toContext());
+
+        for(ContentDetail contentDetail : contents) {
+            try {
+                insertContentInElasticSearch(contentDetail.header().id());
+            } catch (IOException e) {
+                e.printStackTrace();  //TODO: To change body of catch statement use File | Settings | File Templates.
+            }
+        }
     }
 
     // This method is not optimized.
