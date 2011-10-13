@@ -43,15 +43,14 @@ function createMostPopular(container) {
     );
 }*/
 
-function loadMyActions() {
+function loadMySpace(container) {
     $.getJSON(
-        '/myActions/',
-        function success(data) {
-            var container = $("#myActions");
-            container.children().remove();
-            $("#actionItemTemplate").tmpl(data).appendTo(container);
-        }
-    );
+        '/connectedUser',
+        function (data) {
+            $(container).children().remove();
+            $("#mySpaceTemplate").tmpl(data).appendTo($(container));
+        });
+
 }
 
 function loadMyContents() {
@@ -106,7 +105,7 @@ function loadTags() {
 
 $(
     function() {
-        //loadMyActions();
+        loadMySpace($('#mySpace'));
         loadMyContents();
         loadTotalNumberOfContents();
         loadLastAuthors();

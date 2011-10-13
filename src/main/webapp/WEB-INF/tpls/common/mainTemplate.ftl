@@ -84,7 +84,7 @@
 </script>
     <header>
         <div id="menu">
-            <a href="/"><img src="/public/images/bbeeg/bbeeg_logo.png" onmouseout="src='/public/images/bbeeg/bbeeg_logo.png'" onmouseover="src='/public/images/bbeeg/bbeeg_logo_hover.png'" alt="Logo BBEEG"/></a>
+            <a href="/dashboard/dashboard.html"><img src="/public/images/bbeeg/bbeeg_logo.png" onmouseout="src='/public/images/bbeeg/bbeeg_logo.png'" onmouseover="src='/public/images/bbeeg/bbeeg_logo_hover.png'" alt="Logo BBEEG"/></a>
 
             <div id="menuright">
                 <@rootMenuItem id="input_recherche">

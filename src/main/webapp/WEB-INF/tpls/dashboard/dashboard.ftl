@@ -16,11 +16,34 @@
     </script>
 
     <script id="authorItemTemplate" type="text/html">
-        <li> {{= name}} </li>
+        <li> {{= surname}} {{= name}} </li>
     </script>
 
-    <script id="actionItemTemplate" type="text/html">
-        <li> {{= action}} </li>
+    <script id="mySpaceTemplate" type="text/html">
+        {{if role == 'student'}}
+            <span>Bienvenue sur le tableau de bord de la plateforme BB-EEG !! </br> Vous pouvez dès à présent lancer une recherche de contenu de formation via le menu ou en utilisant les liens vers les documents présentés ci-contre.</span>
+        {{/if}}
+        {{if role == 'teacher'}}
+            <span>Vous êtes connecté en tant qu'enseignant. Vous pouvez enrichir la plateforme en ajoutant des contenus:</span>
+            <ul style="padding-top:5px">
+                <li><a href="/content/text/create.html">Ajouter un contenu texte</a></li>
+                <li><a href="/content/document/create.html">Ajouter un contenu PDF</a></li>
+                <li><a href="/content/image/create.html">Ajouter un contenu image</a></li>
+                <li><a href="/content/video/create.html">Ajouter un contenu vidéo</a></li>
+                <li><a href="/content/audio/create.html">Ajouter un contenu audio</a></li>
+                <li><a href="/content/eeg/create.html">Ajouter un contenu EEG</a></li>
+                <li><a href="/content/search-user-content.html">Gérer mes contenus</a></li>
+             </ul>
+        {{/if}}
+        {{if role == 'administrator'}}
+            <span>Vous êtes connecté en tant qu'administrateur. Vous devez à ce titre, répondre aux demandes de publication émises par les enseignants en validant ourejetant les contenus proposés.</span>
+
+            <ul style="padding-top:10px">
+                <li><a href="/content/search-content-to-treat.html">Administrer les contenus</a></li>
+                <li><a href="">Administrer les domaines</a></li>
+            </ul>
+        {{/if}}
+
     </script>
 
     <div id="userInformations" class="columnleft">
@@ -83,13 +106,7 @@
                     <div class="title_panel">
                         <h3>Mon espace</h3>
                     </div>
-                    <div class="texts_columnright">
-                        <ul id="myActions">
-                        </ul
-                        <p></p>
-                        <p></p>
-                        <p></p>
-                        <p></p>
+                    <div id="mySpace" class="texts_columnright">
                     </div>
                 </div>
             </div>
