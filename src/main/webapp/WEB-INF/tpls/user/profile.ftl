@@ -4,13 +4,37 @@
         selectedMenuItem="profile"
         scripts=["/public/js/bbeeg/user/profile.js"]
         stylesheets=[]>
+ <div class="center_profil">
+    <div class="login_panel">
+        <p id="lastConnectionDate" class='style_clock mini_clock'></p>
+        <br />
+        <form>
+            <div class="line_login">
+               <div class="style_label label_login">Nom :</div>
+               <div class="input_login">
+                   <input id="userName" type="text" style="width: 215px;"/>
+               </div>
+            </div>
+            <br />
+            <div class="line_login">
+               <div class="style_label label_login">Pr&eacute;nom :</div>
+               <div class="input_login">
+                   <input id="userSurname" type="text" style="width: 215px;"/>
+               </div>
+            </div>
+            <br />
+            <div class="line_login">
+               <div class="style_label label_login bottom_space">Courriel :</div>
+               <div class="input_login">
+                   <input id="userEmail" type="text" style="width: 215px;"/>
+               </div>
+            </div>
 
-    <p id="lastConnectionDate"></p>
+            <div class="button_login">
+                <button type="button"> Enregistrer </button>
+            </div>
 
-    <form>
-        <p> Nom <br/><input id="userName" type="text"></input></p>
-        <p> Prenom <br/><input id="userSurname" type="text"></input></p>
-        <p> Courriel <br/><input id="userEmail" type="email"></input></p>
-    </form>
-
+        </form>
+    </div>
+ </div>
 </@mainTemplate>

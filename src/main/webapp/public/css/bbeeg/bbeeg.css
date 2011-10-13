@@ -460,7 +460,7 @@ a:hover {color:#13adb8;}
 a:active {color:#0b666d;}
 
 
-input[type=text], input[type=password], input[type=mail] {
+input[type=text], input[type=password], input[type=email] {
   padding: 0 4px 0 4px;
   background-color: #fff;
   background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.2, #eeeeee), color-stop(0.6, #fcfcfc));
@@ -506,7 +506,7 @@ input[type=text] .wrong {
 	box-shadow        : 0 1px 4px rgba(255,45,0,.30) inset;
 }
 
-input[type=text]:focus,input[type=text]#ok:focus, input[type=text]#wrong:focus,input[type=password]:focus, input[type=mail]:focus {
+input[type=text]:focus,input[type=text]#ok:focus, input[type=text]#wrong:focus,input[type=password]:focus, input[type=email]:focus {
 	border: 1px solid #89c8cd;
 	background-color: #fff;
 	background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.8, #fcfcfc), color-stop(0.9, #eeeeee));
@@ -689,7 +689,11 @@ button .selected {
 }
 
 
-
+.center_profil {
+    margin:  10% auto;
+    width: 350px;
+    height: 200px;
+}
 
 /* AVANT REFONTE CSS IL Y AVAIT ... */
 #container {
