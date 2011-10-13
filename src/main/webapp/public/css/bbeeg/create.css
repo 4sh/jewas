@@ -3,24 +3,10 @@
 
 }
 
-.style_label {
-    font-weight: bolder;
-}
-
-.style_clock {
-    font-style: italic;
-}
-
-.sepa_element, .sepa_signal {
-    font-size: 14px;
-    font-weight: bolder;
-    margin: 0 10px;
-}
-
 .create_line {
     clear: both;
     display: block;
-    width: 662px;
+    width: 660px;
     height: 35px;
     margin:  10px 0 4px 0;
 }
@@ -40,7 +26,7 @@
 }
 
 .create_center {
-    width: 662px;
+    width: 660px;
     margin:  0 auto;
 }
 
@@ -50,7 +36,7 @@
 }
 
 .create_buttons {
-    width: 662px;
+    width: 660px;
     height: 45px;
     text-align: right;
     margin-right: 3px;
@@ -72,14 +58,6 @@
 
 .new_signal_line {
     float: right;
-}
-
-.bottom_space {
-    margin-bottom: 12px;
-}
-
-.floatLeft {
-    float: left;
 }
 
 .previewCenter {

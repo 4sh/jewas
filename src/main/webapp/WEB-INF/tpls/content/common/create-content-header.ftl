@@ -9,7 +9,7 @@
 
     <div>
         <div><label for="description" class="style_label">Description</label> :</div>
-        <div class="create_textarea"><textarea rows="4" cols="80" id="description" name="description" maxlength="500" required="required"></textarea></div>
+        <div class="create_textarea"><textarea rows="4" cols="91" id="description" name="description" maxlength="500" required="required"></textarea></div>
     </div>
 
     <div class="create_line">

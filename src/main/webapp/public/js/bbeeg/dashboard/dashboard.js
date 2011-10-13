@@ -72,7 +72,7 @@ function loadMyContents() {
 function loadTotalNumberOfContents() {
     $.getJSON(
         '/content/count',
-        function (data) {$('#totalNumberOfContent').append(data.count + " contenus sont disponibles actuellement sur la plateforme.")}
+        function (data) {$('#totalNumberOfContent').append("<b>"+data.count + " contenus</b> sont disponibles actuellement sur la plateforme.")}
     );
 }
 

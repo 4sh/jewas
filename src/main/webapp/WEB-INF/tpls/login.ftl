@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
 
+    <link rel="stylesheet" href="/public/css/bbeeg/bbeeg.css"/>
+
     <script type="application/javascript"
             src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
 
@@ -34,18 +36,35 @@
     <title> Page de connexion </title>
 </head>
 <body>
-    Bienvenue ! <br/>
+    <div class="container">
+        <div class="grid">
+            <div class="center_login">
+                <div class="login_panel">
+                    <h4>Bienvenue sur BBEEG !</h4>
 
-    <div id="msg" style="color: red"></div>
+                    <div id="msg" style="color: #ff2d00" class="bottom_space "></div>
 
-    <form id="loginForm">
-        <p> Identifiant <br/>
-            <input name="login" type="text"/>
-        </p>
-        <p> Mot de passe <br/>
-            <input name="password" type="password"/>
-        </p>
-        <button type="button" onclick="validate()"> Valider </button>
-    </form>
+                    <form id="loginForm">
+                        <div class="line_login">
+                            <div class="style_label label_login">Identifiant :</div>
+                            <div class="input_login">
+                                <input name="login" type="text" style="width: 215px;"/>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="line_login">
+                            <div class="style_label label_login bottom_space">Mot de passe : </div>
+                            <div class="input_login">
+                                <input name="password" type="password" style="width: 215px;"/>
+                            </div>
+                        </div>
+                        <div class="button_login">
+                            <button type="button" onclick="validate()"> Connexion </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

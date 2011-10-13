@@ -21,11 +21,11 @@
 
     <script id="mySpaceTemplate" type="text/html">
         {{if role == 'student'}}
-            <span>Bienvenue sur le tableau de bord de la plateforme BB-EEG !! </br> Vous pouvez dès à présent lancer une recherche de contenu de formation via le menu ou en utilisant les liens vers les documents présentés ci-contre.</span>
+            <span><b>Bienvenue sur le tableau de bord de la plateforme BB-EEG !!</b> </br> Vous pouvez dès à présent lancer une recherche de contenu de formation via le menu ou en utilisant les liens vers les documents présentés ci-contre.</span>
         {{/if}}
         {{if role == 'teacher'}}
-            <span>Vous êtes connecté en tant qu'enseignant. Vous pouvez enrichir la plateforme en ajoutant des contenus:</span>
-            <ul style="padding-top:5px">
+            <span>Vous êtes connecté en tant qu'<b>enseignant</b>. Vous pouvez enrichir la plateforme en ajoutant des contenus:</span>
+            <ul class="panel_list">
                 <li><a href="/content/text/create.html">Ajouter un contenu texte</a></li>
                 <li><a href="/content/document/create.html">Ajouter un contenu PDF</a></li>
                 <li><a href="/content/image/create.html">Ajouter un contenu image</a></li>
@@ -36,9 +36,9 @@
              </ul>
         {{/if}}
         {{if role == 'administrator'}}
-            <span>Vous êtes connecté en tant qu'administrateur. Vous devez à ce titre, répondre aux demandes de publication émises par les enseignants en validant ourejetant les contenus proposés.</span>
+            <span>Vous êtes connecté en tant qu'<b>administrateur</b>. Vous devez à ce titre, répondre aux demandes de publication émises par les enseignants en validant ourejetant les contenus proposés.</span>
 
-            <ul style="padding-top:10px">
+            <ul class="panel_list">
                 <li><a href="/content/search-content-to-treat.html">Administrer les contenus</a></li>
                 <li><a href="">Administrer les domaines</a></li>
             </ul>
@@ -122,7 +122,7 @@
                         <div class="texts_columnright">
                             <p id="totalNumberOfContent"></p>
                             <p> Les derniers auteurs à avoir ajouté du contenu : </p>
-                            <ul id="lastAuthors">
+                            <ul id="lastAuthors" class="panel_list">
                             </ul>
                         </div>
                     </div>

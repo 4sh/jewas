@@ -200,7 +200,7 @@ body {
     font-size: 95%;
     font-weight: normal;
     line-height: 18px;
-    height:100%
+    height:100%;
 }
 
 header {
@@ -278,7 +278,7 @@ header {
 
 #columnrighttop {
     width:260px;
-    height: 355px;
+    height: 364px;
 }
 
 .texts_columnright {
@@ -390,8 +390,30 @@ footer{
     background-color: #7fa62d;
 }
 
+.style_label {
+    font-weight: bolder;
+}
+
+.style_clock {
+    font-style: italic;
+}
+
 .mini_clock {
     font-size: 80%;
+}
+
+.sepa_element, .sepa_signal {
+    font-size: 14px;
+    font-weight: bolder;
+    margin: 0 10px;
+}
+
+.bottom_space {
+    margin-bottom: 12px;
+}
+
+.floatLeft {
+    float: left;
 }
 
 h2 {
@@ -409,7 +431,7 @@ h3 {
     font-size: 120%;
     font-weight: bold;
     margin-bottom: 10px;
-    margin-top: 4px;
+    margin-top: 6px;
 }
 
 h4 {
@@ -438,7 +460,7 @@ a:hover {color:#13adb8;}
 a:active {color:#0b666d;}
 
 
-input[type=text] {
+input[type=text], input[type=password], input[type=mail] {
   padding: 0 4px 0 4px;
   background-color: #fff;
   background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.2, #eeeeee), color-stop(0.6, #fcfcfc));
@@ -484,7 +506,7 @@ input[type=text] .wrong {
 	box-shadow        : 0 1px 4px rgba(255,45,0,.30) inset;
 }
 
-input[type=text]:focus,input[type=text]#ok:focus, input[type=text]#wrong:focus {
+input[type=text]:focus,input[type=text]#ok:focus, input[type=text]#wrong:focus,input[type=password]:focus, input[type=mail]:focus {
 	border: 1px solid #89c8cd;
 	background-color: #fff;
 	background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.8, #fcfcfc), color-stop(0.9, #eeeeee));
@@ -619,6 +641,55 @@ button .selected {
   box-shadow        : 0 2px 3px rgba(0,0,0,0.30),0 0 1px rgba(0,0,0,0.35) inset;
 
 }
+
+/* CSS LOGIN PAGE */
+
+.login_panel {
+    width: 350px;
+    padding:18px 13px 18px 13px;
+    text-align:left;
+    background-color: #eaeaea;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    border: 1px solid #ffffff;
+    -webkit-box-shadow: 0 0 7px rgba(0,0,0,.3);
+	-moz-box-shadow   : 0 0 7px rgba(0,0,0,.3);
+	-o-box-shadow     : 0 0 7px rgba(0,0,0,.3);
+	box-shadow        : 0 0 7px rgba(0,0,0,.3);
+    background-image: url('/public/images/bbeeg/background_login.png');
+    background-repeat: no-repeat;
+    background-position: bottom;
+}
+
+.center_login {
+    margin:  25% auto;
+    width: 350px;
+    height: 200px;
+}
+
+.button_login {
+    margin-top: 12px;
+    height: 40px;
+    width: 350px;
+    text-align: right;
+}
+
+.input_login {
+    float: right;
+}
+
+.label_login {
+    margin-top: 6px;
+    float: left;
+}
+
+.line_login {
+    height: 25px;
+}
+
+
+
 
 /* AVANT REFONTE CSS IL Y AVAIT ... */
 #container {
