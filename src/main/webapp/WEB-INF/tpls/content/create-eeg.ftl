@@ -34,6 +34,10 @@ useChosen=true>
     <option value="{{= tag}}" {{if selected}} selected {{/if}}> {{= tag}} </option>
 </script>
 
+<script id="errorMessageTemplate" type="text/x-jquery-tmpl">
+    <span>{{= errorMessage}}</span>
+</script>
+
 <script id="videoItemTemplate" type="text/x-jquery-tmpl">
     <div class="sepa_horizontal"></div>
    
@@ -49,9 +53,10 @@ useChosen=true>
             </div>
         </div>
         <div class='video-conf'>
-            <label class="style_label"> Début de la vidéo : </label> <input class="video-start-hours" type="text" style="width: 20px;"/> <span class="style_clock">h</span> <input class="video-start-minuts" type="text" style="width: 20px;"/> <span class="style_clock">min</span> <input class="video-start-seconds" type="text" style="width: 30px;"/> <span class="style_clock">s</span>
-            <span class="sepa_element">&mdash;</span><label class="style_label"> Fin de la vidéo : </label> <input class="video-stop-hours" type="text" style="width: 20px;"/> <span class="style_clock">h</span> <input class="video-stop-minuts" type="text" style="width: 20px;"/> <span class="style_clock">min</span> <input class="video-stop-seconds" type="text" style="width: 30px;"/> <span class="style_clock">s</span>
+            <label class="style_label"> Début de la vidéo : </label> <input class="video-start-hours" type="text" style="width: 20px;"/> <span class="style_clock">h</span> <input class="video-start-minutes" type="text" style="width: 20px;"/> <span class="style_clock">min</span> <input class="video-start-seconds" type="text" style="width: 30px;"/> <span class="style_clock">s</span>
+            <span class="sepa_element">&mdash;</span><label class="style_label"> Fin de la vidéo : </label> <input class="video-stop-hours" type="text" style="width: 20px;"/> <span class="style_clock">h</span> <input class="video-stop-minutes" type="text" style="width: 20px;"/> <span class="style_clock">min</span> <input class="video-stop-seconds" type="text" style="width: 30px;"/> <span class="style_clock">s</span>
         </div>
+        <div class='video-conf-error-banner'></div>
     </div>
 </script>
 
@@ -86,7 +91,7 @@ useChosen=true>
         <div class="montage">
             <h5>Montage</h5>
             <div class="bottom_space">
-                 <input id="allSignals" type="checkbox" checked disabled/> <span class="style_clock">Afficher tous les signaux.</span>
+                 <input id="allSignals" type="checkbox" checked/> <span class="style_clock">Afficher tous les signaux.</span>
             </div>
             <div>
                 <div class="style_label bottom_space">Sélectionnez les signaux à afficher :</div>
@@ -140,7 +145,7 @@ useChosen=true>
     <label for="eegStartHours" class="style_label"> Début de l'EEG : </label> <input id="eegStartHours" type="text" style="width: 20px;"> <span class="style_clock">h</span> <input id="eegStartMinutes" type="text" style="width: 20px;"/> <span class="style_clock">min</span> <input id="eegStartSeconds" type="text" style="width: 30px;"/> <span class="style_clock">s</span>
     <span class="sepa_element">&mdash;</span>
     <label for="eegStopHours" class="style_label"> Fin de l'EEG : </label> <input id="eegStopHours" type="text" style="width: 20px;"/> <span class="style_clock">h</span> <input id="eegStopMinutes" type="text" style="width: 20px;"/> <span class="style_clock">min</span> <input id="eegStopSeconds" type="text" style="width: 30px;"/> <span class="style_clock">s</span>
-    
+    <div class='eegErrorBanner'></div>
     <br />
     <div id="videos"></div>
     <br />

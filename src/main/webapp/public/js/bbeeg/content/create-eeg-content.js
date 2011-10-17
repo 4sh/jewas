@@ -64,6 +64,26 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
         return domains;
     }
 
+    function checkStartStopTimeConsistency(startTime, stopTime) {
+        if (stopTime < startTime) {
+            return false;
+        } else if (startTime === stopTime && startTime !== 0) {
+            // A value is specified and this this the same for both start and stop
+            return false;
+        }
+        // If no value specified, start and stop equals to 0 => Not an error beacause 
+        // there are default behavior for that particular case.
+        return true;
+    }
+
+    function addErrorMessage(message, targetContainer) {
+        $('#errorMessageTemplate').tmpl({errorMessage: message}).appendTo(targetContainer);
+    }
+
+     function cleanErrorMessage(targetContainer) {
+        targetContainer.children().remove();
+     }
+
     function loadEegInformations() {
         $.getJSON(
             '/content/eeg/informations/' + eegId,
@@ -75,18 +95,55 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
                 for (var i = 0; i < eegInformations.signalsLabel.length; i++) {
                     signals.push({id: i, label: eegInformations.signalsLabel[i]});
                 }
-
-                // TODO: enable eeg settings form
-
                 addVideo($('#videos'));
                 addMontage($('#displayConfig'));
 
-                var max = eegInformations.eegDuration / 1000;
-               /* $('#eegStop').keyup(function () {
-                    if(Number(this.value) > max) {
-                        this.value = max;
+                var max = eegInformations.eegDuration;
+
+                // Key up listeners registration on time configuration inputs
+                $('#eegStartHours, #eegStartMinutes, #eegStartSeconds, #eegStopHours, #eegStopMinutes, #eegStopSeconds').keyup(function () {
+                    cleanErrorMessage($('.eegErrorBanner'));
+                    var eegStart = getTimeInMilliSeconds($('#eegStartHours').val(),
+                                                             $('#eegStartMinutes').val(),
+                                                             $('#eegStartSeconds').val());
+                    var eegStop = getTimeInMilliSeconds($('#eegStopHours').val(),
+                                                            $('#eegStopMinutes').val(),
+                                                            $('#eegStopSeconds').val());
+                    if (!checkStartStopTimeConsistency(eegStart, eegStop)) {
+                        var message = "Current stop time is greater than current start time";
+                        addErrorMessage(message,$('.eegErrorBanner'));
                     }
-                });*/
+                });
+
+
+                $('.video-start-hours, .video-start-minutes, .video-start-seconds, .video-stop-hours, .video-stop-minutes, .video-stop-seconds').keyup(function () {
+                    cleanErrorMessage($('.video-conf-error-banner'));
+                    var currentStart = getTimeInMilliSeconds($('.video-start-hours').val(),
+                                                             $('.video-start-minutes').val(),
+                                                             $('.video-start-seconds').val());
+
+                    var currentStop = getTimeInMilliSeconds($('.video-stop-hours').val(),
+                                                            $('.video-stop-minutes').val(),
+                                                            $('.video-stop-seconds').val());
+                    if (!checkStartStopTimeConsistency(currentStart, currentStop)) {
+                        var message = "Current stop time is greater than current start time";
+                        addErrorMessage(message, $('.video-conf-error-banner'));
+                    }
+                });
+
+                $('.video-stop-hours, .video-stop-minutes, .video-stop-seconds').keyup(function () {
+                    cleanErrorMessage($('.video-conf-error-banner'));
+                    var currentStop = getTimeInMilliSeconds($('.video-stop-hours').val(),
+                                                            $('.video-stop-minutes').val(),
+                                                            $('.video-stop-seconds').val());
+
+                    console.log("Max: ", max);
+                    console.log("Current:", currentStop);
+                    if (currentStop > max) {
+                        var message = "Current stop time is greater than eeg max length: " + max / 1000 + "seconds";
+                        addErrorMessage(message, $('.video-conf-error-banner'));
+                    }
+                });
             }
         );
     }
@@ -186,20 +243,21 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
         });
     }
 
-    function getTimeInSeconds(startHours, startMinuts, startSeconds) {
-        var start = 0;
-        if (!!startHours) {
-            start += Number(startHours) * 3600;
+    function getTimeInMilliSeconds(hours, minutes, seconds) {
+        var time = 0;
+        if (!!hours) {
+            time += Number(hours) * 3600000;
         }
 
-        if (!!startMinuts) {
-            start += Number(startMinuts) * 60;
+        if (!!minutes) {
+            time += Number(minutes) * 60000;
         }
 
-        if (!!startSeconds) {
-            start += Number(startSeconds);
+        if (!!seconds) {
+            time += Number(seconds) * 1000;
         }
-        return start;
+        console.log("getTimeInSeconds(hours:" + hours + ",minutes:" + minutes +",seconds:" + seconds + ")=>time: ", time);
+        return time;
     }
 
     function getVideos() {
@@ -210,19 +268,19 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
                 var video = {};
 
                 var startHours = $(videoElt).find('.video-start-hours').val();
-                var startMinuts = $(videoElt).find('.video-start-minuts').val();
+                var startMinutes = $(videoElt).find('.video-start-minutes').val();
                 var startSeconds = $(videoElt).find('.video-start-seconds').val();
 
                 var stopHours = $(videoElt).find('.video-stop-hours').val();
-                var stopMinuts = $(videoElt).find('.video-stop-minuts').val();
+                var stopMinutes = $(videoElt).find('.video-stop-minutes').val();
                 var stopSeconds = $(videoElt).find('.video-stop-seconds').val();
 
-                var start = getTimeInSeconds(startHours, startMinuts, startSeconds);
-                var stop = getTimeInSeconds(stopHours, stopMinuts, stopSeconds);
+                var start = getTimeInMilliSeconds(startHours, startMinutes, startSeconds);
+                var stop = getTimeInMilliSeconds(stopHours, stopMinutes, stopSeconds);
 
                 if (!!start && !!stop && (!!videoUploader && !!videoUploader.videoId)) {
-                    video.start = start * 1000;
-                    video.stop = stop * 1000;
+                    video.start = start;
+                    video.stop = stop;
                     // TODO: use the right uploader.
                     video.fileName = videoUploader.videoId;
 
@@ -272,29 +330,11 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
         return montages;
     }
 
-    function parseTimeInputs(hoursInput, minutesInput, secondsInput) {
-        var result = 0;
-
-        //Handle start hours input value
-        if (hoursInput && hoursInput.val()) {
-            result += hoursInput.val() * 3600000;
-        }
-        if (minutesInput && minutesInput.val()) {
-            result += minutesInput.val() * 60000;
-        }
-        if (secondsInput && secondsInput.val()) {
-            result += secondsInput.val() * 1000;
-        }
-        console.log("parseTimeInputs:: result:", result);
-        return result;
-    }
-
-
     function getEegSettings() {
         var settings = {};
 
-        settings.eegStart = parseTimeInputs($('#eegStartHours'), $('#eegStartMinutes'), $('#eegStartSeconds'));
-        settings.eegStop = parseTimeInputs($('#eegStopHours'), $('#eegStopMinutes'), $('#eegStopSeconds'));
+        settings.eegStart = getTimeInMilliSeconds($('#eegStartHours').val(), $('#eegStartMinutes').val(), $('#eegStartSeconds').val());
+        settings.eegStop = getTimeInMilliSeconds($('#eegStopHours').val(), $('#eegStopMinutes').val(), $('#eegStopSeconds').val());
 
         if (settings.eegStop === 0) {
             settings.eegStop = -1;
