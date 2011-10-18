@@ -27,9 +27,10 @@ public class UserDao {
                 new QueryTemplate<User>(dataSource, new UserRowMapper())
                         .addQuery("selectById", "select * from User where id = :id")
                         .addQuery("selectByLogin", "select * from User where login = :login")
-                .addQuery("selectLimitedAuthors", "select * from (select distinct(u.*) from User u " +
-                        "inner join Content c on c.author_ref = u.id and c.status = :status order by u.name asc)" +
-                        "where ROWNUM <= :limit");
+                        .addQuery("selectLimitedAuthors", "select * from (select distinct(u.*) from User u " +
+                                "inner join Content c on c.author_ref = u.id and c.status = :status order by u.name asc)" +
+                                "where ROWNUM <= :limit")
+                        .addQuery("updateInfos", "update User set name = :lastName, surname = :firstName, email = :email where login = :login");
     }
 
     public User getUser(Long id) {
@@ -66,6 +67,16 @@ public class UserDao {
                    .toContext());
    }
 
+    public void updateUser(User user) {
+        userQueryTemplate.update("updateInfos", new QueryExecutionContext()
+            .buildParams()
+            .string("login", user.login())
+            .string("firstName", user.firstName())
+            .string("lastName", user.lastName())
+            .string("email", user.email())
+            .toContext());
+    }
+
     private class UserRowMapper implements RowMapper<User> {
         @Override
         public User processRow(ResultSet rs) throws SQLException {
@@ -73,8 +84,8 @@ public class UserDao {
             return new User()
                     .id(rs.getLong("id"))
                     .login(rs.getString("login"))
-                    .name(rs.getString("name"))
-                    .surname(rs.getString("surname"))
+                    .lastName(rs.getString("name"))
+                    .firstName(rs.getString("surname"))
                     .email(rs.getString("email"));
         }
     }

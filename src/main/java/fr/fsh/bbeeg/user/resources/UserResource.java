@@ -47,4 +47,8 @@ public class UserResource {
     public User getUser(Long id) {
         return userDao.getUser(id);
     }
+
+    public void updateUser(User user) {
+        userDao.updateUser(user);
+    }
 }

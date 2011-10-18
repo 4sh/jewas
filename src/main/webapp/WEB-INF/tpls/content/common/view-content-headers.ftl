@@ -17,7 +17,7 @@
                 <div class="view_content_title">${content.header().title()}</div>
             </div>
 
-            <div class="view_author"><img src="/public/images/bbeeg/author.png"/> ${content.header().author().surname()} ${content.header().author().name()}</div>
+            <div class="view_author"><img src="/public/images/bbeeg/author.png"/> ${content.header().author().firstName()} ${content.header().author().lastName()}</div>
             <div class="view_calendar"><img src="/public/images/bbeeg/calendar.png"/> ${content.header().creationDate()} </div>
 
             <div class="view_domain"><b>Domaine(s) :</b>

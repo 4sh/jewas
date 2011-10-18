@@ -8,8 +8,8 @@ import java.util.Date;
 public class User {
     private Long id;
     private String login;
-    private String name;
-    private String surname;
+    private String lastName;
+    private String firstName;
     private String email;
     private Date lastConnectionDate;
 
@@ -31,22 +31,22 @@ public class User {
         return this;
     }
 
-    public User name(String _name){
-        this.name = _name;
+    public User lastName(String lastName){
+        this.lastName = lastName;
         return this;
     }
 
-    public String name(){
-        return this.name;
+    public String lastName(){
+        return this.lastName;
     }
 
-    public User surname(String _surname){
-        this.surname = _surname;
+    public User firstName(String firstName){
+        this.firstName = firstName;
         return this;
     }
 
-    public String surname(){
-        return this.surname;
+    public String firstName(){
+        return this.firstName;
     }
 
     public User email(String _email){

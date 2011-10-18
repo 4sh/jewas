@@ -11,10 +11,7 @@ import fr.fsh.bbeeg.security.routes.GetConnectedUserRoute;
 import fr.fsh.bbeeg.security.routes.PostConnectionRoute;
 import fr.fsh.bbeeg.tag.routes.GetAllTagsRoute;
 import fr.fsh.bbeeg.tag.routes.GetPopularTagRoute;
-import fr.fsh.bbeeg.user.routes.GetLastConnectionDateRoute;
-import fr.fsh.bbeeg.user.routes.GetUserAuthorRoute;
-import fr.fsh.bbeeg.user.routes.GetUserInformationsRoute;
-import fr.fsh.bbeeg.user.routes.GetUserPreferredDomainsRoute;
+import fr.fsh.bbeeg.user.routes.*;
 import jewas.http.RestServer;
 import jewas.http.RestServerFactory;
 import jewas.routes.RedirectRoute;
@@ -99,6 +96,7 @@ public class Main {
                 new GetPopularTagRoute(assembler.tagResource()),
                 new SimpleHtmlRoute("/user/profile.html", "user/profile.ftl"),
                 new GetUserInformationsRoute(assembler.userResource()),
+                new PutUserInformationsRoute(assembler.userResource()),
                 new SimpleHtmlRoute("/login.html", "login.ftl"),
                 new GetContentTypeRoute(assembler.contentResource()),
                 new GetContentCriteriasRoute(assembler.contentResource()),

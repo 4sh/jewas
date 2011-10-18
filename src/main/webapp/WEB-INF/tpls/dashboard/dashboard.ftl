@@ -12,11 +12,11 @@
                      "/public/css/panel/ui.panel.css",
                      "/public/css/bbeeg/dashboard.css"]>
     <script id="contentItemTemplate" type="text/html">
-        <div class="mini_tabs"></div><div class="ui-panel-content-text"><img src="/public/images/bbeeg/mini_icon_text.png"/> <a href="/content/{{= id}}/view.html">{{= title}}</a><div class="mini_clock"><img src="/public/images/bbeeg/calendar.png"/> {{= creationDate}}  &nbsp; <img src="/public/images/bbeeg/author.png"/> {{= author.surname}} {{= author.name}}</div></div>
+        <div class="mini_tabs"></div><div class="ui-panel-content-text"><img src="/public/images/bbeeg/mini_icon_text.png"/> <a href="/content/{{= id}}/view.html">{{= title}}</a><div class="mini_clock"><img src="/public/images/bbeeg/calendar.png"/> {{= creationDate}}  &nbsp; <img src="/public/images/bbeeg/author.png"/> {{= author.firstName}} {{= author.lastName}}</div></div>
     </script>
 
     <script id="authorItemTemplate" type="text/html">
-        <li> {{= surname}} {{= name}} </li>
+        <li> {{= firstName}} {{= lastName}} </li>
     </script>
 
     <script id="mySpaceTemplate" type="text/html">
