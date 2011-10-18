@@ -23,6 +23,10 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <!--[if lt IE 9]>
+        <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
     <meta charset="UTF-8">
 
     <link rel="shortcut icon" type="image/x-icon" href="/public/images/bbeeg/favicon.ico"/>

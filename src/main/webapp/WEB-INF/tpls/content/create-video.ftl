@@ -6,7 +6,7 @@
                stylesheets=["/public/css/fileUpload/fileuploader.css"]
                useChosen=true>
     <div class="create_center">
-        <script type="text/javascript">
+        <script type="application/javascript">
             function createVideoPrevisualizationObject(url) {
                 var object = document.createElement("video");
                 object.controls = true;

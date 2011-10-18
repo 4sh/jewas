@@ -2,7 +2,7 @@
     width: 1024px;
 }
 
-.view_common_header {
+.description_hidden > .view_common_header {
     background-color: #dfdfdf;
     width: 337px;
     height: 250px;
@@ -14,7 +14,7 @@
     position: absolute;
 }
 
-.tab_view {
+.description_hidden > .view_common_header > .tab_view {
     background-color: #1099a3;
     width: 20px;
     height: 250px;
@@ -27,6 +27,34 @@
     float: left;
     margin-right: 10px;
 }
+
+
+.description_show > .view_common_header {
+    background-color: #dfdfdf;
+    width: 339px;
+    height: 350px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    margin-top: 5px;
+    /*margin: 0 auto 5px;*/
+    position: absolute;
+}
+
+.description_show > .view_common_header > .tab_view {
+    background-color: #1099a3;
+    width: 20px;
+    height: 350px;
+    -webkit-border-top-left-radius: 10px;
+    -webkit-border-bottom-left-radius: 10px;
+    -moz-border-radius-topleft: 10px;
+    -moz-border-radius-bottomleft: 10px;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    float: left;
+    margin-right: 10px;
+}
+
 
 .view_title {
     width: 290px;
@@ -73,7 +101,7 @@
 }
 
 
-.view_description {
+.description_hidden > .view_common_header > .left_part > .view_description {
     text-align: justify;
     width: 275px;
     float: left;
@@ -82,3 +110,18 @@
     height: 55px;
     overflow: hidden;
 }
+.description_show > .view_common_header > .left_part > .view_description {
+    text-align: justify;
+    width: 275px;
+    float: left;
+    margin-left: 8px;
+    margin-top: 5px;
+}
+
+.showHide_button {
+    float: left;
+    text-align: center;
+    margin-top: 5px;
+    width: 260px;
+}
+

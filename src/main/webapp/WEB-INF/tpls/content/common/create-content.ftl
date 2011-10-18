@@ -4,7 +4,7 @@
 
 <link rel="stylesheet" href="/public/css/bbeeg/create.css" >
 <script type="application/javascript" src="/public/js/bbeeg/content/create-content.js"></script>
-<script type="text/javascript">
+<script type="application/javascript">
     $( function() {
         var contentCreator = new ContentCreator("${type}", "${extensions}", "${extensionsMsgError}", "previsualizationContainer", ${createPrevisualizationObject});
 

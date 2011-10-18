@@ -5,7 +5,7 @@
         selectedMenuItem=""
         stylesheets=["/public/css/bbeeg/view.css"]
         useChosen=true>
-    <script type="text/javascript">
+    <script type="application/javascript">
         $(
             function () {
                 $.ajax({

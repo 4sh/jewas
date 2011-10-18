@@ -7,7 +7,7 @@
                useChosen=true>
 
     <div class="create_center">
-        <script type="text/javascript">
+        <script type="application/javascript">
             function createDocumentPrevisualizationObject(url) {
                 var object = document.createElement("object");
                 object.type = "application/pdf";

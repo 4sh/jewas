@@ -8,7 +8,7 @@
 useChosen=true>
 
 <script type="application/javascript" src="/public/js/bbeeg/content/create-eeg-content.js"></script>
-<script type="text/javascript">
+<script type="application/javascript">
     var eegContentCreator;
     $( function() {
         eegContentCreator = new EegContentCreator(

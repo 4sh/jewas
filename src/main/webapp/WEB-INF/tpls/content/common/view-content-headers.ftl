@@ -1,7 +1,7 @@
 <#macro viewContentHeaders content>
-    <script type="text/javascript" src="/public/js/bbeeg/content/contentHeaderHelper.js"></script>
+    <script type="application/javascript" src="/public/js/bbeeg/content/contentHeaderHelper.js"></script>
 
-    <script type="text/javascript">
+    <script type="application/javascript">
         $(
             function() {
                 $('.icon_type').addClass(contentHeaderHelper.getIcon('${content.header().type()}'));

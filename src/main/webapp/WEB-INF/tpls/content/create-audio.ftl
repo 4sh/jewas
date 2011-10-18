@@ -6,7 +6,7 @@
                stylesheets=["/public/css/fileUpload/fileuploader.css"]
                useChosen=true>
     <div class="create_center">
-        <script type="text/javascript">
+        <script type="application/javascript">
             function createAudioPrevisualizationObject(url) {
                 var object = document.createElement("audio");
                 object.controls = true;
