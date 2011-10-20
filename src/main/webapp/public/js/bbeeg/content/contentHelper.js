@@ -1,4 +1,4 @@
-var contentHeaderHelper = (function() {
+var contentHelper = (function() {
 
     return {
         getIcon : function(type) {
@@ -8,7 +8,7 @@ var contentHeaderHelper = (function() {
                     className = "icon_type_text";
                     break;
                 case 'IMAGE':
-                   className = "icon_type_image";
+                    className = "icon_type_image";
                     break;
                 case 'AUDIO':
                     className = "icon_type_audio";
@@ -25,6 +25,14 @@ var contentHeaderHelper = (function() {
                 default:
                     className = "";
             }
+            return className;
+        },
+
+        getMiniIcon : function(type) {
+            var className = this.getIcon(type);
+                if (className !== "") {
+                    return "mini_" + className;
+                }
             return className;
         },
 

@@ -9,7 +9,7 @@
 <@mainTemplate
     title="Ecran d'accueil"
     selectedMenuItem=selectMenu
-    scripts=["/public/js/bbeeg/search/search.js", "/public/js/bbeeg/content/contentHeaderHelper.js", "/public/js/bbeeg/common/widgets/chainedSelect.js"]
+    scripts=["/public/js/bbeeg/search/search.js", "/public/js/bbeeg/content/contentHelper.js", "/public/js/bbeeg/common/widgets/chainedSelect.js"]
     stylesheets=["/public/css/bbeeg/search.css"]
     useChosen=true>
 <script>
@@ -31,7 +31,7 @@
                         $("#" + containerId).remove();
                     } else {
                         $("#" + containerId + ' .publish-button')[0].disabled = true;
-                        var statusStyle = contentHeaderHelper.getStatusStyle(status);
+                        var statusStyle = contentHelper.getStatusStyle(status);
                         $('#' + containerId).find('.tab_right').removeClass().addClass('tab_right ' + statusStyle.className);
                         $('#' + containerId).find('.label').html(statusStyle.label)
                     }
@@ -190,7 +190,7 @@
                 if(!e) {
                     return;
                 }
-                var statusStyle = contentHeaderHelper.getStatusStyle(e.status);
+                var statusStyle = contentHelper.getStatusStyle(e.status);
                 e.statusLabel = statusStyle.label;
                 e.statusClass = statusStyle.className;
             }
@@ -452,7 +452,7 @@
             </#if>
         </div>
         <div class="left_part">
-            <div class="icon_type {{= contentHeaderHelper.getIcon(type)}}"></div>
+            <div class="icon_type {{= contentHelper.getIcon(type)}}"></div>
             <div class="content-result-title"><a href="/content/{{= id}}/view.html">{{= title}}</a></div>
             <div class="content-result-author"><img src="/public/images/bbeeg/author.png"/>{{= author.firstName}} {{= author.lastName}}</div>
             <div class="content-result-creation-date"><img src="/public/images/bbeeg/calendar.png"/> {{= creationDate}}</div>

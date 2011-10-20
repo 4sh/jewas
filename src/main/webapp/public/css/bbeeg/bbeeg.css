@@ -350,6 +350,31 @@ footer{
     background-image: url('/public/images/bbeeg/icon_eeg.png');
 }
 
+.mini_icon_type_text {
+    background-image: url('/public/images/bbeeg/mini_icon_text.png');
+}
+
+.mini_icon_type_document {
+    background-image: url('/public/images/bbeeg/mini_icon_doc.png');
+}
+
+.mini_icon_type_image {
+    background-image: url('/public/images/bbeeg/mini_icon_picture.png');
+}
+
+.mini_icon_type_audio {
+    background-image: url('/public/images/bbeeg/mini_icon_audio.png');
+}
+
+.mini_icon_type_video {
+    background-image: url('/public/images/bbeeg/mini_icon_movie.png');
+}
+
+.mini_icon_type_eeg {
+    background-image: url('/public/images/bbeeg/mini_icon_eeg.png');
+}
+
+
 .settings_menu {
     width: 20px;
     float: right;
