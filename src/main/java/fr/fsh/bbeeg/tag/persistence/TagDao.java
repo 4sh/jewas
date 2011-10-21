@@ -34,7 +34,7 @@ public class TagDao {
                     .addQuery("insert", "INSERT INTO TAGS (TAG, WEIGHT) VALUES (:tag, :weight)")
                     .addQuery("updateWeight", "UPDATE TAGS SET WEIGHT = :weight WHERE TAG = :tag")
                     .addQuery("findTagWeight", "SELECT WEIGHT FROM TAGS WHERE TAG = :tag")
-                    .addQuery("selectLimitedPopular", "SELECT * FROM (SELECT * FROM TAGS ORDER BY WEIGHT) WHERE ROWNUM<= :limit");
+                    .addQuery("selectLimitedPopular", "SELECT * FROM (SELECT * FROM TAGS ORDER BY lower(TAG)) WHERE ROWNUM<= :limit");
     }
 
     private class TagRowMapper implements RowMapper<Tag> {

@@ -89,18 +89,18 @@ function loadLastAuthors() {
 
 function loadTags() {
     $.getJSON(
-        '/tag/popular?number=20',
+        '/tag/popular?number=100',
         function success(data) {
             var items = [];
             $.each(data, function(index, value) {
                 items.push({text: value.tag, weight: value.weight, url: "/content/search.html#" + value.tag});
             });
 
-            var container = $("#domainCloud");
+            var container = $("#tagList");
             container.children().remove();
-            container.jQCloud(items);
-        }
-    );
+            $("#tagItemTemplate").tmpl(items).appendTo(container);
+            container.tagcloud({type:"list",sizemin:14, colormin:"434342",colormax:"3D3D3D"}).find("li").tsort({});
+        });
 }
 
 $(

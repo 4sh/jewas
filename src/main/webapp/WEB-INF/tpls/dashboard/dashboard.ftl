@@ -4,6 +4,8 @@
         selectedMenuItem="dashboard"
         scripts=["/public/js/tabs/tabs.js",
                  "/public/js/jqcloud/jqcloud-0.2.1.js",
+                 "/public/js/tagcloud/jquery.tagcloud.js",
+                 "/public/js/tinysort/jquery.tinysort.js",
                  "/public/js/panel/ui.panel.js",
                  "/public/js/bbeeg/content/contentHelper.js",
                  "/public/js/bbeeg/dashboard/dashboard.js"]
@@ -29,6 +31,12 @@
     <script id="authorItemTemplate" type="text/html">
         <li> {{= firstName}} {{= lastName}} </li>
     </script>
+
+    <script id="tagItemTemplate" type="text/html">
+        <li value="{{= weight}}" title="{{= text}}">
+            <a href="{{= url}}">{{= text}}</a>
+        </li>
+     </script>
 
     <script id="mySpaceTemplate" type="text/html">
         {{if role == 'student'}}
@@ -139,7 +147,10 @@
                     <div class="title_panel">
                         <h3>Tags</h3>
                     </div>
-                    <div id="domainCloud"></div>
+                    <!--<div id="domainCloud"></div>-->
+                    <div id="tagCloud">
+                        <ul id="tagList"></ul>
+                    </div>
                 </div>
             </div>
         </div>
