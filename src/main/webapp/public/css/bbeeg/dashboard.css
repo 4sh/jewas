@@ -7,12 +7,9 @@
 #dashboard {
 	width:609px;
 	height:644px;
-	/* TODO background-image:url('/public/images/bbeeg/background_dashboard.jpg');*/
-	/*background-image:url('/public/images/bbeeg/background_dashboard.jpg');*/
 	background-repeat: no-repeat;
 	border:none;
 	padding:12px 25px 27px 24px;
-	/*color:#fff;*/
 }
 
 #dashboard h3{
@@ -72,6 +69,7 @@
 	-o-box-shadow     : 0 0 7px rgba(0,0,0,.3);
 	box-shadow        : 0 0 7px rgba(0,0,0,.3);
     background-image: url('/public/images/bbeeg/background_panel.png');
+    background-repeat: no-repeat;
 }
 
 #myContentsPanelLastViewed {
