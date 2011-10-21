@@ -454,7 +454,7 @@
         <div class="left_part">
             <div class="icon_type {{= contentHeaderHelper.getIcon(type)}}"></div>
             <div class="content-result-title"><a href="/content/{{= id}}/view.html">{{= title}}</a></div>
-            <div class="content-result-author"><img src="/public/images/bbeeg/author.png"/> {{= author.surname}} {{= author.name}}</div>
+            <div class="content-result-author"><img src="/public/images/bbeeg/author.png"/>{{= author.firstName}} {{= author.lastName}}</div>
             <div class="content-result-creation-date"><img src="/public/images/bbeeg/calendar.png"/> {{= creationDate}}</div>
         </div>
 
