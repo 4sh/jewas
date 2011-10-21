@@ -100,22 +100,23 @@
   border-radius: 3px;
 }
 
-
 .description_hidden > .view_common_header > .left_part > .view_description {
     text-align: justify;
     width: 275px;
     float: left;
     margin-left: 8px;
-    margin-top: 5px;
-    height: 55px;
+    margin-top: -10px;
+    height: 70px;
     overflow: hidden;
 }
+
 .description_show > .view_common_header > .left_part > .view_description {
     text-align: justify;
     width: 275px;
     float: left;
     margin-left: 8px;
     margin-top: 5px;
+    height: 240px;
 }
 
 .showHide_button {
