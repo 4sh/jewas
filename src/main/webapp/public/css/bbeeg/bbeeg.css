@@ -167,6 +167,7 @@ textarea {
 .grid {
   zoom: 1;
   margin-left:0;
+  padding-bottom: 35px;
 }
 .grid:before, .grid:after {
   display: table;
@@ -190,6 +191,8 @@ html {
     overflow: visible;
     /* Overide d'un propriété du reset pour éviter d'avoir une scrollbar toujours
     visible même lorsqu'il n'y a pas lieu d'être.*/
+    margin:  0;
+    padding:  0;
     height:100%;
 }
 
@@ -200,6 +203,8 @@ body {
     font-size: 95%;
     font-weight: normal;
     line-height: 18px;
+    margin:  0;
+    padding:  0;
     height:100%;
 }
 
@@ -207,6 +212,7 @@ header {
 	height:50px;
 	background-image:url('/public/images/bbeeg/background_header.jpg');
 	background-repeat: repeat-x;
+    margin-bottom: 15px;
 }
 
 #menu {
@@ -258,12 +264,22 @@ header {
     cursor: pointer;
 }
 
+.page {
+    width: 1050px;
+    min-height: 100%;
+    position: relative;
+    background-color:  #FAFAFA;
+    -webkit-box-shadow: 0 0 15px rgba(0,0,0,.3);
+    -moz-box-shadow   : 0 0 15px rgba(0,0,0,.3);
+    -o-box-shadow     : 0 0 15px rgba(0,0,0,.3);
+    box-shadow        : 0 0 15px rgba(0,0,0,.3);
+    margin: 0 auto;
+}
+
 .container {
 	width: 940px;
-	margin-left: auto;
-	margin-right: auto;
-    min-height: 90.5%;
-    padding-bottom: 35px;
+    padding-bottom: 15px;
+    margin: 0 auto;
 }
 
 .columnleft {
@@ -306,16 +322,16 @@ header {
 }
 
 footer{
-    height:35px;
+    height:15px;
 	background-image:url('/public/images/bbeeg/background_footer.jpg');
 	background-repeat: repeat-x;
     padding-top: 10px;
 	font-size: 10px;
     line-height: 15px;
 	text-align:center;
-    position:relative;
-    clear: both;
-    margin-top:-35px;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
 }
 
 

@@ -86,55 +86,57 @@
 <script id="userConnectedNameTemplate" type="text/x-jquery-tmpl">
     <span class="hand_cursor">{{= surname}} {{= name}}</span>
 </script>
-    <header>
-        <div id="menu">
-            <a href="/dashboard/dashboard.html"><img src="/public/images/bbeeg/bbeeg_logo.png" onmouseout="src='/public/images/bbeeg/bbeeg_logo.png'" onmouseover="src='/public/images/bbeeg/bbeeg_logo_hover.png'" alt="Logo BBEEG"/></a>
+    <div class="page">
+        <header>
+            <div id="menu">
+                <a href="/dashboard/dashboard.html"><img src="/public/images/bbeeg/bbeeg_logo.png" onmouseout="src='/public/images/bbeeg/bbeeg_logo.png'" onmouseover="src='/public/images/bbeeg/bbeeg_logo_hover.png'" alt="Logo BBEEG"/></a>
 
-            <div id="menuright">
-                <@rootMenuItem id="input_recherche">
-                    <input id="searchInput" type="text">
-                </@rootMenuItem>
-                <@rootMenuItem id="recherche_item">
-                    <img id="searchLoop" src="/public/images/bbeeg/loupe.png" alt="Recherche" class="hand_cursor"/>
-                    <@subMenu id="adminSubMenu" width="150">
-                        <@subMenuItem id="searchMenuItem" title="Recherche" />
-                        <@subMenuItem id="manageMyContentsMenuItem" title="Gérer mes contenus" />
-                        <@subMenuItem id="adminContentsMenuItem" title="Administrer les contenus" />
-                        <@subMenuItem id="createTextMenuItem" title="Créer contenu Texte" />
-                        <@subMenuItem id="createDocumentMenuItem" title="Créer contenu Document" />
-                        <@subMenuItem id="createImageMenuItem" title="Créer contenu Image" />
-                        <@subMenuItem id="createVideoMenuItem" title="Créer contenu Vidéo" />
-                        <@subMenuItem id="createAudioMenuItem" title="Créer contenu Audio" />
-                        <@subMenuItem id="createEegMenuItem" title="Créer contenu EEG" />
-                    </@subMenu>
-                </@rootMenuItem>
-                <@rootMenuItem id="admin_arrow" additionnalClasses="fleche">
-                    <img src="/public/images/bbeeg/fleche.png" alt="Flèche menu déroulant"/>
-                </@rootMenuItem>
-                <@rootMenuItem id="sepa_menu" />
-                <@rootMenuItem id="userprofile">
-                    <div id="connectedUser" class="userprofile"></div>
-                    <@subMenu id="profileSubMenu" width="125">
-                       <@subMenuItem id="parametersMenuItem" title="Paramètres" />
-                       <@subMenuItem id="disconnectMenuItem" title="Déconnexion" />
-                   </@subMenu>
-                </@rootMenuItem>
-                <@rootMenuItem id="userprofile_arrow" additionnalClasses="fleche userprofile">
-                    <img src="/public/images/bbeeg/fleche.png" alt="Flèche menu déroulant"/>
-                </@rootMenuItem>
+                <div id="menuright">
+                    <@rootMenuItem id="input_recherche">
+                        <input id="searchInput" type="text">
+                    </@rootMenuItem>
+                    <@rootMenuItem id="recherche_item">
+                        <img id="searchLoop" src="/public/images/bbeeg/loupe.png" alt="Recherche" class="hand_cursor"/>
+                        <@subMenu id="adminSubMenu" width="150">
+                            <@subMenuItem id="searchMenuItem" title="Recherche" />
+                            <@subMenuItem id="manageMyContentsMenuItem" title="Gérer mes contenus" />
+                            <@subMenuItem id="adminContentsMenuItem" title="Administrer les contenus" />
+                            <@subMenuItem id="createTextMenuItem" title="Créer contenu Texte" />
+                            <@subMenuItem id="createDocumentMenuItem" title="Créer contenu Document" />
+                            <@subMenuItem id="createImageMenuItem" title="Créer contenu Image" />
+                            <@subMenuItem id="createVideoMenuItem" title="Créer contenu Vidéo" />
+                            <@subMenuItem id="createAudioMenuItem" title="Créer contenu Audio" />
+                            <@subMenuItem id="createEegMenuItem" title="Créer contenu EEG" />
+                        </@subMenu>
+                    </@rootMenuItem>
+                    <@rootMenuItem id="admin_arrow" additionnalClasses="fleche">
+                        <img src="/public/images/bbeeg/fleche.png" alt="Flèche menu déroulant"/>
+                    </@rootMenuItem>
+                    <@rootMenuItem id="sepa_menu" />
+                    <@rootMenuItem id="userprofile">
+                        <div id="connectedUser" class="userprofile"></div>
+                        <@subMenu id="profileSubMenu" width="125">
+                           <@subMenuItem id="parametersMenuItem" title="Paramètres" />
+                           <@subMenuItem id="disconnectMenuItem" title="Déconnexion" />
+                       </@subMenu>
+                    </@rootMenuItem>
+                    <@rootMenuItem id="userprofile_arrow" additionnalClasses="fleche userprofile">
+                        <img src="/public/images/bbeeg/fleche.png" alt="Flèche menu déroulant"/>
+                    </@rootMenuItem>
+                </div>
+            </div>
+        </header>
+
+        <div class="container">
+            <div class="grid">
+                <#nested>
             </div>
         </div>
-    </header>
 
-    <div class="container">
-        <div class="grid">
-            <#nested>
-        </div>
+        <footer>
+            <a href="#todo">Mentions L&eacute;gales - BB-EEG v${statics["fr.fsh.bbeeg.common.config.BBEEGConfiguration"].INSTANCE.appVersion()}</a>
+        </footer>
     </div>
-
-    <footer>
-        <a href="#todo">Mentions L&eacute;gales - BB-EEG v${statics["fr.fsh.bbeeg.common.config.BBEEGConfiguration"].INSTANCE.appVersion()}</a>
-    </footer>
 </body>
 </html>
 </#macro>

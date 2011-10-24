@@ -4,13 +4,13 @@
 
 .description_hidden > .view_common_header {
     background-color: #dfdfdf;
-    width: 337px;
+    width: 328px;
     height: 250px;
     -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
     border-radius: 10px;
     margin-top: 5px;
-    /*margin: 0 auto 5px;*/
+    margin-left: 9px;
     position: absolute;
 }
 
@@ -31,13 +31,13 @@
 
 .description_show > .view_common_header {
     background-color: #dfdfdf;
-    width: 339px;
+    width: 328px;
     height: 350px;
     -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
     border-radius: 10px;
     margin-top: 5px;
-    /*margin: 0 auto 5px;*/
+    margin-left: 9px;
     position: absolute;
 }
 
@@ -105,8 +105,8 @@
     width: 275px;
     float: left;
     margin-left: 8px;
-    margin-top: -10px;
-    height: 70px;
+    margin-bottom: 2px;
+    height: 58px;
     overflow: hidden;
 }
 
