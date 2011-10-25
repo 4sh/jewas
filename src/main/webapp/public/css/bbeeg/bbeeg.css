@@ -210,7 +210,7 @@ body {
 
 header {
 	height:50px;
-	background-image:url('/public/images/bbeeg/background_header.jpg');
+	background-image:url('/public/images/bbeeg/background_header.png');
 	background-repeat: repeat-x;
     margin-bottom: 15px;
 }
@@ -278,7 +278,7 @@ header {
 
 .container {
 	width: 940px;
-    padding-bottom: 15px;
+    padding-bottom: 35px;
     margin: 0 auto;
 }
 
@@ -322,12 +322,11 @@ header {
 }
 
 footer{
-    height:15px;
-	background-image:url('/public/images/bbeeg/background_footer.jpg');
+    height:25px;
+	background-image:url('/public/images/bbeeg/background_footer.png');
 	background-repeat: repeat-x;
-    padding-top: 10px;
 	font-size: 10px;
-    line-height: 15px;
+    line-height: 35px;
 	text-align:center;
     position: absolute;
     bottom: 0;
