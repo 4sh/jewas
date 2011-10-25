@@ -4,7 +4,7 @@
         selectedMenuItem="dashboard"
         scripts=["/public/js/tabs/tabs.js",
                  "/public/js/jqcloud/jqcloud-0.2.1.js",
-                 "/public/js/tagcloud/jquery.tagcloud.js",
+                 "/public/js/tagcloud/jquery.tagcloud-0.5.0.js",
                  "/public/js/tinysort/jquery.tinysort.js",
                  "/public/js/panel/ui.panel.js",
                  "/public/js/bbeeg/content/contentHelper.js",
