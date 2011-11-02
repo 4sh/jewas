@@ -273,7 +273,7 @@ task startBBEEG(dependsOn: [initSsh, checkPropsForDeployment, startElasticSearch
 		command: """mkdir ${cachedStaticResourcesRootDirectory}""", trust: true, failonerror: true)
     // TODO: pass the http port here...
     ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 2224,
-		command: """$JAVA7_HOME/jre/bin/java ${javaOpts} -jar "${deployDirectory}/bbeeg.jar" \
+		command: """System.getenv()['JAVA7_HOME']/jre/bin/java ${javaOpts} -jar "${deployDirectory}/bbeeg.jar" \
 		    -httpPort ${executionPort} -visioRootUrl ${visioRootUrl} -visioEegInternalUrl ${visioEegInternalUrl} \
 		    -contentFileRepository ${contentFileRepository} -tmpContentFileRepository ${tmpContentFileRepository} -cachedStaticResourcesRootDirectory ${cachedStaticResourcesRootDirectory} \
 		    -h2ServerPort ${h2ServerPort} -h2DbPath ${h2DbPath} \
