@@ -98,11 +98,11 @@ $(function() {
             contentDetail : JSON.stringify(contentDetail)
         };
 
-        $.put(form.action,
+        $.ajaxPut(form.action,
             dataToSend,
             function(data){
                 var contentId = data.id;
-                $.put('/content/' + contentId + '/content/text',
+                $.ajaxPut('/content/' + contentId + '/content/text',
                     {text: $('#content')[0].value},
                     function(data){
                         $("#confirmationDialog").dialog('open');

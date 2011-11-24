@@ -359,7 +359,7 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
 
         // Note the text is set as a query parameter because if set in data, then get an exception server side.
         // TODO: Can be changed now
-        $.put(url + '?text='+JSON.stringify(eegSettings),
+        $.ajaxPut(url + '?text='+JSON.stringify(eegSettings),
             null,
             //eegSettings,
             function(data){
@@ -471,7 +471,7 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
      *****************************************************************************************************************/
 
     this.removeUploadedFiles = function () {
-        $.delete(
+        $.ajaxDelete(
             '/upload/eeg/' + eegId
         );
     };
@@ -525,14 +525,14 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
                 contentDetail : JSON.stringify(contentDetail)
             };
 
-            $.put(form.action,
+            $.ajaxPut(form.action,
                 dataToSend,
                 function(data){
                     var contentId = data.id;
                     sendEegSettings(
                         contentId,
                         function () {
-                            $.put("/content/eeg/" + eegId + "/" + contentId,
+                            $.ajaxPut("/content/eeg/" + eegId + "/" + contentId,
                                 null,
                                 function () {
                                     $("#confirmationDialog").dialog('open');

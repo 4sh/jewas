@@ -73,7 +73,7 @@ function ContentCreator(type, extensions, extensionsMsgError, previsualizationCo
     }
 
     this.removeUploadedFiles = function () {
-        $.delete(
+        $.ajaxDelete(
             '/upload',
              {fileNames : JSON.stringify(uploadedFiles)}
         );
@@ -111,7 +111,7 @@ function ContentCreator(type, extensions, extensionsMsgError, previsualizationCo
                 contentDetail : JSON.stringify(contentDetail)
             };
 
-            $.put(form.action,
+            $.ajaxPut(form.action,
                 dataToSend,
                 function(data){
 

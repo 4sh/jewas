@@ -33,7 +33,7 @@ $(
             };
 
             var login = $('#login').val();
-            $.put('/user/infos/' + login,
+            $.ajaxPut('/user/infos/' + login,
                 dataToSend,
                 function(data) {
                     if (data.success) {
