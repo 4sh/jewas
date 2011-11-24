@@ -24,8 +24,12 @@
 //to replace "$" SIGN. But, we'll stick to $
 })(jQuery);
 
-jQuery.each([ "put", "delete" ], function(i, method){
-    jQuery[ method ] = function(url, data, callback, type){
+jQuery.each([ {methodName : "ajaxPut", httpName: "put"}, {methodName : "ajaxDelete", httpName: "delete"} ], function(i, method){
+    console.log("Methode:", method);
+    jQuery[ method.methodName ] = function(url, data, callback, type){
+
+        var httpMethod = method.httpName;
+
         // Defining a special httpMethod parameter
         // This httpMethod parameter will be used by jewas to change the POST method by a PUT/DELETE one
 
@@ -39,7 +43,7 @@ jQuery.each([ "put", "delete" ], function(i, method){
             // foo=bar&array[]=val1&array[]=val2
             // instead of :
             // foo=bar&array=val1&array=val2
-            console.log("WARNING: passing an object to $."+method+"() as data attribute could be" +
+            console.log("WARNING: passing an object to $."+httpMethod+"() as data attribute could be" +
                 " badly handled by jquery when it comes to arrayed values. Prefer using $(form).serialize()" +
                 " instead of $(form).serializeToObject() in such a case !");
         } else if(typeof data == 'string') {
@@ -52,7 +56,7 @@ jQuery.each([ "put", "delete" ], function(i, method){
         } else {
             url += "?";
         }
-        url += "__httpMethod="+method;
+        url += "__httpMethod="+httpMethod;
 
         return jQuery.ajax({
             type: "post",
