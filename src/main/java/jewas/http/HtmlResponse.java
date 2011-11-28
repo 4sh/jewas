@@ -15,4 +15,7 @@ public class HtmlResponse {
 		httpResponse.content(content);
 	}
 
+    public void addHeader(String header, Object value) {
+        this.httpResponse.addHeader(header, value);
+    }
 }
