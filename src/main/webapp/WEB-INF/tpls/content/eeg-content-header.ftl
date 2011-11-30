@@ -64,19 +64,8 @@
                 </div>
 
                 <div class="view_author"><img src="/public/images/bbeeg/author.png"/> ${content.header().author().firstName()} ${content.header().author().lastName()}</div>
+
                 <div class="view_calendar"><img src="/public/images/bbeeg/calendar.png"/> ${content.header().creationDate()} </div>
-
-                <#--<div class="view_domain"><b>Domaine(s) :</b>-->
-                    <#--<#list content.header().domains() as item>-->
-                        <#--<span class="domain">${item.label()}</span>-->
-                    <#--</#list>-->
-                <#--</div>-->
-
-                <#--<div class="view_keyword"><b>Mot(s) clef(s) :</b>-->
-                    <#--<#list content.header().tags() as item>-->
-                        <#--<span class="keyword keyword_content">${item}</span>-->
-                    <#--</#list>-->
-                <#--</div>-->
 
                 <div class="view_description">${content.header().description()}</div>
 

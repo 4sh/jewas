@@ -147,7 +147,6 @@
                     <div class="title_panel">
                         <h3>Tags</h3>
                     </div>
-                    <!--<div id="domainCloud"></div>-->
                     <div id="tagCloud">
                         <ul id="tagList"></ul>
                     </div>
