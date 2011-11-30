@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Locale;
 
 /**
  * @author driccio
@@ -68,17 +69,19 @@ public class GetContentOfContentRoute extends AbstractRoute {
 
                 ContentType contentType;
 
-                switch (extension) {
+                switch (extension.toLowerCase(Locale.getDefault())) {
                     case "pdf":
                         contentType = ContentType.APP_PDF;
-                       break;
+                        break;
                     case "jpg":
+                        contentType = ContentType.IMG_JPG;
+                        break;
                     case "jpeg":
                         contentType = ContentType.IMG_JPG;
-                         break;
+                        break;
                     case "png":
                         contentType = ContentType.IMG_PNG;
-                         break;
+                        break;
                     case "gif":
                         contentType = ContentType.IMG_GIF;
                         break;
@@ -89,7 +92,7 @@ public class GetContentOfContentRoute extends AbstractRoute {
                         contentType = ContentType.AUD_MPEG;
                         break;
                     case "txt":
-                    default :
+                    default:
                         contentType = ContentType.TXT_PLAIN;
                 }
 
