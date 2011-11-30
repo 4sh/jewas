@@ -52,7 +52,6 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
     );
 }
 
-
     function getDomains(domainIds) {
         var domains = [];
 
@@ -114,7 +113,6 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
                         addErrorMessage(message,$('.eegErrorBanner'));
                     }
                 });
-
 
                 $('.video-start-hours, .video-start-minutes, .video-start-seconds, .video-stop-hours, .video-stop-minutes, .video-stop-seconds').keyup(function () {
                     cleanErrorMessage($('.video-conf-error-banner'));
@@ -248,11 +246,9 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
         if (!!hours) {
             time += Number(hours) * 3600000;
         }
-
         if (!!minutes) {
             time += Number(minutes) * 60000;
         }
-
         if (!!seconds) {
             time += Number(seconds) * 1000;
         }
@@ -530,7 +526,7 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
                 function(data){
                     var contentId = data.id;
                     sendEegSettings(
-                        contentId,
+                        eegId,
                         function () {
                             $.ajaxPut("/content/eeg/" + eegId + "/" + contentId,
                                 null,

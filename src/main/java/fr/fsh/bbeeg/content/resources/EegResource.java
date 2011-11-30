@@ -2,13 +2,6 @@ package fr.fsh.bbeeg.content.resources;
 
 import fr.fsh.bbeeg.common.persistence.TempFiles;
 import fr.fsh.bbeeg.content.persistence.ContentDao;
-import fr.fsh.bbeeg.content.pojos.EegSettings;
-import jewas.json.Json;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 /**
  * @author driccio
@@ -26,53 +19,6 @@ public class EegResource {
 
     private String getFileName(Long eegId) {
         return EEG_PREFIX + eegId;
-    }
-
-    public void updateEegSettings(Long contentId, EegSettings eegSettings, String mode) {
-        String eegSettingString = Json.instance().toJsonString(eegSettings, null);
-        Path path;
-
-        if (mode == null || !"tmp".equals(mode)) {
-            path = Paths.get(contentPath, getFileName(contentId));
-        } else {
-            path = TempFiles.getPath(getFileName(contentId));
-        }
-
-        try {
-            Files.newOutputStream(path).write(eegSettingString.getBytes());
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-
-        if (mode == null || !"tmp".equals(mode)) {
-            contentDao.updateContentOfContent(contentId, path.toString());
-        }
-    }
-
-    public String getEegSettings(Long contentId) {
-        Path path;
-
-        if (TempFiles.tmpFileExists(getFileName(contentId))) {
-            path = TempFiles.getPath(getFileName(contentId));
-        } else {
-            String url = contentDao.getContentUrl(contentId);
-
-            if (url == null || "".equals(url)) {
-                return null;
-            }
-
-            path = Paths.get(url);
-        }
-
-        byte[] bytes = null;
-
-        try {
-            bytes = Files.readAllBytes(path);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return new String(bytes);
     }
 
     public void cleanTmp(Long eegId) {
