@@ -8,15 +8,16 @@ import fr.fsh.bbeeg.security.resources.SecurityResource;
 import jewas.http.*;
 import jewas.http.impl.AbstractRequestHandler;
 
+import java.util.Date;
+
 /**
  * @author driccio
  */
-public class PostConnectionRoute extends AbstractRoute {
+public class GetLoginRoute extends AbstractRoute {
 
     private SecurityResource securityResource;
 
-    public PostConnectionRoute(SecurityResource _securityResource){
-        // TODO: use POST
+    public GetLoginRoute(SecurityResource _securityResource){
         super(HttpMethodMatcher.GET, new PatternUriPathMatcher("/connection/[login]/[password]"));
         this.securityResource = _securityResource;
     }
@@ -38,7 +39,9 @@ public class PostConnectionRoute extends AbstractRoute {
                             .object(new ConnectionResultObject.SuccessObject().url("/dashboard/dashboard.html"));
 
                     JsonResponse jsonResponse = request.respondJson();
-                    jsonResponse.addHeader(HttpHeaders.SET_COOKIE, "login=" + security.login() + ":expires=Wed, 12 Oct 2011 20:00");
+                    Date date = new Date();
+                    date.setTime(date.getTime() + 1000*60*30);
+                    jsonResponse.addHeader(HttpHeaders.SET_COOKIE, "login=" + security.login() + "; domain=bbeeg.4sh.fr ; expires=" + date.toGMTString() + ";max-age=" + 60*30);
                     jsonResponse.object(resultObject,
                             new TypeToken<ConnectionResultObject<ConnectionResultObject.SuccessObject>>() {
                             }.getType());
@@ -53,8 +56,6 @@ public class PostConnectionRoute extends AbstractRoute {
                     request.respondJson().object(resultObject,
                             new TypeToken<ConnectionResultObject<ConnectionResultObject.FailureObject>>(){}.getType());
                 }
-                //request.respondHtml().content(Templates.process("dashboard/dashboard.ftl", null));
-//                request.redirect().location(page);
             }
         };
     }

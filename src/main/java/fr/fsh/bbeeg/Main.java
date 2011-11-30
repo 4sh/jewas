@@ -8,7 +8,9 @@ import fr.fsh.bbeeg.content.routes.*;
 import fr.fsh.bbeeg.domain.routes.GetAllDomainsRoute;
 import fr.fsh.bbeeg.domain.routes.GetPopularDomainRoute;
 import fr.fsh.bbeeg.security.routes.GetConnectedUserRoute;
-import fr.fsh.bbeeg.security.routes.PostConnectionRoute;
+import fr.fsh.bbeeg.security.routes.GetLoginRoute;
+import fr.fsh.bbeeg.security.routes.GetLogoutRoute;
+import fr.fsh.bbeeg.security.routes.SecurityRoute;
 import fr.fsh.bbeeg.tag.routes.GetAllTagsRoute;
 import fr.fsh.bbeeg.tag.routes.GetPopularTagRoute;
 import fr.fsh.bbeeg.user.routes.*;
@@ -52,13 +54,14 @@ public class Main {
 
             final RestServer rs = RestServerFactory.createRestServer(options.httpPort());
             rs.addRoutes(
-                new PostConnectionRoute(assembler.securityResource()),
-                //new SecurityRoute(),
+                new GetLoginRoute(assembler.securityResource()),
                 new RedirectRoute("/", "/login.html"),
                 // Not really a static resources (located in webapp folder) since it is provided
                 // by jewas library. So it must be declared before the StaticResourcesRoute !
                 new SimpleFileRoute("/public/js/jewas/jewas-forms.js", "js/jewas-forms.js", options.cachedStaticResourcesRootDirectory()),
                 new StaticResourcesRoute("/public/", "public/", options.cachedStaticResourcesRootDirectory()),
+                new SecurityRoute(),
+                new GetLogoutRoute(),
                 new SimpleHtmlRoute("/dashboard/dashboard.html", "dashboard/dashboard.ftl"),
                 new GetConnectedUserRoute(assembler.connectedUserResource()),
                 new GetSimpleSearchContent(assembler.contentResource()),
@@ -66,15 +69,12 @@ public class Main {
                 new ContentStatusRoute(assembler.contentResource()),
                 new GetUserContentsSearchScreenRoute(),
                 new GetContentToTreatSearchScreenRoute(),
-                new GetEegSettingsRoute(assembler.eegResource()),
                 new GetEegInformationsRoute(assembler.eegResource()),
-                new CreateEegSettingsRoute(assembler.eegResource()),
+                new CreateEegSettingsRoute(),
                 new SaveEegRoute(),
                 new CreateContentOfTextRoute(assembler.contentResource()),
                 new CreateContentOfEegRoute(assembler.eegResource()),
                 new CreateContentOfContentRoute(assembler.contentResource()),
-               // new GetCreateContentRoute(assembler.contentResource()),
-               //new CreateTextContentRoute(assembler.contentResource()),
                 new CreateContentRoute(assembler.contentResource()),
                 new GetContentOfContentRoute(assembler.contentResource()),
                 new SimpleHtmlRoute("/content/text/create.html", "content/create-text.ftl"),

@@ -15,8 +15,7 @@ import java.util.regex.Pattern;
  */
 public class HttpRequestHelper {
 
-//    private static final String COOKIE_PATTERN = "login=([^:]+):role=([^:]+):.*";
-    private static final String COOKIE_PATTERN = "login=([^:]+):.*";
+    private static final String COOKIE_PATTERN = "login=([^;]+)";
 
     /**
      * Returns the security token from the HTTP request cookie
@@ -24,7 +23,6 @@ public class HttpRequestHelper {
      * @return the security token. For the moment, the login of the connected user.
      */
     public static String getSecurityToken(HttpRequest request) {
-
         String cookie = request.headers().getHeaderValue(HttpHeaders.COOKIE);
 
         if (cookie == null || cookie.isEmpty()) {
@@ -38,4 +36,12 @@ public class HttpRequestHelper {
         }
         return null;
     }
+
+    public static String getLogin(String securityToken) {
+        if (securityToken != null && !securityToken.isEmpty()) {
+            return securityToken;
+        }
+        return null;
+    }
+
 }

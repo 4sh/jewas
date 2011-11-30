@@ -48,14 +48,28 @@ $(
                 ['#createImageMenuItem', '/content/image/create.html'],
                 ['#createVideoMenuItem', '/content/video/create.html'],
                 ['#createAudioMenuItem', '/content/audio/create.html'],
-                ['#createEegMenuItem', '/content/eeg/create.html'],
-                ['#disconnectMenuItem', '/login.html']
+                ['#createEegMenuItem', '/content/eeg/create.html']
             ],function(index, value){
                 $(value[0]).click(function(){
                     loadMenuItem(this, value[1]);
                 });
             }
         );
+
+        $('#disconnectMenuItem').click(function() {
+            console.log("Logout called");
+            $.ajax(
+                {
+                    type: "GET",
+                    url: '/logout',
+                    dataType: 'html',
+                    success: function success(response) {
+                        window.location = '/login.html';
+                        console.log("Logout success");
+                    }
+                }
+            );
+        });
 
         // Root menu item displaying a submenu
         var rootMenuItemsWithSubmenu = [
