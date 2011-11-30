@@ -463,7 +463,7 @@
                 <div class="content-result-description">{{= formatDescription(description)}}</div>
                 <div class="keywords_container">
                     {{each(i, tag) tags}}
-                        {{if i < 5}}
+                        {{if i < 5 && tag != null && tag != ""}}
                             <span class="keyword keyword_content">{{= tag}}</span>
                         {{/if}}
                     {{/each}}
