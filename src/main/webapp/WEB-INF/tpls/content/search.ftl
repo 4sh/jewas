@@ -424,7 +424,7 @@
     <option value="{{= id}}"> {{= label}} </option>
 </script>
 <script id="authorItemTemplate" type="text/x-jquery-tmpl">
-   <option value="{{= id}}">{{= name}}, {{= surname}}</option>
+   <option value="{{= id}}">{{= firstName}} {{= lastName}}</option>
 </script>
 <script id="contentTypeItemTemplate" type="text/x-jquery-tmpl">
     <option value="{{= id}}"> {{= title}} </option>
