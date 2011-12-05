@@ -2,6 +2,7 @@ package fr.fsh.bbeeg.content.routes;
 
 import fr.fsh.bbeeg.common.config.BBEEGConfiguration;
 import fr.fsh.bbeeg.common.resources.SuccessObject;
+import fr.fsh.bbeeg.content.resources.EegResource;
 import jewas.http.*;
 import jewas.http.data.BodyParameters;
 import jewas.http.impl.AbstractRequestHandler;
@@ -17,8 +18,11 @@ import java.net.URL;
  */
 public class CreateEegSettingsRoute extends AbstractRoute {
 
-    public CreateEegSettingsRoute(){
+    private EegResource eegResource;
+
+    public CreateEegSettingsRoute(EegResource _eegResource){
         super(HttpMethodMatcher.POST_OR_PUT, new PatternUriPathMatcher("/content/eeg/settings/[id]/[mode]"));
+        this.eegResource = _eegResource;
     }
 
     public static class QueryObject {
@@ -72,6 +76,8 @@ public class CreateEegSettingsRoute extends AbstractRoute {
                     URL url = new URL(BBEEGConfiguration.INSTANCE.cliOptions().visioEegInternalUrl() +
                             "/content/eeg/settings/" + qo.id() + "/" + qo.mode() + "?text=" + tqo.text());
 
+
+
                     HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                     urlConnection.setRequestMethod("POST");
                     urlConnection.setDoOutput(true);
@@ -86,6 +92,7 @@ public class CreateEegSettingsRoute extends AbstractRoute {
                 } catch (IOException e) {
                     System.out.println(e.getMessage());
                 }
+                eegResource.updateEegDocumentUri(qo.id(), "");
                 request.respondJson().object(new SuccessObject().success(true));
             }
         };

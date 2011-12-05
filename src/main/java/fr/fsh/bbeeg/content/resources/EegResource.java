@@ -21,6 +21,10 @@ public class EegResource {
         return EEG_PREFIX + eegId;
     }
 
+    public void updateEegDocumentUri(Long contentId, String path) {
+       contentDao.updateContentOfContent(contentId, path.toString());
+    }
+
     public void cleanTmp(Long eegId) {
         TempFiles.removeFile(getFileName(eegId));
 
