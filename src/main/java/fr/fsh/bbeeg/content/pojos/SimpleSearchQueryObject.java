@@ -70,4 +70,26 @@ public class SimpleSearchQueryObject {
     public String[] authors(){
         return this.authors;
     }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("[Query: ")
+                .append(this.query())
+                .append("; Starting offset: ")
+                .append(this.startingOffset())
+                .append("; Number of contents: ")
+                .append(this.numberOfContents())
+                .append("; Search Mode:")
+                .append(this.searchMode())
+                .append("; Authors: ");
+        if (authors() != null) {
+            for (String item : authors()) {
+                sb.append(item);
+                sb.append(" ");
+            }
+        }
+        sb.append("]");
+        return sb.toString();
+    }
+
 }

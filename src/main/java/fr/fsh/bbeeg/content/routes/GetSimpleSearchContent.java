@@ -15,6 +15,8 @@ import jewas.http.Parameters;
 import jewas.http.PatternUriPathMatcher;
 import jewas.http.RequestHandler;
 import jewas.http.impl.AbstractRequestHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +25,12 @@ import java.util.List;
  * @author fcamblor
  */
 public class GetSimpleSearchContent extends AbstractRoute {
+
+    /**
+     * Class logger.
+     */
+    private final static Logger logger = LoggerFactory.getLogger(GetSimpleSearchContent.class);
+
     private ContentResource contentResource;
 
     public GetSimpleSearchContent(ContentResource _contentResource) {
@@ -36,6 +44,7 @@ public class GetSimpleSearchContent extends AbstractRoute {
         return new AbstractRequestHandler() {
             @Override
             public void onRequest(HttpRequest request) {
+                logger.debug("Simple Query object: " + query);
                 // For tests purposes only... will have to delete this..
                 int offset = 1;
                 if (query.startingOffset() != -1) {

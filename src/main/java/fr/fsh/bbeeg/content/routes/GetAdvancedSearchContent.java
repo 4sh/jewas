@@ -12,6 +12,8 @@ import jewas.http.Parameters;
 import jewas.http.PatternUriPathMatcher;
 import jewas.http.RequestHandler;
 import jewas.http.impl.AbstractRequestHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +22,12 @@ import java.util.List;
  * @author fcamblor
  */
 public class GetAdvancedSearchContent extends AbstractRoute {
+
+    /**
+     * Class logger.
+     */
+    private final static Logger logger = LoggerFactory.getLogger(GetAdvancedSearchContent.class);
+
     private ContentResource contentResource;
 
     public GetAdvancedSearchContent(ContentResource _contentResource) {
@@ -33,31 +41,13 @@ public class GetAdvancedSearchContent extends AbstractRoute {
         return new AbstractRequestHandler() {
             @Override
             public void onRequest(HttpRequest request) {
+                logger.debug("Advanced Query object: " + query);
+
                 // For tests purposes only... will have to delete this..
                 int offset = 1;
                 if (query.startingOffset() != -1) {
                     offset = query.startingOffset();
                 }
-
-//                for(int i=0; i<query.numberOfContents(); i++){
-//                    results.add(new ContentSearchResult().id(String.valueOf(offset))
-//                            .author("fcamblor")
-//                            .title("Contenu " + offset)
-//                            .creationDate(new Date())
-//                            .mediaType("audio")
-//                            .description("blablabla"));
-//                    offset++;
-//                }
-//
-//                if (query.authors != null) {
-//                    results.add(new ContentSearchResult().id(String.valueOf(offset))
-//                            .author("fcamblor")
-//                            .title("Contenu (caché) " + offset)
-//                            .creationDate(new Date())
-//                            .mediaType("audio")
-//                            .description("blablabla"));
-//                    offset++;
-//                }
 
                 List<ContentHeader> contentHeaders = new ArrayList<ContentHeader>();
                 contentResource.fetchSearch(contentHeaders, query);

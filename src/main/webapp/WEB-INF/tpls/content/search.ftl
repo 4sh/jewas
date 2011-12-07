@@ -297,7 +297,7 @@
                 .selectorWhereResultsWillBeAppended("#contentResults")
         );
 
-        $("#adSearchCriterias").chainedSelect(
+       /* $("#adSearchCriterias").chainedSelect(
             {
                 'ajaxUrlsPerDepth' : [
                     "/content/criterias?depth=0",
@@ -311,7 +311,7 @@
                 'selectorForClosingLinkInDisplaySelectionItemTemplate' : "a.search-choice-close",
                 'selectMenuContainer' : $("#searchCriteriaMenuContainer")
             }
-        );
+        );*/
 
         // Enabling auto query when scrollbar is at the bottom of the window
         var SCROLLBAR_THRESHOLD = 100; // 100 pixels before the bottom of the screen, we consider the scrollbar is at the bottom
@@ -415,7 +415,7 @@
 </div>
 
 <div id="searchResultsComponent" class="search-results-component">
-    Aucun résultat trouvé !
+
 </div>
 <script id="criteriaSelectedItem" type="text/x-jquery-tmpl">
     <li class="search-choice"><span>{{= label}}</span><a href="#" name="{{= value}}" class="search-choice-close"></a></li>
@@ -432,6 +432,9 @@
 <script id="contentResult" type="text/x-jquery-tmpl">
     <div id="contentResults">
         {{tmpl(results) "#contentLineResult"}}
+    </div>
+    <div id="noResultText">
+        No more results found.
     </div>
     <button id="searchNext" class="next_result"><img src="/public/images/ajax/indicator.gif" class="spinner" />Résultats suivants</button>
 </script>

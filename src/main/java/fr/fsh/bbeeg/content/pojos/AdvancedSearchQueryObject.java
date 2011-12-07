@@ -57,4 +57,31 @@ public class AdvancedSearchQueryObject extends SimpleSearchQueryObject {
         return this.domains;
     }
 
+    public String toString() {
+        StringBuilder sb = new StringBuilder("Simple search query: ");
+        sb.append(super.toString())
+                .append("\n")
+                .append("Advanced search query: ")
+                .append("[Date from: ")
+                .append(this.from())
+                .append("; Date to: ")
+                .append(this.to())
+                .append("; Search types: [");
+        if (searchTypes() != null) {
+            for (String item : searchTypes()) {
+                sb.append(item);
+                sb.append(" ");
+            }
+        }
+        sb.append("]; Domains:[");
+        if (domains() != null) {
+            for (String item : domains()) {
+                sb.append(item);
+                sb.append(" ");
+            }
+        }
+        sb.append("]");
+        return sb.toString();
+    }
+
 }
