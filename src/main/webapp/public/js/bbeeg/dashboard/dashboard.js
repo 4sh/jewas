@@ -110,5 +110,26 @@ $(
         loadTotalNumberOfContents();
         loadLastAuthors();
         loadTags();
+
+        $(".createNewContent").live('click',function() {
+            $("#createNewContentDialog").dialog({
+                show: 'slide',
+                hide: 'slide',  
+                buttons: [{
+                    text: "Annuler",
+                    click: function() { $(this).dialog("close"); }
+                    },
+                {text: "Valider",
+                    click: function() {
+                        var navigation = $(this).find("select option:selected")[0].value;
+                        if (!!navigation) {
+                            window.location = navigation;
+                        }
+                        $(this).dialog("close");
+                    }
+                }
+            ]});
+        });
+
     }
 );

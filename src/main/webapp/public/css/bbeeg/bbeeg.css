@@ -885,4 +885,15 @@ ul.submenu li {
 /* *************** Utils style *************** */
 .inlined-li {
     display: inline;
+    text-align: center;
+}
+
+/* **************** Dialog style ************ */
+.dialogContent {
+
+}
+
+.createContentSelect {
+    width: 200px;
+    text- center;
 }
