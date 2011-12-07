@@ -43,10 +43,9 @@
 
                     <div class="view_keyword"><b>Mot(s) clef(s) :</b>
                         <#list content.header().tags() as item>
-                            <#if !item??>
-                               <span class="keyword keyword_content">${item}</span>
-                             </#if>
-                        </#list>
+                            <span class="keyword keyword_content"
+                            style="display:<#if !item?? || item == "" >none<#else>inline</#if>">${item}</span>
+                         </#list>
                     </div>
                 </div>
                 <div class="view_description">${content.header().description()}</div>
