@@ -13,6 +13,15 @@
     stylesheets=["/public/css/bbeeg/search.css"]
     useChosen=true>
 <script>
+
+    function viewContent(contentId) {
+        if (contentId !== null) {
+           window.location = "/content/" + contentId + "/view.html";
+        } else {
+            console.log("ContentId not found", contentId)
+        }
+    }
+
     function updateStatus(containerId, contentId, status, comment, callback) {
         $.post('/content/' + contentId + '/status/' + status,
             "comment="+comment,
@@ -82,8 +91,6 @@
         return false;
     }
 
-
-
     function deleteContent(containerId, contentId, status) {
         var newStatus = null;
 
@@ -126,7 +133,6 @@
                 sendUpdateStatus(containerId, contentId, newStatus, '');
             }
         }
-
 
         function rejectContentCallback(containerId, contentId, status, comment) {
             var newStatus = null;
@@ -457,7 +463,7 @@
                 <div class="tab_right label_hidden">
             </#if>
         </div>
-        <div class="left_part">
+        <div class="left_part" onclick="viewContent({{= id}})">
             <div class="icon_type {{= contentHelper.getIcon(type)}}"></div>
             <div class="content-result-title"><a href="/content/{{= id}}/view.html">{{= title}}</a></div>
             <div class="content-result-author"><img src="/public/images/bbeeg/author.png"/>{{= author.firstName}} {{= author.lastName}}</div>
@@ -465,7 +471,7 @@
         </div>
 
         <div class="right_part">
-            <div class="texts_zone">
+            <div class="texts_zone" onclick="viewContent({{= id}})">
                 <div class="content-result-description">{{= formatDescription(description)}}</div>
                 <div class="keywords_container">
                     {{each(i, tag) tags}}
