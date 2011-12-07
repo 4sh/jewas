@@ -297,21 +297,21 @@
                 .selectorWhereResultsWillBeAppended("#contentResults")
         );
 
-       /* $("#adSearchCriterias").chainedSelect(
-            {
-                'ajaxUrlsPerDepth' : [
-                    "/content/criterias?depth=0",
-                    "/content/criterias?depth=1&parent={value}",
-                    "/content/criterias?depth=2&parent={value}",
-                    "/content/criterias?depth=3&parent={value}"
-                ],
-                'targetFieldForSelectedOption' : $("#criterias"),
-                'displaySelectionTarget' : $("#criteriasList"),
-                'templateForDisplaySelectionItem' : $("#criteriaSelectedItem"),
-                'selectorForClosingLinkInDisplaySelectionItemTemplate' : "a.search-choice-close",
-                'selectMenuContainer' : $("#searchCriteriaMenuContainer")
-            }
-        );*/
+/* $("#adSearchCriterias").chainedSelect(
+{
+'ajaxUrlsPerDepth' : [
+"/content/criterias?depth=0",
+"/content/criterias?depth=1&parent={value}",
+"/content/criterias?depth=2&parent={value}",
+"/content/criterias?depth=3&parent={value}"
+],
+'targetFieldForSelectedOption' : $("#criterias"),
+'displaySelectionTarget' : $("#criteriasList"),
+'templateForDisplaySelectionItem' : $("#criteriaSelectedItem"),
+'selectorForClosingLinkInDisplaySelectionItemTemplate' : "a.search-choice-close",
+'selectMenuContainer' : $("#searchCriteriaMenuContainer")
+}
+);*/
 
         // Enabling auto query when scrollbar is at the bottom of the window
         var SCROLLBAR_THRESHOLD = 100; // 100 pixels before the bottom of the screen, we consider the scrollbar is at the bottom
@@ -324,9 +324,12 @@
                 }
             }
         });
-        
-        extractSearchCriterionFromUrl();
 
+        extractSearchCriterionFromUrl();
+        // If we manage the connected user contents, display them immediately
+        <#if searchMode == 1>
+        $('#simpleSearchButton').click();
+        </#if>
     });
 </script>
 
