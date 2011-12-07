@@ -97,20 +97,6 @@
                     </@rootMenuItem>
                     <@rootMenuItem id="recherche_item">
                         <img id="searchLoop" src="/public/images/bbeeg/loupe.png" alt="Recherche" class="hand_cursor"/>
-                        <@subMenu id="adminSubMenu" width="150">
-                            <@subMenuItem id="searchMenuItem" title="Recherche" />
-                            <@subMenuItem id="manageMyContentsMenuItem" title="Gérer mes contenus" />
-                            <@subMenuItem id="adminContentsMenuItem" title="Administrer les contenus" />
-                            <@subMenuItem id="createTextMenuItem" title="Créer contenu Texte" />
-                            <@subMenuItem id="createDocumentMenuItem" title="Créer contenu Document" />
-                            <@subMenuItem id="createImageMenuItem" title="Créer contenu Image" />
-                            <@subMenuItem id="createVideoMenuItem" title="Créer contenu Vidéo" />
-                            <@subMenuItem id="createAudioMenuItem" title="Créer contenu Audio" />
-                            <@subMenuItem id="createEegMenuItem" title="Créer contenu EEG" />
-                        </@subMenu>
-                    </@rootMenuItem>
-                    <@rootMenuItem id="admin_arrow" additionnalClasses="fleche">
-                        <img src="/public/images/bbeeg/fleche.png" alt="Flèche menu déroulant"/>
                     </@rootMenuItem>
                     <@rootMenuItem id="sepa_menu" />
                     <@rootMenuItem id="userprofile">
