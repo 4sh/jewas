@@ -31,6 +31,19 @@
                 }
             );
         }
+
+        $(function() {
+            $("#connectionButton")
+                .click(function() {
+                    validate();
+                });
+            $("body").keydown(function(event) {
+                if (event.which == 13) {
+                    event.preventDefault();
+                    validate();
+                }
+            });
+        });
     </script>
     <link rel="shortcut icon" type="image/x-icon" href="/public/images/bbeeg/favicon.ico"/>
     <title> Page de connexion </title>
@@ -59,7 +72,7 @@
                             </div>
                         </div>
                         <div class="button_login">
-                            <button type="button" onclick="validate()"> Connexion </button>
+                            <button id="connectionButton" type="button"> Connexion </button>
                         </div>
                     </form>
                 </div>
