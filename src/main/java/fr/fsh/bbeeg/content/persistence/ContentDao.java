@@ -505,13 +505,13 @@ public class ContentDao {
      */
     private List<Long> searchInElasticSearch(Integer startingOffset, Integer numberOfContents, QueryBuilder elasticSearchQuery) {
         SearchResponse sResponse = client.prepareSearch(esContentDao.indexName())
-                        .setSearchType(SearchType.DFS_QUERY_AND_FETCH)
-                        .setQuery(elasticSearchQuery)
-                        .setFrom(startingOffset).setSize(numberOfContents)
-                        .addSort("_score", SortOrder.DESC)
+                .setSearchType(SearchType.QUERY_THEN_FETCH)
+                .setQuery(elasticSearchQuery)
+                .setFrom(startingOffset)
+                .setSize(numberOfContents)
+                .addSort("_score", SortOrder.DESC)
                         //.setMinScore(0.3f)
-                        .execute()
-                        .actionGet();
+                .execute().actionGet();
 
         // Get the content ids from the result.
         List<Long> contentIds = new ArrayList<Long>();
