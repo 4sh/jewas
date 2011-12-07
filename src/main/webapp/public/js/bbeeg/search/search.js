@@ -74,10 +74,11 @@ function SearchQuery() {
     function contentSearch(searchContext, queryParams, templateApplied, appendResults, processResults) {
         $.get(searchContext.targetForm().attr('action'), queryParams, function(data) {
             $(searchContext.selectorForClickableOfSearchNext()).each(function() {
-                $(".spinner", this).css('display', 'none');
                 this.disabled = false;
+                $("#noResultText").css('display', 'none');
+                $(".spinner").css('display', 'none');
             });
-            
+
             // If we are not in append mode, let's remember the last query and the server timestamp of this query
             // It will be used when searching in append mode ! (look above)
             if (!appendResults) {
@@ -95,7 +96,7 @@ function SearchQuery() {
             if (appendResults) {
                 if (processResults === null) {
                     templateParams = data.results;
-                }else {
+                } else {
                     templateParams = processResults(data.results);
                 }
             } else {
@@ -121,11 +122,25 @@ function SearchQuery() {
                     var clickable = this;
                     $(this).click(function() {
                         this.disabled = true;
-                        $(".spinner", this).css('display', 'inline');
+                        $(".spinner").css('display', 'inline');
                         SearchQuery.INSTANCE.searchNext();
                     });
                 });
             }
+
+            var displayClickableOfNextSearch;
+            var displayNoResultText;
+            if (data.results === null || data.results.length < 10) {
+                displayNoResultText = "inline";
+                displayClickableOfNextSearch = "none";
+            } else {
+                displayNoResultText = "none";
+                displayClickableOfNextSearch = "inline";
+            }
+            $(searchContext.selectorForClickableOfSearchNext()).each(function() {
+                $(this).css('display', displayClickableOfNextSearch);
+            });
+             $("#noResultText").css('display', displayNoResultText);
         }, "json");
     }
 }
