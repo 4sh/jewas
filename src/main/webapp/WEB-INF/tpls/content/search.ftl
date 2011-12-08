@@ -34,18 +34,18 @@
     <#if searchMode == 1>
     function sendUpdateStatus(containerId, contentId, status, comment) {
         updateStatus(containerId, contentId, status, comment,
-                function () {
-                    alert('Le contenu a bien été mis à jour');
-                    if (status === 'DELETED') {
-                        $("#" + containerId).remove();
-                    } else {
-                        $("#" + containerId + ' .publish-button')[0].disabled = true;
-                        var statusStyle = contentHelper.getStatusStyle(status);
-                        $('#' + containerId).find('.tab_right').removeClass().addClass('tab_right ' + statusStyle.className);
-                        $('#' + containerId).find('.label').html(statusStyle.label)
-                    }
-
+            function () {
+                $("#updateStatusSuccessDialog").dialog({show: 'slide', hide: 'slide'});
+                if (status === 'DELETED') {
+                    $("#" + containerId).remove();
+                } else {
+                    $("#" + containerId + ' .publish-button')[0].disabled = true;
+                    var statusStyle = contentHelper.getStatusStyle(status);
+                    $('#' + containerId).find('.tab_right').removeClass().addClass('tab_right ' + statusStyle.className);
+                    $('#' + containerId).find('.label').html(statusStyle.label)
                 }
+
+            }
         );
     }
 
@@ -144,7 +144,7 @@
                     newStatus = 'VALIDATED';
                 }
                 else {
-                    alert('Le contenu ne peut pas être mis à jour car son status ne le permet pas.');
+                    $("#updateStatusImpossible").dialog({show: 'slide', hide: 'slide'});
                 }
             }
 
@@ -522,7 +522,13 @@
 
 </script>
 
-
+<#if searchMode == 1>
+<div style="visibility: hidden">
+    <div id="updateStatusSuccessDialog" title="Modification du statut">
+        <p>Le statut du contenu a été mis à jour avec succès.</p>
+    </div>
+</div>
+</#if>
 
 <#if searchMode == 2>
 <div style="visibility: hidden">
@@ -536,7 +542,7 @@
 <#if searchMode == 2>
 <div style="visibility: hidden">
     <div id="updateStatusImpossible" title="Echec de la mise à jour">
-        <p>Le contenu ne peut pas être mis à jour car son status ne le permet pas.</p>
+        <p>Le contenu ne peut pas être mis à jour car son statut ne le permet pas.</p>
     </div>
 </div>
 </#if>
