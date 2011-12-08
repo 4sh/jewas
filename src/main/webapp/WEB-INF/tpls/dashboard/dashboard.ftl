@@ -45,7 +45,7 @@
         {{if role == 'teacher'}}
             <span>Vous êtes connecté en tant qu'<b>enseignant</b>. Vous pouvez enrichir la plateforme en ajoutant des contenus:</span>
             <ul class="panel_list">
-                <li class="createNewContent"><a>Créer un nouveau contenu</a></li>
+                <li class="createNewContent"><a class="hand_cursor">Créer un nouveau contenu</a></li>
                 <li><a href="/content/search-user-content.html">Gérer mes contenus</a></li>
              </ul>
         {{/if}}
@@ -53,7 +53,7 @@
             <span>Vous êtes connecté en tant qu'<b>administrateur</b>. Vous devez à ce titre, répondre aux demandes de publication émises par les enseignants en validant ourejetant les contenus proposés.</span>
 
             <ul class="panel_list">
-                <li class="createNewContent"><a>Créer un nouveau contenu</a></li>
+                <li class="createNewContent"><a class="hand_cursor">Créer un nouveau contenu</a></li>
                 <li><a href="/content/search-content-to-treat.html">Administrer les contenus</a></li>
                 <li><a href="">Administrer les domaines</a></li>
             </ul>
@@ -150,20 +150,4 @@
             </div>
         </div>
     </div>
-
-<div style="visibility: hidden">
-    <div id="createNewContentDialog" title="Créer un nouveau contenu" class="dialogTitle">
-        <div>
-            <span>Type de contenu:</span>
-            <select class="createContentSelect">
-                <option value="/content/text/create.html">Ajouter un contenu texte</option>
-                <option value="/content/document/create.html">Ajouter un contenu PDF</option>
-                <option value="/content/image/create.html">Ajouter un contenu image</option>
-                <option value="/content/video/create.html">Ajouter un contenu vidéo</option>
-                <option value="/content/audio/create.html">Ajouter un contenu audio</option>
-                <option value="/content/eeg/create.html">Ajouter un contenu EEG</option>
-            </select>
-        </div>
-    </div>
-</div>
 </@mainTemplate>

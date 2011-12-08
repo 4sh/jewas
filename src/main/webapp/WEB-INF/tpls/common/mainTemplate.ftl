@@ -83,14 +83,27 @@
     <title>${title}</title>
 </head>
 <body>
+<script id="actionMenuTemplate" type="text/x-jquery-tmpl">
+    <a class="menuleft_item" href="/dashboard/dashboard.html"><img src="/public/images/bbeeg/bbeeg_logo.png" onmouseout="src='/public/images/bbeeg/bbeeg_logo.png'" onmouseover="src='/public/images/bbeeg/bbeeg_logo_hover.png'" alt="Logo BBEEG"/></a>
+    {{if role != 'student'}}
+        <h3 class="menuleft_item"><a class="createNewContent hand_cursor">Créer</h3>
+        <div class="sepa_menu sepa_menu_left"></div>
+        <h3 class="menuleft_item"><a  href="/content/search-user-content.html">Gérer</a></h3>
+    {{/if}}
+    {{if role == 'administrator'}}
+        <div class="sepa_menu sepa_menu_left"></div>
+        <h3 class="menuleft_item"><a  href="/content/search-content-to-treat.html">Administrer</a></h3>
+    {{/if}}
+</script>
+
 <script id="userConnectedNameTemplate" type="text/x-jquery-tmpl">
     <span class="hand_cursor">{{= surname}} {{= name}}</span>
 </script>
     <div class="page">
         <header>
             <div id="menu">
-                <a href="/dashboard/dashboard.html"><img src="/public/images/bbeeg/bbeeg_logo.png" onmouseout="src='/public/images/bbeeg/bbeeg_logo.png'" onmouseover="src='/public/images/bbeeg/bbeeg_logo_hover.png'" alt="Logo BBEEG"/></a>
-
+                <div id="menuleft">
+                </div>
                 <div id="menuright">
                     <@rootMenuItem id="input_recherche">
                         <input id="searchInput" type="text">
@@ -98,7 +111,7 @@
                     <@rootMenuItem id="recherche_item">
                         <img id="searchLoop" src="/public/images/bbeeg/loupe.png" alt="Recherche" class="hand_cursor"/>
                     </@rootMenuItem>
-                    <@rootMenuItem id="sepa_menu" />
+                    <@rootMenuItem id="sepa_menu" additionnalClasses="sepa_menu"/>
                     <@rootMenuItem id="userprofile">
                         <div id="connectedUser" class="userprofile"></div>
                         <@subMenu id="profileSubMenu" width="125">
@@ -112,6 +125,22 @@
                 </div>
             </div>
         </header>
+
+        <div style="visibility: hidden">
+            <div id="createNewContentDialog" title="Créer un nouveau contenu" class="dialogTitle">
+                <div>
+                    <span>Type de contenu:</span>
+                    <select class="createContentSelect">
+                        <option value="/content/text/create.html">Ajouter un contenu texte</option>
+                        <option value="/content/document/create.html">Ajouter un contenu PDF</option>
+                        <option value="/content/image/create.html">Ajouter un contenu image</option>
+                        <option value="/content/video/create.html">Ajouter un contenu vidéo</option>
+                        <option value="/content/audio/create.html">Ajouter un contenu audio</option>
+                        <option value="/content/eeg/create.html">Ajouter un contenu EEG</option>
+                    </select>
+                </div>
+            </div>
+        </div>
 
         <div class="container">
             <div class="grid">

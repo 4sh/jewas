@@ -4,6 +4,10 @@ function getConnectedUserNames(container) {
         function (data) {
             $(container).children().remove();
             $("#userConnectedNameTemplate").tmpl(data).appendTo(container);
+            // Build action menu which depends on the connected user role
+            var actionsContainer = $("#menuleft");
+            actionsContainer.children().remove();
+            $("#actionMenuTemplate").tmpl(data).appendTo(actionsContainer);
         });
 }
 
@@ -28,6 +32,29 @@ $(
                 });
             }
         );
+
+        // Create new document dialog click binding.
+        $(".createNewContent").live('click',function() {
+            $("#createNewContentDialog").dialog({
+                show: 'slide',
+                hide: 'slide',
+                buttons: [{
+                    text: "Annuler",
+                    click: function() { $(this).dialog("close"); }
+                    },
+                {text: "Valider",
+                    click: function() {
+                        var navigation = $(this).find("select option:selected")[0].value;
+                        if (!!navigation) {
+                            window.location = navigation;
+                        }
+                        $(this).dialog("close");
+                    }
+                }
+            ]});
+        });
+
+
 
         $('#disconnectMenuItem').click(function() {
             console.log("Logout called");
