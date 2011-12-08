@@ -86,7 +86,7 @@
 <script id="actionMenuTemplate" type="text/x-jquery-tmpl">
     <a class="menuleft_item" href="/dashboard/dashboard.html"><img src="/public/images/bbeeg/bbeeg_logo.png" onmouseout="src='/public/images/bbeeg/bbeeg_logo.png'" onmouseover="src='/public/images/bbeeg/bbeeg_logo_hover.png'" alt="Logo BBEEG"/></a>
     {{if role != 'student'}}
-        <h3 class="menuleft_item"><a class="createNewContent hand_cursor">Créer</h3>
+        <h3 class="menuleft_item"><a class="createNewContent hand_cursor">Créer</a></h3>
         <div class="sepa_menu sepa_menu_left"></div>
         <h3 class="menuleft_item"><a  href="/content/search-user-content.html">Gérer</a></h3>
     {{/if}}
