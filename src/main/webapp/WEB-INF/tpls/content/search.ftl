@@ -463,7 +463,7 @@
                 <div class="tab_right label_hidden">
             </#if>
         </div>
-        <div class="left_part" onclick="viewContent({{= id}})">
+        <div class="left_part hand_cursor" onclick="viewContent({{= id}})">
             <div class="icon_type {{= contentHelper.getIcon(type)}}"></div>
             <div class="content-result-title"><a href="/content/{{= id}}/view.html">{{= title}}</a></div>
             <div class="content-result-author"><img src="/public/images/bbeeg/author.png"/>{{= author.firstName}} {{= author.lastName}}</div>
@@ -471,7 +471,7 @@
         </div>
 
         <div class="right_part">
-            <div class="texts_zone" onclick="viewContent({{= id}})">
+            <div class="texts_zone hand_cursor" onclick="viewContent({{= id}})">
                 <div class="content-result-description">{{= formatDescription(description)}}</div>
                 <div class="keywords_container">
                     {{each(i, tag) tags}}
