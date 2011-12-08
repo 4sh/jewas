@@ -2,12 +2,17 @@ package jewas.http;
 
 import jewas.http.data.BodyParameters;
 import jewas.http.data.FormBodyParameters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public abstract class AbstractRoute implements Route {
-	private final HttpMethodMatcher methodMatcher;
+
+    private final static Logger logger = LoggerFactory.getLogger(AbstractRoute.class);
+
+    private final HttpMethodMatcher methodMatcher;
 	private final UriPathMatcher pathMatcher;
 	private final static Pattern URI_PATTERN = Pattern.compile("^(/|(?:/([\\w\\.\\_\\-\\d]+))*)/*$");
 
@@ -29,6 +34,7 @@ public abstract class AbstractRoute implements Route {
             if (m.matches()) {
               Parameters pathParams = pathMatcher.match(m.group(1));
                 if (pathParams != null) {
+                    logger.debug("Matched route: " + this.getClass().getSimpleName() + " on path : " + m.group(1));
                     return onMatch(request, request.parameters().union(pathParams));
                 }
             }
