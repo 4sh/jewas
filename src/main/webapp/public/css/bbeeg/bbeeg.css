@@ -889,11 +889,10 @@ ul.submenu li {
 }
 
 /* **************** Dialog style ************ */
-.dialogContent {
-
-}
-
 .createContentSelect {
     width: 200px;
-    text- center;
+}
+
+#searchLoop {
+    margin-right: 5px;
 }
