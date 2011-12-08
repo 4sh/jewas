@@ -5,6 +5,7 @@ import fr.fsh.bbeeg.common.resources.Count;
 import fr.fsh.bbeeg.common.resources.LimitedOrderedQueryObject;
 import fr.fsh.bbeeg.content.persistence.ContentDao;
 import fr.fsh.bbeeg.content.pojos.*;
+import fr.fsh.bbeeg.i18n.persistence.I18nDao;
 import fr.fsh.bbeeg.user.pojos.User;
 import jewas.http.data.FileUpload;
 
@@ -20,12 +21,20 @@ import java.util.List;
  * @author driccio
  */
 public class ContentResource {
+
+    /**
+     * Data access object used to access database translations.
+     */
+    private final I18nDao i18nDao;
     private final ContentDao contentDao;
     private final String contentPath;
 
-    public ContentResource(ContentDao _contentDao, String _contentPath) {
-        contentDao = _contentDao;
-        contentPath = _contentPath;
+
+
+    public ContentResource(ContentDao _contentDao, I18nDao _i18nDao, String _contentPath) {
+        this.i18nDao = _i18nDao;
+        this.contentDao = _contentDao;
+        this.contentPath = _contentPath;
     }
 
     public void fetchAddedContents(List<ContentHeader> contentHeaders, LimitedOrderedQueryObject loqo) {
@@ -51,12 +60,16 @@ public class ContentResource {
         return contentDao.getContentDetail(id);
     }
 
+    /**
+     * Fetch all the available content types.
+     * @param results the list of {@ContentTypeResultObject}
+     * @param loqo the {@LimitedOrderedQueryObject}
+     */
     public void fetchContentTypes(List<ContentTypeResultObject> results, LimitedOrderedQueryObject loqo) {
-        // TODO: check the ordering property
-        ContentType[] contentTypes = ContentType.values();
-
-        for (int i = 0; i < contentTypes.length; i++) {
-            results.add(new ContentTypeResultObject().id(new Long(i)).title(contentTypes[i].name()));
+        for(ContentType contentType : ContentType.values()) {
+            results.add(new ContentTypeResultObject()
+                            .id(new Long(contentType.ordinal()))
+                            .title(i18nDao.translation(contentType.i18nKey(), "fr")));
         }
     }
 

@@ -69,7 +69,7 @@ public class Assembler {
         contentDao = new ContentDao(dataSource, client, userDao, domainDao, esContentDao, tagDao);
         securityDao = new SecurityDao(dataSource);
 
-        contentResource = new ContentResource(contentDao,
+        contentResource = new ContentResource(contentDao, i18nDao,
                 BBEEGConfiguration.INSTANCE.cliOptions().contentFileRepository());
         domainResource = new DomainResource(domainDao);
         tagResource = new TagResource(tagDao);

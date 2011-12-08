@@ -75,7 +75,7 @@ public class DomainDao {
         public Domain processRow(ResultSet rs) throws SQLException {
             return new Domain()
                     .id(rs.getLong("id"))
-                    .label(i18nDao.translation(rs.getString("I18N_KEY")));
+                    .label(i18nDao.translation(rs.getString("I18N_KEY"), "fr"));
         }
     }
 
