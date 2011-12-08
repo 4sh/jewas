@@ -37,14 +37,14 @@
                             $("#title").val("${content.header().title()}");
 
                             // Load the description
-                            $("#description").text("${content.header().description()}");
+                            $("#description").append("${content.header().description()}");
 
                             // Load the content
                             $.ajax({
-                                    url: "${content.url()}",
-                                    success: function (data) {
-                                        $("#content").append(data);
-                                    }
+                                url: "${content.url()}",
+                                success: function (data) {
+                                    $("#content").append(data);
+                                }
                             });
 
                             // Load the domains
