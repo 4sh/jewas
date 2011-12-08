@@ -443,7 +443,7 @@
         {{tmpl(results) "#contentLineResult"}}
     </div>
     <div id="noResultText">
-        No more results found.
+        Aucun résultat ne correspond aux critères de recherche
     </div>
     <button id="searchNext" class="next_result"><img src="/public/images/ajax/indicator.gif" class="spinner" />Résultats suivants</button>
 </script>

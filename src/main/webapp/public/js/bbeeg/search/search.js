@@ -129,18 +129,19 @@ function SearchQuery() {
             }
 
             var displayClickableOfNextSearch;
-            var displayNoResultText;
             if (data.results === null || data.results.length < 10) {
-                displayNoResultText = "inline";
                 displayClickableOfNextSearch = "none";
             } else {
-                displayNoResultText = "none";
                 displayClickableOfNextSearch = "inline";
             }
-            $(searchContext.selectorForClickableOfSearchNext()).each(function() {
-                $(this).css('display', displayClickableOfNextSearch);
-            });
-             $("#noResultText").css('display', displayNoResultText);
+                $(searchContext.selectorForClickableOfSearchNext()).each(function() {
+                    $(this).css('display', displayClickableOfNextSearch);
+                });
+            if (!appendResults && (data.results === null || data.results.length === 0)) {
+                $("#noResultText").css('display', 'inline');
+            } else {
+                $("#noResultText").css('display', 'none');
+            }
         }, "json");
     }
 }
