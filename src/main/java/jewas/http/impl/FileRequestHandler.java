@@ -53,7 +53,7 @@ public class FileRequestHandler extends AbstractRequestHandler {
                 Files.copyStreamTo(classloaderStream, filesystemStream);
             }
 
-            request.respondFile().file(new FileInputStream(extractedFileInCache));
+            request.respondFile().file(extractedFileInCache.toPath());
         } catch (IOException e) {
             e.printStackTrace();
             request.respondError(HttpStatus.NOT_FOUND);

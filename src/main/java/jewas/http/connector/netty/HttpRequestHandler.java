@@ -9,9 +9,16 @@ import jewas.http.impl.DefaultHttpRequest;
 import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.*;
 import org.jboss.netty.handler.codec.http.*;
+import org.jboss.netty.handler.ssl.SslHandler;
+import org.jboss.netty.handler.stream.ChunkedFile;
 import org.jboss.netty.util.CharsetUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.file.Path;
 import java.util.*;
 
 import static org.jboss.netty.handler.codec.http.HttpHeaders.Names.CONTENT_TYPE;
@@ -19,6 +26,7 @@ import static org.jboss.netty.handler.codec.http.HttpResponseStatus.CONTINUE;
 import static org.jboss.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
 public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
+    private final Logger logger = LoggerFactory.getLogger(HttpRequestHandler.class);
 
 	private final RequestHandler handler;
     private final List<jewas.http.data.HttpData> contentData = new ArrayList<jewas.http.data.HttpData>();
@@ -123,13 +131,67 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
 							return content(content.getBytes(CharsetUtil.UTF_8));
 						}
 
-                        @Override
-                        public jewas.http.HttpResponse content(byte[] content) {
+                        private jewas.http.HttpResponse content(byte[] content) {
                             nettyResponse.setContent(ChannelBuffers.copiedBuffer(content));
 
 							ChannelFuture future = e.getChannel().write(nettyResponse);
 							future.addListener(ChannelFutureListener.CLOSE);
 							return this;
+                        }
+
+                        @Override
+                        public jewas.http.HttpResponse content(Path path) {
+
+                            RandomAccessFile raf;
+                            try {
+                                raf = new RandomAccessFile(path.toFile(), "r");
+                            } catch (FileNotFoundException fnfe) {
+                                return status(HttpStatus.NOT_FOUND).content("Not found: " + path);
+                            }
+
+                            long fileLength = 0;
+                            try {
+                                fileLength = raf.length();
+                            } catch (IOException e1) {
+                                logger.warn("file length read error on " + path, e1);
+                                return status(HttpStatus.NOT_FOUND).content("Read error on: " + path);
+                            }
+
+                            Channel ch = e.getChannel();
+
+                            // Write the initial line and the header.
+                            ch.write(nettyResponse);
+
+                            // Write the content.
+                            ChannelFuture writeFuture;
+                            if (ch.getPipeline().get(SslHandler.class) != null) {
+                                // Cannot use zero-copy with HTTPS.
+                                try {
+                                    writeFuture = ch.write(new ChunkedFile(raf, 0, fileLength, 8192));
+                                } catch (IOException e1) {
+                                    logger.warn("read error on " + path, e1);
+                                    return this;
+                                }
+                            } else {
+                                // No encryption - use zero-copy.
+                                final FileRegion region =
+                                        new DefaultFileRegion(raf.getChannel(), 0, fileLength);
+                                writeFuture = ch.write(region);
+                                writeFuture.addListener(new ChannelFutureProgressListener() {
+                                    @Override
+                                    public void operationComplete(ChannelFuture future) {
+                                        region.releaseExternalResources();
+                                    }
+
+                                    @Override
+                                    public void operationProgressed(
+                                            ChannelFuture future, long amount, long current, long total) {
+                                    }
+                                });
+                            }
+                            writeFuture.addListener(ChannelFutureListener.CLOSE);
+
+                            return this;
                         }
 
                         @Override
