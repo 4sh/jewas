@@ -49,17 +49,11 @@ public class GetContentOfContentRoute extends AbstractRoute {
             @Override
             public void onRequest(HttpRequest request) {
 
-                InputStream content = null;
+                Path content = null;
                 String extension;
 
                 if (oi.id().startsWith("tmp_")) {
-                    Path filePath = TempFiles.getPath(oi.id());
-
-                    try {
-                        content = Files.newInputStream(filePath);
-                    } catch (IOException e) {
-                        System.out.println(e.getMessage());
-                    }
+                    content = TempFiles.getPath(oi.id());
 
                     extension = oi.id().split("\\.")[1];
                 } else {

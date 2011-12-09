@@ -10,7 +10,6 @@ import fr.fsh.bbeeg.user.pojos.User;
 import jewas.http.data.FileUpload;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -120,23 +119,14 @@ public class ContentResource {
 //        contentDao.updateContentOfContent(contentId, contentType, url);
 //    }
 
-    public InputStream getContentOfContent(Long contentId) {
+    public Path getContentOfContent(Long contentId) {
         String url = contentDao.getContentUrl(contentId);
 
         if (url == null || "".equals(url)) {
             return null;
         }
 
-        Path path = Paths.get(url);
-        InputStream stream = null;
-
-        try {
-            stream = Files.newInputStream(path);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return stream;
+        return Paths.get(url);
     }
 
     public String getContentOfContentExtension(Long contentId) {
