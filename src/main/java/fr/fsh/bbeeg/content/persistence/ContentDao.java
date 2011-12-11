@@ -362,11 +362,12 @@ public class ContentDao {
         }
 
         // Update the content in the DB
+        List<String> tags = contentDetail.header().tags();
         contentHeaderQueryTemplate.update("updateContent",
                 new QueryExecutionContext().buildParams()
                         .string("title", contentDetail.header().title())
                         .string("description", contentDetail.header().description())
-                        .string("tags", listTagsToString(contentDetail.header().tags()))
+                        .string("tags", listTagsToString(tags))
                         .bigint("id", contentIdToUse)
                         .date("lastModificationDate", currentDate)
                         .toContext());
@@ -374,10 +375,11 @@ public class ContentDao {
         List<Long> newDomainIds = new ArrayList<Long>();
 
         // Check tags
-        for (String tag : contentDetail.header().tags()) {
-            tagDao.createOrUpdateTag(tag);
+        if (tags != null) {
+            for (String tag : tags) {
+                tagDao.createOrUpdateTag(tag);
+            }
         }
-
         // Get current domain ids that are linked with the content.
         List<Long> domainsIds = getDomainIds(contentIdToUse);
 
