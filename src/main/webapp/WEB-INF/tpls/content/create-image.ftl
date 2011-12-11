@@ -31,7 +31,7 @@
         </#if>
 
         <#include "common/create-content.ftl">
-        <@createContent url="/content" type="IMAGE" extensions="png|jpg|pjeg|gif" extensionsMsgError="Seuls les formats PNG, JPEG et GIF sont supportés" createPrevisualizationObject="createImagePrevisualizationObject"/>
+        <@createContent url="/content" type="IMAGE" extensions="png|jpg|jpeg|gif" extensionsMsgError="Seuls les formats PNG, JPG, JPEG et GIF sont supportés" createPrevisualizationObject="createImagePrevisualizationObject"/>
 
     </div>
 </@mainTemplate>
