@@ -45,9 +45,9 @@ public class GetEditContentRoute extends AbstractRoute {
                         break;
                     case DOCUMENT: template = "content/create-document.ftl";
                         break;
-                    case AUDIO: template = "content/edit-audio.ftl";
+                    case AUDIO: template = "content/create-audio.ftl";
                         break;
-                    case VIDEO: template = "content/edit-video.ftl";
+                    case VIDEO: template = "content/create-video.ftl";
                         break;
                     case EEG: template = "content/edit-eeg.ftl";
                         break;

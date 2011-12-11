@@ -22,12 +22,9 @@
             $("#description").append("${content.header().description()}");
 
             // Load the content
-            $.ajax({
-                    url: "${content.url()}",
-                    success: function (data) {
-                        $("#content").append(data);
-                    }
-            });
+            var url = "${content.url()}";
+            var child = ${createPrevisualizationObject}(url);
+            $("#previsualizationContainer").empty().append(child);
 
             // Load the domains
             var domains = [];
@@ -75,7 +72,6 @@
     <form id="createContent" action="<#if content??>/content/${content.header().id()?c}<#else>${url}</#if>" method="post">
         <@createContentHeader/>
 
-
         <div class="sepa_horizontal" style="width: 635px;"></div>
 
         <div class="create_upload">
@@ -83,10 +79,9 @@
                 <span class="style_label">Sélectionnez votre fichier : </span>
                 <input id="upload-file-info" type="text" style="width:300px;">
                 <button id="upload" href="#">Parcourir</button>
-                <span id="upstatus"></span>
             </div>
+            <span id="upstatus"></span>
         </div>
-
 
         <div class="create_buttons bottom_space">
             <input type="submit" value="Enregistrer" />
@@ -94,9 +89,6 @@
         </div>
 
         <div id="previsualizationContainer" class="previewCenter">
-
         </div>
-
     </form>
-
 </#macro>

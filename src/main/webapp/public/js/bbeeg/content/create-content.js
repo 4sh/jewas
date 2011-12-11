@@ -1,6 +1,7 @@
 function ContentCreator(type, extensions, extensionsMsgError, previsualizationContainerId, createPrevisualizationObject) {
     var uploadedFiles = [];
     var currentUploadedFileId;
+    var contentCreator = this;
 
     this.loadDomains = function(domainIds) {
         console.log("domainIds", domainIds);
@@ -139,6 +140,7 @@ function ContentCreator(type, extensions, extensionsMsgError, previsualizationCo
 
         var interval;
         var uploader = null;
+
         new AjaxUpload(btnUpload, {
             responseType: 'json',
             name: 'file',
@@ -174,15 +176,13 @@ function ContentCreator(type, extensions, extensionsMsgError, previsualizationCo
             },
             onComplete : function(file, response){
                 currentUploadedFileId = response.fileId;
-
+                contentCreator.removeUploadedFiles();
                 uploadedFiles.push(response.fileId);
-
                 uploadStatus.text('Transfert terminé');
 
+
                 var child = createPrevisualizationObject("/content/content/" + currentUploadedFileId);
-
                 $('#previsualizationContainer').empty().append(child);
-
                 window.clearInterval(interval);
             }
         });
