@@ -234,14 +234,14 @@ header {
 	vertical-align:middle;
 }
 
-.menuleft_item {
-	float:left;
-    margin-right: 5px;
-    vertical-align:middle;
-}
-
 .menuright_item {
 	float:left;
+}
+
+.menuright_action {
+	margin-top: 2px;
+    margin-right: 4px;
+    font-weight: bold;
 }
 
 #input_recherche {
@@ -260,7 +260,8 @@ header {
 	background-image:url('/public/images/bbeeg/sepa_menu.jpg');
 	background-repeat: repeat-y;
 	margin-top:2px;
-	margin-right:3px;
+    margin-left:4px;
+	margin-right:6px;
 }
 
 .sepa_menu_left {
@@ -269,7 +270,7 @@ header {
     margin-top: 5px;
 }
 
-#userprofile{
+.userprofile{
 	margin-top:-4px;
 	margin-right:4px;
 	font-weight:bold;

@@ -5,9 +5,8 @@ function getConnectedUserNames(container) {
             $(container).children().remove();
             $("#userConnectedNameTemplate").tmpl(data).appendTo(container);
             // Build action menu which depends on the connected user role
-            var actionsContainer = $("#menuleft");
-            actionsContainer.children().remove();
-            $("#actionMenuTemplate").tmpl(data).appendTo(actionsContainer);
+            var actionsContainer = $("#menuright");
+            $("#actionMenuTemplate").tmpl(data).prependTo(actionsContainer);
         });
 }
 
