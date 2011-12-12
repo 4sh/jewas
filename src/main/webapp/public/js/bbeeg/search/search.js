@@ -72,7 +72,10 @@ function SearchQuery() {
      *
      */
     function contentSearch(searchContext, queryParams, templateApplied, appendResults, processResults) {
+        $(searchContext.progressIndicator()).css('display', 'block');
+        $(searchContext.selectorWhereResultsWillBeAppended()).empty();
         $.get(searchContext.targetForm().attr('action'), queryParams, function(data) {
+
             $(searchContext.selectorForClickableOfSearchNext()).each(function() {
                 this.disabled = false;
                 $("#noResultText").css('display', 'none');
@@ -82,6 +85,8 @@ function SearchQuery() {
             // If we are not in append mode, let's remember the last query and the server timestamp of this query
             // It will be used when searching in append mode ! (look above)
             if (!appendResults) {
+                 // Display search progress indicator
+                $(searchContext.progressIndicator()).css('display', 'inline');
                 lastQueryParameters = new QuerySnapshot().parameters(queryParams)
                     .serverTimestamp(data.serverTimestamp)
                     .searchContext(searchContext);
@@ -89,8 +94,8 @@ function SearchQuery() {
             // Updating last offset of lastQueryParameters
 
             lastQueryParameters.endingOffset(data.endingOffset);
-                       // In append mode, we want to directly pass to the template the search results
-                       // since we want to append only new results
+            // In append mode, we want to directly pass to the template the search results
+            // since we want to append only new results
 
             var templateParams;
             if (appendResults) {
@@ -116,6 +121,8 @@ function SearchQuery() {
                 searchContext.resultElement().html(html);
             }
 
+             $(searchContext.progressIndicator()).css('display', 'none');
+
             // Binding clickables for "next search"
             if (!appendResults) {
                 $(searchContext.selectorForClickableOfSearchNext()).each(function() {
@@ -134,9 +141,9 @@ function SearchQuery() {
             } else {
                 displayClickableOfNextSearch = "inline";
             }
-                $(searchContext.selectorForClickableOfSearchNext()).each(function() {
-                    $(this).css('display', displayClickableOfNextSearch);
-                });
+            $(searchContext.selectorForClickableOfSearchNext()).each(function() {
+                $(this).css('display', displayClickableOfNextSearch);
+            });
             if (!appendResults && (data.results === null || data.results.length === 0)) {
                 $("#noResultText").css('display', 'inline');
             } else {
@@ -264,6 +271,16 @@ SearchQuery.SearchContext = function() {
                 return _process;
             } else {
                 _process = __process;
+                return this;
+            }
+        }
+
+        var _progressIndicator;
+        this.progressIndicator = function(__progressIndicator) {
+            if (__progressIndicator == null) {
+                return _progressIndicator;
+            } else {
+                _progressIndicator = __progressIndicator;
                 return this;
             }
         }

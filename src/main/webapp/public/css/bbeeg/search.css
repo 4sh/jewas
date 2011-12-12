@@ -2,6 +2,12 @@
     color: #222526;
 }
 
+#progressIndicator {
+    margin: 0 auto;
+    width: 150px;
+    text-align: center;
+}
+
 .advanced_search_button {
     padding: 0 5px;
     font-size: 13px;

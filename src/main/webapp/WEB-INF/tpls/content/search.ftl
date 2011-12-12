@@ -287,6 +287,7 @@
             new SearchQuery.SearchContext().targetForm($("#simpleSearchForm"))
                 .resultElement($("#searchResultsComponent"))
                 .process(process)
+                .progressIndicator($("#progressIndicator"))
                 .globalResultTemplate($("#contentResult"))
                 .resultElementTemplate($("#contentLineResult"))
                 .selectorForClickableOfSearchNext("#searchNext")
@@ -297,6 +298,7 @@
             new SearchQuery.SearchContext().targetForm($("#advancedSearchForm"))
                 .resultElement($("#searchResultsComponent"))
                 .process(process)
+                .progressIndicator($("#progressIndicator"))
                 .globalResultTemplate($("#contentResult"))
                 .resultElementTemplate($("#contentLineResult"))
                 .selectorForClickableOfSearchNext("#searchNext")
@@ -422,9 +424,11 @@
         </form>
     </div>
 </div>
-
+<div id="progressIndicator">
+        <div>Recherche en cours</div>
+        <img src="/public/images/ajax/indicator_large.gif"/>
+    </div>
 <div id="searchResultsComponent" class="search-results-component">
-
 </div>
 <script id="criteriaSelectedItem" type="text/x-jquery-tmpl">
     <li class="search-choice"><span>{{= label}}</span><a href="#" name="{{= value}}" class="search-choice-close"></a></li>
