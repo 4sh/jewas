@@ -72,8 +72,10 @@ function SearchQuery() {
      *
      */
     function contentSearch(searchContext, queryParams, templateApplied, appendResults, processResults) {
-        $(searchContext.progressIndicator()).css('display', 'block');
-        $(searchContext.selectorWhereResultsWillBeAppended()).empty();
+        if (!appendResults) {
+            $(searchContext.progressIndicator()).css('display', 'block');
+            $(searchContext.selectorWhereResultsWillBeAppended()).empty();
+        }
         $.get(searchContext.targetForm().attr('action'), queryParams, function(data) {
 
             $(searchContext.selectorForClickableOfSearchNext()).each(function() {
