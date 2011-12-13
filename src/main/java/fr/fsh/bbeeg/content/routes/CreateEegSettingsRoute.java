@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 
 /**
  * @author driccio
@@ -74,7 +75,7 @@ public class CreateEegSettingsRoute extends AbstractRoute {
                 // Used as proxy for Visio SaveEegSettingsFileRoute: /content/eeg/settings/[id]/[mode]
                 try {
                     URL url = new URL(BBEEGConfiguration.INSTANCE.cliOptions().visioEegInternalUrl() +
-                            "/content/eeg/settings/" + qo.id() + "/" + qo.mode() + "?text=" + tqo.text());
+                            "/content/eeg/settings/" + qo.id() + "/" + qo.mode() + "?text=" + URLEncoder.encode(tqo.text(), "UTF-8"));
 
 
 
