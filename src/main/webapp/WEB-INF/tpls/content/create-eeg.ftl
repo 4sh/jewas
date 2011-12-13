@@ -111,6 +111,10 @@ useChosen=true>
                 <div class="style_label bottom_space">Sélectionnez les signaux à afficher :</div>
                 <div class="bottom_space"><select data-placeholder="Sélectionnez les signaux à afficher..." class="montage-signalsToDisplay chzn-select side-by-side clearfix" disabled multiple style="width:567px;"></select></div>
             </div>
+            <div id="initial-montage-component">
+                <span class="style_label bottom_space">Ajouter une opération:</span>
+                <button id="initial-add-button" class="montage-operation-add"  type="button"> + </button>
+            </div>
         </div>
     </div>
 </script>

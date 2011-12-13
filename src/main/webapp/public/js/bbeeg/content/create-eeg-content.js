@@ -98,6 +98,11 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
 
                 addVideo($('#videos'));
                 addMontage($('#displayConfig'));
+                $('#initial-add-button').bind('click', function () {
+                    addMontageOperation("#montages .montage");
+                    $('#initial-montage-component').css('display','none');
+                });
+
 
                 var max = eegInformations.eegDuration;
 
@@ -438,18 +443,19 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
 
         montage.find('.montage-signalsToDisplay').chosen();
 
-        addMontageOperation($('#montages .montage'));
-    };
-
-    function deleteMontage(element) {
-        $(element).remove();
+        //addMontageOperation($('#montages .montage'));
     };
 
     function addMontageOperation(container) {
         var montageOperation = $("#montageOperationItemTemplate").tmpl(null);
         montageOperation.appendTo(container);
 
-        montageOperation.find('.montage-operation-delete').bind('click', function () { deleteMontageOperation(montageOperation)});
+        montageOperation.find('.montage-operation-delete').bind('click', function () {
+            deleteMontageOperation(montageOperation);
+            if ($(".montage-operation-delete").length == 0) {
+                $('#initial-montage-component').css('display','block');
+            }
+        });
         montageOperation.find('.montage-operation-add').bind('click', function () { addMontageOperation(container)});
 
          $("#signalItemTemplate").tmpl(signals).appendTo(montageOperation.find('.montage-operation-s1'));
@@ -495,7 +501,6 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
 
         $('#allSignals').live('click', (function() {
            if ($(this).attr('checked')) {
-               signals = [];
                $('.montage-signalsToDisplay').attr('disabled', 'true');
                $('.montage-signalsToDisplay').val([]);
                $('.montage-signalsToDisplay').trigger("liszt:updated");
