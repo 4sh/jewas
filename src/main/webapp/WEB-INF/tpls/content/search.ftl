@@ -342,9 +342,6 @@
 </script>
 
 <div id="searchComponent">
-
-
-
     <div class='toggle'>
         <form action="/content/search" id="simpleSearchForm">
             <div class="search_container">
@@ -354,7 +351,6 @@
                     <a href="#"class="advanced_search_button">+</a>
                 </div>
             </div>
-
 
             <input name="searchMode" style="visibility: hidden;" value="${searchMode}"/>
          </form>
@@ -425,9 +421,9 @@
     </div>
 </div>
 <div id="progressIndicator">
-        <div>Recherche en cours</div>
-        <img src="/public/images/ajax/indicator_large.gif"/>
-    </div>
+    <div>Recherche en cours</div>
+    <img src="/public/images/ajax/indicator_large.gif"/>
+</div>
 <div id="searchResultsComponent" class="search-results-component">
 </div>
 <script id="criteriaSelectedItem" type="text/x-jquery-tmpl">
