@@ -40,8 +40,8 @@ public class GetLoginRoute extends AbstractRoute {
 
                     JsonResponse jsonResponse = request.respondJson();
                     Date date = new Date();
-                    date.setTime(date.getTime() + 1000*60*30);
-                    jsonResponse.addHeader(HttpHeaders.SET_COOKIE, "login=" + security.login() + "; domain=bbeeg.4sh.fr ; expires=" + date.toGMTString() + ";max-age=" + 60*30);
+                    date.setTime(date.getTime() + 1000*60*60);
+                    jsonResponse.addHeader(HttpHeaders.SET_COOKIE, "login=" + security.login() + "; domain=bbeeg.4sh.fr ; expires=" + date.toGMTString() + ";max-age=" + 60*60);
                     jsonResponse.object(resultObject,
                             new TypeToken<ConnectionResultObject<ConnectionResultObject.SuccessObject>>() {
                             }.getType());
