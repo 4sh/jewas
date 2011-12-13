@@ -74,7 +74,7 @@ def ENV_PROPERTIES = [
 ]
 
 group = "fr.4sh.bbeeg"
-def versionBase = "0.1"
+def versionBase = "1.0.beta"
 
 // handles releases gracefully
 gradle.taskGraph.whenReady {taskGraph ->
@@ -273,7 +273,7 @@ task startBBEEG(dependsOn: [initSsh, checkPropsForDeployment, startElasticSearch
     ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 2224,
 		command: """kill -9 \$(cat "${deployDirectory}/bbeeg.pid")""", trust: true, failonerror: false)
     ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 2224,
-		command: """rm -Rf ${cachedStaticResourcesRootDirectory}""", trust: true, failonerror: false)
+		command: """rm -rf ${cachedStaticResourcesRootDirectory}""", trust: true, failonerror: false)
     ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 2224,
 		command: """mkdir ${cachedStaticResourcesRootDirectory}""", trust: true, failonerror: true)
     // TODO: pass the http port here...
