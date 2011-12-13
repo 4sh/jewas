@@ -55,20 +55,6 @@
     <option value="{{= tag}}" {{if selected}} selected {{/if}}> {{= tag}} </option>
 </script>
 
-<#--    <div id="confirmationDialog" title="Succès">
-        <#if content??>
-            <p>Votre contenu a été modifié avec succès !</p>
-        <#else>
-            <p>Votre contenu a été créé avec succès !</p>
-        </#if>
-    </div>
-
-    <#if content??>
-        <h3>Modification d'un contenu</h3>
-    <#else>
-        <h3>Création d'un contenu</h3>
-    </#if>-->
-
     <form id="createContent" action="<#if content??>/content/${content.header().id()?c}<#else>${url}</#if>" method="post">
         <@createContentHeader/>
 
