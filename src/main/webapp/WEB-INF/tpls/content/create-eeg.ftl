@@ -48,13 +48,27 @@ useChosen=true>
                 <span class="style_label">Sélectionnez votre fichier video :</span>
                 <input class="upload-file-info" type="text" style="width:300px;"/>
                 <button class="upload" href="#">Parcourir</button>
-                <span class="upload-status"></span>
+                <div>
+                    <span class="upload-status"></span>
+                </div>
                 <br/>
             </div>
         </div>
         <div class='video-conf'>
-            <label class="style_label"> Début de la vidéo : </label> <input class="video-start-hours" type="text" style="width: 20px;"/> <span class="style_clock">h</span> <input class="video-start-minutes" type="text" style="width: 20px;"/> <span class="style_clock">min</span> <input class="video-start-seconds" type="text" style="width: 30px;"/> <span class="style_clock">s</span>
-            <span class="sepa_element">&mdash;</span><label class="style_label"> Fin de la vidéo : </label> <input class="video-stop-hours" type="text" style="width: 20px;"/> <span class="style_clock">h</span> <input class="video-stop-minutes" type="text" style="width: 20px;"/> <span class="style_clock">min</span> <input class="video-stop-seconds" type="text" style="width: 30px;"/> <span class="style_clock">s</span>
+            <label class="style_label"> Début de la vidéo : </label>
+            <input class="video-start-hours" type="text" style="width: 20px;" value="0"/>
+            <span class="style_clock">h</span>
+            <input class="video-start-minutes" type="text" style="width: 20px;" value="0"/>
+            <span class="style_clock">min</span>
+            <input class="video-start-seconds" type="text" style="width: 30px;" value="0"/>
+            <span class="style_clock">s</span>
+            <span class="sepa_element">&mdash;</span><label class="style_label"> Fin de la vidéo : </label>
+            <input class="video-stop-hours" type="text" style="width: 20px;"/>
+            <span class="style_clock">h</span>
+            <input class="video-stop-minutes" type="text" style="width: 20px;"/>
+            <span class="style_clock">min</span>
+            <input class="video-stop-seconds" type="text" style="width: 30px;"/>
+            <span class="style_clock">s</span>
         </div>
         <div class='video-conf-error-banner'></div>
     </div>
@@ -95,7 +109,7 @@ useChosen=true>
             </div>
             <div>
                 <div class="style_label bottom_space">Sélectionnez les signaux à afficher :</div>
-                <div class="bottom_space"><select class="montage-signalsToDisplay chzn-select side-by-side clearfix" disabled multiple style="width:567px;"></select></div>
+                <div class="bottom_space"><select data-placeholder="Sélectionnez les signaux à afficher..." class="montage-signalsToDisplay chzn-select side-by-side clearfix" disabled multiple style="width:567px;"></select></div>
             </div>
         </div>
     </div>
@@ -103,7 +117,10 @@ useChosen=true>
 
 <script id="montageOperationItemTemplate" type="text/x-jquery-tmpl">
      <div class="montage-operation">
-        <div class="style_label floatLeft"><div class="signal_label floatLeft"> Signal 1 : </div><select class="montage-operation-s1 chzn-select" style="width:170px;"></select></div>
+        <div class="style_label floatLeft">
+            <div class="signal_label floatLeft">Signal 1 : </div>
+            <select class="montage-operation-s1 chzn-select" style="width:170px;"></select>
+        </div>
         <span class="sepa_signal floatLeft">&mdash;</span>
         <div class="floatLeft">
             <select id="addorsub" style="width:45px;" class="montage-operation-operator">
@@ -112,8 +129,10 @@ useChosen=true>
             </select>
         </div>
         <span class="sepa_signal floatLeft">&mdash;</span>
-        <div class="style_label floatLeft"><div class="signal_label floatLeft">Signal 2 : </div><select class="montage-operation-s2 chzn-select side-by-side clearfix" style="width:170px;"></select></div>
-
+        <div class="style_label floatLeft">
+            <div class="signal_label floatLeft">Signal 2 : </div>
+            <select class="montage-operation-s2 chzn-select side-by-side clearfix" style="width:170px;"></select>
+        </div>
         <div class="new_signal_line">
             <button class="montage-operation-delete" type="button"> - </button>
             <button class="montage-operation-add"  type="button"> + </button>
@@ -138,13 +157,27 @@ useChosen=true>
                <span class="style_label">Sélectionnez votre fichier EEG :</span>
                 <input class="upload-file-info" type="text" style="width:300px;">
                 <button class="upload" href="#">Parcourir</button>
-                <span class="upload-status"></span>
+                <div>
+                    <span class="upload-status"></span>
+                </div>
             </div>
         </div>
 
-    <label for="eegStartHours" class="style_label"> Début de l'EEG : </label> <input id="eegStartHours" type="text" style="width: 20px;"> <span class="style_clock">h</span> <input id="eegStartMinutes" type="text" style="width: 20px;"/> <span class="style_clock">min</span> <input id="eegStartSeconds" type="text" style="width: 30px;"/> <span class="style_clock">s</span>
+    <label for="eegStartHours" class="style_label"> Début de l'EEG : </label>
+    <input id="eegStartHours" type="text" style="width: 20px;" value="0">
+    <span class="style_clock">h</span>
+    <input id="eegStartMinutes" type="text" style="width: 20px;" value="0"/>
+    <span class="style_clock">min</span>
+    <input id="eegStartSeconds" type="text" style="width: 30px;"  value="0"/>
+    <span class="style_clock">s</span>
     <span class="sepa_element">&mdash;</span>
-    <label for="eegStopHours" class="style_label"> Fin de l'EEG : </label> <input id="eegStopHours" type="text" style="width: 20px;"/> <span class="style_clock">h</span> <input id="eegStopMinutes" type="text" style="width: 20px;"/> <span class="style_clock">min</span> <input id="eegStopSeconds" type="text" style="width: 30px;"/> <span class="style_clock">s</span>
+    <label for="eegStopHours" class="style_label"> Fin de l'EEG : </label>
+    <input id="eegStopHours" type="text" style="width: 20px;"/>
+    <span class="style_clock">h</span>
+    <input id="eegStopMinutes" type="text" style="width: 20px;"/>
+    <span class="style_clock">min</span>
+    <input id="eegStopSeconds" type="text" style="width: 30px;"/>
+    <span class="style_clock">s</span>
     <div class='eegErrorBanner'></div>
     <br />
     <div id="videos"></div>

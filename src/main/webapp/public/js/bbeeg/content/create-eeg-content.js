@@ -88,12 +88,14 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
             '/content/eeg/informations/' + eegId,
             function success(data) {
                 eegInformations = $.parseJSON(data);
-
                 signals  = [];
-
                 for (var i = 0; i < eegInformations.signalsLabel.length; i++) {
                     signals.push({id: i, label: eegInformations.signalsLabel[i]});
                 }
+
+                /* Initialize max eeg duration input fields */
+                setTimeFromMilliSeconds(eegInformations.eegDuration, $('#eegStopHours')[0], $('#eegStopMinutes')[0], $('#eegStopSeconds')[0]);
+
                 addVideo($('#videos'));
                 addMontage($('#displayConfig'));
 
@@ -241,6 +243,25 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
         });
     }
 
+    function setTimeFromMilliSeconds(timeInMillis, hourInput, minuteInput, secondInput) {
+        if (timeInMillis == null) {
+            console.error("Time in millis", timeInMillis);
+            return;
+        }
+        if (!hourInput || !minuteInput || !secondInput) {
+            console.error("Missing input", hourInput, minuteInput, secondInput);
+            return;
+        }
+        var hours =  Math.round(timeInMillis / 3600000);
+        timeInMillis -= hours * 3600000;
+        var minutes = Math.round(timeInMillis / 60000);
+        timeInMillis -= minutes * 60000;
+        var seconds = Math.round(timeInMillis /1000);
+        hourInput.value = hours;
+        minuteInput.value = minutes;
+        secondInput.value = seconds;
+    }
+
     function getTimeInMilliSeconds(hours, minutes, seconds) {
         var time = 0;
         if (!!hours) {
@@ -274,7 +295,7 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
                 var start = getTimeInMilliSeconds(startHours, startMinutes, startSeconds);
                 var stop = getTimeInMilliSeconds(stopHours, stopMinutes, stopSeconds);
 
-                if (!!start && !!stop && (!!videoUploader && !!videoUploader.videoId)) {
+                if (start != null && stop != null && (!!videoUploader && !!videoUploader.videoId)) {
                     video.start = start;
                     video.stop = stop;
                     // TODO: use the right uploader.
@@ -300,6 +321,10 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
                     montage.signalsToDisplay = signalsToDisplay;
                 }
 
+                if (montage.signalsToDisplay.length !== 0) {
+                    montages.push(montage);
+                }
+
                 $(montageElt).find('.montage-operation').each(
                     function (operationIndex, operationElt) {
                         var s1 = $(operationElt).find('.montage-operation-s1')[0].value;
@@ -316,17 +341,13 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
                         }
                     }
                 );
-
-                if (montage.signalsToDisplay.length !== 0 && montage.operations.length !== 0) {
-                    montages.push(montage);
-                }
             }
         );
 
         return montages;
     }
 
-    function getEegSettings() {
+    function buildEegSettings() {
         var settings = {};
 
         settings.eegStart = getTimeInMilliSeconds($('#eegStartHours').val(), $('#eegStartMinutes').val(), $('#eegStartSeconds').val());
@@ -345,17 +366,15 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
     }
 
     function sendEegSettings(contentId, callAfter, mode) {
-        var eegSettings = getEegSettings();
-
+        var eegSettings = buildEegSettings();
+        console.log(JSON.stringify(eegSettings));
         var url = '/content/eeg/settings/'+ contentId;
 
         if (!mode ||'tmp' === mode) {
             url += '/' + mode;
         }
 
-        // Note the text is set as a query parameter because if set in data, then get an exception server side.
-        // TODO: Can be changed now
-        $.ajaxPut(url + '?text='+JSON.stringify(eegSettings),
+        $.ajaxPut(url + "?text=" + JSON.stringify(eegSettings),
             null,
             //eegSettings,
             function(data){
@@ -380,13 +399,12 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
     }
 
     function previsualizeAction() {
-        // Save eeg settings in tmp mode
         sendEegSettings(eegId, buildPrevisualization, 'tmp');
     }
 
     function addVideo(container) {
         var videoItem = $("#videoItemTemplate").tmpl();
-
+        $(container).empty();
         videoItem.appendTo(container);
 
         createUploader(
@@ -404,40 +422,23 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
                 },
                 onCompleteCallback: function (uploader, response) {
                     uploader.videoId = response.fileId;
+                    setTimeFromMilliSeconds(eegInformations.eegDuration, $('.video-stop-hours')[0], $('.video-stop-minutes')[0], $('.video-stop-seconds')[0]);
+                    sendEegSettings(eegId, null, 'tmp');
                 }
             }
         );
-
-         videoItem.find('.video-start').keyup(function () {
-             var min = $('#eegStart').val();
-
-             if (!!min) {
-                 min = 0;
-             }
-
-             if(Number(this.value) < min) {
-                 this.value = min;
-             }
-        });
-
-        videoItem.find('.video-stop').keyup(function () {
-            var max = $('#eegStop').val();
-
-            if(Number(this.value) > max) {
-                this.value = max;
-            }
-        });
     };
 
     function addMontage(container) {
         var montage = $("#montageItemTemplate").tmpl(null);
+        $(container).empty();
         montage.appendTo(container);
 
         $("#signalItemTemplate").tmpl(signals).appendTo(montage.find('.montage-signalsToDisplay'));
 
         montage.find('.montage-signalsToDisplay').chosen();
 
-        addMontageOperation($('#montages'));
+        addMontageOperation($('#montages .montage'));
     };
 
     function deleteMontage(element) {
@@ -492,7 +493,7 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
         $("#zoom").chosen();
         $("#frameDuration").chosen();
 
-        /*$('#allSignals').live('click', (function() {
+        $('#allSignals').live('click', (function() {
            if ($(this).attr('checked')) {
                signals = [];
                $('.montage-signalsToDisplay').attr('disabled', 'true');
@@ -502,7 +503,7 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
                $('.montage-signalsToDisplay').removeAttr('disabled');
                $('.montage-signalsToDisplay').trigger("liszt:updated");
            }
-        }));*/
+        }));
 
         $("#createContent").submit(function(){
             var form = this;
