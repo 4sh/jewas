@@ -85,7 +85,7 @@
 <body>
 <script id="actionMenuTemplate" type="text/x-jquery-tmpl">
       {{if role != 'student'}}
-        <a class="createNewContent menuright_item menuright_action">Créer</a>
+        <a class="createNewContent menuright_item menuright_action hand_cursor">Créer</a>
         <div class="sepa_menu menuright_item"></div>
         <a class ="menuright_item menuright_action" href="/content/search-user-content.html">Gérer</a>
         <div class="sepa_menu menuright_item "></div>
