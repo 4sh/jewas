@@ -1,6 +1,6 @@
 package fr.fsh.bbeeg.content.routes;
 
-import fr.fsh.bbeeg.common.resources.ObjectId;
+import fr.fsh.bbeeg.common.resources.SuccessObject;
 import fr.fsh.bbeeg.content.resources.ContentResource;
 import jewas.http.*;
 import jewas.http.impl.AbstractRequestHandler;
@@ -16,12 +16,11 @@ public class ReIndexContentsInElasticSearchRoute extends AbstractRoute {
 
     @Override
     protected RequestHandler onMatch(HttpRequest request, Parameters parameters) {
-        final ObjectId oi = toQueryObject(parameters, ObjectId.class);
-
         return new AbstractRequestHandler() {
             @Override
             public void onRequest(HttpRequest request) {
                 contentResource.reIndexAllInElasticSearch();
+                request.respondJson().object(new SuccessObject().success(true));
             }
         };
     }

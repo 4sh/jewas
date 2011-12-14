@@ -35,6 +35,7 @@ public class GetViewContentRoute extends AbstractRoute {
             public void onRequest(HttpRequest request) {
                 Map<String, Object> params = new HashMap<String, Object>();
                 ContentDetail contentDetail = contentResource.getContentDetail(oi.id());
+                contentResource.incrementPopularity(oi.id());
                 params.put("content", contentDetail);
 
                 String template;

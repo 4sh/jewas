@@ -22,6 +22,8 @@ import org.elasticsearch.index.query.*;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortOrder;
 import org.joda.time.DateMidnight;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -39,10 +41,16 @@ import static org.elasticsearch.index.query.QueryBuilders.*;
  * @author driccio
  */
 public class ContentDao {
+
+    /**
+     * Class logger.
+     */
+    private static final Logger logger = LoggerFactory.getLogger(ContentDao.class);
+
     private Client client;
     private QueryTemplate<ContentHeader> contentHeaderQueryTemplate;
     private QueryTemplate<ContentDetail> contentDetailQueryTemplate;
-     private QueryTemplate<Long> idQueryTemplate;
+    private QueryTemplate<Long> idQueryTemplate;
     private UserDao userDao;
     private DomainDao domainDao;
     private TagDao tagDao;
@@ -77,7 +85,6 @@ public class ContentDao {
         this.contentHeaderQueryTemplate =
                 new QueryTemplate<ContentHeader>(dataSource, new ContentRowMapper())
                         .addQuery("selectById", "select * from Content where id = :id")
-                        .addQuery("selectByIds", "select * from Content where id in :ids")
                         .addQuery("selectByUserId", "select * from Content where user_ref = :userId")
                         .addQuery("selectAll", "select * from Content")
                         .addQuery("selectUrl", "select FILE_URI from Content where id = :id")
@@ -86,24 +93,14 @@ public class ContentDao {
                                         "(select * from Content where status = :status " +
                                         "order by id desc) " +
                                         "where ROWNUM <= :limit")
-                        .addQuery("selectLimitedPopular", // TODO: change request or remove it. Use elasticSearch insteed
+                        .addQuery("selectLimitedPopular",
+                                "select * from " +
+                                        "(select * from Content where status = :status ORDER BY POPULARITY DESC) " +
+                                        "where ROWNUM <= :limit")
+                        .addQuery("selectLimitedLastViewed",
                                 "select * from " +
                                         "(select * from Content where status = :status) " +
                                         "where ROWNUM <= :limit")
-                        .addQuery("selectLimitedLastViewed", // TODO: change request or remove it. Use elasticSearch insteed
-                                "select * from " +
-                                        "(select * from Content where status = :status) " +
-                                        "where ROWNUM <= :limit")
-                        .addQuery("simpleSearch",
-                                "select * from " +
-                                        "(select *, ROWNUM as rnum" +
-                                        " from (select * from Content " +
-                                        "  where title like :textToSearch" +
-                                        "  and LAST_MODIFICATION_DATE <= :serverTimestamp" +
-                                        "  and status in :statuses" +
-                                        "  and (:userId IS NULL or AUTHOR_REF = :userId)" +
-                                        " ) where ROWNUM <= :endOffset) " +
-                                        "where rnum >= :beginOffset")
                         .addQuery("count", "select count(*) as COUNT from Content where status = :status")
                         .addQuery("insert", "INSERT INTO CONTENT (ID, TITLE, DESCRIPTION, CREATION_DATE, LAST_MODIFICATION_DATE, STATUS, CONTENT_TYPE, AUTHOR_REF, CONTENT_ANCESTOR_REF, TAGS) " +
                                 "VALUES (CONTENT_SEQ.nextval, :title, :description, :creationDate, :lastModificationDate, 0, :contentType, :authorId, :ancestorId, :tags)")
@@ -120,6 +117,7 @@ public class ContentDao {
                         .addQuery("updateStatus", "UPDATE CONTENT " +
                                 "SET STATUS = :status, LAST_MODIFICATION_DATE = :lastModificationDate "+
                                 "WHERE ID = :id")
+                        .addQuery("incrementPopularity", "UPDATE CONTENT SET POPULARITY = POPULARITY + 1 WHERE ID = :id AND STATUS in :statuses")
                         .addQuery("addComment", "INSERT INTO CONTENT_COMMENT (ID, CONTENT_REF, COMMENT) VALUES (CONTENT_COMMENT_SEQ.nextval, :id, :comment)");
 
        this.contentDetailQueryTemplate =
@@ -151,15 +149,6 @@ public class ContentDao {
         return new ContentDetail().header(contentHeader).url("/content/content/" + contentHeader.id());
     }
 
-    public List<ContentHeader> getAllContentToRead() {
-        List<ContentHeader> entries = new ArrayList<ContentHeader>();
-        contentHeaderQueryTemplate.select(entries, "selectAll",
-                new QueryExecutionContext().buildParams().toContext()
-        );
-
-        return entries;
-    }
-
     public void fetchRecentContents(List<ContentHeader> contentHeaders, int limit) {
         contentHeaderQueryTemplate.select(contentHeaders, "selectLimitedRecent",
                 new QueryExecutionContext()
@@ -170,6 +159,24 @@ public class ContentDao {
         );
     }
 
+     /**
+      * Increments by one the number of times this content has been visualized.
+      * @param contentId the identifier of the content
+      */
+     public void incrementPopularity(Long contentId) {
+         logger.info("Increment number of views for content id: " + contentId);
+         this.contentHeaderQueryTemplate.update("incrementPopularity", new QueryExecutionContext()
+                 .buildParams()
+                 .bigint("id", contentId)
+                 .array("statuses", ContentStatus.VALIDATED.ordinal())
+                 .toContext());
+     }
+
+    /**
+     * Fetches the most popular contents which have been validated.
+     * @param contentHeaders the result list.
+     * @param limit the number of contents to fetch.
+     */
     public void fetchPopularContent(List<ContentHeader> contentHeaders, int limit) {
         contentHeaderQueryTemplate.select(contentHeaders, "selectLimitedPopular",
                 new QueryExecutionContext()
@@ -256,14 +263,15 @@ public class ContentDao {
         List<ContentDetail> contents = new ArrayList<ContentDetail>();
         contentDetailQueryTemplate.select(contents, "selectAll",
                 new QueryExecutionContext().buildParams().toContext());
-
+        logger.info("Start re-index contents from database into elastic search...");
         for(ContentDetail contentDetail : contents) {
             try {
                 insertContentInElasticSearch(contentDetail.header().id());
             } catch (IOException e) {
-                e.printStackTrace();  //TODO: To change body of catch statement use File | Settings | File Templates.
+                logger.error("Failed to insert content into elastic search. Content Id: " + contentDetail.header().id(), e);
             }
         }
+        logger.info("Re-index contents operation completed");
     }
 
     // This method is not optimized.

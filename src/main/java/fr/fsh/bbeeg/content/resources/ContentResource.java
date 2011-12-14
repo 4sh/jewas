@@ -89,7 +89,6 @@ public class ContentResource {
     }
 
     public void updateContentOfContent(Long contentId, String fileId) {
-        // TODO: take into account contentType
         Path sourcePath = TempFiles.getPath(fileId);
 
         String extension = fileId.split("\\.")[1];
@@ -104,20 +103,6 @@ public class ContentResource {
 
         contentDao.updateContentOfContent(contentId, targetPath.toString());
     }
-//
-//     public void updateContentOfContent(Long contentId, String fileId) {
-//        // TODO: take into account contentType
-//        String url = contentPath + contentId + "." + extension;
-//        Path path = Paths.get(url);
-//
-//         try {
-//             fileUpload.toFile(path.toFile());
-//         } catch (IOException e) {
-//             e.printStackTrace();
-//         }
-//
-//        contentDao.updateContentOfContent(contentId, contentType, url);
-//    }
 
     public Path getContentOfContent(Long contentId) {
         String url = contentDao.getContentUrl(contentId);
@@ -163,5 +148,13 @@ public class ContentResource {
 
     public void reIndexAllInElasticSearch() {
         contentDao.reIndexAllInElasticSearch();
+    }
+
+    /**
+     * Increment the stored count of views for this content.
+     * @param contentId the content identifier.
+     */
+    public void incrementPopularity(Long contentId) {
+        contentDao.incrementPopularity(contentId);
     }
 }
