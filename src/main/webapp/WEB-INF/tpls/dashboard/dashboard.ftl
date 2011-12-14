@@ -23,13 +23,13 @@
                 <img src="/public/images/bbeeg/calendar.png"/>
                 {{= creationDate}}  &nbsp;
                 <img src="/public/images/bbeeg/author.png"/>
-                {{= author.firstName}} {{= author.lastName}}
+                <a href="mailto:{{= author.email}}">{{= author.firstName}} {{= author.lastName}}</a>
             </div>
         </div>
     </script>
 
     <script id="authorItemTemplate" type="text/html">
-        <li> {{= firstName}} {{= lastName}} </li>
+        <li> <a href="mailto:{{= email}}">{{= firstName}} {{= lastName}}</a> </li>
     </script>
 
     <script id="tagItemTemplate" type="text/html">
@@ -55,7 +55,7 @@
             <ul class="panel_list">
                 <li class="createNewContent"><a class="hand_cursor">Créer un nouveau contenu</a></li>
                 <li><a href="/content/search-content-to-treat.html">Administrer les contenus</a></li>
-                <li><a>Administrer les domaines</a></li>
+                <li>Administrer les domaines</li>
             </ul>
         {{/if}}
 

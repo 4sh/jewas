@@ -466,7 +466,7 @@
         <div class="left_part hand_cursor" onclick="viewContent({{= id}})">
             <div class="icon_type {{= contentHelper.getIcon(type)}}"></div>
             <div class="content-result-title"><a href="/content/{{= id}}/view.html">{{= title}}</a></div>
-            <div class="content-result-author"><img src="/public/images/bbeeg/author.png"/>{{= author.firstName}} {{= author.lastName}}</div>
+            <div class="content-result-author"><img src="/public/images/bbeeg/author.png"/><a href="mailto:{{= author.email}}">{{= author.firstName}} {{= author.lastName}}</a> </div>
             <div class="content-result-creation-date"><img src="/public/images/bbeeg/calendar.png"/> {{= creationDate}}</div>
         </div>
 
