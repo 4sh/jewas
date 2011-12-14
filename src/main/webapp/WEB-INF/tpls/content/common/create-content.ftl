@@ -4,6 +4,8 @@
 
 <link rel="stylesheet" href="/public/css/bbeeg/create.css" >
 <script type="application/javascript" src="/public/js/bbeeg/content/create-content.js"></script>
+<script type="application/javascript" src="/public/js/bbeeg/content/content-helper.js"></script>
+
 <script type="application/javascript">
     $( function() {
         var contentCreator = new ContentCreator("${type}", "${extensions}", "${extensionsMsgError}", "previsualizationContainer", ${createPrevisualizationObject});
@@ -13,36 +15,28 @@
             history.go(-1);
         });
 
+        var domains = [];
+        var tags = [];
         <#if content??>
-
             // Load the title
             $("#title").val("${content.header().title()}");
-
             // Load the description
             $("#description").append("${content.header().description()}");
-
             // Load the content
             var url = "${content.url()}";
             var child = ${createPrevisualizationObject}(url);
             $("#previsualizationContainer").empty().append(child);
-
             // Load the domains
-            var domains = [];
             <#list content.header().domains() as item>
                 domains.push(${item.id()?c});
             </#list>
-            contentCreator.loadDomains(domains);
-
             // Load the tags
-            var tags = [];
             <#list content.header().tags() as item>
                 tags.push("${item}");
             </#list>
-            contentCreator.loadTags(tags)
-        <#else>
-            contentCreator.loadDomains([]);
-            contentCreator.loadTags([]);
         </#if>
+        contentHelper.loadDomains($("#domains"), $("#domainItemTemplate"), domains);
+        contentHelper.loadTags($("#tags"), $("#tagItemTemplate"), tags);
     });
 </script>
 <script id="authorItemTemplate" type="text/x-jquery-tmpl">

@@ -3,56 +3,6 @@ function ContentCreator(type, extensions, extensionsMsgError, previsualizationCo
     var currentUploadedFileId;
     var contentCreator = this;
 
-    this.loadDomains = function(domainIds) {
-        console.log("domainIds", domainIds);
-        $.getJSON(
-            '/domain/all',
-            function success(data) {
-                var container = $("#domains");
-                container.children().remove();
-                var selectedDomains = {};
-                for (var i=0; i < domainIds.length; i++) {
-                    selectedDomains[domainIds[i]]=true;
-                }
-                for (var j=0; j < data.length; j++) {
-                    if (selectedDomains[data[j].id]) {
-                        data[j].selected = true;
-                    } else {
-                        data[j].selected = false;
-                    }
-                }
-                $("#domainItemTemplate").tmpl(data).appendTo(container);
-                $("#domains").trigger("liszt:updated");
-            }
-        );
-    }
-
-    this.loadTags = function(tags) {
-        console.log("selected tags:", tags);
-        $.getJSON(
-            '/tags/all',
-            function success(data) {
-                var container = $("#tags");
-                container.children().remove();
-
-                var selectedTags = {};
-
-                for (var i = 0; i < tags.length; i++) {
-                    selectedTags[tags[i]] = true;
-                }
-                for (var j = 0; j < data.length; j++) {
-                    if (selectedTags[data[j].tag]) {
-                        data[j].selected = true;
-                    } else {
-                        data[j].selected = false;
-                    }
-                }
-                $("#tagItemTemplate").tmpl(data).appendTo(container);
-                $("#tags").trigger("liszt:updated");
-            }
-        );
-    }
-
     function getDomains(domainIds) {
         var domains = [];
 

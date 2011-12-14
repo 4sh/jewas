@@ -9,7 +9,7 @@
 <@mainTemplate
     title="Ecran d'accueil"
     selectedMenuItem=selectMenu
-    scripts=["/public/js/bbeeg/search/search.js", "/public/js/bbeeg/content/contentHelper.js", "/public/js/bbeeg/common/widgets/chainedSelect.js"]
+    scripts=["/public/js/bbeeg/search/search.js", "/public/js/bbeeg/content/content-helper.js", "/public/js/bbeeg/common/widgets/chainedSelect.js"]
     stylesheets=["/public/css/bbeeg/search.css"]
     useChosen=true>
 <script>
@@ -334,8 +334,8 @@
         });
 
         extractSearchCriterionFromUrl();
-        // If we manage the connected user contents, display them immediately
-        <#if searchMode == 1>
+        // If we manage the connected user contents or we administrate validated contents, display them immediately
+        <#if searchMode == 1 || searchMode == 2>
         $('#simpleSearchButton').click();
         </#if>
     });

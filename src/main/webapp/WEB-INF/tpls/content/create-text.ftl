@@ -11,7 +11,8 @@
                stylesheets=["/public/css/bbeeg/create.css"]
                scripts=[chosenJS,
                         "/public/js/jewas/jewas-forms.js",
-                        "/public/js/bbeeg/content/create-text.js"]
+                        "/public/js/bbeeg/content/create-text.js",
+                        "/public/js/bbeeg/content/content-helper.js"]
                useChosen=true>
 
     <div class="create_center">
@@ -28,45 +29,36 @@
             <option value="{{= tag}}" {{if selected}} selected {{/if}}> {{= tag}} </option>
         </script>
 
-            <script type="application/javascript">
-                $(
-                    function() {
-                        <#if content??>
-                            
-                            // Load the title
-                            $("#title").val("${content.header().title()}");
-
-                            // Load the description
-                            $("#description").append("${content.header().description()}");
-
-                            // Load the content
-                            $.ajax({
-                                url: "${content.url()}",
-                                success: function (data) {
-                                    $("#content").append(data);
-                                }
-                            });
-
-                            // Load the domains
-                            var domains = [];
-                            <#list content.header().domains() as item>
-                                domains.push(${item.id()?c});
-                            </#list>
-                            loadDomains(domains);
-
-                             // Load the tags
-                            var tags = [];
-                            <#list content.header().tags() as item>
-                                tags.push("${item}");
-                            </#list>
-                            loadTags(tags);
-                        <#else>
-                            loadDomains([]);
-                            loadTags([]);
-                        </#if>
+        <script type="application/javascript">
+            $(function() {
+                var domains = [];
+                var tags = [];
+                <#if content??>
+                    // Load the title
+                    $("#title").val("${content.header().title()}");
+                    // Load the description
+                    $("#description").append("${content.header().description()}");
+                    // Load the content
+                    $.ajax({
+                        url: "${content.url()}",
+                        success: function (data) {
+                            $("#content").append(data);
                         }
-                );
-            </script>
+                    });
+                    // Load the domains
+                    <#list content.header().domains() as item>
+                        domains.push(${item.id()?c});
+                    </#list>
+                    // Load the tags
+                    <#list content.header().tags() as item>
+                        tags.push("${item}");
+                    </#list>
+                </#if>
+                contentHelper.loadDomains($("#domains"), $("#domainItemTemplate"), domains);
+                contentHelper.loadTags($("#tags"), $("#tagItemTemplate"), tags);
+            }
+            );
+        </script>
 
         <div id="confirmationDialog" title="Succès">
             <#if content??>

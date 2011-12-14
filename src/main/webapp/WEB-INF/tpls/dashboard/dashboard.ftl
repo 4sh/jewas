@@ -7,7 +7,7 @@
                  "/public/js/tagcloud/jquery.tagcloud-0.5.0.js",
                  "/public/js/tinysort/jquery.tinysort.js",
                  "/public/js/panel/ui.panel.js",
-                 "/public/js/bbeeg/content/contentHelper.js",
+                 "/public/js/bbeeg/content/content-helper.js",
                  "/public/js/bbeeg/dashboard/dashboard.js"]
         stylesheets=["/public/css/tabs/tabs.css",
                      "/public/css/jqcloud/jqcloud.css",
@@ -55,7 +55,7 @@
             <ul class="panel_list">
                 <li class="createNewContent"><a class="hand_cursor">Créer un nouveau contenu</a></li>
                 <li><a href="/content/search-content-to-treat.html">Administrer les contenus</a></li>
-                <li><a href="">Administrer les domaines</a></li>
+                <li><a>Administrer les domaines</a></li>
             </ul>
         {{/if}}
 
