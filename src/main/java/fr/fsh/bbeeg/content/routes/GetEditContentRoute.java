@@ -2,7 +2,6 @@ package fr.fsh.bbeeg.content.routes;
 
 import fr.fsh.bbeeg.common.resources.ObjectId;
 import fr.fsh.bbeeg.content.pojos.*;
-import fr.fsh.bbeeg.content.pojos.ContentType;
 import fr.fsh.bbeeg.content.resources.ContentResource;
 import fr.fsh.bbeeg.content.resources.EegResource;
 import jewas.http.*;
@@ -49,15 +48,13 @@ public class GetEditContentRoute extends AbstractRoute {
                         break;
                     case VIDEO: template = "content/create-video.ftl";
                         break;
-                    case EEG: template = "content/edit-eeg.ftl";
+                    case EEG: {
+                        template = "content/create-eeg.ftl";
+                        eegResource.copyContentToTmp(oi.id());
                         break;
+                    }
                     default: template = "content/create-text.ftl";
                 }
-
-                if (ContentType.EEG.equals(contentDetail.header().type())) {
-                    eegResource.cleanTmp(oi.id());
-                }
-
                 request.respondHtml().content(Templates.process(template, params));
             }
         };

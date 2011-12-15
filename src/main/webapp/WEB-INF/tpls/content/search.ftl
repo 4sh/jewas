@@ -22,18 +22,85 @@
         }
     }
 
-    function updateStatus(containerId, contentId, status, comment, callback) {
-        $.post('/content/' + contentId + '/status/' + status,
-            "comment="+comment,
-            function (data) {
-                callback();
-            }
+    function updateStatus(containerId, contentId, updateStatusData, callback) {
+        $.post('/content/status/' + contentId,
+                updateStatusData,
+                function (data) {
+                    callback();
+                }
         );
     }
 
+    function loadPublicationDialogContent(contentId, container) {
+               console.log("Load publication comments for content: ", contentId);
+               var publicationTextElt = container.find("#publishCommentMsg");
+               var startPublicationDate = container.find("#startPublicationDate");
+               var endPublicationDate = container.find("#endPublicationDate");
+
+               $.getJSON("/content/status/" + contentId,
+                       function success(data) {
+                           publicationTextElt.val(data.publicationComments);
+                           startPublicationDate.text(data.header.startPublicationDate);
+                           endPublicationDate.text(data.header.endPublicationDate);
+                       });
+           }
+
+        function displayPublicationDialog(contentId) {
+               var publicationDialog = $("#publishContentDialog");
+               loadPublicationDialogContent(contentId, publicationDialog);
+               publicationDialog.dialog(
+                       {   show: 'slide',
+                           hide: 'slide',
+                           width: '50%',
+                           buttons: [
+                               {
+                                   text: "Annuler",
+                                   click: function() {
+                                       $(this).dialog("close");
+                                   }
+                               },
+                               {
+                                   text: "Valider",
+                                   click: function() {
+                                       $(this).dialog("close");
+                                   }
+                               }
+                           ]
+                       });
+           }
+
+    function loadRejectionDialogContent(contentId, container) {
+           console.log("Load rejection comments for content: ", contentId);
+           var rejectionTextElt = container.find("textarea");
+           var startPublicationDate = container.find("#startPublicationDate1");
+           var endPublicationDate = container.find("#endPublicationDate1");
+
+           $.getJSON("/content/status/" + contentId,
+                   function success(data) {
+                       rejectionTextElt.val(data.rejectionComments);
+                       if(!!data.header.startPublicationDate) {
+                           startPublicationDate.text(data.header.startPublicationDate);
+                       } else {
+                           startPublicationDate.text("");
+                       }
+                       if (!!data.header.endPublicationDate) {
+                           endPublicationDate.text(data.header.endPublicationDate);
+                       } else {
+                           endPublicationDate.text("");
+                       }
+
+                   });
+       }
+
     <#if searchMode == 1>
-    function sendUpdateStatus(containerId, contentId, status, comment) {
-        updateStatus(containerId, contentId, status, comment,
+    function sendUpdateStatus(containerId, contentId, status, comment, startPublicationDate, endPublicationDate) {
+        var updateStatusData = {};
+        updateStatusData.status = status;
+        updateStatusData.comment = comment;
+        updateStatusData.startPublicationDate = startPublicationDate;
+        updateStatusData.endPublicationDate = endPublicationDate;
+
+        updateStatus(containerId, contentId, updateStatusData,
             function () {
                 $("#updateStatusSuccessDialog").dialog({show: 'slide', hide: 'slide'});
                 if (status === 'DELETED') {
@@ -49,6 +116,7 @@
         );
     }
 
+
     function publishContent(containerId, contentId, status) {
         var newStatus = null;
 
@@ -59,7 +127,37 @@
         }
 
         if (newStatus !== null) {
-            sendUpdateStatus(containerId, contentId, newStatus, '');
+            $("#publishContentDialog").dialog(
+                    {
+                        show: 'slide',
+                        open: function () {
+                            // For the date picker not to be displayed behind the dialog 
+                            var dialogZindex = $(this).parents(".ui-dialog").css("z-index");
+                            $("#ui-datepicker-div").css("z-index", dialogZindex + 12 +"!Important");
+                        },
+                        hide: 'slide',
+                        width: '50%',
+                        buttons: [
+                            {
+                                text: "Annuler",
+                                click: function() {
+                                    $(this).dialog("close");
+                                }
+                            },
+                            {
+                                text: "Valider",
+                                click: function() {
+                                    var publicationDialog = $("#publishContentDialog");
+                                    sendUpdateStatus(containerId, contentId, newStatus,
+                                    publicationDialog.find("#publishCommentMsg").val(),
+                                    publicationDialog.find("#startPublicationDate").val(),
+                                    publicationDialog.find("#endPublicationDate").val());
+                                    $(this).dialog("close");
+                                }
+                            }
+                        ]
+                    });
+
         }
     }
 
@@ -104,63 +202,95 @@
             sendUpdateStatus(containerId, contentId, newStatus, '');
         }
     }
+
+       function displayRejectionDialog(contentId) {
+           var rejectionDialog = $("#rejectReasonDialog");
+           loadRejectionDialogContent(contentId, rejectionDialog);
+           rejectionDialog.dialog(
+                   {   show: 'slide',
+                       hide: 'slide',
+                       width: '50%',
+                       buttons: [
+                           {
+                               text: "Annuler",
+                               click: function() {
+                                   $(this).dialog("close");
+                               }
+                           },
+                           {
+                               text: "Valider",
+                               click: function() {
+                                   $(this).dialog("close");
+                               }
+                           }
+                       ]
+                   });
+       }
     </#if>
 
     <#if searchMode == 2>
-        function sendUpdateStatus(containerId, contentId, status, comment) {
-            updateStatus(containerId, contentId, status, comment,
-                    function () {
-                        $("#" + containerId).remove();
-                    }
-            );
+    function sendUpdateStatus(containerId, contentId, status, comment) {
+        var updateStatusData = {};
+        updateStatusData.status = status;
+        updateStatusData.comment = comment;
+
+        updateStatus(containerId, contentId, updateStatusData,
+                function () {
+                    $("#" + containerId).remove();
+                }
+        );
+    }
+
+    function acceptContent(containerId, contentId, status) {
+        var newStatus = null;
+
+        if (status === "TO_BE_VALIDATED") {
+            newStatus = 'VALIDATED';
+        } else {
+            if (status === "TO_BE_DELETED") {
+                newStatus = 'DELETED';
+            }
+            else {
+                $("#updateStatusImpossible").dialog({show: 'slide', hide: 'slide'});
+            }
         }
 
-        function acceptContent(containerId, contentId, status) {
-            var newStatus = null;
+        if (newStatus !== null) {
+            sendUpdateStatus(containerId, contentId, newStatus, '');
+        }
+    }
 
-            if (status === "TO_BE_VALIDATED") {
+    function rejectContentCallback(containerId, contentId, status, comment) {
+        var newStatus = null;
+
+        if (status === "TO_BE_VALIDATED") {
+            newStatus = 'REJECTED';
+        } else {
+            if (status === "TO_BE_DELETED") {
                 newStatus = 'VALIDATED';
-            } else {
-                if (status === "TO_BE_DELETED") {
-                    newStatus = 'DELETED';
-                }
-                else {
-                    $("#updateStatusImpossible").dialog({show: 'slide', hide: 'slide'});
-                }
             }
-
-            if (newStatus !== null) {
-                sendUpdateStatus(containerId, contentId, newStatus, '');
+            else {
+                $("#updateStatusImpossible").dialog({show: 'slide', hide: 'slide'});
             }
         }
 
-        function rejectContentCallback(containerId, contentId, status, comment) {
-            var newStatus = null;
-
-            if (status === "TO_BE_VALIDATED") {
-                newStatus = 'REJECTED';
-            } else {
-                if (status === "TO_BE_DELETED") {
-                    newStatus = 'VALIDATED';
-                }
-                else {
-                    $("#updateStatusImpossible").dialog({show: 'slide', hide: 'slide'});
-                }
-            }
-
-            if (newStatus !== null) {
-                sendUpdateStatus(containerId, contentId, newStatus, comment);
-            }
+        if (newStatus !== null) {
+            sendUpdateStatus(containerId, contentId, newStatus, comment);
         }
+    }
 
-        function rejectContent(containerId, contentId, status) {
-            $("#rejectReasonDialog").dialog(
-                    {   show: 'slide',
-                        hide: 'slide',
-                        buttons: [
+    function rejectContent(containerId, contentId, status) {
+        loadRejectionDialogContent(contentId, $("#rejectReasonDialog"));
+        $("#rejectReasonDialog").dialog(
+                {   show: 'slide',
+                    hide: 'slide',
+                    width: '50%',
+                    buttons: [
                         {
                             text: "Annuler",
-                            click: function() { $(this).dialog("close"); }
+                            click: function() {
+                                $(this).dialog("close");
+                            }
                         },
                         {
                             text: "Valider",
@@ -170,10 +300,10 @@
                                 $(this).dialog("close");
                             }
                         }
-                        ]
-                    }
-            );
-        }
+                    ]
+                }
+        );
+    }
     </#if>
 
     <#if searchMode != 1>
@@ -262,7 +392,7 @@
             return false;
 	    }).next().hide();
 
-        var dates = $( "#from, #to" ).datepicker({
+        var dates = $( "#from, #to").datepicker({
             defaultDate: "",
             dateFormat: "yy-mm-dd",
             changeMonth: true,
@@ -277,7 +407,24 @@
                     dates.not( this ).datepicker( "option", option, date );
                 }
         });
-
+        <#if searchMode == 1>
+        var publicationDates = $("#startPublicationDate, #endPublicationDate").datepicker({
+            defaultDate: "",
+            dateFormat: "yy-mm-dd",
+            changeMonth: true,
+            numberOfMonths: 1,
+            onSelect: function( selectedDate ) {
+                var option = this.id == "startPublicationDate" ? "minDate" : "maxDate",
+                    instance = $( this ).data( "datepicker" ),
+                    date = $.datepicker.parseDate(
+                        instance.settings.dateFormat ||
+                            $.datepicker._defaults.dateFormat,
+                            selectedDate, instance.settings );
+                    dates.not( this ).datepicker( "option", option, date );
+                }
+        });
+        </#if>
+        
         $("#adSearchType").chosen();
         $("#adSearchCriterias").chosen();
         $("#adSearchDomains").chosen();
@@ -338,6 +485,7 @@
         <#if searchMode == 1 || searchMode == 2>
         $('#simpleSearchButton').click();
         </#if>
+
     });
 </script>
 
@@ -458,7 +606,12 @@
 
             <#if searchMode != 0>
                 <div class="tab_right {{= statusClass}}">
-                <div class="content-result-status"><span class="label">{{= statusLabel}}</span></div>
+                <div class="content-result-status">
+                    <span class="label">{{= statusLabel}}</span>
+                </div>
+                {{if status == "REJECTED"}}
+                <img src="/public/images/bbeeg/comment.png" alt="Commentaires" class="hand_cursor settings_item comments_icon" onclick="displayRejectionDialog({{= id}})"/>
+                {{/if}}
             <#else>
                 <div class="tab_right label_hidden">
             </#if>
@@ -513,6 +666,9 @@
                 <div class="settings_menu">
                     <img src="/public/images/bbeeg/validate.png" alt="Accepter" class="hand_cursor settings_item" onclick="acceptContent('item-{{= id}}', {{= id}}, '{{= status}}')"/>
                     <img src="/public/images/bbeeg/rejected.png" alt="Rejeter" class="hand_cursor settings_item" onclick="rejectContent('item-{{= id}}', {{= id}}, '{{= status}}')"/>
+                    {{if status == "TO_BE_VALIDATED"}}
+                        <img src="/public/images/bbeeg/comment.png" alt="Commentaires" class="hand_cursor settings_item" onclick="displayPublicationDialog({{= id}})"/>
+                    {{/if}}
                 </div>
             </#if>
 
@@ -530,14 +686,48 @@
 </div>
 </#if>
 
-<#if searchMode == 2>
-<div style="visibility: hidden">
-    <div id="rejectReasonDialog" title="Motif du rejet">
-        <p> Indiquez le motif du rejet: </p>
-        <textarea id="rejectReasonMsg" rows="10" cols="50"></textarea>
+<div style="visibility: hidden;">
+    <div id="publishContentDialog" title="Demande de publication d'un contenu">
+        <br/>
+        <div>
+            <p>Demande de publication : </p>
+            <br/>
+            <textarea id="publishCommentMsg" <#if searchMode == 2>disabled</#if> rows="10" cols="50" style="width:100%"></textarea>
+        </div>
+        <br/>
+         <div>
+            <label for="startPublicationDate" style="font-weight:bold">Début de publication :</label>
+             <#if searchMode == 1>
+            <input type="text" id="startPublicationDate" <#if searchMode == 2>disabled</#if> name="startPublicationDate"/>
+            <#else>
+            <span id="startPublicationDate"></span>
+            </#if>
+            <label for="endPublicationDate" style="font-weight:bold">Fin de publication : </label>
+            <#if searchMode == 1>
+            <input type="text" id="endPublicationDate" <#if searchMode == 2>disabled</#if> name="endPublicationDate"/>
+            <#else>
+            <span id="endPublicationDate"></span>
+            </#if>
+            </div>
     </div>
 </div>
-</#if>
+
+<div style="visibility: hidden">
+    <div id="rejectReasonDialog" title="Refus de validation">
+        <br/>
+        <p>Motif du rejet: </p>
+        <br/>
+        <textarea id="rejectReasonMsg" <#if searchMode != 2>disabled</#if> rows="10" cols="50"style="width:100%"></textarea>
+         <br/>
+         <br/>
+         <div>
+            <label for="startPublicationDate" style="font-weight:bold">Début de publication :</label>
+            <span id="startPublicationDate1"></span>
+            <label for="endPublicationDate" style="font-weight:bold">Fin de publication : </label>
+            <span id="endPublicationDate1"></span>
+        </div>
+    </div>
+</div>
 
 <#if searchMode == 2>
 <div style="visibility: hidden">

@@ -191,6 +191,11 @@ img.spinner {
     border-radius: 10px;
     margin: 0 auto 5px;
 }
+
+.comments_icon {
+    margin-top : 31px;
+    margin-left : 2px;
+}
 /*
 
 .content_type, .lesson_type, .test_type {

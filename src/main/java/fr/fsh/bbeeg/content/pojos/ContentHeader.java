@@ -14,8 +14,11 @@ public class ContentHeader {
     private String title;
     private Date creationDate;
     private Date lastModificationDate;
+    private Date startPublicationDate;
+    private Date endPublicationDate;
     private ContentStatus status;
     private String description;
+    private Long popularity;
     //private Integer version;
     private Long ancestorId;
 
@@ -71,6 +74,24 @@ public class ContentHeader {
         return this.lastModificationDate;
     }
 
+    public ContentHeader startPublicationDate(Date _startPublicationDate) {
+        this.startPublicationDate = _startPublicationDate;
+        return this;
+    }
+
+    public Date startPublicationDate() {
+        return this.startPublicationDate;
+    }
+
+    public ContentHeader endPublicationDate(Date _endPublicationDate) {
+        this.endPublicationDate = _endPublicationDate;
+        return this;
+    }
+
+    public Date endPublicationDate() {
+        return this.endPublicationDate;
+    }
+
     public ContentHeader status(ContentStatus _status){
         this.status = _status;
         return this;
@@ -124,6 +145,15 @@ public class ContentHeader {
 //    public Integer version(){
 //        return this.version;
 //    }
+
+     public ContentHeader popularity(Long _popularity){
+        this.popularity = _popularity;
+        return this;
+    }
+
+    public Long popularity(){
+        return this.popularity;
+    }
 
     public ContentHeader ancestorId(Long _ancestorId){
         this.ancestorId = _ancestorId;

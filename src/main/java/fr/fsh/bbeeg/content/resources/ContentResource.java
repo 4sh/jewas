@@ -1,5 +1,6 @@
 package fr.fsh.bbeeg.content.resources;
 
+import fr.fsh.bbeeg.content.pojos.CommentType;
 import fr.fsh.bbeeg.common.persistence.TempFiles;
 import fr.fsh.bbeeg.common.resources.Count;
 import fr.fsh.bbeeg.common.resources.LimitedOrderedQueryObject;
@@ -14,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -37,12 +39,10 @@ public class ContentResource {
     }
 
     public void fetchAddedContents(List<ContentHeader> contentHeaders, LimitedOrderedQueryObject loqo) {
-        // TODO: check the ordering property
         contentDao.fetchRecentContents(contentHeaders, loqo.number());
     }
 
     public void fetchPopularContents(List<ContentHeader> contentHeaders, LimitedOrderedQueryObject loqo) {
-        // TODO: check the ordering property
         contentDao.fetchPopularContent(contentHeaders, loqo.number());
     }
 
@@ -142,8 +142,15 @@ public class ContentResource {
         contentDao.fetchContents(contentHeaders, user);
     }
 
-    public void updateContentStatus(Long id, ContentStatus status, String comment) {
-        contentDao.updateContentStatus(id, status, comment);
+    public void updateContentStatus(Long id, ContentStatus status, Date startPublicationDate, Date endPublicationDate, String comment) {
+
+        CommentType commentType = null;
+        if (ContentStatus.TO_BE_VALIDATED.equals(status)) {
+            commentType = CommentType.PUBLICATION;
+        } else if (ContentStatus.REJECTED.equals(status)) {
+            commentType = CommentType.REJECTION;
+        }
+        contentDao.updateContentStatus(id, status, startPublicationDate, endPublicationDate, comment, commentType);
     }
 
     public void reIndexAllInElasticSearch() {
@@ -157,4 +164,5 @@ public class ContentResource {
     public void incrementPopularity(Long contentId) {
         contentDao.incrementPopularity(contentId);
     }
+
 }

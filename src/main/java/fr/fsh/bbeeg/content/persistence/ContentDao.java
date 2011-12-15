@@ -1,6 +1,7 @@
 package fr.fsh.bbeeg.content.persistence;
 
 
+import fr.fsh.bbeeg.content.pojos.CommentType;
 import fr.fsh.bbeeg.common.persistence.ElasticSearchDao;
 import fr.fsh.bbeeg.common.resources.Count;
 import fr.fsh.bbeeg.content.pojos.*;
@@ -63,6 +64,8 @@ public class ContentDao {
     private static final String ES_CONTENT_FIELD_CONTENT_TYPE = "contentType";
     private static final String ES_CONTENT_FIELD_CREATION_DATE = "creationDate";
     private static final String ES_CONTENT_FIELD_LAST_MODIF_DATE = "lastModificationDate";
+    private static final String ES_CONTENT_FIELD_PUBLICATION_START_DATE = "startPublicationDate";
+    private static final String ES_CONTENT_FIELD_PUBLICATION_END_DATE = "endPublicationDate";
     private static final String ES_CONTENT_FIELD_DOMAINS = "domains";
     private static final String ES_CONTENT_FIELD_TAGS = "tags";
     private static final String ES_CONTENT_FIELD_STATUS = "status";
@@ -117,19 +120,28 @@ public class ContentDao {
                         .addQuery("updateStatus", "UPDATE CONTENT " +
                                 "SET STATUS = :status, LAST_MODIFICATION_DATE = :lastModificationDate "+
                                 "WHERE ID = :id")
-                        .addQuery("incrementPopularity", "UPDATE CONTENT SET POPULARITY = POPULARITY + 1 WHERE ID = :id AND STATUS in :statuses")
-                        .addQuery("addComment", "INSERT INTO CONTENT_COMMENT (ID, CONTENT_REF, COMMENT) VALUES (CONTENT_COMMENT_SEQ.nextval, :id, :comment)");
+                        .addQuery("updatePublicationDates", "UPDATE CONTENT SET PUBLICATION_START_DATE = :startPublicationDate, PUBLICATION_END_DATE = :endPublicationDate WHERE ID = :id")
+                        .addQuery("incrementPopularity", "UPDATE CONTENT SET POPULARITY = POPULARITY + 1 WHERE ID = :id AND STATUS in :statuses");
 
        this.contentDetailQueryTemplate =
                new QueryTemplate<ContentDetail>(dataSource, new ContentDetailRowMapper())
-                        .addQuery("selectById", "select * from Content where id = :id")
-                        .addQuery("selectAll", "select * from Content");
+                        .addQuery("selectById", "SELECT * FROM CONTENT c LEFT JOIN CONTENT_COMMENT cc ON " +
+                                "c.ID = cc.CONTENT_REF WHERE c.ID = :id")
+                        .addQuery("selectAll", "SELECT * FROM CONTENT LEFT JOIN CONTENT_COMMENT cc ON " +
+                             "c.ID = cc.CONTENT_REF")
+                        .addQuery("insertPublicationComment", "INSERT INTO CONTENT_COMMENT (ID, CONTENT_REF, PUBLICATION_COMMENTS) VALUES (CONTENT_COMMENT_SEQ.nextval, :id, :comment)")
+                        .addQuery("insertRejectionComment", "INSERT INTO CONTENT_COMMENT (ID, CONTENT_REF, PUBLICATION_COMMENTS) VALUES (CONTENT_COMMENT_SEQ.nextval, :id, :comment)")
+                        .addQuery("updatePublicationComment", "UPDATE CONTENT_COMMENT SET PUBLICATION_COMMENTS = :comment WHERE CONTENT_REF = :id")
+                        .addQuery("updateRejectionComment", "UPDATE CONTENT_COMMENT SET REJECTION_COMMENTS = :comment WHERE CONTENT_REF = :id");
+
 
         this.idQueryTemplate =
                 new QueryTemplate<Long>(dataSource, new LongRowMapper())
                         .addQuery("selectDomainIdsByContentId",
                                 "select domain_ref as ID from Content_Domain " +
-                                        "where content_ref = :id");
+                                        "where content_ref = :id")
+                        .addQuery("selectCommentIdByContentId",
+                                "SELECT id FROM CONTENT_COMMENT WHERE CONTENT_REF = :id");
 
         // Initializing ES indexes
         String mappingSource = String.format("{ \"%s\" : { \"properties\" : { \"%s\" : { \"type\" : \"attachment\" } } } }",
@@ -138,15 +150,20 @@ public class ContentDao {
         esContentDao.createIndexIfNotExists(mappingSource);
     }
 
+    /**
+     * Return a content detail object fully loaded.
+     *
+     * @param id the identifier of the content to load
+     * @return a {@ContentDetail}
+     */
     public ContentDetail getContentDetail(Long id) {
-
-        ContentHeader contentHeader = contentHeaderQueryTemplate.selectObject("selectById",
+        ContentDetail contentDetail = contentDetailQueryTemplate.selectObject("selectById",
                 new QueryExecutionContext().buildParams()
                         .bigint("id", id)
-                        .toContext()
-        );
-
-        return new ContentDetail().header(contentHeader).url("/content/content/" + contentHeader.id());
+                        .toContext());
+        //TODO FIX that
+        contentDetail.url("/content/content/" + id);
+        return contentDetail;
     }
 
     public void fetchRecentContents(List<ContentHeader> contentHeaders, int limit) {
@@ -303,6 +320,8 @@ public class ContentDao {
                                 .field(ES_CONTENT_FIELD_CREATION_DATE, contentDetail.header().creationDate())
                                 .field(ES_CONTENT_FIELD_LAST_MODIF_DATE, contentDetail.header().lastModificationDate())
                                 .field(ES_CONTENT_FIELD_DOMAINS, domainIds)
+                                .field(ES_CONTENT_FIELD_PUBLICATION_START_DATE, contentDetail.header().startPublicationDate())
+                                .field(ES_CONTENT_FIELD_PUBLICATION_END_DATE, contentDetail.header().endPublicationDate())
                                 .field(ES_CONTENT_FIELD_TAGS, contentDetail.header().tags())
                                 .field(ES_CONTENT_FIELD_STATUS, contentDetail.header().status().ordinal())
                                 .field(ES_CONTENT_FIELD_ANCESTOR, contentDetail.header().ancestorId())
@@ -460,7 +479,19 @@ public class ContentDao {
         BoolQueryBuilder elasticSearchQuery = createElasticSearchQuery(statuses);
         configureFullTextQuery(elasticSearchQuery, query.query());
         configureAuthorsQuery(elasticSearchQuery, query.authors());
-        List<Long> contentIds = searchInElasticSearch(query.startingOffset(), query.numberOfContents(), elasticSearchQuery);
+
+        FilterBuilder filterBuilder = null;
+        if (SearchMode.ALL_VALIDATED.ordinal() == query.searchMode()) {
+            filterBuilder = configurePublicationDateFilter();
+        }
+
+        List<Long> contentIds;
+        if (filterBuilder == null) {
+            contentIds = searchInElasticSearch(query.startingOffset(), query.numberOfContents(), elasticSearchQuery);
+        } else {
+            QueryBuilder filteredQuery = QueryBuilders.filteredQuery(elasticSearchQuery, filterBuilder);
+            contentIds = searchInElasticSearch(query.startingOffset(), query.numberOfContents(), filteredQuery);
+        }
         fetchByIds(contentHeaders, contentIds);
     }
 
@@ -481,17 +512,51 @@ public class ContentDao {
         configureDomainsQuery(elasticSearchQuery, query.domains());
         configureContentTypeQuery(elasticSearchQuery, query.searchTypes());
 
-        RangeFilterBuilder rangeFilter = configureCreationDateFilter(query.from(), query.to());
+
+        FilterBuilder filterBuilders = getAdvancedQueryFilterBuilders(query);
 
         List<Long> contentIds;
-        if (rangeFilter == null) {
+        if (filterBuilders == null) {
             contentIds = searchInElasticSearch(query.startingOffset(), query.numberOfContents(), elasticSearchQuery);
         } else {
-            QueryBuilder filteredQuery = QueryBuilders.filteredQuery(elasticSearchQuery, rangeFilter);
+            QueryBuilder filteredQuery = QueryBuilders.filteredQuery(elasticSearchQuery, filterBuilders);
             contentIds = searchInElasticSearch(query.startingOffset(), query.numberOfContents(), filteredQuery);
         }
         fetchByIds(contentHeaders, contentIds);
    }
+
+    /**
+     * Build the dates filters with creation date filter and publication start and end dates filter for ALL_VALIDATED search mode
+     *
+     * @param query the query to performed
+     * @return a {@FilterBuilder}
+     */
+    private FilterBuilder getAdvancedQueryFilterBuilders(AdvancedSearchQueryObject query) {
+        FilterBuilder filterBuilder = null;
+        RangeFilterBuilder creationDateRangeFilter = configureCreationDateFilter(query.from(), query.to());
+        if (creationDateRangeFilter != null) {
+            filterBuilder = FilterBuilders.andFilter(creationDateRangeFilter);
+        }
+        if (SearchMode.ALL_VALIDATED.ordinal() == query.searchMode()) {
+            filterBuilder = FilterBuilders.andFilter(configurePublicationDateFilter());
+        }
+        return filterBuilder;
+    }
+
+    /**
+     * Build the publication start and end date elastic search range filter.
+     *
+     * @return a {@FilterBuilder}
+     */
+    private FilterBuilder configurePublicationDateFilter() {
+        Date today = new DateMidnight().toDate();
+
+        RangeFilterBuilder startPublicationRangeFilter = FilterBuilders.rangeFilter(ES_CONTENT_FIELD_PUBLICATION_START_DATE);
+        startPublicationRangeFilter.to(today);
+        RangeFilterBuilder endPublicationRangeFilter = FilterBuilders.rangeFilter(ES_CONTENT_FIELD_PUBLICATION_END_DATE);
+        endPublicationRangeFilter.from(today);
+        return FilterBuilders.andFilter(startPublicationRangeFilter, endPublicationRangeFilter);
+    }
 
     private void configureAuthorsQuery(BoolQueryBuilder elasticSearchQuery, String[] authors) {
         if (authors != null && authors.length > 0) {
@@ -538,7 +603,7 @@ public class ContentDao {
      * @param to   the to date filter
      */
     private RangeFilterBuilder configureCreationDateFilter(Date from, Date to) {
-        RangeFilterBuilder rangeFilter = FilterBuilders.rangeFilter("creationDate");
+        RangeFilterBuilder rangeFilter = FilterBuilders.rangeFilter(ES_CONTENT_FIELD_CREATION_DATE);
         if (from != null) {
             rangeFilter.from(from);
         }
@@ -644,7 +709,12 @@ public class ContentDao {
         );
     }
 
-    public void updateContentStatus(Long id, ContentStatus status, String comment) {
+    public void updateContentStatus(Long id,
+                                    ContentStatus status,
+                                    Date startPublicationDate,
+                                    Date endPublicationDate,
+                                    String comment,
+                                    CommentType commentType) {
         Date currentDate = new DateMidnight().toDate();
 
         // TODO check the status and check if it is possible to go to this status (workflow).
@@ -662,18 +732,69 @@ public class ContentDao {
         try {
             insertContentInElasticSearch(id);
         } catch (IOException e) {
-            e.getMessage();
+            logger.error("Cannot insert content into elastic search for content id:" + id, e);
         }
 
-        if (comment != null && !comment.isEmpty()) {
-            contentHeaderQueryTemplate.insert("addComment",
-                    new QueryExecutionContext()
-                            .buildParams()
+        if (ContentStatus.TO_BE_VALIDATED.equals(status)
+                && startPublicationDate != null
+                && endPublicationDate != null
+                && startPublicationDate.before(endPublicationDate)
+                && endPublicationDate.after(currentDate)) {
+            contentHeaderQueryTemplate.update("updatePublicationDates", new QueryExecutionContext()
+                    .buildParams()
+                    .date("startPublicationDate", startPublicationDate)
+                    .date("endPublicationDate", endPublicationDate)
+                    .bigint("id", id)
+                    .toContext());
+        }
+
+        if (comment != null && !comment.isEmpty() && commentType != null) {
+            Long commentId = idQueryTemplate.selectLong("selectCommentIdByContentId",
+                    new QueryExecutionContext().buildParams()
                             .bigint("id", id)
-                            .string("comment", comment)
-                            .toContext(),
-                    "id"
+                            .toContext()
             );
+
+
+            if (CommentType.PUBLICATION.equals(commentType)) {
+                if (commentId == null) {
+                    logger.info("Add publication comment to content: " + id);
+                    contentDetailQueryTemplate.insert("insertPublicationComment",
+                        new QueryExecutionContext()
+                                .buildParams()
+                                .bigint("id", id)
+                                .string("comment", comment)
+                                .toContext(), "id");
+                } else {
+                    logger.info("Update publication comment to content: " + id);
+                    contentDetailQueryTemplate.update("updatePublicationComment",
+                        new QueryExecutionContext()
+                                .buildParams()
+                                .bigint("id", id)
+                                .string("comment", comment)
+                                .toContext());
+                }
+            } else if (CommentType.REJECTION.equals(commentType)) {
+                if (commentId == null) {
+                    logger.info("Add rejection comment to content: " + id);
+                    contentDetailQueryTemplate.insert("insertRejectionComment",
+                            new QueryExecutionContext()
+                                    .buildParams()
+                                    .bigint("id", id)
+                                    .string("comment", comment)
+                                    .toContext(), "id");
+                } else {
+                    logger.info("Update rejection comment to content: " + id);
+                    contentDetailQueryTemplate.update("updateRejectionComment",
+                            new QueryExecutionContext()
+                                    .buildParams()
+                                    .bigint("id", id)
+                                    .string("comment", comment)
+                                    .toContext());
+                }
+            } else {
+                logger.error("Unrecognized comment type: " + commentType.name());
+            }
         }
     }
 
@@ -723,7 +844,10 @@ public class ContentDao {
                     .status(ContentStatus.values()[rs.getInt("STATUS")])
                     .creationDate(rs.getDate("CREATION_DATE"))
                     .lastModificationDate(rs.getDate("LAST_MODIFICATION_DATE"))
+                    .startPublicationDate(rs.getDate("PUBLICATION_START_DATE"))
+                    .endPublicationDate(rs.getDate("PUBLICATION_END_DATE"))
                     .type(ContentType.values()[rs.getInt("CONTENT_TYPE")])
+                    .popularity(rs.getLong("POPULARITY"))
                     .author(userDao.getUser(rs.getLong("AUTHOR_REF")))
                     .domains(getDomains(rs.getLong("ID")))
                     .tags(stringTagsToList(rs.getString("TAGS")));
@@ -738,9 +862,10 @@ public class ContentDao {
             ContentHeader contentHeader = contentRowMapper.processRow(resultSet);
 
             ContentDetail contentDetail = new ContentDetail();
-            contentDetail.header(contentHeader);
-            contentDetail.url(resultSet.getString("FILE_URI"));
-
+            contentDetail.header(contentHeader)
+                    .publicationComments(resultSet.getString("PUBLICATION_COMMENTS"))
+                    .rejectionComments(resultSet.getString("REJECTION_COMMENTS"))
+                    .url(resultSet.getString("FILE_URI"));
             return contentDetail;
         }
     }
