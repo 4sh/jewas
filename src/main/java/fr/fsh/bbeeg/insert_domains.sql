@@ -1,0 +1,37 @@
+DELETE FROM DOMAIN;
+DELETE FROM I18N_TABLE WHERE I18N_KEY LIKE 'domain%';
+
+INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.anatomie.cerebrale');
+INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.physiologie.cerebrale');
+INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.construction.cerveau');
+INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.adaptation.vie.extra.uterine');
+INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.examen.neurologique.nouveau.ne');
+INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.examens.complementaires.neurologiques');
+INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.suivi.developpement');
+INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.principes.electrophysiologiques');
+INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.enregistrement.eeg.polygraphique');
+INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.bases.interpretation');
+INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.eeg.nouveau.ne.terme');
+INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.maturation.eeg.nouveau.ne.premature');
+INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.prematurite');
+INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.atteintes.neurologiques.aigues');
+INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.maladies.neurologiques.revelation.neonatales');
+INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.convulsions.neonatales');
+
+INSERT INTO I18N_TABLE (I18N_KEY, LANGUAGE , LABEL) VALUES ('domain.anatomie.cerebrale', 'fr', 'Anatomie cérébrale');
+INSERT INTO I18N_TABLE (I18N_KEY, LANGUAGE , LABEL) VALUES ('domain.physiologie.cerebrale', 'fr', 'Physiologie cérébrale');
+INSERT INTO I18N_TABLE (I18N_KEY, LANGUAGE , LABEL) VALUES ('domain.adaptation.vie.extra.uterine', 'fr', 'Adaptation à la vie extra-utérine');
+INSERT INTO I18N_TABLE (I18N_KEY, LANGUAGE , LABEL) VALUES ('domain.construction.cerveau', 'fr', 'Construction du cerveau');
+INSERT INTO I18N_TABLE (I18N_KEY, LANGUAGE , LABEL) VALUES ('domain.examen.neurologique.nouveau.ne', 'fr', 'Examen neurologique du nouveau-né');
+INSERT INTO I18N_TABLE (I18N_KEY, LANGUAGE , LABEL) VALUES ('domain.examens.complementaires.neurologiques', 'fr', 'Examens complémentaires neurologiques');
+INSERT INTO I18N_TABLE (I18N_KEY, LANGUAGE , LABEL) VALUES ('domain.suivi.developpement', 'fr', 'Suivi du développement');
+INSERT INTO I18N_TABLE (I18N_KEY, LANGUAGE , LABEL) VALUES ('domain.principes.electrophysiologiques', 'fr', 'Principes électrophysiologiques');
+INSERT INTO I18N_TABLE (I18N_KEY, LANGUAGE , LABEL) VALUES ('domain.enregistrement.eeg.polygraphique', 'fr', 'Enregistrement EEG et polygraphie');
+INSERT INTO I18N_TABLE (I18N_KEY, LANGUAGE , LABEL) VALUES ('domain.bases.interpretation', 'fr', 'Bases de l''interprétation');
+INSERT INTO I18N_TABLE (I18N_KEY, LANGUAGE , LABEL) VALUES ('domain.eeg.nouveau.ne.terme', 'fr', 'EEG normal du nouveau-né à terme');
+INSERT INTO I18N_TABLE (I18N_KEY, LANGUAGE , LABEL) VALUES ('domain.maturation.eeg.nouveau.ne.premature', 'fr', 'Maturation de l''EEG chez le nouveau-né prématuré');
+INSERT INTO I18N_TABLE (I18N_KEY, LANGUAGE , LABEL) VALUES ('domain.prematurite', 'fr', 'Prématurité');
+INSERT INTO I18N_TABLE (I18N_KEY, LANGUAGE , LABEL) VALUES ('domain.atteintes.neurologiques.aigues', 'fr', 'Atteintes neurologiques aiguës');
+INSERT INTO I18N_TABLE (I18N_KEY, LANGUAGE , LABEL) VALUES ('domain.maladies.neurologiques.revelation.neonatales', 'fr', 'Maladies neurologiques à révélation néonatales');
+INSERT INTO I18N_TABLE (I18N_KEY, LANGUAGE , LABEL) VALUES ('domain.convulsions.neonatales', 'fr', 'Convulsions néonatales');
+COMMIT;
