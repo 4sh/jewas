@@ -49,7 +49,7 @@ public abstract class AbstractRequestHandlerDelegate implements RequestHandler {
         }
 
         if(delegates == null || delegates.isEmpty()){
-            throw new IllegalStateException(String.format("No request delegate found for request uri %s !", request.uri()));
+            throw new IllegalStateException(String.format("No request delegate found for request uri %s and method %s!", request.uri(), request.method()));
         }
 
         return delegates;
