@@ -552,10 +552,18 @@ public class ContentDao {
         Date today = new DateMidnight().toDate();
 
         RangeFilterBuilder startPublicationRangeFilter = FilterBuilders.rangeFilter(ES_CONTENT_FIELD_PUBLICATION_START_DATE);
-        startPublicationRangeFilter.to(today);
+        startPublicationRangeFilter.lte(today);
+
+        MissingFilterBuilder startPublicationMissing = FilterBuilders.missingFilter(ES_CONTENT_FIELD_PUBLICATION_START_DATE);
+
         RangeFilterBuilder endPublicationRangeFilter = FilterBuilders.rangeFilter(ES_CONTENT_FIELD_PUBLICATION_END_DATE);
-        endPublicationRangeFilter.from(today);
-        return FilterBuilders.andFilter(startPublicationRangeFilter, endPublicationRangeFilter);
+        endPublicationRangeFilter.gte(today);
+
+        MissingFilterBuilder endPublicationMissing = FilterBuilders.missingFilter(ES_CONTENT_FIELD_PUBLICATION_END_DATE);
+
+        FilterBuilder startPublicationDateFilterBuilder = FilterBuilders.orFilter(startPublicationRangeFilter, startPublicationMissing);
+        FilterBuilder endPublicationDateFilterBuilder = FilterBuilders.orFilter(endPublicationRangeFilter, endPublicationMissing);
+        return FilterBuilders.andFilter(startPublicationDateFilterBuilder, endPublicationDateFilterBuilder);
     }
 
     private void configureAuthorsQuery(BoolQueryBuilder elasticSearchQuery, String[] authors) {
@@ -737,9 +745,9 @@ public class ContentDao {
 
         if (ContentStatus.TO_BE_VALIDATED.equals(status)
                 && startPublicationDate != null
-                && endPublicationDate != null
-                && startPublicationDate.before(endPublicationDate)
-                && endPublicationDate.after(currentDate)) {
+                && (endPublicationDate == null || (startPublicationDate.before(endPublicationDate)
+                    && endPublicationDate.after(currentDate)))) {
+            logger.info("Update status and publication dates: " + status.name() + ", " + startPublicationDate + ", " + endPublicationDate);
             contentHeaderQueryTemplate.update("updatePublicationDates", new QueryExecutionContext()
                     .buildParams()
                     .date("startPublicationDate", startPublicationDate)
