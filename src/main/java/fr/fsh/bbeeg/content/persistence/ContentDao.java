@@ -125,9 +125,9 @@ public class ContentDao {
 
        this.contentDetailQueryTemplate =
                new QueryTemplate<ContentDetail>(dataSource, new ContentDetailRowMapper())
-                        .addQuery("selectById", "SELECT * FROM CONTENT c LEFT JOIN CONTENT_COMMENT cc ON " +
+                        .addQuery("selectById", "SELECT c.*, cc.id as content_comment_id, publication_comments, rejection_comments FROM CONTENT c LEFT JOIN CONTENT_COMMENT cc ON " +
                                 "c.ID = cc.CONTENT_REF WHERE c.ID = :id")
-                        .addQuery("selectAll", "SELECT * FROM CONTENT LEFT JOIN CONTENT_COMMENT cc ON " +
+                        .addQuery("selectAll", "SELECT c.*, cc.id as content_comment_id, publication_comments, rejection_comments FROM CONTENT c LEFT JOIN CONTENT_COMMENT cc ON " +
                              "c.ID = cc.CONTENT_REF")
                         .addQuery("insertPublicationComment", "INSERT INTO CONTENT_COMMENT (ID, CONTENT_REF, PUBLICATION_COMMENTS) VALUES (CONTENT_COMMENT_SEQ.nextval, :id, :comment)")
                         .addQuery("insertRejectionComment", "INSERT INTO CONTENT_COMMENT (ID, CONTENT_REF, PUBLICATION_COMMENTS) VALUES (CONTENT_COMMENT_SEQ.nextval, :id, :comment)")
