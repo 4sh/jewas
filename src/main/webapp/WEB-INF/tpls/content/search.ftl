@@ -54,13 +54,7 @@
                            width: '50%',
                            buttons: [
                                {
-                                   text: "Annuler",
-                                   click: function() {
-                                       $(this).dialog("close");
-                                   }
-                               },
-                               {
-                                   text: "Valider",
+                                   text: "Ok",
                                    click: function() {
                                        $(this).dialog("close");
                                    }
@@ -212,13 +206,7 @@
                        width: '50%',
                        buttons: [
                            {
-                               text: "Annuler",
-                               click: function() {
-                                   $(this).dialog("close");
-                               }
-                           },
-                           {
-                               text: "Valider",
+                               text: "Ok",
                                click: function() {
                                    $(this).dialog("close");
                                }
