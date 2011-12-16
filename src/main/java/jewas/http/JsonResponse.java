@@ -18,6 +18,10 @@ public class JsonResponse {
         object(o, null);
     }
 
+    public void object(String s) {
+        httpResponse.content(s);
+    }
+
     public void object(Object o, Type parameterizedType) {
         httpResponse.content(Json.instance().toJsonString(o, parameterizedType));
     }
