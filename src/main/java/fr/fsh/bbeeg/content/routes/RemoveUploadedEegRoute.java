@@ -32,7 +32,7 @@ public class RemoveUploadedEegRoute extends AbstractRoute {
             public void onReady(HttpRequest request, BodyParameters bodyParameters) {
                 super.onReady(request, bodyParameters);
 
-                eegResource.cleanTmp(oi.id());
+               // eegResource.cleanTmp(oi.id());
 
                 request.respondJson().object(new SuccessObject().success(true));
             }

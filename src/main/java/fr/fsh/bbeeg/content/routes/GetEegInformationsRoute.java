@@ -60,7 +60,7 @@ public class GetEegInformationsRoute extends AbstractRoute {
                     System.out.println(e.getMessage());
                 }
 
-                request.respondHtml().content(content.toString());
+                request.respondJson().object(content.toString());
             }
         };
     }

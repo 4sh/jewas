@@ -3,31 +3,56 @@
 
 
 <@mainTemplate title="Création d'un contenu type EEG" selectedMenuItem="creation"
-            scripts=["/public/js/jewas/jewas-forms.js","/public/js/fileUpload/fileuploader.js"]
+            scripts=["/public/js/jewas/jewas-forms.js",
+                     "/public/js/fileUpload/fileuploader.js",
+                     "/public/js/bbeeg/content/create-eeg-content.js",
+                     "/public/js/bbeeg/content/content-helper.js"]
             stylesheets=["/public/css/fileUpload/fileuploader.css", "/public/css/bbeeg/create.css"]
 useChosen=true>
 
-<script type="application/javascript" src="/public/js/bbeeg/content/create-eeg-content.js"></script>
 <script type="application/javascript">
     var eegContentCreator;
-    $( function() {
+    $(function() {
         eegContentCreator = new EegContentCreator(
-                "eeg-uploader",
-                {
-                    previsualizeButtonId : "previsualizeBtn",
-                    previsualizationContainerId : "previsualizationContainer",
-                    previsualizationUrl : "${statics["fr.fsh.bbeeg.common.config.BBEEGConfiguration"].INSTANCE.cliOptions().visioRootUrl()}"
-                }
+            "eeg-uploader",
+            {
+                previsualizeButtonId : "previsualizeBtn",
+                previsualizationContainerId : "previsualizationContainer",
+                previsualizationUrl : "${statics["fr.fsh.bbeeg.common.config.BBEEGConfiguration"].INSTANCE.cliOptions().visioRootUrl()}"
+            }
         );
         $("#cancelBtn").bind('click', function () {
             eegContentCreator.removeUploadedFiles();
             history.go(-1);
         });
+
+        $("#domains").chosen();
+        $("#tags").chosen();
+        var domains = [];
+        var tags = [];
+        <#if content??>
+            // Load the title
+            $("#title").val("${content.header().title()}");
+            // Load the description
+            $("#description").append("${content.header().description()}");
+             // Load the content
+            eegContentCreator.loadContentForEdition(${content.header().id()?c});
+            // Load the domains
+            <#list content.header().domains() as item>
+                domains.push(${item.id()?c});
+            </#list>
+            // Load the tags
+            <#list content.header().tags() as item>
+                tags.push("${item}");
+            </#list>
+        </#if>
+        contentHelper.loadDomains($("#domains"), $("#domainItemTemplate"), domains);
+        contentHelper.loadTags($("#tags"), $("#tagItemTemplate"), tags);
     });
 </script>
 
 <script id="domainItemTemplate" type="text/x-jquery-tmpl">
-    <option value="{{= id}}"> {{= label}} </option>
+    <option value="{{= id}}" {{if selected}} selected {{/if}}> {{= label}} </option>
 </script>
 
 <script id="tagItemTemplate" type="text/x-jquery-tmpl">
@@ -75,7 +100,7 @@ useChosen=true>
 </script>
 
 <script id="signalItemTemplate" type="text/x-jquery-tmpl">
-    <option value="{{= id}}"> {{= label}} </option>
+    <option value="{{= id}}" {{if selected}} selected {{/if}}> {{= label}} </option>
 </script>
 
 <script id="montageItemTemplate" type="text/x-jquery-tmpl">
@@ -109,7 +134,7 @@ useChosen=true>
             </div>
             <div>
                 <div class="style_label bottom_space">Sélectionnez les signaux à afficher :</div>
-                <div class="bottom_space"><select data-placeholder="Sélectionnez les signaux à afficher..." class="montage-signalsToDisplay chzn-select side-by-side clearfix" disabled multiple style="width:567px;"></select></div>
+                <div class="bottom_space"><select id="displayedSignals" data-placeholder="Sélectionnez les signaux à afficher..." class="montage-signalsToDisplay chzn-select side-by-side clearfix" disabled multiple style="width:567px;"></select></div>
             </div>
             <div id="initial-montage-component">
                 <span class="style_label bottom_space">Ajouter une opération:</span>

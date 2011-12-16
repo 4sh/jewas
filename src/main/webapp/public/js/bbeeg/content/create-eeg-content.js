@@ -6,6 +6,9 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
     var videoUploader;
     var eegInformations;
 
+    //TODO : FIX THAT MESS
+    var videoFileName;
+
     var signals;
 
     var eegId;
@@ -13,45 +16,6 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
     /* ***************************************************************************************************************
      *  Private methods
      *****************************************************************************************************************/
-
-    function loadDomains() {
-        $.getJSON(
-            '/domain/all',
-            function success(data) {
-                var container = $("#domains");
-                container.children().remove();
-                $("#domainItemTemplate").tmpl(data).appendTo(container);
-                $("#domains").trigger("liszt:updated");
-            }
-        );
-    }
-
-    function loadTags(tags) {
-
-    $.getJSON(
-        '/tags/all',
-        function success(data) {
-            var container = $("#tags");
-            container.children().remove();
-
-            var selectedTags = {};
-
-            for (var i = 0; i < tags.length; i++) {
-                selectedTags[tags[i]] = true;
-            }
-            for (var j = 0; j < data.length; j++) {
-                if (selectedTags[data[j].tag]) {
-                    data[j].selected = true;
-                } else {
-                    data[j].selected = false;
-                }
-            }
-            $("#tagItemTemplate").tmpl(data).appendTo(container);
-            $("#tags").trigger("liszt:updated");
-        }
-    );
-}
-
     function getDomains(domainIds) {
         var domains = [];
 
@@ -300,12 +264,15 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
                 var start = getTimeInMilliSeconds(startHours, startMinutes, startSeconds);
                 var stop = getTimeInMilliSeconds(stopHours, stopMinutes, stopSeconds);
 
-                if (start != null && stop != null && (!!videoUploader && !!videoUploader.videoId)) {
+                if (start != null && stop != null && ((!!videoUploader && !!videoUploader.videoId) || videoFileName != null)) {
                     video.start = start;
                     video.stop = stop;
                     // TODO: use the right uploader.
-                    video.fileName = videoUploader.videoId;
-
+                    if (!!videoUploader && !!videoUploader.videoId) {
+                        video.fileName = videoUploader.videoId;
+                    } else {
+                        video.fileName = videoFileName
+                    }
                     videos.push(video);
                 }
             }
@@ -350,6 +317,74 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
         );
 
         return montages;
+    }
+
+    /**
+     * Load the content settings from the server.
+     */
+    function loadEegSettings(callback) {
+        $.ajax({
+          url: '/visio/eeg/settings/' + eegId,
+          dataType: 'json',
+          success: function (infos) {
+              // TODO: Check why there is a need here to parse JSON string
+              infos = $.parseJSON(infos);
+              callback(infos);
+            }
+        });
+    }
+
+    /**
+     *
+     * @param settings
+     */
+    function applyEegSettingsOnForm(settings) {
+        setTimeFromMilliSeconds(settings.eegStart, $('#eegStartHours')[0], $('#eegStartMinutes')[0], $('#eegStartSeconds')[0]);
+        if (settings.eegStop !== -1) {
+            setTimeFromMilliSeconds(settings.eegStop, $('#eegStopHours')[0], $('#eegStopMinutes')[0], $('#eegStopSeconds')[0]);
+        }
+        $('#zoom').val(settings.zoom);
+        $('#frameDuration').val(settings.frameDuration);
+
+        // Load video Settings
+         // TODO : refactor to manage multiple montages
+        var video = settings.videos[0];
+        if (!!video) {
+            setTimeFromMilliSeconds(video.start, $('.video-start-hours')[0], $('.video-start-minutes')[0], $('.video-start-seconds')[0]);
+            setTimeFromMilliSeconds(video.stop, $('.video-stop-hours')[0], $('.video-stop-minutes')[0], $('.video-stop-seconds')[0]);
+            videoFileName = video.fileName;
+        }
+
+         /* Load the signals to display */
+        var displayAllSignalsCheckBox = $("#allSignals");
+        // TODO : refactor to manage multiple montages
+        var signalsToDisplay = settings.montages[0].signalsToDisplay;
+        var check = (signalsToDisplay === []);
+        displayAllSignalsCheckBox.attr('checked', check);
+        displaySignalsCheckboxClickHandler(check);
+        if (!check) {
+            var multipleSelect = $("#displayedSignals");
+
+            multipleSelect.children().remove();
+            var selection = {};
+            for (var i = 0; i < signalsToDisplay.length; i++) {
+                selection[signalsToDisplay[i]] = true;
+            }
+            for (var j = 0; j < signals.length; j++) {
+                if (selection[signals[j].id]) {
+                    signals[j].selected = true;
+                } else {
+                    signals[j].selected = false;
+                }
+            }
+            $("#signalItemTemplate").tmpl(signals).appendTo(multipleSelect);
+            multipleSelect.trigger("liszt:updated");
+        }
+        // TODO : refactor to manage multiple montages
+        var operations = settings.montages[0].operations;
+        var displayOperations = (operations !== []);
+
+
     }
 
     function buildEegSettings() {
@@ -405,6 +440,14 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
 
     function previsualizeAction() {
         sendEegSettings(eegId, buildPrevisualization, 'tmp');
+    }
+
+    function displaySignalsCheckboxClickHandler(selected) {
+        if (selected) {
+            $('.montage-signalsToDisplay').attr('disabled', 'true').val([]).trigger("liszt:updated");
+        } else {
+            $('.montage-signalsToDisplay').removeAttr('disabled').trigger("liszt:updated");
+        }
     }
 
     function addVideo(container) {
@@ -479,14 +522,35 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
         );
     };
 
+    this.loadContentForEdition = function (_eegId) {
+        eegId = _eegId;
+        $.getJSON(
+        '/content/eeg/informations/' + eegId,
+        function success(data) {
+            eegInformations = $.parseJSON(data);
+            signals  = [];
+            for (var i = 0; i < eegInformations.signalsLabel.length; i++) {
+                signals.push({id: i, label: eegInformations.signalsLabel[i]});
+            }
+            addVideo($('#videos'));
+            addMontage($('#displayConfig'));
+            $('#initial-add-button').bind('click', function () {
+                addMontageOperation("#montages .montage");
+                $('#initial-montage-component').css('display','none');
+            });
+            loadEegSettings(applyEegSettingsOnForm);
+
+
+        });
+
+
+    };
+
     /* ***************************************************************************************************************
      *  Constructor
      *****************************************************************************************************************/
 
     (function () {
-        loadDomains();
-        loadTags([]) ;
-
         $("#confirmationDialog").dialog({
             autoOpen: false,
             modal: false,
@@ -494,21 +558,11 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
             hide: 'drop'
         });
 
-        $("#domains").chosen();
-        $("#tags").chosen();
         $("#zoom").chosen();
         $("#frameDuration").chosen();
 
         $('#allSignals').live('click', (function() {
-           if ($(this).attr('checked')) {
-               $('.montage-signalsToDisplay').attr('disabled', 'true');
-               $('.montage-signalsToDisplay').val([]);
-               $('.montage-signalsToDisplay').trigger("liszt:updated");
-           } else {
-               $('.montage-signalsToDisplay').removeAttr('disabled');
-               $('.montage-signalsToDisplay').trigger("liszt:updated");
-           }
-        }));
+           displaySignalsCheckboxClickHandler($(this).attr('checked'))}));
 
         $("#createContent").submit(function(){
             var form = this;
