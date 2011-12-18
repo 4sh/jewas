@@ -51,7 +51,7 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
         $.getJSON(
             '/content/eeg/informations/' + eegId,
             function success(data) {
-                eegInformations = $.parseJSON(data);
+                eegInformations = data;
                 signals  = [];
                 for (var i = 0; i < eegInformations.signalsLabel.length; i++) {
                     signals.push({id: i, label: eegInformations.signalsLabel[i]});
