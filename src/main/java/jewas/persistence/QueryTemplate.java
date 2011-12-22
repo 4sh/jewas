@@ -5,7 +5,6 @@ import jewas.persistence.exception.DataAccessException;
 import jewas.persistence.rowMapper.LongRowMapper;
 import jewas.persistence.rowMapper.RowMapper;
 import jewas.persistence.rowMapper.StringRowMapper;
-import jewas.persistence.util.JDBCUtils;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -48,17 +47,10 @@ public class QueryTemplate<T> {
 
         @Override
         public void doInConnection(Connection connection) {
-            PreparedStatement ps = null;
-            try {
-                ps = createPreparedStatement(query, connection, context);
-
+            try (PreparedStatement ps = createPreparedStatement(query, connection, context)) {
                 doWithPreparedStatement(ps);
-
             } catch (SQLException ex) {
                 throw new DataAccessException("Exception while executing prepared statement", ex);
-            } finally {
-                JDBCUtils.closeStatementIfNecessary(ps);
-                JDBCUtils.closeConnectionIfNecessary(connection);
             }
         }
 
@@ -113,17 +105,10 @@ public class QueryTemplate<T> {
     }
 
     public void execute(final InConnectionCallback action) throws DataAccessException {
-        Connection connection = null;
-        try {
-            connection = datasource.getConnection();
+        try (Connection connection = datasource.getConnection()) {
+            action.doInConnection(connection);
         } catch (SQLException e) {
             throw new CannotGetJDBCConnectionException("Cannot get JDBC Connection", e);
-        }
-
-        try {
-            action.doInConnection(connection);
-        } finally {
-            JDBCUtils.closeConnectionIfNecessary(connection);
         }
     }
 
