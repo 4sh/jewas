@@ -1,3 +1,5 @@
+import sun.security.krb5.internal.crypto.Des
+
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'sonar'
@@ -226,11 +228,13 @@ task startElasticSearch(dependsOn: [initSsh, checkPropsForDeployment]) << {
     // Waiting 5s after kill of elastic search
     Object.sleep(5000)
 
-    //ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 2224,
-    //        command: """rm -R ${deployDirectory}/elasticsearch/data""", trust: true, failonerror: false)
+    ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 2224,
+            command: """mv ${deployDirectory}/elasticsearch/data ${deployDirectory}/elasticsearch/data-${timestamp}""", trust: true, failonerror: false)
 
     // Waiting 5s after remove data folder of elastic search
-    //Object.sleep(5000)
+    Object.sleep(5000)
+
+    ant.
 
     ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 2224,
 		command: """${deployDirectory}/elasticsearch/bin/elasticsearch \
