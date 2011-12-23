@@ -60,7 +60,8 @@ public class Main {
                 // by jewas library. So it must be declared before the StaticResourcesRoute !
                 new SimpleFileRoute("/public/js/jewas/jewas-forms.js", "js/jewas-forms.js", options.cachedStaticResourcesRootDirectory()),
                 new StaticResourcesRoute("/public/", "public/", options.cachedStaticResourcesRootDirectory()),
-                new SecurityRoute(),
+                new ReIndexContentsInElasticSearchRoute(assembler.contentResource()),
+                    new SecurityRoute(),
                 new GetLogoutRoute(),
                 new SimpleHtmlRoute("/dashboard/dashboard.html", "dashboard/dashboard.ftl"),
                 new GetConnectedUserRoute(assembler.connectedUserResource()),
@@ -108,8 +109,7 @@ public class Main {
                 new GetUserPreferredDomainsRoute(assembler.userResource()),
                 new RemoveUploadedEegRoute(assembler.eegResource()),
                 new UploadRoute(assembler.contentResource()),
-                new RemoveUploadedFilesRoute(),
-                new ReIndexContentsInElasticSearchRoute(assembler.contentResource())
+                new RemoveUploadedFilesRoute()
             ).start();
             System.out.println("Ready, if you dare");
         }catch(Throwable t){
