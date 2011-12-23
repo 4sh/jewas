@@ -232,9 +232,7 @@ task startElasticSearch(dependsOn: [initSsh, checkPropsForDeployment]) << {
             command: """mv ${deployDirectory}/elasticsearch/data ${deployDirectory}/elasticsearch/data-${timestamp}""", trust: true, failonerror: false)
 
     // Waiting 5s after remove data folder of elastic search
-    Object.sleep(5000)
-
-    ant.
+    //Object.sleep(5000)
 
     ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 2224,
 		command: """${deployDirectory}/elasticsearch/bin/elasticsearch \
