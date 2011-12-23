@@ -128,7 +128,7 @@ dependencies {
     )
     runtime(
             [group: 'ch.qos.logback', name: 'logback-classic', version: '1.0.0'],
-            [group: 'org.slf4j', name: '    log4j-over-slf4j', version: '1.6.4']
+            [group: 'org.slf4j', name: 'log4j-over-slf4j', version: '1.6.4']
     )
 
     testCompile(
