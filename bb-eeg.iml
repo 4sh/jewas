@@ -24,7 +24,17 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="jewas" />
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/cache/org.slf4j/slf4j-api/jars/slf4j-api-1.6.4.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/cache/org.slf4j/slf4j-api/sources/slf4j-api-1.6.4-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
@@ -33,28 +43,6 @@
         <JAVADOC />
         <SOURCES>
           <root url="jar://$USER_HOME$/.gradle/cache/fr.4sh.jewas/jewas/sources/jewas-0.1-SNAPSHOT-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/cache/org.slf4j/slf4j-api/jars/slf4j-api-1.6.1.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/cache/org.slf4j/slf4j-api/sources/slf4j-api-1.6.1-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/cache/org.jboss.netty/netty/bundles/netty-4.0.0.Alpha0-4sh.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/cache/org.jboss.netty/netty/sources/netty-4.0.0.Alpha0-4sh-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -83,11 +71,44 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/cache/org.jboss.netty/netty/bundles/netty-4.0.0.Alpha0-4sh.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/cache/org.jboss.netty/netty/sources/netty-4.0.0.Alpha0-4sh-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
           <root url="jar://$USER_HOME$/.gradle/cache/org.freemarker/freemarker/jars/freemarker-2.3.9.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
           <root url="jar://$USER_HOME$/.gradle/cache/org.freemarker/freemarker/sources/freemarker-2.3.9-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/cache/ch.qos.logback/logback-classic/jars/logback-classic-1.0.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/cache/ch.qos.logback/logback-classic/sources/logback-classic-1.0.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/cache/ch.qos.logback/logback-core/jars/logback-core-1.0.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/cache/ch.qos.logback/logback-core/sources/logback-core-1.0.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -478,6 +499,17 @@
         </SOURCES>
       </library>
     </orderEntry>
+    <orderEntry type="module-library" exported="" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/cache/org.slf4j/log4j-over-slf4j/jars/log4j-over-slf4j-1.6.4.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/cache/org.slf4j/log4j-over-slf4j/sources/log4j-over-slf4j-1.6.4-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
     <orderEntry type="module-library" scope="TEST">
       <library>
         <CLASSES>
@@ -497,17 +529,6 @@
         <JAVADOC />
         <SOURCES>
           <root url="jar://$USER_HOME$/.gradle/cache/oro/oro/sources/oro-2.0.8-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" scope="TEST">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/cache/log4j/log4j/jars/log4j-1.2.9.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/cache/log4j/log4j/sources/log4j-1.2.9-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
