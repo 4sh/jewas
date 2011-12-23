@@ -33,7 +33,8 @@ public class GetEegSettingsRoute extends AbstractRoute {
         return new AbstractRequestHandler() {
             @Override
             public void onRequest(HttpRequest request) {
-                request.respondJson().object(eegResource.getEegSettings(oi.id()));
+                String eegSettings = eegResource.getEegSettings(oi.id());
+                request.respondJson().object(eegSettings);
             }
         };
     }
