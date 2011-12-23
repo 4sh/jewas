@@ -1,5 +1,4 @@
 <#include "../common/mainTemplate.ftl">
-<#--<#include "common/view-content-headers.ftl">-->
 <#include "eeg-content-header.ftl">
 
 <@mainTemplate title="Consultation"
