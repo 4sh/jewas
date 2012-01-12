@@ -10,6 +10,8 @@ import jewas.http.Parameters;
 import jewas.http.PatternUriPathMatcher;
 import jewas.http.RequestHandler;
 import jewas.http.impl.AbstractRequestHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,6 +24,12 @@ import java.net.URLConnection;
  * @author driccio
  */
 public class GetEegInformationsRoute extends AbstractRoute {
+
+    /**
+     * Class logger.
+     */
+    private static final Logger logger = LoggerFactory.getLogger(GetEegInformationsRoute.class);
+
     private EegResource eegResource;
 
     public GetEegInformationsRoute(EegResource _eegResource){
@@ -43,23 +51,21 @@ public class GetEegInformationsRoute extends AbstractRoute {
                     URL url = new URL(BBEEGConfiguration.INSTANCE.cliOptions().visioEegInternalUrl() + "/visio/content/" + oi.id() + "/informations");
 
                     URLConnection urlConnection = url.openConnection();
-                    BufferedReader in = new BufferedReader(
-                            new InputStreamReader(
-                                    urlConnection.getInputStream()));
 
-                    String inputLine;
+                    try (BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream())))
+                    {
+                        String inputLine;
 
-                    while ((inputLine = in.readLine()) != null) {
-                        content.append(inputLine);
+                        while ((inputLine = in.readLine()) != null) {
+                            content.append(inputLine);
+                        }
+                        in.close();
                     }
-
-                    in.close();
                 } catch (MalformedURLException e) {
-                    System.out.println(e.getMessage());
+                   logger.error("Cannot open connection", e);
                 } catch (IOException e) {
-                    System.out.println(e.getMessage());
+                   logger.error("Cannot open connection", e);
                 }
-
                 request.respondJson().object(content.toString());
             }
         };

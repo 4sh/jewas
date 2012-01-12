@@ -9,6 +9,8 @@ import jewas.http.PatternUriPathMatcher;
 import jewas.http.RequestHandler;
 import jewas.http.data.BodyParameters;
 import jewas.http.impl.AbstractRequestHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,6 +23,13 @@ import java.net.URL;
  * @author driccio
  */
 public class SaveEegRoute extends AbstractRoute {
+
+    /**
+     * Class logger.
+     */
+    private static final Logger logger = LoggerFactory.getLogger(SaveEegRoute.class);
+
+
     public SaveEegRoute(){
         super(HttpMethodMatcher.POST_OR_PUT, new PatternUriPathMatcher("/content/eeg/[tmpEegId]/[eegId]"));
     }
@@ -65,23 +74,20 @@ public class SaveEegRoute extends AbstractRoute {
 
                     HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                     urlConnection.setRequestMethod("POST");
-                    BufferedReader in = new BufferedReader(
-                            new InputStreamReader(
-                                    urlConnection.getInputStream()));
 
-                    String inputLine;
-
-                    while ((inputLine = in.readLine()) != null) {
-                        content.append(inputLine);
+                    try (BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream())))
+                    {
+                        String inputLine;
+                        while ((inputLine = in.readLine()) != null) {
+                            content.append(inputLine);
+                        }
+                        in.close();
                     }
-
-                    in.close();
                 } catch (MalformedURLException e) {
-                    System.out.println(e.getMessage());
+                    logger.error("Cannot open connection", e);
                 } catch (IOException e) {
-                    System.out.println(e.getMessage());
+                    logger.error("Cannot open connection", e);
                 }
-
                 request.respondHtml().content(content.toString());
             }
         };
