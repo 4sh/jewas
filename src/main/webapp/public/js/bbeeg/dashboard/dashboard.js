@@ -2,6 +2,29 @@ function success(data, container) {
     $(container).children().remove();
 
     $("#contentItemTemplate").tmpl(data).appendTo(container);
+    // Activate scrolling on mouse over, deactivate on mouse out
+    container.find('.ui-panel-content-text').mouseenter(
+        function() {
+            var contentDiv = $(this);
+            var titleAnchor = contentDiv.find(".content_title");
+
+            if (!titleAnchor.parent().hasClass('content_title_container')) {
+                return;
+            }
+            if (titleAnchor.text().length > 32) {
+                titleAnchor.wrap("<marquee behavior='scroll' direction='left' scrollamount='2' width='200'>");
+                $('marquee').marquee();
+            }
+        }).mouseleave(function () {
+            var contentDiv = $(this);
+            var titleAnchor = contentDiv.find(".content_title");
+            if (titleAnchor.parent().hasClass('content_title_container')) {
+                return;
+            }
+            titleAnchor.parent().trigger('stop');
+            titleAnchor.unwrap();
+            titleAnchor.unwrap();
+        });
 }
 
 function createLastAdded(container) {

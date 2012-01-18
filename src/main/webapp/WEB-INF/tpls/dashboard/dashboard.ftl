@@ -6,6 +6,7 @@
                  "/public/js/jqcloud/jqcloud-0.2.1.js",
                  "/public/js/tagcloud/jquery.tagcloud-0.5.0.js",
                  "/public/js/tinysort/jquery.tinysort.js",
+                 "/public/js/jquery.marquee/jquery.marquee.js",
                  "/public/js/panel/ui.panel.js",
                  "/public/js/bbeeg/content/content-helper.js",
                  "/public/js/bbeeg/dashboard/dashboard.js"]
@@ -18,7 +19,9 @@
         <div class="mini_tabs"></div>
         <div class="ui-panel-content-text">
             <div class="mini_icon_type {{= contentHelper.getMiniIcon(type)}}"></div>
-            <a href="/content/{{= id}}/view.html">{{= title}}</a>
+            <div class="content_title_container">
+                <a class="content_title" href="/content/{{= id}}/view.html">{{= title}}</a>
+            </div>
             <div class="mini_clock">
                 <img src="/public/images/bbeeg/calendar.png"/>
                 {{= creationDate}}  &nbsp;

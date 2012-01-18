@@ -170,6 +170,10 @@
     float: left;
 }
 
+.content_title_container {
+    overflow-x: hidden;
+}
+
 .ui-panel-content-text {
     background-color: #dfdfdf;
     -webkit-border-radius: 5px;
@@ -183,9 +187,11 @@
     background-color: #c1dddf;
 }
 
-.ui-panel-content-text > a {
+
+.content_title {
     color: #1099a3;
     font-weight: bold;
+    white-space: nowrap;
 }
 
 .ui-panel-content-text > a:hover {
