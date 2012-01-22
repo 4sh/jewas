@@ -152,8 +152,6 @@ sourceSets {
         }
         resources {
             srcDir "src/integration-test/resources"
-        }
-        testResources {
             srcDir "src/test/resources"
         }
     }
