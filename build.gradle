@@ -23,7 +23,7 @@ def STANDALONE_PACKAGING = true
 // Root directory on demo environnment, where will be hosted every targetEnvironnment directories
 def ENV_DEMO_DEPLOY_ROOT_PATH = "/home/bbeeg/dist";
 // Demo connection properties
-def ENV_DEMO_HOST = '91.121.39.83'
+def ENV_DEMO_HOST = '192.168.0.200'
 def ENV_DEMO_USER = "bbeeg"
 def ENV_DEMO_PASS = "4SHbbfr"
 // System property used to define target execution environnment used for deployment
@@ -152,7 +152,6 @@ sourceSets {
         }
         resources {
             srcDir "src/integration-test/resources"
-            srcDir "src/test/resources"
         }
     }
 }
@@ -206,7 +205,7 @@ task uploadOnDemo(dependsOn: [initSsh, checkPropsForDeployment, test, build]) <<
 
             ant.scp2(file: f,
                     remoteTofile: "${ENV_DEMO_USER}:${ENV_DEMO_PASS}@${ENV_DEMO_HOST}:${deployDirectory}/bbeeg.jar",
-                    port: 2224,
+                    port: 22,
                     trust: true,
                     verbose: true
             )
@@ -220,7 +219,7 @@ task bootstrapElasticSearch() << {
     def deployDirectory = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].targetDir
 
     // Installing needed plugins
-    ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 2224,
+    ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 22,
 		command: """${deployDirectory}/elasticsearch/bin/plugin \
 		     install mapper-attachments""",
         trust: true, failonerror: true)
@@ -230,19 +229,19 @@ task startElasticSearch(dependsOn: [initSsh, checkPropsForDeployment]) << {
     def deployDirectory = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].targetDir
     def executionPort = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].elasticSearchPort
 
-    ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 2224,
+    ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 22,
 		command: """kill -9 \$(cat "${deployDirectory}/elasticsearch.pid")""", trust: true, failonerror: false)
 
     // Waiting 5s after kill of elastic search
     Object.sleep(5000)
 
-    ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 2224,
+    ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 22,
             command: """mv ${deployDirectory}/elasticsearch/data ${deployDirectory}/elasticsearch/data-${timestamp}""", trust: true, failonerror: false)
 
     // Waiting 5s after remove data folder of elastic search
     //Object.sleep(5000)
 
-    ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 2224,
+    ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 22,
 		command: """${deployDirectory}/elasticsearch/bin/elasticsearch \
 		    -f -Des.transport.tcp.port=${executionPort} -Des.index.store.type=memory -Xms512m -Xmx512m  \
 		    > "${deployDirectory}/elasticsearch.log" 2> "${deployDirectory}/elasticsearch.err.log" \
@@ -280,14 +279,14 @@ task startBBEEG(dependsOn: [initSsh, checkPropsForDeployment, startElasticSearch
         javaOpts += " -javaagent:"+NEW_RELIC_AGENT_PATH
     }
 
-    ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 2224,
+    ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 22,
 		command: """kill -9 \$(cat "${deployDirectory}/bbeeg.pid")""", trust: true, failonerror: false)
-    ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 2224,
+    ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 22,
 		command: """rm -rf ${cachedStaticResourcesRootDirectory}""", trust: true, failonerror: false)
-    ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 2224,
+    ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 22,
 		command: """mkdir ${cachedStaticResourcesRootDirectory}""", trust: true, failonerror: true)
     // TODO: pass the http port here...
-    ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 2224,
+    ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 22,
 		command: """${java7Home}/jre/bin/java ${javaOpts} -jar "${deployDirectory}/bbeeg.jar" \
 		    -httpPort ${executionPort} -visioRootUrl ${visioRootUrl} -visioEegInternalUrl ${visioEegInternalUrl} \
 		    -contentFileRepository ${contentFileRepository} -tmpContentFileRepository ${tmpContentFileRepository} -cachedStaticResourcesRootDirectory ${cachedStaticResourcesRootDirectory} \
