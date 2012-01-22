@@ -1,0 +1,8 @@
+CREATE TABLE CONTENT_COMMENT (
+                ID INT(10) NOT NULL,
+                CONTENT_REF INT(10) NOT NULL,
+                PUBLICATION_COMMENTS VARCHAR(200),
+                REJECTION_COMMENTS VARCHAR(200),
+                COMMENT_TYPE INT(2) NOT NULL,
+                PRIMARY KEY (ID)
+);

@@ -1,23 +1,9 @@
-DELETE FROM DOMAIN;
-DELETE FROM I18N_TABLE WHERE I18N_KEY LIKE 'domain%';
-
-INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.anatomie.cerebrale');
-INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.physiologie.cerebrale');
-INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.construction.cerveau');
-INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.adaptation.vie.extra.uterine');
-INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.examen.neurologique.nouveau.ne');
-INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.examens.complementaires.neurologiques');
-INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.suivi.developpement');
-INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.principes.electrophysiologiques');
-INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.enregistrement.eeg.polygraphique');
-INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.bases.interpretation');
-INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.eeg.nouveau.ne.terme');
-INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.maturation.eeg.nouveau.ne.premature');
-INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.prematurite');
-INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.atteintes.neurologiques.aigues');
-INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.maladies.neurologiques.revelation.neonatales');
-INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.convulsions.neonatales');
-
+INSERT INTO I18N_TABLE (I18N_KEY, LANGUAGE , LABEL) VALUES ('contentType.text', 'fr', 'Texte');
+INSERT INTO I18N_TABLE (I18N_KEY, LANGUAGE , LABEL) VALUES ('contentType.image', 'fr', 'Image');
+INSERT INTO I18N_TABLE (I18N_KEY, LANGUAGE , LABEL) VALUES ('contentType.video', 'fr', 'Video');
+INSERT INTO I18N_TABLE (I18N_KEY, LANGUAGE , LABEL) VALUES ('contentType.audio', 'fr', 'Audio');
+INSERT INTO I18N_TABLE (I18N_KEY, LANGUAGE , LABEL) VALUES ('contentType.document', 'fr', 'Document');
+INSERT INTO I18N_TABLE (I18N_KEY, LANGUAGE , LABEL) VALUES ('contentType.eeg', 'fr', 'EEG');
 INSERT INTO I18N_TABLE (I18N_KEY, LANGUAGE , LABEL) VALUES ('domain.anatomie.cerebrale', 'fr', 'Anatomie cérébrale');
 INSERT INTO I18N_TABLE (I18N_KEY, LANGUAGE , LABEL) VALUES ('domain.physiologie.cerebrale', 'fr', 'Physiologie cérébrale');
 INSERT INTO I18N_TABLE (I18N_KEY, LANGUAGE , LABEL) VALUES ('domain.adaptation.vie.extra.uterine', 'fr', 'Adaptation à la vie extra-utérine');

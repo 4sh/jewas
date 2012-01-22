@@ -1,0 +1,17 @@
+INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.anatomie.cerebrale');
+INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.physiologie.cerebrale');
+INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.construction.cerveau');
+INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.adaptation.vie.extra.uterine');
+INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.examen.neurologique.nouveau.ne');
+INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.examens.complementaires.neurologiques');
+INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.suivi.developpement');
+INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.principes.electrophysiologiques');
+INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.enregistrement.eeg.polygraphique');
+INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.bases.interpretation');
+INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.eeg.nouveau.ne.terme');
+INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.maturation.eeg.nouveau.ne.premature');
+INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.prematurite');
+INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.atteintes.neurologiques.aigues');
+INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.maladies.neurologiques.revelation.neonatales');
+INSERT INTO DOMAIN (ID, I18N_KEY) VALUES (DOMAIN_SEQ.nextval, 'domain.convulsions.neonatales');
+COMMIT;
