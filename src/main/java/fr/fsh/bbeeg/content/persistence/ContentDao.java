@@ -72,16 +72,16 @@ public class ContentDao {
                         .addQuery("selectUrl", "select FILE_URI from Content where id = :id")
                         .addQuery("selectLimitedRecent",
                                 "select * from " +
-                                        "(select * from Content where status = :status " +
+                                        "(select * from Content where status = :status and publication_Start_Date <= :today and :today <= publication_End_Date " +
                                         "order by id desc) " +
                                         "where ROWNUM <= :limit")
                         .addQuery("selectLimitedPopular",
                                 "select * from " +
-                                        "(select * from Content where status = :status ORDER BY POPULARITY DESC) " +
+                                        "(select * from Content where status = :status and publication_Start_Date <= :today and :today <= publication_End_Date ORDER BY POPULARITY DESC) " +
                                         "where ROWNUM <= :limit")
                         .addQuery("selectLimitedLastViewed",
                                 "select * from " +
-                                        "(select * from Content where status = :status) " +
+                                        "(select * from Content where status = :status and publication_Start_Date <= :today and :today <= publication_End_Date) " +
                                         "where ROWNUM <= :limit")
                         .addQuery("selectHigherVersionNumber", "select max(version) from content where content_ancestor_ref = :ancestorId")
                         .addQuery("count", "select count(*) as COUNT from Content where status = :status")
@@ -146,10 +146,12 @@ public class ContentDao {
     }
 
     public void fetchRecentContents(List<ContentHeader> contentHeaders, int limit) {
+        Date today = new DateMidnight().toDate();
         contentHeaderQueryTemplate.select(contentHeaders, "selectLimitedRecent",
                 new QueryExecutionContext()
                         .buildParams()
                         .integer("status", ContentStatus.VALIDATED.ordinal())
+                        .date("today", today)
                         .integer("limit", limit)
                         .toContext()
         );
@@ -182,20 +184,24 @@ public class ContentDao {
      * @param limit the number of contents to fetch.
      */
     public void fetchPopularContent(List<ContentHeader> contentHeaders, int limit) {
+        Date today = new DateMidnight().toDate();
         contentHeaderQueryTemplate.select(contentHeaders, "selectLimitedPopular",
                 new QueryExecutionContext()
                         .buildParams()
                         .integer("status", ContentStatus.VALIDATED.ordinal())
+                        .date("today", today)
                         .integer("limit", limit)
                         .toContext()
         );
     }
 
     public void fetchLastViewedContent(List<ContentHeader> contentHeaders, int limit) {
+        Date today = new DateMidnight().toDate();
         contentHeaderQueryTemplate.select(contentHeaders, "selectLimitedLastViewed",
                 new QueryExecutionContext()
                         .buildParams()
                         .integer("status", ContentStatus.VALIDATED.ordinal())
+                        .date("today", today)
                         .integer("limit", limit)
                         .toContext()
         );
