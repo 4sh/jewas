@@ -32,7 +32,7 @@ public class ContentDaoTest {
     private IDatabaseTester databaseTester;
     private BasicDataSource dataSource;
     private ContentDao contentDao;
-    private String expectedDataSetsPath = "expectedDataSet/";
+    private String expectedDataSetsPath = "/fr/fsh/bbeeg/content/persistence/expectedDataSet/";
 
 
     @Before
