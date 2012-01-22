@@ -33,27 +33,28 @@ $(
         );
 
         // Create new document dialog click binding.
-        $(".createNewContent").live('click',function() {
+        $(".createNewContent").live('click', function() {
             $("#createNewContentDialog").dialog({
                 show: 'slide',
                 hide: 'slide',
-                buttons: [{
-                    text: "Annuler",
-                    click: function() { $(this).dialog("close"); }
-                    },
-                {text: "Valider",
-                    click: function() {
-                        var navigation = $(this).find("select option:selected")[0].value;
-                        if (!!navigation) {
-                            window.location = navigation;
+                buttons: [
+                    {text: "Valider",
+                        click: function() {
+                            var navigation = $(this).find("select option:selected")[0].value;
+                            if (!!navigation) {
+                                window.location = navigation;
+                            }
+                            $(this).dialog("close");
                         }
-                        $(this).dialog("close");
+                    },
+                    {
+                        text: "Annuler",
+                        click: function() {
+                            $(this).dialog("close");
+                        }
                     }
-                }
-            ]});
+                ]});
         });
-
-
 
         $('#disconnectMenuItem').click(function() {
             console.log("Logout called");

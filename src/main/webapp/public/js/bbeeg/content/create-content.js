@@ -1,8 +1,9 @@
-function ContentCreator(type, extensions, extensionsMsgError, previsualizationContainerId, createPrevisualizationObject) {
+function ContentCreator(type, extensions, extensionsMsgError, previsualizationContainerId, createPrevisualizationObject, saveButton, initialContent) {
     var uploadedFiles = [];
-    var currentUploadedFileId;
+    var currentUploadedFileId = "";
     var contentCreator = this;
 
+    /** Private methods **/
     function getDomains(domainIds) {
         var domains = [];
 
@@ -23,6 +24,46 @@ function ContentCreator(type, extensions, extensionsMsgError, previsualizationCo
             });
     }
 
+    function isNullOrEmpty(stringValue) {
+        return stringValue === null || stringValue === "";
+    }
+
+    /**
+     * Is submit operation is permitted in the current content state.
+     *
+     * @param contentVersion the edited content version, null if content creation.
+     */
+    function isSubmitAuthorized() {
+        var contentTitle = $("#title").val();
+        var contentDescription = $("#description").val();
+
+        var requiredDataCompleted = !isNullOrEmpty(contentTitle) && !isNullOrEmpty(contentDescription);
+
+        /* In case of first version of content, forbids empty content */
+        if (initialContent) {
+            return requiredDataCompleted && !isNullOrEmpty(currentUploadedFileId);
+        } else {
+            return requiredDataCompleted;
+        }
+    }
+
+    /** Public methods **/
+
+    /**
+     * Refreshes the submit form button state depending on the required field values.
+     * Called on each mandatory field value change event.
+     *
+     * @param contentVersion the edited content version.
+     */
+    this.refreshSubmitButton = function() {
+        if (isSubmitAuthorized()) {
+            saveButton.removeAttr('disabled');
+        } else {
+            saveButton.attr('disabled', '');
+        }
+    }
+
+
     this.removeUploadedFiles = function () {
         $.ajaxDelete(
             '/upload',
@@ -30,8 +71,8 @@ function ContentCreator(type, extensions, extensionsMsgError, previsualizationCo
         );
     };
 
+    /** Constructor **/
     (function () {
-
         $("#confirmationDialog").dialog({
             autoOpen: false,
             modal: false,
@@ -56,7 +97,6 @@ function ContentCreator(type, extensions, extensionsMsgError, previsualizationCo
                 }
             }
 
-
             var dataToSend = {
                 type : type,
                 contentDetail : JSON.stringify(contentDetail)
@@ -64,6 +104,7 @@ function ContentCreator(type, extensions, extensionsMsgError, previsualizationCo
 
             $.ajaxPut(form.action,
                 dataToSend,
+
                 function(data){
 
                     $.post("/content/" + data.id + "/content/" + currentUploadedFileId,
@@ -129,7 +170,7 @@ function ContentCreator(type, extensions, extensionsMsgError, previsualizationCo
                 contentCreator.removeUploadedFiles();
                 uploadedFiles.push(response.fileId);
                 uploadStatus.text('Transfert terminé');
-
+                contentCreator.refreshSubmitButton();
 
                 var child = createPrevisualizationObject("/content/content/" + currentUploadedFileId);
                 $('#previsualizationContainer').empty().append(child);

@@ -67,6 +67,7 @@
 </#if>
 
     <script type="application/javascript" src="/public/js/bbeeg/main.js"></script>
+    <script type="application/javascript" src="/public/js/bbeeg/common/bbeeg-config.js"></script>
 
     <#if useChosen>
         <#if compressedJS == "true">

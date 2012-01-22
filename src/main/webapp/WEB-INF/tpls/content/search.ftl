@@ -1,468 +1,94 @@
 <#include "../common/mainTemplate.ftl">
 
-<#if searchMode == 0>
-<#assign selectMenu = "search">
-<#else>
-<#assign selectMenu = "administration">
-</#if>
-
 <@mainTemplate
     title="Ecran d'accueil"
-    selectedMenuItem=selectMenu
-    scripts=["/public/js/bbeeg/search/search.js", "/public/js/bbeeg/content/content-helper.js", "/public/js/bbeeg/common/widgets/chainedSelect.js"]
+    scripts=["/public/js/bbeeg/search/search.js",
+             "/public/js/bbeeg/content/content-status.js",
+             "/public/js/bbeeg/content/content-helper.js",
+             "/public/js/bbeeg/common/widgets/chainedSelect.js",
+             "/public/js/bbeeg/search/search-content.js",
+             "/public/js/bbeeg/content/content-lifecycle-helper.js"]
     stylesheets=["/public/css/bbeeg/search.css"]
     useChosen=true>
 <script>
 
-    function viewContent(contentId) {
-        if (contentId !== null) {
-           window.location = "/content/" + contentId + "/view.html";
-        } else {
-            console.log("ContentId not found", contentId)
-        }
-    }
-
-    function updateStatus(containerId, contentId, updateStatusData, callback) {
-        $.post('/content/status/' + contentId,
-                updateStatusData,
-                function (data) {
-                    callback();
-                }
-        );
-    }
-
-    function loadPublicationDialogContent(contentId, container) {
-               console.log("Load publication comments for content: ", contentId);
-               var publicationTextElt = container.find("#publishCommentMsg");
-               var startPublicationDate = container.find("#startPublicationDate");
-               var endPublicationDate = container.find("#endPublicationDate");
-
-               $.getJSON("/content/status/" + contentId,
-                       function success(data) {
-                           publicationTextElt.val(data.publicationComments);
-                           startPublicationDate.text(data.header.startPublicationDate);
-                           endPublicationDate.text(data.header.endPublicationDate);
-                       });
-           }
-
-        function displayPublicationDialog(contentId) {
-               var publicationDialog = $("#publishContentDialog");
-               loadPublicationDialogContent(contentId, publicationDialog);
-               publicationDialog.dialog(
-                       {   show: 'slide',
-                           hide: 'slide',
-                           width: '50%',
-                           buttons: [
-                               {
-                                   text: "Ok",
-                                   click: function() {
-                                       $(this).dialog("close");
-                                   }
-                               }
-                           ]
-                       });
-           }
-
-    function loadRejectionDialogContent(contentId, container) {
-           console.log("Load rejection comments for content: ", contentId);
-           var rejectionTextElt = container.find("textarea");
-           var startPublicationDate = container.find("#startPublicationDate1");
-           var endPublicationDate = container.find("#endPublicationDate1");
-
-           $.getJSON("/content/status/" + contentId,
-                   function success(data) {
-                       rejectionTextElt.val(data.rejectionComments);
-                       if(!!data.header.startPublicationDate) {
-                           startPublicationDate.text(data.header.startPublicationDate);
-                       } else {
-                           startPublicationDate.text("");
-                       }
-                       if (!!data.header.endPublicationDate) {
-                           endPublicationDate.text(data.header.endPublicationDate);
-                       } else {
-                           endPublicationDate.text("");
-                       }
-
-                   });
-       }
-
-    <#if searchMode == 1>
-    function sendUpdateStatus(containerId, contentId, status, comment, startPublicationDate, endPublicationDate) {
-        var updateStatusData = {};
-        updateStatusData.status = status;
-        updateStatusData.comment = comment;
-        updateStatusData.startPublicationDate = startPublicationDate;
-        updateStatusData.endPublicationDate = endPublicationDate;
-
-        updateStatus(containerId, contentId, updateStatusData,
-            function () {
-                $("#updateStatusSuccessDialog").dialog({show: 'slide', hide: 'slide'});
-                if (status === 'DELETED') {
-                    $("#" + containerId).remove();
-                } else {
-                    $("#" + containerId + ' .publish-button')[0].disabled = true;
-                    var statusStyle = contentHelper.getStatusStyle(status);
-                    $('#' + containerId).find('.tab_right').removeClass().addClass('tab_right ' + statusStyle.className);
-                    $('#' + containerId).find('.label').html(statusStyle.label)
-                }
-
-            }
-        );
-    }
-
-
-    function publishContent(containerId, contentId, status) {
-        var newStatus = null;
-
-        if (status === "DRAFT") {
-            newStatus = 'TO_BE_VALIDATED';
-        } else {
-            $("#updateStatusImpossible").dialog({show: 'slide', hide: 'slide'});
-        }
-
-        if (newStatus !== null) {
-            $("#publishContentDialog").dialog(
-                    {
-                        show: 'slide',
-                        open: function () {
-                            // For the date picker not to be displayed behind the dialog 
-                            var dialogZindex = $(this).parents(".ui-dialog").css("z-index");
-                            $("#ui-datepicker-div").css("z-index", dialogZindex + 12 +"!Important");
-                        },
-                        hide: 'slide',
-                        width: '50%',
-                        buttons: [
-                            {
-                                text: "Annuler",
-                                click: function() {
-                                    $(this).dialog("close");
-                                }
-                            },
-                            {
-                                text: "Valider",
-                                click: function() {
-                                    var publicationDialog = $("#publishContentDialog");
-                                    sendUpdateStatus(containerId, contentId, newStatus,
-                                    publicationDialog.find("#publishCommentMsg").val(),
-                                    publicationDialog.find("#startPublicationDate").val(),
-                                    publicationDialog.find("#endPublicationDate").val());
-                                    $(this).dialog("close");
-                                }
-                            }
-                        ]
-                    });
-
-        }
-    }
-
-    function editContent(containerId, contentId, status) {
-        var newStatus = null;
-
-        if (status === 'DRAFT') {
-            window.location = "/content/" + contentId + "/edit.html";
-            // Do not change the status just save the changes
-
-        } else if (status === 'VALIDATED') {
-            // if rejected duplicate the content and set the new version to draft
-        } else if (status === 'REJECTED') {
-            // if rejected duplicate the content and set the new version to draft
-        } else {
-            // edit should not be possible
-
-        }
-
-        if (newStatus !== null) {
-            sendUpdateStatus(containerId, contentId, newStatus, '');
-        }
-    }
-
-    function isContentEditable(contentStatus) {
-        if (contentStatus === 'DRAFT' || contentStatus === 'REJECTED' || contentStatus === 'VALIDATED') {
-            return true;
-        }
-        return false;
-    }
-
-    function deleteContent(containerId, contentId, status) {
-        var newStatus = null;
-
-        if (status === "VALIDATED") {
-            newStatus = 'TO_BE_DELETED';
-        } else {
-            newStatus = 'DELETED';
-        }
-
-        if (newStatus !== null) {
-            sendUpdateStatus(containerId, contentId, newStatus, '');
-        }
-    }
-
-       function displayRejectionDialog(contentId) {
-           var rejectionDialog = $("#rejectReasonDialog");
-           loadRejectionDialogContent(contentId, rejectionDialog);
-           rejectionDialog.dialog(
-                   {   show: 'slide',
-                       hide: 'slide',
-                       width: '50%',
-                       buttons: [
-                           {
-                               text: "Ok",
-                               click: function() {
-                                   $(this).dialog("close");
-                               }
-                           }
-                       ]
-                   });
-       }
-    </#if>
-
-    <#if searchMode == 2>
-    function sendUpdateStatus(containerId, contentId, status, comment) {
-        var updateStatusData = {};
-        updateStatusData.status = status;
-        updateStatusData.comment = comment;
-
-        updateStatus(containerId, contentId, updateStatusData,
-                function () {
-                    $("#" + containerId).remove();
-                }
-        );
-    }
-
-    function acceptContent(containerId, contentId, status) {
-        var newStatus = null;
-
-        if (status === "TO_BE_VALIDATED") {
-            newStatus = 'VALIDATED';
-        } else {
-            if (status === "TO_BE_DELETED") {
-                newStatus = 'DELETED';
-            }
-            else {
-                $("#updateStatusImpossible").dialog({show: 'slide', hide: 'slide'});
-            }
-        }
-
-        if (newStatus !== null) {
-            sendUpdateStatus(containerId, contentId, newStatus, '');
-        }
-    }
-
-    function rejectContentCallback(containerId, contentId, status, comment) {
-        var newStatus = null;
-
-        if (status === "TO_BE_VALIDATED") {
-            newStatus = 'REJECTED';
-        } else {
-            if (status === "TO_BE_DELETED") {
-                newStatus = 'VALIDATED';
-            }
-            else {
-                $("#updateStatusImpossible").dialog({show: 'slide', hide: 'slide'});
-            }
-        }
-
-        if (newStatus !== null) {
-            sendUpdateStatus(containerId, contentId, newStatus, comment);
-        }
-    }
-
-    function rejectContent(containerId, contentId, status) {
-        loadRejectionDialogContent(contentId, $("#rejectReasonDialog"));
-        $("#rejectReasonDialog").dialog(
-                {   show: 'slide',
-                    hide: 'slide',
-                    width: '50%',
-                    buttons: [
-                        {
-                            text: "Annuler",
-                            click: function() {
-                                $(this).dialog("close");
-                            }
-                        },
-                        {
-                            text: "Valider",
-                            click: function() {
-                                rejectContentCallback(containerId, contentId, status, $("#rejectReasonMsg").val());
-                                console.log($("#rejectReasonMsg").val());
-                                $(this).dialog("close");
-                            }
-                        }
-                    ]
-                }
-        );
-    }
-    </#if>
-
-    <#if searchMode != 1>
-        function loadAuthors() {
-            $.getJSON(
-                    '/users/authors/all',
-                    function success(data) {
-                        var container = $("#adSearchAuthors");
-                        container.children().remove();
-                        $("#authorItemTemplate").tmpl(data).appendTo(container);
-                        $("#adSearchAuthors").trigger("liszt:updated");
-                    }
-            );
-        }
-    </#if>
-
-    function process(results) {
-        $(results).each(
-            function (i, e) {
-                if(!e) {
-                    return;
-                }
-                var statusStyle = contentHelper.getStatusStyle(e.status);
-                e.statusLabel = statusStyle.label;
-                e.statusClass = statusStyle.className;
-            }
-    );
-        return results;
-    }
-
-    function extractSearchCriterionFromUrl() {
-        var url = window.location.href;
-        if (url.indexOf('#') !== -1) {
-            var splittedUrl = url.split('#');
-
-            if (splittedUrl.length !== 2) {
-                console.log("Error url should only contain one #. url:", url);
-                return;
-            }
-
-            $('#simpleSearchQuery').val(decodeURI(splittedUrl[1]));
-            $('#simpleSearchButton').click();
-        }
-    }
-
-    function loadDomains() {
-        $.getJSON(
-            '/domain/all',
-            function success(data) {
-                var container = $("#adSearchDomains");
-                container.children().remove();
-                $("#domainItemTemplate").tmpl(data).appendTo(container);
-                $("#adSearchDomains").trigger("liszt:updated");
-            }
-        );
-    }
-
-    function loadContentTypes() {
-        $.getJSON(
-            '/content/type/all',
-            function success(data) {
-                var container = $("#adSearchType");
-                container.children().remove();
-                $("#contentTypeItemTemplate").tmpl(data).appendTo(container);
-                $("#adSearchType").trigger("liszt:updated");
-            }
-        );
-    }
-
-    function formatDescription(text) {
-        if (text !== null) {
-            return text.substring(0,220).concat(" ...");
-        }
-    }
     $(function() {
-
         <#if searchMode != 1>
-            loadAuthors();
+            loadAllAuthors();
         </#if>
-        loadDomains();
-        loadContentTypes();
+        loadAllDomains();
+        loadAllContentTypes();
 
         /* Switch between 'Simple search' and 'Advanced search' modes */
-        $('.advanced_search_button').click(function() {
-		    $('.toggle').toggle();
-            return false;
-	    }).next().hide();
+        $('.advanced_search_button').click(
+                function() {
+                    $('.toggle').toggle();
+                    return false;
+                }).next().hide();
 
-        var dates = $( "#from, #to").datepicker({
+        var dates = $("#from, #to").datepicker({
             defaultDate: "",
             dateFormat: "yy-mm-dd",
             changeMonth: true,
             numberOfMonths: 1,
-            onSelect: function( selectedDate ) {
-                var option = this.id == "from" ? "minDate" : "maxDate",
-                    instance = $( this ).data( "datepicker" ),
-                    date = $.datepicker.parseDate(
+            onSelect: function(selectedDate) {
+                var option = this.id == "from" ? "minDate" : "maxDate", instance = $(this).data("datepicker"), date = $.datepicker.parseDate(
                         instance.settings.dateFormat ||
-                            $.datepicker._defaults.dateFormat,
-                            selectedDate, instance.settings );
-                    dates.not( this ).datepicker( "option", option, date );
-                }
+                                $.datepicker._defaults.dateFormat,
+                        selectedDate, instance.settings);
+                dates.not(this).datepicker("option", option, date);
+            }
         });
-        <#if searchMode == 1>
-        var publicationDates = $("#startPublicationDate, #endPublicationDate").datepicker({
-            defaultDate: "",
-            dateFormat: "yy-mm-dd",
-            changeMonth: true,
-            numberOfMonths: 1,
-            onSelect: function( selectedDate ) {
-                var option = this.id == "startPublicationDate" ? "minDate" : "maxDate",
-                    instance = $( this ).data( "datepicker" ),
-                    date = $.datepicker.parseDate(
-                        instance.settings.dateFormat ||
-                            $.datepicker._defaults.dateFormat,
-                            selectedDate, instance.settings );
-                    dates.not( this ).datepicker( "option", option, date );
-                }
-        });
-        </#if>
-        
         $("#adSearchType").chosen();
         $("#adSearchCriterias").chosen();
         $("#adSearchDomains").chosen();
         $("#adSearchAuthors").chosen();
 
         SearchQuery.bindSearchToForm(
-            new SearchQuery.SearchContext().targetForm($("#simpleSearchForm"))
-                .resultElement($("#searchResultsComponent"))
-                .process(process)
-                .progressIndicator($("#progressIndicator"))
-                .globalResultTemplate($("#contentResult"))
-                .resultElementTemplate($("#contentLineResult"))
-                .selectorForClickableOfSearchNext("#searchNext")
-                .selectorWhereResultsWillBeAppended("#contentResults")
+                new SearchQuery.SearchContext().targetForm($("#simpleSearchForm"))
+                        .resultElement($("#searchResultsComponent"))
+                        .process(process)
+                        .progressIndicator($("#progressIndicator"))
+                        .globalResultTemplate($("#contentResult"))
+                        .resultElementTemplate($("#contentLineResult"))
+                        .selectorForClickableOfSearchNext("#searchNext")
+                        .selectorWhereResultsWillBeAppended("#contentResults")
         );
 
         SearchQuery.bindSearchToForm(
-            new SearchQuery.SearchContext().targetForm($("#advancedSearchForm"))
-                .resultElement($("#searchResultsComponent"))
-                .process(process)
-                .progressIndicator($("#progressIndicator"))
-                .globalResultTemplate($("#contentResult"))
-                .resultElementTemplate($("#contentLineResult"))
-                .selectorForClickableOfSearchNext("#searchNext")
-                .selectorWhereResultsWillBeAppended("#contentResults")
+                new SearchQuery.SearchContext().targetForm($("#advancedSearchForm"))
+                        .resultElement($("#searchResultsComponent"))
+                        .process(process)
+                        .progressIndicator($("#progressIndicator"))
+                        .globalResultTemplate($("#contentResult"))
+                        .resultElementTemplate($("#contentLineResult"))
+                        .selectorForClickableOfSearchNext("#searchNext")
+                        .selectorWhereResultsWillBeAppended("#contentResults")
         );
 
-/* $("#adSearchCriterias").chainedSelect(
-{
-'ajaxUrlsPerDepth' : [
-"/content/criterias?depth=0",
-"/content/criterias?depth=1&parent={value}",
-"/content/criterias?depth=2&parent={value}",
-"/content/criterias?depth=3&parent={value}"
-],
-'targetFieldForSelectedOption' : $("#criterias"),
-'displaySelectionTarget' : $("#criteriasList"),
-'templateForDisplaySelectionItem' : $("#criteriaSelectedItem"),
-'selectorForClosingLinkInDisplaySelectionItemTemplate' : "a.search-choice-close",
-'selectMenuContainer' : $("#searchCriteriaMenuContainer")
-}
-);*/
+        /* $("#adSearchCriterias").chainedSelect(
+        {
+        'ajaxUrlsPerDepth' : [
+        "/content/criterias?depth=0",
+        "/content/criterias?depth=1&parent={value}",
+        "/content/criterias?depth=2&parent={value}",
+        "/content/criterias?depth=3&parent={value}"
+        ],
+        'targetFieldForSelectedOption' : $("#criterias"),
+        'displaySelectionTarget' : $("#criteriasList"),
+        'templateForDisplaySelectionItem' : $("#criteriaSelectedItem"),
+        'selectorForClosingLinkInDisplaySelectionItemTemplate' : "a.search-choice-close",
+        'selectMenuContainer' : $("#searchCriteriaMenuContainer")
+        }
+        );*/
 
         // Enabling auto query when scrollbar is at the bottom of the window
         var SCROLLBAR_THRESHOLD = 100; // 100 pixels before the bottom of the screen, we consider the scrollbar is at the bottom
-        $(window).scroll(function(args){
-            if($("#searchResultsComponent #searchNext").length != 0 // Button "searchNext" exists and is not disabled
-                && $("#searchResultsComponent #searchNext").attr('disabled') != "disabled"){
+        $(window).scroll(function(args) {
+            if ($("#searchResultsComponent #searchNext").length != 0 // Button "searchNext" exists and is not disabled
+                    && $("#searchResultsComponent #searchNext").attr('disabled') != "disabled") {
                 var scrollbarIsAtBottom = $(window).scrollTop() + SCROLLBAR_THRESHOLD >= $(document).height() - $(window).height();
-                if(scrollbarIsAtBottom){
+                if (scrollbarIsAtBottom) {
                     $("#searchNext").click();
                 }
             }
@@ -471,7 +97,7 @@
         extractSearchCriterionFromUrl();
         // If we manage the connected user contents or we administrate validated contents, display them immediately
         <#if searchMode == 1 || searchMode == 2>
-        $('#simpleSearchButton').click();
+            $('#simpleSearchButton').click();
         </#if>
 
     });
@@ -597,9 +223,15 @@
                 <div class="content-result-status">
                     <span class="label">{{= statusLabel}}</span>
                 </div>
-                {{if status == "REJECTED"}}
-                <img src="/public/images/bbeeg/comment.png" alt="Commentaires" class="hand_cursor settings_item comments_icon" onclick="displayRejectionDialog({{= id}})"/>
-                {{/if}}
+
+                <img src="/public/images/bbeeg/comment.png"
+                     alt="Commentaires"
+                     class="display-rejection-comments-button hand_cursor settings_item comments_icon"
+                     onclick="contentLifeCycleHelper.displayRejectionDialog({{= id}}, '{{= status}}')"
+                    {{if !(contentLifeCycleHelper.isDisplayRejectionCommentsAuthorized(status)) }}
+                        style="visibility:hidden"
+                    {{/if}}
+                />
             <#else>
                 <div class="tab_right label_hidden">
             </#if>
@@ -625,96 +257,82 @@
             <div class="settings_menu">
                 <#if searchMode == 1>
                     <img src="/public/images/bbeeg/edit.png" alt="Editer"
-                            class="edit-button hand_cursor settings_item"
-                            onclick="editContent('item-{{= id}}', {{= id}}, '{{= status}}')"
-                            {{if !(isContentEditable(status))}}
-                                disabled
-                            {{/if}}
-                            />
-
+                        class="edit-button hand_cursor settings_item"
+                        onclick="contentLifeCycleHelper.editAction({{= id}})"
+                        {{if !(contentLifeCycleHelper.isEditAuthorized(status))}}
+                            style="visibility:hidden"
+                        {{/if}}
+                    />
                     <img src="/public/images/bbeeg/publish.png" alt="Publier"
-                            class="publish-button hand_cursor settings_item"
-                            onclick="publishContent('item-{{= id}}', {{= id}}, '{{= status}}')"
-                            {{if status != 'DRAFT'}}
-                                disabled
-                            {{/if}}
-                            />
+                        class="publish-button hand_cursor settings_item"
+                        onclick="contentLifeCycleHelper.publishAction('item-{{= id}}', {{= id}}, '{{= status}}')"
+                        {{if !(contentLifeCycleHelper.isPublishAuthorized(status))}}
+                             style="visibility:hidden"
+                        {{/if}}
+                    />
                     <img src="/public/images/bbeeg/delete.png" alt="Supprimer"
-                            class="delete-button hand_cursor settings_item"
-                            onclick="deleteContent('item-{{= id}}', {{= id}}, '{{= status}}')"
-                            {{if status == 'TO_BE_DELETED'}}
-                                disabled
-                            {{/if}}
-                            />
+                        class="delete-button hand_cursor settings_item"
+                        onclick="contentLifeCycleHelper.deleteAction('item-{{= id}}', {{= id}}, '{{= status}}')"
+                        {{if !(contentLifeCycleHelper.isDeleteAuthorized(status))}}
+                             style="visibility:hidden"
+                        {{/if}}
+                    />
                 </#if>
             </div>
 
-
             <#if searchMode == 2>
                 <div class="settings_menu">
-                    <img src="/public/images/bbeeg/validate.png" alt="Accepter" class="hand_cursor settings_item" onclick="acceptContent('item-{{= id}}', {{= id}}, '{{= status}}')"/>
-                    <img src="/public/images/bbeeg/rejected.png" alt="Rejeter" class="hand_cursor settings_item" onclick="rejectContent('item-{{= id}}', {{= id}}, '{{= status}}')"/>
-                    {{if status == "TO_BE_VALIDATED"}}
-                        <img src="/public/images/bbeeg/comment.png" alt="Commentaires" class="hand_cursor settings_item" onclick="displayPublicationDialog({{= id}})"/>
-                    {{/if}}
+                    <img src="/public/images/bbeeg/validate.png"
+                         alt="Accepter"
+                         class="accept-button hand_cursor settings_item"
+                         onclick="contentLifeCycleHelper.acceptAction('item-{{= id}}', {{= id}}, '{{= status}}')"
+                         {{if !(contentLifeCycleHelper.isAcceptAuthorized(status)) }}
+                             style="visibility:hidden"
+                         {{/if}}
+                    />
+
+                    <img src="/public/images/bbeeg/rejected.png"
+                         alt="Rejeter"
+                         class="reject-button hand_cursor settings_item"
+                         onclick="contentLifeCycleHelper.rejectAction('item-{{= id}}', {{= id}}, '{{= status}}')"
+                         {{if !(contentLifeCycleHelper.isRejectAuthorized(status)) }}
+                             style="visibility:hidden"
+                         {{/if}}
+                    />
+
+                    <img src="/public/images/bbeeg/comment.png"
+                         alt="Commentaires"
+                         class="display-publication-comments-button hand_cursor settings_item"
+                         onclick="contentLifeCycleHelper.displayPublicationDialog({{= id}}, '{{= status}}')"
+                         {{if !(contentLifeCycleHelper.isDisplayPublicationRequestCommentsAuthorized(status)) }}
+                            style="visibility:hidden"
+                         {{/if}}
+                    />
                 </div>
             </#if>
-
         </div>
     </div>
-
-
 </script>
 
-<#if searchMode == 1>
+<!-- Action dialogs definitions -->
+<div style="visibility: hidden">
+    <div id="deleteActionDialog" title="Supprimer">
+        <p class="dialogMessage"></p>
+    </div>
+</div>
+
 <div style="visibility: hidden">
     <div id="updateStatusSuccessDialog" title="Modification du statut">
         <p>Le statut du contenu a été mis à jour avec succès.</p>
     </div>
 </div>
-</#if>
 
 <div style="visibility: hidden;">
-    <div id="publishContentDialog" title="Demande de publication d'un contenu">
-        <br/>
-        <div>
-            <p>Demande de publication : </p>
-            <br/>
-            <textarea id="publishCommentMsg" <#if searchMode == 2>disabled</#if> rows="10" cols="50" style="width:100%"></textarea>
-        </div>
-        <br/>
-         <div>
-            <label for="startPublicationDate" style="font-weight:bold">Début de publication :</label>
-             <#if searchMode == 1>
-            <input type="text" id="startPublicationDate" <#if searchMode == 2>disabled</#if> name="startPublicationDate"/>
-            <#else>
-            <span id="startPublicationDate"></span>
-            </#if>
-            <label for="endPublicationDate" style="font-weight:bold">Fin de publication : </label>
-            <#if searchMode == 1>
-            <input type="text" id="endPublicationDate" <#if searchMode == 2>disabled</#if> name="endPublicationDate"/>
-            <#else>
-            <span id="endPublicationDate"></span>
-            </#if>
-            </div>
-    </div>
+    <div id="publishContentDialog" title="Demande de publication"></div>
 </div>
 
 <div style="visibility: hidden">
-    <div id="rejectReasonDialog" title="Refus de validation">
-        <br/>
-        <p>Motif du rejet: </p>
-        <br/>
-        <textarea id="rejectReasonMsg" <#if searchMode != 2>disabled</#if> rows="10" cols="50"style="width:100%"></textarea>
-         <br/>
-         <br/>
-         <div>
-            <label for="startPublicationDate" style="font-weight:bold">Début de publication :</label>
-            <span id="startPublicationDate1"></span>
-            <label for="endPublicationDate" style="font-weight:bold">Fin de publication : </label>
-            <span id="endPublicationDate1"></span>
-        </div>
-    </div>
+    <div id="rejectReasonDialog" title="Refus de validation"></div>
 </div>
 
 <#if searchMode == 2>
@@ -725,5 +343,31 @@
 </div>
 </#if>
 
-
+<script id="publicationRejectionTemplate" type="text/x-jquery-tmpl">
+    <br/>
+    <p>{{= title}}</p>
+    <br/>
+    <textarea {{if contentStatus !== ContentStatus.DRAFT}}disabled{{/if}} rows="10" cols="50"style="width:100%"></textarea>
+    <br/>
+    <br/>
+    <div id="publicationDates">
+        <div class="search-publicationDates-labels">
+            <div><label for="startPublicationDate">Début de publication :</label></div>
+            <div><label for="endPublicationDate">Fin de publication : </label></div>
+        </div>
+        <div class="search-publicationDates-values">
+            {{if contentStatus === ContentStatus.DRAFT}}
+                <div><input type="text" id="startPublicationDate" name="startPublicationDate"/></div>
+                <div><input type="text" id="endPublicationDate" name="endPublicationDate"/></div>
+            {{else}}
+                <div class="readOnly" id="startPublicationDate"></div>
+                <div class="readOnly" id="endPublicationDate"></div>
+            {{/if}}
+        </div>
+        {{if contentStatus === ContentStatus.DRAFT}}
+            <p>Le contenu sera disponible sur la plateforme après acceptation du modérateur selon la plage de publication définie.</p>
+        {{/if}}
+        </div>
+    </div>
+</script>
 </@mainTemplate>

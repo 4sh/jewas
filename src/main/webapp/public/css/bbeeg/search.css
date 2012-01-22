@@ -265,3 +265,26 @@ img.spinner {
     margin-right: 35px;
     margin-top: 5px;
 }
+
+.search-publicationDates-labels {
+    float: left;
+    width: 170px;
+}
+
+.search-publicationDates-labels > div {
+    padding-top: 6px;
+    padding-bottom: 6px;
+}
+
+.search-publicationDates-labels > div > label {
+    font-weight: bold;
+}
+
+.search-publicationDates-values > div {
+    padding-bottom: 3px;
+}
+
+.search-publicationDates-values > .readOnly {
+    padding-top: 6px;
+    padding-bottom: 6px;
+}

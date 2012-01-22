@@ -2,17 +2,26 @@ package fr.fsh.bbeeg.content.routes;
 
 import fr.fsh.bbeeg.common.resources.ObjectId;
 import fr.fsh.bbeeg.common.resources.SuccessObject;
+import fr.fsh.bbeeg.content.pojos.ContentPublicationDetail;
 import fr.fsh.bbeeg.content.pojos.ContentStatus;
 import fr.fsh.bbeeg.content.pojos.ContentStatusQueryObject;
 import fr.fsh.bbeeg.content.resources.ContentResource;
 import jewas.http.*;
 import jewas.http.data.BodyParameters;
 import jewas.http.impl.AbstractRequestHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author driccio
  */
 public class UpdateContentStatusRoute extends AbstractRoute {
+
+    /**
+     * Class logger.
+     */
+    private static final Logger logger = LoggerFactory.getLogger(UpdateContentStatusRoute.class);
+
     private ContentResource contentResource;
 
     public UpdateContentStatusRoute(ContentResource _contentResource) {
@@ -32,10 +41,11 @@ public class UpdateContentStatusRoute extends AbstractRoute {
                 ContentStatusQueryObject csqo = toContentObject(bodyParameters, ContentStatusQueryObject.class);
 
                 contentResource.updateContentStatus(oi.id(),
-                        ContentStatus.valueOf(csqo.status()),
+                        ContentStatus.valueOf(csqo.newStatus()),
+                        new ContentPublicationDetail(
                         csqo.startPublicationDate(),
                         csqo.endPublicationDate(),
-                        csqo.comment());
+                        csqo.comments()));
                 request.respondJson().object(new SuccessObject().success(true));
             }
         };

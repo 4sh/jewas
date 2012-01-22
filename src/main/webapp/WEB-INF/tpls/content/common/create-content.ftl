@@ -1,5 +1,9 @@
 <#include "create-content-header.ftl">
 
+<#function isInitialContent content="null">
+    <#return content == "null">
+</#function>
+
 <#macro createContent url type extensions extensionsMsgError createPrevisualizationObject>
 
 <link rel="stylesheet" href="/public/css/bbeeg/create.css" >
@@ -7,8 +11,24 @@
 <script type="application/javascript" src="/public/js/bbeeg/content/content-helper.js"></script>
 
 <script type="application/javascript">
-    $( function() {
-        var contentCreator = new ContentCreator("${type}", "${extensions}", "${extensionsMsgError}", "previsualizationContainer", ${createPrevisualizationObject});
+    $(function() {
+
+    var contentCreator = new ContentCreator("${type}",
+                "${extensions}",
+                "${extensionsMsgError}",
+                "previsualizationContainer",
+                ${createPrevisualizationObject},
+                $("#saveBtn"), 
+                <#if isInitialContent(content)>
+                    true
+                <#else>
+                    false
+                </#if>);
+
+         /* Mandatory fields handler registration */
+        $("#title, #description").change(function() {
+            contentCreator.refreshSubmitButton();
+        });
 
         $("#cancelBtn").bind('click', function () {
             contentCreator.removeUploadedFiles();
@@ -57,14 +77,14 @@
         <div class="create_upload">
             <div id="file-uploader">
                 <span class="style_label">Sélectionnez votre fichier : </span>
-                <input id="upload-file-info" type="text" style="width:300px;">
+                <input id="upload-file-info" type="text" style="width:300px;" <#if isInitialContent(content)>required</#if>>
                 <button id="upload" href="#">Parcourir</button>
             </div>
             <span id="upstatus"></span>
         </div>
 
         <div class="create_buttons bottom_space">
-            <input type="submit" value="Enregistrer" />
+            <input id="saveBtn" type="submit" value="Enregistrer" <#if isInitialContent(content)>disabled</#if>/>
             <button id="cancelBtn" type="button" >Annuler</button>
         </div>
 

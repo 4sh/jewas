@@ -19,7 +19,7 @@ public class ContentHeader {
     private ContentStatus status;
     private String description;
     private Long popularity;
-    //private Integer version;
+    private Integer version;
     private Long ancestorId;
 
     private ContentType type;
@@ -137,14 +137,15 @@ public class ContentHeader {
     public List<String> tags(){
         return this.tags;
     }
-//    public ContentHeader version(Integer _version){
-//        this.version = _version;
-//        return this;
-//    }
-//
-//    public Integer version(){
-//        return this.version;
-//    }
+
+    public ContentHeader version(Integer _version){
+        this.version = _version;
+        return this;
+    }
+
+    public Integer version(){
+        return this.version;
+    }
 
      public ContentHeader popularity(Long _popularity){
         this.popularity = _popularity;

@@ -2,13 +2,12 @@ package fr.fsh.bbeeg.content.routes;
 
 import fr.fsh.bbeeg.common.resources.ObjectId;
 import fr.fsh.bbeeg.content.pojos.ContentDetail;
+import fr.fsh.bbeeg.content.pojos.ContentType;
 import fr.fsh.bbeeg.content.resources.ContentResource;
 import jewas.http.*;
 import jewas.http.data.BodyParameters;
 import jewas.http.impl.AbstractRequestHandler;
 import jewas.json.Json;
-
-import java.util.Date;
 
 /**
  * @author fcamblor
@@ -57,10 +56,8 @@ public class EditContentRoute extends AbstractRoute {
                 QueryObject qo = toContentObject(bodyParameters, QueryObject.class);
 
                 ContentDetail contentDetail = (ContentDetail) Json.instance().fromJsonString(qo.contentDetail(), ContentDetail.class);
-                contentDetail.header().type(fr.fsh.bbeeg.content.pojos.ContentType.valueOf(qo.type()));
+                contentDetail.header().type(ContentType.valueOf(qo.type()));
                 contentDetail.header().id(oi.id());
-                contentDetail.header().lastModificationDate(new Date());
-
                 contentResource.updateContent(contentDetail);
                 request.respondJson().object(new ObjectId().id(contentDetail.header().id()));
             }

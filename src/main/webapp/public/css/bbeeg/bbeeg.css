@@ -627,6 +627,22 @@ input[type=submit]:active, button:active {
 	box-shadow        : 0 0 5px rgba(16,153,163,0.70), 0 2px 3px rgba(0,0,0,0.35) inset;
 }
 
+input[type=submit]:disabled, button:disabled {
+    color: #cccccc;
+    background-image: -moz-linear-gradient(center bottom, #eeeeee 50%, #fcfcfc 50%);
+    background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.5, #eeeeee), color-stop(0.5, #fcfcfc));
+    background-image: -webkit-linear-gradient(center bottom, #eeeeee 50%, #fcfcfc 50%);
+    background-image: -o-linear-gradient(bottom, #eeeeee 50%, #fcfcfc 50%);
+    background-image: -ms-linear-gradient(top, #eeeeee 50%, #fcfcfc 50%);
+    filter: progid:DXImageTransform.Microsoft.gradient(endColorstr = '#eeeeee', startColorstr = '#fcfcfc', GradientType = 0);
+    background-image: linear-gradient(top, #eeeeee 50%, #fcfcfc 50%);
+    -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.30), 0 0 1px rgba(0, 0, 0, 0.35) inset;
+    -moz-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.30), 0 0 1px rgba(0, 0, 0, 0.35) inset;
+    -o-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.30), 0 0 1px rgba(0, 0, 0, 0.35) inset;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.30), 0 0 1px rgba(0, 0, 0, 0.35) inset;
+    cursor: default;
+}
+
 input[type=number] {
   padding: 0 4px 0 4px;
   background-color: #fff;

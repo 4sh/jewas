@@ -40,23 +40,23 @@ var contentHelper = (function() {
             var statusStyle = {};
 
             switch (status) {
-                case 'VALIDATED':
+                case ContentStatus.VALIDATED:
                     statusStyle.label = "Validé";
                     statusStyle.className = "label_validated";
                     break;
-                case 'TO_BE_VALIDATED':
+                case ContentStatus.TO_BE_VALIDATED:
                     statusStyle.label = "A&nbsp;Valider";
                     statusStyle.className = "label_to_validated";
                     break;
-                case 'TO_BE_DELETED':
+                case ContentStatus.TO_BE_DELETED:
                     statusStyle.label = "A&nbsp;Supprimer";
                     statusStyle.className = "label_to_deleted"
                     break;
-                case 'REJECTED':
+                case ContentStatus.REJECTED:
                     statusStyle.label = "Rejeté";
                     statusStyle.className = "label_rejected";
                     break;
-                case 'DRAFT':
+                case ContentStatus.DRAFT:
                     statusStyle.label = "Brouillon";
                     statusStyle.className = "label_draft";
                     break;

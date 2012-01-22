@@ -1,7 +1,6 @@
 package fr.fsh.bbeeg.content.persistence;
 
 
-import fr.fsh.bbeeg.content.pojos.CommentType;
 import fr.fsh.bbeeg.common.persistence.ElasticSearchDao;
 import fr.fsh.bbeeg.common.resources.Count;
 import fr.fsh.bbeeg.content.pojos.*;
@@ -17,8 +16,6 @@ import jewas.persistence.rowMapper.RowMapper;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.index.query.*;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortOrder;
@@ -28,9 +25,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
@@ -56,21 +50,6 @@ public class ContentDao {
     private DomainDao domainDao;
     private TagDao tagDao;
     private ElasticSearchDao esContentDao;
-
-    private static final String ES_CONTENT_FIELD_FILECONTENT = "fileContent";
-    private static final String ES_CONTENT_FIELD_AUTHOR = "author";
-    private static final String ES_CONTENT_FIELD_TITLE = "title";
-    private static final String ES_CONTENT_FIELD_DESCRIPTION = "description";
-    private static final String ES_CONTENT_FIELD_CONTENT_TYPE = "contentType";
-    private static final String ES_CONTENT_FIELD_CREATION_DATE = "creationDate";
-    private static final String ES_CONTENT_FIELD_LAST_MODIF_DATE = "lastModificationDate";
-    private static final String ES_CONTENT_FIELD_PUBLICATION_START_DATE = "startPublicationDate";
-    private static final String ES_CONTENT_FIELD_PUBLICATION_END_DATE = "endPublicationDate";
-    private static final String ES_CONTENT_FIELD_DOMAINS = "domains";
-    private static final String ES_CONTENT_FIELD_TAGS = "tags";
-    private static final String ES_CONTENT_FIELD_STATUS = "status";
-    private static final String ES_CONTENT_FIELD_ANCESTOR = "ancestor";
-
 
     public ContentDao(DataSource dataSource, Client _client, UserDao _userDao, DomainDao _domainDao, ElasticSearchDao _esContentDao, TagDao _tagDao) {
         client = _client;
@@ -104,14 +83,15 @@ public class ContentDao {
                                 "select * from " +
                                         "(select * from Content where status = :status) " +
                                         "where ROWNUM <= :limit")
+                        .addQuery("selectHigherVersionNumber", "select max(version) from content where content_ancestor_ref = :ancestorId")
                         .addQuery("count", "select count(*) as COUNT from Content where status = :status")
-                        .addQuery("insert", "INSERT INTO CONTENT (ID, TITLE, DESCRIPTION, CREATION_DATE, LAST_MODIFICATION_DATE, STATUS, CONTENT_TYPE, AUTHOR_REF, CONTENT_ANCESTOR_REF, TAGS) " +
-                                "VALUES (CONTENT_SEQ.nextval, :title, :description, :creationDate, :lastModificationDate, 0, :contentType, :authorId, :ancestorId, :tags)")
+                        .addQuery("insert", "INSERT INTO CONTENT (ID, TITLE, DESCRIPTION, CREATION_DATE, LAST_MODIFICATION_DATE, STATUS, CONTENT_TYPE, AUTHOR_REF, CONTENT_ANCESTOR_REF, VERSION, TAGS) " +
+                                "VALUES (CONTENT_SEQ.nextval, :title, :description, :creationDate, :lastModificationDate, 0, :contentType, :authorId, CASE WHEN :ancestorId is NULL THEN (SELECT CONTENT_SEQ.currVal) ELSE :ancestorId END, :version, :tags)")
                         .addQuery("updateContentUrl", "UPDATE CONTENT " +
-                                "SET FILE_URI = :url, STATUS = 0, LAST_MODIFICATION_DATE = :lastModificationDate " +
+                                "SET FILE_URI = :url,  LAST_MODIFICATION_DATE = :lastModificationDate " +
                                 "WHERE ID = :id")
                         .addQuery("updateContent", "UPDATE CONTENT " +
-                                "SET TITLE = :title, DESCRIPTION = :description, STATUS = 0, LAST_MODIFICATION_DATE = :lastModificationDate, TAGS = :tags " +
+                                "SET TITLE = :title, DESCRIPTION = :description, STATUS = 0, LAST_MODIFICATION_DATE = :lastModificationDate, VERSION = :version, TAGS = :tags " +
                                 "WHERE ID = :id")
                         .addQuery("addLinkWithDomain", "INSERT INTO CONTENT_DOMAIN (CONTENT_REF, DOMAIN_REF) " +
                                 "VALUES (:contentId, :domainId)")
@@ -121,6 +101,7 @@ public class ContentDao {
                                 "SET STATUS = :status, LAST_MODIFICATION_DATE = :lastModificationDate "+
                                 "WHERE ID = :id")
                         .addQuery("updatePublicationDates", "UPDATE CONTENT SET PUBLICATION_START_DATE = :startPublicationDate, PUBLICATION_END_DATE = :endPublicationDate WHERE ID = :id")
+                        .addQuery("archiveLastValidatedVersion", "update content set status = :status where version = (select max(version) from content where content_ancestor_ref = :ancestorId and status = " + ContentStatus.VALIDATED.ordinal() + ")")
                         .addQuery("incrementPopularity", "UPDATE CONTENT SET POPULARITY = POPULARITY + 1 WHERE ID = :id AND STATUS in :statuses");
 
        this.contentDetailQueryTemplate =
@@ -146,7 +127,7 @@ public class ContentDao {
         // Initializing ES indexes
         String mappingSource = String.format("{ \"%s\" : { \"properties\" : { \"%s\" : { \"type\" : \"attachment\" } } } }",
                 esContentDao.indexType(),
-                ES_CONTENT_FIELD_FILECONTENT);
+                ElasticSearchDao.ES_CONTENT_FIELD_FILECONTENT);
         esContentDao.createIndexIfNotExists(mappingSource);
     }
 
@@ -161,8 +142,6 @@ public class ContentDao {
                 new QueryExecutionContext().buildParams()
                         .bigint("id", id)
                         .toContext());
-        //TODO FIX that
-        contentDetail.url("/content/content/" + id);
         return contentDetail;
     }
 
@@ -174,6 +153,14 @@ public class ContentDao {
                         .integer("limit", limit)
                         .toContext()
         );
+    }
+
+    public int getHigherVersionNumber(Long ancestorId) {
+        return contentHeaderQueryTemplate.selectLong("selectHigherVersionNumber",
+                new QueryExecutionContext().buildParams()
+                        .bigint("ancestorId", ancestorId)
+                        .toContext()).intValue();
+
     }
 
      /**
@@ -243,6 +230,7 @@ public class ContentDao {
                                 .date("lastModificationDate",
                                         contentDetail.header().lastModificationDate())
                                 .bigint("ancestorId", contentDetail.header().ancestorId())
+                                .bigint("version", contentDetail.header().version())
                                 .toContext(),
                         "id");
 
@@ -266,13 +254,14 @@ public class ContentDao {
                 tagDao.createOrUpdateTag(tag);
             }
         }
-
-        try {
-            insertContentInElasticSearch(contentDetail.header().id());
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
+        ContentDetail cd = getContentDetail(contentDetail.header().id());
+        if (cd != null) {
+            try {
+                esContentDao.insertContentInElasticSearch(cd);
+            } catch (IOException e) {
+                logger.error("Failed to insert content in elastic search", e);
+            }
         }
-
         return Long.valueOf(genKeys.get("id"));
     }
 
@@ -283,7 +272,7 @@ public class ContentDao {
         logger.info("Start re-index contents from database into elastic search...");
         for(ContentDetail contentDetail : contents) {
             try {
-                insertContentInElasticSearch(contentDetail.header().id());
+                esContentDao.insertContentInElasticSearch(contentDetail);
             } catch (IOException e) {
                 logger.error("Failed to insert content into elastic search. Content Id: " + contentDetail.header().id(), e);
             }
@@ -291,66 +280,7 @@ public class ContentDao {
         logger.info("Re-index contents operation completed");
     }
 
-    // This method is not optimized.
-    private void insertContentInElasticSearch(final Long contentId) throws IOException {
-        esContentDao.asyncPrepareIndex(contentId.toString(),
-                new ElasticSearchDao.XContentBuilderFactory() {
-                    @Override
-                    public XContentBuilder createXContentBuilder() throws IOException {
-                        // Get the content from DB.
-                        ContentDetail contentDetail = contentDetailQueryTemplate.selectObject("selectById",
-                                new QueryExecutionContext().buildParams()
-                                        .bigint("id", contentId)
-                                        .toContext()
-                        );
-
-                        // Get all the id of the domains linked with the content.
-                        List<Long> domainIds = new ArrayList<>();
-
-                        for (Domain domain : contentDetail.header().domains()) {
-                            domainIds.add(domain.id());
-                        }
-
-                        // Build the query to store content into ES.
-                        XContentBuilder xContentBuilder = XContentFactory.jsonBuilder()
-                                .startObject()
-                                .field(ES_CONTENT_FIELD_TITLE, contentDetail.header().title())
-                                .field(ES_CONTENT_FIELD_DESCRIPTION, contentDetail.header().description())
-                                .field(ES_CONTENT_FIELD_CONTENT_TYPE, contentDetail.header().type().ordinal())
-                                .field(ES_CONTENT_FIELD_CREATION_DATE, contentDetail.header().creationDate())
-                                .field(ES_CONTENT_FIELD_LAST_MODIF_DATE, contentDetail.header().lastModificationDate())
-                                .field(ES_CONTENT_FIELD_DOMAINS, domainIds)
-                                .field(ES_CONTENT_FIELD_PUBLICATION_START_DATE, contentDetail.header().startPublicationDate())
-                                .field(ES_CONTENT_FIELD_PUBLICATION_END_DATE, contentDetail.header().endPublicationDate())
-                                .field(ES_CONTENT_FIELD_TAGS, contentDetail.header().tags())
-                                .field(ES_CONTENT_FIELD_STATUS, contentDetail.header().status().ordinal())
-                                .field(ES_CONTENT_FIELD_ANCESTOR, contentDetail.header().ancestorId())
-                                        //.field("version", contentDetail.header().version())
-                                .field(ES_CONTENT_FIELD_AUTHOR, contentDetail.header().author().id());
-
-                        // Indexing file content only if content.url is set
-                        if (contentDetail.url() != null) {
-                            Path contentPath = Paths.get(contentDetail.url());
-                            // TODO : Optimize memory consumption here ???
-                            // This will potentially take a large amount of memory since file to index
-                            // should be entirely loaded into memory to be indexed by elastic search
-                            // I already tested rawField(ES_CONTENT_FIELD_FILECONTENT, Files.newInputStream(contentPath))
-                            // but it doesn't seem to work under elastic search 0.17.6
-                            xContentBuilder.field(ES_CONTENT_FIELD_FILECONTENT, Files.readAllBytes(contentPath));
-                        }
-
-                        return xContentBuilder;
-                    }
-                });
-
-
-//        uncomment this code to verify fileContent is correctly indexed
-//                String searchTerms = "J2EE";
-//                CountResponse res = client.count(countRequest(ES_INDEX_NAME).query(fieldQuery(ES_CONTENT_FIELD_FILECONTENT, searchTerms))).actionGet();
-//                System.out.println(res.count());
-    }
-
-    public void updateContentOfContent(Long contentId, String url) {
+    public void updateContentUrl(Long contentId, String url) {
         Date currentDate = new DateMidnight().toDate();
         contentHeaderQueryTemplate.update("updateContentUrl",
                 new QueryExecutionContext().buildParams()
@@ -358,45 +288,36 @@ public class ContentDao {
                         .bigint("id", contentId)
                         .date("lastModificationDate", currentDate)
                         .toContext());
-        // TODO: check the number of row updated.
+    }
 
-        try {
-            insertContentInElasticSearch(contentId);
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
+    public void updateContentOfContent(Long contentId, String url) {
+        
+        updateContentUrl(contentId, url);
+
+        ContentDetail cd = getContentDetail(contentId);
+        if (cd != null) {
+            try {
+                esContentDao.insertContentInElasticSearch(cd);
+            } catch (IOException e) {
+                logger.error("Failed to insert content in elastic search for content: %s", contentId, e);
+            }
         }
     }
 
     public void updateContent(ContentDetail contentDetail) {
         Date currentDate = new DateMidnight().toDate();
 
-        // If the content status was VALIDATED or REJECTED then new version of the content
-        ContentDetail contentDetailFromDb = contentDetailQueryTemplate.selectObject("selectById",
-                new QueryExecutionContext().buildParams()
-                        .bigint("id", contentDetail.header().id())
-                        .toContext()
-        );
-
-        Long contentIdToUse;
-        // Content edition workflow: duplication on VALIDATED and REJECTED statuses
-        if(ContentStatus.VALIDATED.equals(contentDetailFromDb.header().status()) ||
-                ContentStatus.REJECTED.equals(contentDetailFromDb.header().status())) {
-
-            contentDetailFromDb.header().ancestorId(contentDetailFromDb.header().id());
-            contentIdToUse = createContent(contentDetailFromDb);
-        } else {
-            contentIdToUse = contentDetail.header().id();
-        }
-
-        // Update the content in the DB
+        /* Update the content in the DB */
         List<String> tags = contentDetail.header().tags();
+        Long contentId = contentDetail.header().id();
         contentHeaderQueryTemplate.update("updateContent",
                 new QueryExecutionContext().buildParams()
                         .string("title", contentDetail.header().title())
                         .string("description", contentDetail.header().description())
                         .string("tags", listTagsToString(tags))
-                        .bigint("id", contentIdToUse)
+                        .bigint("id", contentId)
                         .date("lastModificationDate", currentDate)
+                        .bigint("version", contentDetail.header().version())
                         .toContext());
 
         List<Long> newDomainIds = new ArrayList<Long>();
@@ -408,7 +329,7 @@ public class ContentDao {
             }
         }
         // Get current domain ids that are linked with the content.
-        List<Long> domainsIds = getDomainIds(contentIdToUse);
+        List<Long> domainsIds = getDomainIds(contentId);
 
         // Check added domains
         for (Domain domainToCheck : contentDetail.header().domains()) {
@@ -418,7 +339,7 @@ public class ContentDao {
                 // Add new link with domains
                 contentHeaderQueryTemplate.insert("addLinkWithDomain",
                         new QueryExecutionContext().buildParams()
-                                .bigint("contentId", contentIdToUse)
+                                .bigint("contentId", contentId)
                                 .bigint("domainId", domainToCheck.id())
                                 .toContext());
             }
@@ -439,17 +360,20 @@ public class ContentDao {
                 // Remove link with domains
                 contentHeaderQueryTemplate.delete("removeLinkWithDomain",
                         new QueryExecutionContext().buildParams()
-                                .bigint("contentId", contentIdToUse)
+                                .bigint("contentId", contentId)
                                 .bigint("domainId", domainIdToCheckForRemove)
                                 .toContext());
             }
         }
 
         // Insert into ES the content.
-        try {
-            insertContentInElasticSearch(contentIdToUse);
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
+        ContentDetail cd = getContentDetail(contentId);
+        if (cd != null) {
+            try {
+                esContentDao.insertContentInElasticSearch(cd);
+            } catch (IOException e) {
+                logger.error("Failed to insert content in elastic search for content: %s", contentId, e);
+            }
         }
     }
 
@@ -457,10 +381,14 @@ public class ContentDao {
         // Fetch the contents from the database via the content ids.
         if (!contentIds.isEmpty()) {
             for (Long contentId : contentIds) {
-                contentHeaders.add(contentHeaderQueryTemplate.selectObject("selectById",
-                        new QueryExecutionContext().buildParams()
-                                .bigint("id", contentId)
-                                .toContext()));
+                    ContentHeader header = contentHeaderQueryTemplate.selectObject("selectById",
+                            new QueryExecutionContext().buildParams()
+                                    .bigint("id", contentId)
+                                    .toContext());
+                // TODO: Remove that test by tuning elastic search to not retrieve that status.
+                if (header != null && !ContentStatus.ARCHIVED.equals(header.status())) {
+                    contentHeaders.add(header);
+                }
             }
         }
     }
@@ -551,15 +479,15 @@ public class ContentDao {
     private FilterBuilder configurePublicationDateFilter() {
         Date today = new DateMidnight().toDate();
 
-        RangeFilterBuilder startPublicationRangeFilter = FilterBuilders.rangeFilter(ES_CONTENT_FIELD_PUBLICATION_START_DATE);
+        RangeFilterBuilder startPublicationRangeFilter = FilterBuilders.rangeFilter(ElasticSearchDao.ES_CONTENT_FIELD_PUBLICATION_START_DATE);
         startPublicationRangeFilter.lte(today);
 
-        MissingFilterBuilder startPublicationMissing = FilterBuilders.missingFilter(ES_CONTENT_FIELD_PUBLICATION_START_DATE);
+        MissingFilterBuilder startPublicationMissing = FilterBuilders.missingFilter(ElasticSearchDao.ES_CONTENT_FIELD_PUBLICATION_START_DATE);
 
-        RangeFilterBuilder endPublicationRangeFilter = FilterBuilders.rangeFilter(ES_CONTENT_FIELD_PUBLICATION_END_DATE);
+        RangeFilterBuilder endPublicationRangeFilter = FilterBuilders.rangeFilter(ElasticSearchDao.ES_CONTENT_FIELD_PUBLICATION_END_DATE);
         endPublicationRangeFilter.gte(today);
 
-        MissingFilterBuilder endPublicationMissing = FilterBuilders.missingFilter(ES_CONTENT_FIELD_PUBLICATION_END_DATE);
+        MissingFilterBuilder endPublicationMissing = FilterBuilders.missingFilter(ElasticSearchDao.ES_CONTENT_FIELD_PUBLICATION_END_DATE);
 
         FilterBuilder startPublicationDateFilterBuilder = FilterBuilders.orFilter(startPublicationRangeFilter, startPublicationMissing);
         FilterBuilder endPublicationDateFilterBuilder = FilterBuilders.orFilter(endPublicationRangeFilter, endPublicationMissing);
@@ -568,12 +496,12 @@ public class ContentDao {
 
     private void configureAuthorsQuery(BoolQueryBuilder elasticSearchQuery, String[] authors) {
         if (authors != null && authors.length > 0) {
-            elasticSearchQuery.must(QueryBuilders.termsQuery(ES_CONTENT_FIELD_AUTHOR, authors));
+            elasticSearchQuery.must(QueryBuilders.termsQuery(ElasticSearchDao.ES_CONTENT_FIELD_AUTHOR, authors));
         }
     }
 
     private BoolQueryBuilder createElasticSearchQuery(List<Integer> statuses) {
-        return boolQuery().must(inQuery(ES_CONTENT_FIELD_STATUS, statuses.toArray()));
+        return boolQuery().must(inQuery(ElasticSearchDao.ES_CONTENT_FIELD_STATUS, statuses.toArray()));
         //.must(QueryBuilders.rangeQuery(ES_CONTENT_LAST_MODIF_DATE).lt(serverTimestamp));
         // TODO: Use serverTImeStamp to filter
     }
@@ -592,6 +520,7 @@ public class ContentDao {
                 .setQuery(elasticSearchQuery)
                 .setFrom(startingOffset)
                 .setSize(numberOfContents)
+                .addSort(ElasticSearchDao.ES_CONTENT_FIELD_LAST_MODIF_DATE, SortOrder.DESC)
                 .addSort("_score", SortOrder.DESC)
                         //.setMinScore(0.3f)
                 .execute().actionGet();
@@ -611,7 +540,7 @@ public class ContentDao {
      * @param to   the to date filter
      */
     private RangeFilterBuilder configureCreationDateFilter(Date from, Date to) {
-        RangeFilterBuilder rangeFilter = FilterBuilders.rangeFilter(ES_CONTENT_FIELD_CREATION_DATE);
+        RangeFilterBuilder rangeFilter = FilterBuilders.rangeFilter(ElasticSearchDao.ES_CONTENT_FIELD_CREATION_DATE);
         if (from != null) {
             rangeFilter.from(from);
         }
@@ -667,10 +596,10 @@ public class ContentDao {
     private void configureFullTextQuery(BoolQueryBuilder elasticSearchQuery,String textToSearch) {
         if (textToSearch != null && !textToSearch.isEmpty()) {
             elasticSearchQuery.must(QueryBuilders.disMaxQuery()
-                    .add(termQuery(ES_CONTENT_FIELD_TITLE, textToSearch).boost(5))
-                    .add(termQuery(ES_CONTENT_FIELD_DESCRIPTION, textToSearch).boost(3))
-                    .add(termQuery(ES_CONTENT_FIELD_FILECONTENT, textToSearch).boost(4))
-                    .add(termQuery(ES_CONTENT_FIELD_TAGS, textToSearch).boost(5)));
+                    .add(termQuery(ElasticSearchDao.ES_CONTENT_FIELD_TITLE, textToSearch).boost(5))
+                    .add(termQuery(ElasticSearchDao.ES_CONTENT_FIELD_DESCRIPTION, textToSearch).boost(3))
+                    .add(termQuery(ElasticSearchDao.ES_CONTENT_FIELD_FILECONTENT, textToSearch).boost(4))
+                    .add(termQuery(ElasticSearchDao.ES_CONTENT_FIELD_TAGS, textToSearch).boost(5)));
         }
     }
     
@@ -683,7 +612,7 @@ public class ContentDao {
      */
     private void configureDomainsQuery(BoolQueryBuilder elasticSearchQuery, String[] domains) {
         if (domains != null && domains.length > 0) {
-            elasticSearchQuery.must(QueryBuilders.termsQuery(ES_CONTENT_FIELD_DOMAINS, domains));
+            elasticSearchQuery.must(QueryBuilders.termsQuery(ElasticSearchDao.ES_CONTENT_FIELD_DOMAINS, domains));
         }
     }
     
@@ -695,7 +624,7 @@ public class ContentDao {
      */
     private void configureContentTypeQuery(BoolQueryBuilder elasticSearchQuery, String[] searchTypes) {
         if (searchTypes != null && searchTypes.length > 0) {
-            elasticSearchQuery.must(QueryBuilders.termsQuery(ES_CONTENT_FIELD_CONTENT_TYPE, searchTypes));
+            elasticSearchQuery.must(QueryBuilders.termsQuery(ElasticSearchDao.ES_CONTENT_FIELD_CONTENT_TYPE, searchTypes));
         }
     }
 
@@ -715,95 +644,6 @@ public class ContentDao {
                         .bigint("userId", user.id())
                         .toContext()
         );
-    }
-
-    public void updateContentStatus(Long id,
-                                    ContentStatus status,
-                                    Date startPublicationDate,
-                                    Date endPublicationDate,
-                                    String comment,
-                                    CommentType commentType) {
-        Date currentDate = new DateMidnight().toDate();
-
-        // TODO check the status and check if it is possible to go to this status (workflow).
-        // Check user rights...
-
-        contentHeaderQueryTemplate.update("updateStatus",
-                new QueryExecutionContext()
-                        .buildParams()
-                        .bigint("id", id)
-                        .integer("status", status.ordinal())
-                        .date("lastModificationDate", currentDate)
-                        .toContext()
-        );
-
-        try {
-            insertContentInElasticSearch(id);
-        } catch (IOException e) {
-            logger.error("Cannot insert content into elastic search for content id:" + id, e);
-        }
-
-        if (ContentStatus.TO_BE_VALIDATED.equals(status)
-                && startPublicationDate != null
-                && (endPublicationDate == null || (startPublicationDate.before(endPublicationDate)
-                    && endPublicationDate.after(currentDate)))) {
-            logger.info("Update status and publication dates: " + status.name() + ", " + startPublicationDate + ", " + endPublicationDate);
-            contentHeaderQueryTemplate.update("updatePublicationDates", new QueryExecutionContext()
-                    .buildParams()
-                    .date("startPublicationDate", startPublicationDate)
-                    .date("endPublicationDate", endPublicationDate)
-                    .bigint("id", id)
-                    .toContext());
-        }
-
-        if (comment != null && !comment.isEmpty() && commentType != null) {
-            Long commentId = idQueryTemplate.selectLong("selectCommentIdByContentId",
-                    new QueryExecutionContext().buildParams()
-                            .bigint("id", id)
-                            .toContext()
-            );
-
-
-            if (CommentType.PUBLICATION.equals(commentType)) {
-                if (commentId == null) {
-                    logger.info("Add publication comment to content: " + id);
-                    contentDetailQueryTemplate.insert("insertPublicationComment",
-                        new QueryExecutionContext()
-                                .buildParams()
-                                .bigint("id", id)
-                                .string("comment", comment)
-                                .toContext(), "id");
-                } else {
-                    logger.info("Update publication comment to content: " + id);
-                    contentDetailQueryTemplate.update("updatePublicationComment",
-                        new QueryExecutionContext()
-                                .buildParams()
-                                .bigint("id", id)
-                                .string("comment", comment)
-                                .toContext());
-                }
-            } else if (CommentType.REJECTION.equals(commentType)) {
-                if (commentId == null) {
-                    logger.info("Add rejection comment to content: " + id);
-                    contentDetailQueryTemplate.insert("insertRejectionComment",
-                            new QueryExecutionContext()
-                                    .buildParams()
-                                    .bigint("id", id)
-                                    .string("comment", comment)
-                                    .toContext(), "id");
-                } else {
-                    logger.info("Update rejection comment to content: " + id);
-                    contentDetailQueryTemplate.update("updateRejectionComment",
-                            new QueryExecutionContext()
-                                    .buildParams()
-                                    .bigint("id", id)
-                                    .string("comment", comment)
-                                    .toContext());
-                }
-            } else {
-                logger.error("Unrecognized comment type: " + commentType.name());
-            }
-        }
     }
 
     private List<Long> getDomainIds(Long contentId) {
@@ -842,14 +682,128 @@ public class ContentDao {
         }
     }
 
+    /**
+     * Update the content status.
+     * @param contentId the content to update.
+     * @param newStatus the new status to apply to the content.
+     */
+    public void updateContentStatus(Long contentId, ContentStatus newStatus) {
+        Date currentDate = new DateMidnight().toDate();
+
+        logger.info("Update status of content: %s ", contentId + " to: "  + newStatus);
+        contentHeaderQueryTemplate.update("updateStatus",
+                new QueryExecutionContext()
+                        .buildParams()
+                        .bigint("id", contentId)
+                        .integer("status", newStatus.ordinal())
+                        .date("lastModificationDate", currentDate)
+                        .toContext()
+        );
+
+        ContentDetail cd = getContentDetail(contentId);
+        if (cd != null) {
+            try {
+                esContentDao.insertContentInElasticSearch(cd);
+            } catch (IOException e) {
+                logger.error("Cannot insert content into elastic search for content id:" + contentId, e);
+            }
+        }
+    }
+    
+    /**
+     * Update publication dates.
+     * @param contentId the referenced content being updated.
+     * @param publicationDetails the publication detail information.
+     */
+    public void updateContentPublicationDates(Long contentId, ContentPublicationDetail publicationDetails) {
+        logger.info("Update publication dates for content %s.", contentId + " Start: " + publicationDetails.start() + " End: " + publicationDetails.end());
+        contentHeaderQueryTemplate.update("updatePublicationDates", new QueryExecutionContext()
+                .buildParams()
+                .date("startPublicationDate", publicationDetails.start())
+                .date("endPublicationDate", publicationDetails.end())
+                .bigint("id", contentId)
+                .toContext());
+    }
+
+    /**
+     * Update publication comments.
+     *
+     * @param contentId          the referenced content being updated.
+     * @param newStatus          the content new status.
+     * @param publicationDetails the publication detail information.
+     */
+    public void updateContentPublicationComments(Long contentId, ContentStatus newStatus, ContentPublicationDetail publicationDetails) {
+        Long commentId = idQueryTemplate.selectLong("selectCommentIdByContentId",
+                new QueryExecutionContext().buildParams()
+                        .bigint("id", contentId)
+                        .toContext()
+        );
+
+        if (ContentStatus.TO_BE_VALIDATED.equals(newStatus)) {
+            if (commentId == null) {
+                logger.info("Add publication comment to content: " + contentId);
+                contentDetailQueryTemplate.insert("insertPublicationComment",
+                        new QueryExecutionContext()
+                                .buildParams()
+                                .bigint("id", contentId)
+                                .string("comment", publicationDetails.comments())
+                                .toContext(), "id");
+            } else {
+                logger.info("Update publication comment to content: " + contentId);
+                contentDetailQueryTemplate.update("updatePublicationComment",
+                        new QueryExecutionContext()
+                                .buildParams()
+                                .bigint("id", contentId)
+                                .string("comment", publicationDetails.comments())
+                                .toContext());
+            }
+        } else if (ContentStatus.REJECTED.equals(newStatus)) {
+            if (commentId == null) {
+                logger.info("Add rejection comment to content: " + contentId);
+                contentDetailQueryTemplate.insert("insertRejectionComment",
+                        new QueryExecutionContext()
+                                .buildParams()
+                                .bigint("id", contentId)
+                                .string("comment", publicationDetails.comments())
+                                .toContext(), "id");
+            } else {
+                logger.info("Update rejection comment to content: " + contentId);
+                contentDetailQueryTemplate.update("updateRejectionComment",
+                        new QueryExecutionContext()
+                                .buildParams()
+                                .bigint("id", contentId)
+                                .string("comment", publicationDetails.comments())
+                                .toContext());
+            }
+        } else {
+            logger.error("Should not update comments for given content new status: %s", newStatus);
+        }
+    }
+
+    /**
+     * Find the previous version of the given content reference which was VALIDATED and changes its status to ARCHIVED.
+     *
+     * @param commonAncestorId the common reference to the base version of the content to archive
+     */
+    public void archivePreviousVersion(Long commonAncestorId) {
+        logger.info("Archive previous status for content reference: %s", commonAncestorId.toString());
+        contentHeaderQueryTemplate.update("archiveLastValidatedVersion",
+                new QueryExecutionContext().buildParams()
+                        .bigint("ancestorId", commonAncestorId)
+                        .bigint("status", ContentStatus.ARCHIVED.ordinal())
+                        .toContext());
+    }
+
     private class ContentRowMapper implements RowMapper<ContentHeader> {
         @Override
         public ContentHeader processRow(ResultSet rs) throws SQLException {
             return new ContentHeader()
                     .id(rs.getLong("ID"))
                     .title(rs.getString("TITLE"))
+                    .version(rs.getInt("VERSION"))
                     .description(rs.getString("DESCRIPTION"))
                     .status(ContentStatus.values()[rs.getInt("STATUS")])
+                    .ancestorId(rs.getLong("CONTENT_ANCESTOR_REF"))
                     .creationDate(rs.getDate("CREATION_DATE"))
                     .lastModificationDate(rs.getDate("LAST_MODIFICATION_DATE"))
                     .startPublicationDate(rs.getDate("PUBLICATION_START_DATE"))

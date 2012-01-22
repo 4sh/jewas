@@ -3,27 +3,27 @@ package fr.fsh.bbeeg.content.pojos;
 import java.util.Date;
 
 public class ContentStatusQueryObject {
-    private String status;
-    private String comment;
+    private String newStatus;
+    private String comments;
     private Date startPublicationDate;
     private Date endPublicationDate;
 
-    public ContentStatusQueryObject status(String _status) {
-        this.status = _status;
+    public ContentStatusQueryObject newStatus(String _newStatus) {
+        this.newStatus = _newStatus;
         return this;
     }
 
-    public String status() {
-        return this.status;
+    public String newStatus() {
+        return this.newStatus;
     }
 
-    public ContentStatusQueryObject comment(String _comment) {
-        this.comment = _comment;
+    public ContentStatusQueryObject comments(String _comments) {
+        this.comments = _comments;
         return this;
     }
 
-    public String comment() {
-        return this.comment;
+    public String comments() {
+        return this.comments;
     }
 
     public ContentStatusQueryObject startPublicationDate(Date _startPublicationDate) {
