@@ -161,7 +161,7 @@ if ("true".equals(System.getProperty(COVERAGE_SYS_PROPERTY))) {
     }
 }
 
-sonar {
+/*sonar {
     serverUrl = "http://sonar.4sh.fr"
 
     globalProperty "sonar.jdbc.url", "jdbc:mysql://sonar:3306/sonar"
@@ -171,4 +171,4 @@ sonar {
 
     globalProperty "sonar.java.source", "1.6"
     globalProperty "sonar.java.target", "1.6"
-}
+}*/
