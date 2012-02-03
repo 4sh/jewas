@@ -70,15 +70,12 @@ public class Files {
 
                 URL classUrl = new URL(classPath.toString());
                 boolean classFoundInClasspath = false;
-                InputStream tmpStream = null;
-                try {
-                    tmpStream = classUrl.openStream();
+                try (InputStream  tmpStream = classUrl.openStream())
+                {
                     classFoundInClasspath = true;
-                }catch(IOException e){
+                } catch(IOException e){
                     classFoundInClasspath = false;
-                } finally{
-                    Closeables.defensiveClose(tmpStream);
-                }
+                } 
 
                 if(classFoundInClasspath){
                     resource = currentResource;

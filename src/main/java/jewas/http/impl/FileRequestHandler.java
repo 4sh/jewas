@@ -3,8 +3,9 @@ package jewas.http.impl;
 import jewas.http.HttpRequest;
 import jewas.http.HttpStatus;
 import jewas.http.RequestHandler;
-import jewas.util.file.Closeables;
 import jewas.util.file.Files;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 
@@ -18,6 +19,12 @@ import java.io.*;
  *
  */
 public class FileRequestHandler extends AbstractRequestHandler {
+
+    /**
+     * Class logger.
+     */
+    private Logger logger = LoggerFactory.getLogger(FileRequestHandler.class);
+
     /**
      * The path of the file to load.
      */
@@ -40,26 +47,22 @@ public class FileRequestHandler extends AbstractRequestHandler {
      */
     @Override
     public void onRequest(HttpRequest request) {
-        File extractedFileInCache = new File(cachedResourcesFileSystemRootDir.getAbsolutePath()+File.separator+path);
-        InputStream classloaderStream = null;
-        OutputStream filesystemStream = null;
+        File extractedFileInCache = new File(cachedResourcesFileSystemRootDir.getAbsolutePath() + File.separator + path);
+
         try {
-            if(!extractedFileInCache.exists()){
+            if (!extractedFileInCache.exists()) {
                 Files.touchFileWithParents(extractedFileInCache);
-                filesystemStream = new FileOutputStream(extractedFileInCache);
-                classloaderStream = Files.getInputStreamFromPath(path);
 
-                // Let's extract file from classpath...
-                Files.copyStreamTo(classloaderStream, filesystemStream);
+                try (InputStream classloaderStream = Files.getInputStreamFromPath(path);
+                     OutputStream fileSystemStream = new FileOutputStream(extractedFileInCache)) {
+                    // Let's extract file from classpath...
+                    Files.copyStreamTo(classloaderStream, fileSystemStream);
+                }
             }
-
             request.respondFile().file(extractedFileInCache.toPath());
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Error opening :" + extractedFileInCache.getAbsolutePath(), e);
             request.respondError(HttpStatus.NOT_FOUND);
-        } finally {
-            Closeables.defensiveClose(classloaderStream);
-            Closeables.defensiveClose(filesystemStream);
         }
     }
 }

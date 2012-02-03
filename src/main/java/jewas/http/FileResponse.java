@@ -36,16 +36,17 @@ public class FileResponse {
 	public void file(Path path) {
         httpResponse.contentType(contentType);
 
-        RandomAccessFile raf;
-        try {
-            raf = new RandomAccessFile(path.toFile(), "r");
+        try (RandomAccessFile raf = new RandomAccessFile(path.toFile(), "r"))
+        {
             if (maybeServeRange(httpRequest, raf.getChannel(), httpResponse)) {
                 return;
             }
             httpResponse.content(path);
             httpResponse.addHeader("Content-Length", remaining(raf.getChannel()));
-        } catch (FileNotFoundException fnfe) {
+        } catch (FileNotFoundException e) {
             httpResponse.status(HttpStatus.NOT_FOUND).content("Not found: " + path);
+        } catch (IOException e) {
+            
         }
     }
 

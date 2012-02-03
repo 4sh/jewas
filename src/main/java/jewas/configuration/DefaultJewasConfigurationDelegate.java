@@ -1,7 +1,8 @@
 package jewas.configuration;
 
-import jewas.util.file.Closeables;
 import jewas.util.file.Files;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,6 +19,11 @@ import java.util.Properties;
 public class DefaultJewasConfigurationDelegate implements JewasConfigurationDelegate {
 
     /**
+     * Class logger.
+     */
+    private Logger logger = LoggerFactory.getLogger(DefaultJewasConfigurationDelegate.class);
+
+    /**
      * The properties that have been loaded from the path.
      */
     private Properties properties;
@@ -25,15 +31,11 @@ public class DefaultJewasConfigurationDelegate implements JewasConfigurationDele
     public DefaultJewasConfigurationDelegate(String path) {
         properties = new Properties();
 
-        InputStream is = null;
-        try {
-            is = Files.getInputStreamFromPath(path);
+        try(InputStream is = Files.getInputStreamFromPath(path))
+        {
             properties.load(is);
         } catch (IOException e) {
-            // FIXME : log a warning here !... Or even throw a non checked exception ???
-            System.err.println(e.getMessage());
-        } finally {
-            Closeables.defensiveClose(is);
+            logger.error("Cannot get input stream from: " + path);
         }
     }
 
