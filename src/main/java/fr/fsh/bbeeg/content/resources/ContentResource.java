@@ -9,6 +9,7 @@ import fr.fsh.bbeeg.i18n.persistence.I18nDao;
 import fr.fsh.bbeeg.user.pojos.User;
 import jewas.http.data.FileUpload;
 import org.joda.time.DateMidnight;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,6 +63,8 @@ public class ContentResource {
 
     public ContentDetail getContentDetail(Long id) {
         ContentDetail contentDetail = contentDao.getContentDetail(id);
+        incrementPopularity(id);
+        updateLastConsultationDate(id);
         return contentDetail.url("/content/content/" + id);
     }
 
@@ -264,10 +267,20 @@ public class ContentResource {
 
     /**
      * Increment the stored count of views for this content.
+     *
      * @param contentId the content identifier.
      */
-    public void incrementPopularity(Long contentId) {
+    private void incrementPopularity(Long contentId) {
         contentDao.incrementPopularity(contentId);
+    }
+
+    /**
+     * Update the stored last consultation date for this content.
+     *
+     * @param contentId the content identifier.
+     */
+    private void updateLastConsultationDate(Long contentId) {
+        contentDao.updateLastConsultationDate(contentId, new DateTime().toDate());
     }
 
 }

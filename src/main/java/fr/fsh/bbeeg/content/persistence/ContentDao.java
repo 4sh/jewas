@@ -66,63 +66,84 @@ public class ContentDao {
         // Initializing QueryTemplates
         this.contentHeaderQueryTemplate =
                 new QueryTemplate<ContentHeader>(dataSource, new ContentRowMapper())
-                        .addQuery("selectById", "select * from Content where id = :id")
-                        .addQuery("selectByUserId", "select * from Content where user_ref = :userId")
-                        .addQuery("selectAll", "select * from Content")
-                        .addQuery("selectUrl", "select FILE_URI from Content where id = :id")
+                        .addQuery("selectById",
+                                "select * from CONTENT where ID = :id")
+                        .addQuery("selectByUserId",
+                                "select * from CONTENT where USER_REF = :userId")
+                        .addQuery("selectAll",
+                                "select * from CONTENT")
+                        .addQuery("selectUrl",
+                                "select FILE_URI from Content where id = :id")
                         .addQuery("selectLimitedRecent",
                                 "select * from " +
-                                        "(select * from Content where status = :status and publication_Start_Date <= :today and :today <= publication_End_Date " +
-                                        "order by id desc) " +
+                                        "(select * from CONTENT where STATUS = :status " +
+                                        "and (PUBLICATION_START_DATE <= :today or PUBLICATION_START_DATE is null) " +
+                                        "and (:today <= PUBLICATION_END_DATE or PUBLICATION_END_DATE is null) " +
+                                        "order by ID desc) " +
                                         "where ROWNUM <= :limit")
                         .addQuery("selectLimitedPopular",
                                 "select * from " +
-                                        "(select * from Content where status = :status and publication_Start_Date <= :today and :today <= publication_End_Date ORDER BY POPULARITY DESC) " +
+                                        "(select * from CONTENT where STATUS = :status " +
+                                        "and (PUBLICATION_START_DATE <= :today or PUBLICATION_START_DATE is null) " +
+                                        "and (:today <= PUBLICATION_END_DATE or PUBLICATION_END_DATE is null) " +
+                                        "order by POPULARITY desc) " +
                                         "where ROWNUM <= :limit")
                         .addQuery("selectLimitedLastViewed",
                                 "select * from " +
-                                        "(select * from Content where status = :status and publication_Start_Date <= :today and :today <= publication_End_Date) " +
+                                        "(select * from CONTENT where STATUS = :status " +
+                                        "and (PUBLICATION_START_DATE <= :today or PUBLICATION_START_DATE is null) " +
+                                        "and (:today <= PUBLICATION_END_DATE or PUBLICATION_END_DATE is null) " +
+                                        "order by LAST_CONSULTATION_DATE desc) " +
                                         "where ROWNUM <= :limit")
-                        .addQuery("selectHigherVersionNumber", "select max(version) from content where content_ancestor_ref = :ancestorId")
-                        .addQuery("count", "select count(*) as COUNT from Content where status = :status")
-                        .addQuery("insert", "INSERT INTO CONTENT (ID, TITLE, DESCRIPTION, CREATION_DATE, LAST_MODIFICATION_DATE, STATUS, CONTENT_TYPE, AUTHOR_REF, CONTENT_ANCESTOR_REF, VERSION, TAGS) " +
-                                "VALUES (CONTENT_SEQ.nextval, :title, :description, :creationDate, :lastModificationDate, 0, :contentType, :authorId, CASE WHEN :ancestorId is NULL THEN (SELECT CONTENT_SEQ.currVal) ELSE :ancestorId END, :version, :tags)")
-                        .addQuery("updateContentUrl", "UPDATE CONTENT " +
-                                "SET FILE_URI = :url,  LAST_MODIFICATION_DATE = :lastModificationDate " +
-                                "WHERE ID = :id")
-                        .addQuery("updateContent", "UPDATE CONTENT " +
-                                "SET TITLE = :title, DESCRIPTION = :description, STATUS = 0, LAST_MODIFICATION_DATE = :lastModificationDate, VERSION = :version, TAGS = :tags " +
-                                "WHERE ID = :id")
-                        .addQuery("addLinkWithDomain", "INSERT INTO CONTENT_DOMAIN (CONTENT_REF, DOMAIN_REF) " +
-                                "VALUES (:contentId, :domainId)")
-                        .addQuery("removeLinkWithDomain", "DELETE FROM CONTENT_DOMAIN " +
-                                "WHERE CONTENT_REF = :contentId AND DOMAIN_REF = :domainId")
-                        .addQuery("updateStatus", "UPDATE CONTENT " +
-                                "SET STATUS = :status, LAST_MODIFICATION_DATE = :lastModificationDate "+
-                                "WHERE ID = :id")
-                        .addQuery("updatePublicationDates", "UPDATE CONTENT SET PUBLICATION_START_DATE = :startPublicationDate, PUBLICATION_END_DATE = :endPublicationDate WHERE ID = :id")
-                        .addQuery("archiveLastValidatedVersion", "update content set status = :status where version = (select max(version) from content where content_ancestor_ref = :ancestorId and status = " + ContentStatus.VALIDATED.ordinal() + ")")
-                        .addQuery("incrementPopularity", "UPDATE CONTENT SET POPULARITY = POPULARITY + 1 WHERE ID = :id AND STATUS in :statuses");
+                        .addQuery("selectHigherVersionNumber",
+                                "select max(VERSION) from CONTENT where CONTENT_ANCESTOR_REF = :ancestorId")
+                        .addQuery("count",
+                                "select count(*) as count from CONTENT where STATUS = :status")
+                        .addQuery("insert",
+                                "insert into CONTENT (ID, TITLE, DESCRIPTION, CREATION_DATE, LAST_MODIFICATION_DATE, STATUS, CONTENT_TYPE, AUTHOR_REF, CONTENT_ANCESTOR_REF, VERSION, TAGS) " +
+                                "values (CONTENT_SEQ.nextval, :title, :description, :creationDate, :lastModificationDate, 0, :contentType, :authorId, case when :ancestorId is null then (select CONTENT_SEQ.currVal) else :ancestorId end, :version, :tags)")
+                        .addQuery("addLinkWithDomain",
+                                "insert into CONTENT_DOMAIN (CONTENT_REF, DOMAIN_REF) values (:contentId, :domainId)")
+                        .addQuery("updateContentUrl",
+                                "update content set FILE_URI = :url, LAST_MODIFICATION_DATE = :lastModificationDate where ID = :id")
+                        .addQuery("updateContent",
+                                "update CONTENT set TITLE = :title, DESCRIPTION = :description, STATUS = 0, LAST_MODIFICATION_DATE = :lastModificationDate, VERSION = :version, TAGS = :tags where ID = :id")
+                        .addQuery("updateStatus",
+                                "update CONTENT set STATUS = :status, LAST_MODIFICATION_DATE = :lastModificationDate where ID = :id")
+                        .addQuery("updatePublicationDates",
+                                "update CONTENT set PUBLICATION_START_DATE = :startPublicationDate, PUBLICATION_END_DATE = :endPublicationDate where ID = :id")
+                        .addQuery("archiveLastValidatedVersion",
+                                "update CONTENT set STATUS = :status where VERSION = " +
+                                    "(select max(VERSION) from CONTENT where CONTENT_ANCESTOR_REF = :ancestorId and STATUS = " + ContentStatus.VALIDATED.ordinal() + ")")
+                        .addQuery("incrementPopularity",
+                                "update CONTENT set POPULARITY = POPULARITY + 1 where ID = :id and STATUS in :statuses")
+                        .addQuery("updateLastConsultationDate",
+                                "update CONTENT set LAST_CONSULTATION_DATE = :lastConsultationDate where ID = :contentId")
+                        .addQuery("removeLinkWithDomain",
+                                "delete from CONTENT_DOMAIN where CONTENT_REF = :contentId and DOMAIN_REF = :domainId");
 
        this.contentDetailQueryTemplate =
                new QueryTemplate<ContentDetail>(dataSource, new ContentDetailRowMapper())
-                        .addQuery("selectById", "SELECT c.*, cc.id as content_comment_id, publication_comments, rejection_comments FROM CONTENT c LEFT JOIN CONTENT_COMMENT cc ON " +
-                                "c.ID = cc.CONTENT_REF WHERE c.ID = :id")
-                        .addQuery("selectAll", "SELECT c.*, cc.id as content_comment_id, publication_comments, rejection_comments FROM CONTENT c LEFT JOIN CONTENT_COMMENT cc ON " +
-                             "c.ID = cc.CONTENT_REF")
-                        .addQuery("insertPublicationComment", "INSERT INTO CONTENT_COMMENT (ID, CONTENT_REF, PUBLICATION_COMMENTS) VALUES (CONTENT_COMMENT_SEQ.nextval, :id, :comment)")
-                        .addQuery("insertRejectionComment", "INSERT INTO CONTENT_COMMENT (ID, CONTENT_REF, PUBLICATION_COMMENTS) VALUES (CONTENT_COMMENT_SEQ.nextval, :id, :comment)")
-                        .addQuery("updatePublicationComment", "UPDATE CONTENT_COMMENT SET PUBLICATION_COMMENTS = :comment WHERE CONTENT_REF = :id")
-                        .addQuery("updateRejectionComment", "UPDATE CONTENT_COMMENT SET REJECTION_COMMENTS = :comment WHERE CONTENT_REF = :id");
+                        .addQuery("selectById",
+                                "select c.*, cc.id as CONTENT_COMMENT_ID, PUBLICATION_COMMENTS, REJECTION_COMMENTS from CONTENT c left join CONTENT_COMMENT cc on c.ID = cc.CONTENT_REF where c.ID = :id")
+                        .addQuery("selectAll",
+                                "select c.*, cc.id as CONTENT_COMMENT_ID, PUBLICATION_COMMENTS, REJECTION_COMMENTS from CONTENT c left join CONTENT_COMMENT cc on c.ID = cc.CONTENT_REF")
+                        .addQuery("insertPublicationComment",
+                                "insert into CONTENT_COMMENT (ID, CONTENT_REF, PUBLICATION_COMMENTS) values (CONTENT_COMMENT_SEQ.nextval, :id, :comment)")
+                        .addQuery("insertRejectionComment",
+                                "insert into CONTENT_COMMENT (ID, CONTENT_REF, REJECTION_COMMENTS) values (CONTENT_COMMENT_SEQ.nextval, :id, :comment)")
+                        .addQuery("updatePublicationComment",
+                                "update CONTENT_COMMENT set PUBLICATION_COMMENTS = :comment where CONTENT_REF = :id")
+                        .addQuery("updateRejectionComment",
+                                "update CONTENT_COMMENT set REJECTION_COMMENTS = :comment where CONTENT_REF = :id");
 
 
         this.idQueryTemplate =
                 new QueryTemplate<Long>(dataSource, new LongRowMapper())
                         .addQuery("selectDomainIdsByContentId",
-                                "select domain_ref as ID from Content_Domain " +
-                                        "where content_ref = :id")
+                                "select DOMAIN_REF as ID from CONTENT_DOMAIN where CONTENT_REF = :id")
                         .addQuery("selectCommentIdByContentId",
-                                "SELECT id FROM CONTENT_COMMENT WHERE CONTENT_REF = :id");
+                                "select id from CONTENT_COMMENT where CONTENT_REF = :id");
 
         // Initializing ES indexes
         String mappingSource = String.format("{ \"%s\" : { \"properties\" : { \"%s\" : { \"type\" : \"attachment\" } } } }",
@@ -797,6 +818,20 @@ public class ContentDao {
                 new QueryExecutionContext().buildParams()
                         .bigint("ancestorId", commonAncestorId)
                         .bigint("status", ContentStatus.ARCHIVED.ordinal())
+                        .toContext());
+    }
+
+    /**
+     * Update the last consultation date stored on the given content.
+     *
+     * @param contentId the content identifier
+     */
+    public void updateLastConsultationDate(Long contentId, Date date) {
+         logger.info("Update the last consultation date for content: " + contentId);
+        contentHeaderQueryTemplate.update("updateLastConsultationDate",
+                new QueryExecutionContext().buildParams()
+                        .bigint("contentId", contentId)
+                        .date("lastConsultationDate", date)
                         .toContext());
     }
 
