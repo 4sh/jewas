@@ -32,9 +32,9 @@ useChosen=true>
         var tags = [];
         <#if content??>
             // Load the title
-            $("#title").val("${content.header().title()}");
+            $("#title").val("${content.header().title()?js_string}");
             // Load the description
-            $("#description").append("${content.header().description()}");
+            $("#description").append("${content.header().description()?js_string}");
              // Load the content
             eegContentCreator.loadContentForEdition(${content.header().id()?c});
             // Load the domains
