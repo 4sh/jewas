@@ -1,3 +1,5 @@
+import org.apache.tools.ant.taskdefs.Jar
+
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'sonar'
@@ -16,7 +18,7 @@ if(!hasProperty("releasesRepoUsername")
     ant.fail "You should define a ~/.gradle/gradle.properties containing properties 'releasesRepoUsername' and 'releasesRepoPassword' to access 4SH releases repository !"
 }
 
-org.apache.ivy.util.url.CredentialsStore.INSTANCE.addCredentials("Artifactory Realm", "repo.4sh.fr", releasesRepoUsername, releasesRepoPassword);
+//org.apache.ivy.util.url.CredentialsStore.INSTANCE.addCredentials("Artifactory Realm", "repo.4sh.fr", releasesRepoUsername, releasesRepoPassword);
 
 group = "fr.4sh.jewas"
 def versionBase = '0.1'
@@ -47,10 +49,23 @@ configurations {
 }
 
 repositories {
+     //mavenRepo urls: ["http://repo.4sh.fr/libs-release/"]
+     //mavenRepo urls: ["http://oss.sonatype.org/content/repositories/snapshots/"]
+    maven {
+        credentials {
+            username releasesRepoUsername
+            password releasesRepoPassword
+        }
+        url "http://repo.4sh.fr/libs/"
+        artifactUrls "http://repo.4sh.fr/libs/"
+    }
+}
+
+/*repositories {
     mavenRepo urls: ["http://repo.4sh.fr/libs-release/"]
     // for rest assured snapshot
     mavenRepo urls: ["http://oss.sonatype.org/content/repositories/snapshots/"]
-}
+}*/
 
 dependencies {
     compile(
@@ -78,10 +93,9 @@ dependencies {
     // to use WebDav protocol on upload
     deployerJars "org.apache.maven.wagon:wagon-webdav-jackrabbit:1.0"
 }
-
-task packageJavadoc(type: Jar, dependsOn: 'javadoc') {
-   from javadoc.destinationDir
-   classifier = 'javadoc'
+task packageJavadoc(type: Jar, dependsOn:javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
 }
 
 task packageSources(type: Jar) {
