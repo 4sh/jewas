@@ -26,7 +26,7 @@
     </script>
 
     <div class="content_video">
-        <video id="videoTagId" controls="controls" onerror="failed(event)">
+        <video id="videoTagId" controls="controls" onerror="failed(event)" class="max_width">
             <source src="${content.url()}" class="max_width"/>
         </video>
     </div>
