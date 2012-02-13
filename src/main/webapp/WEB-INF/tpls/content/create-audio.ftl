@@ -20,7 +20,7 @@
             }
         </script>
 
-            <div id="confirmationDialog" title="Succès">
+            <div id="saveSuccessDialog" title="Succès">
                 <#if content??>
                     <p>Votre fichier audio a été modifié avec succès !</p>
                 <#else>

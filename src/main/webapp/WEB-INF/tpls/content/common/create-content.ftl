@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="/public/css/bbeeg/create.css" >
 <script type="application/javascript" src="/public/js/bbeeg/content/create-content.js"></script>
 <script type="application/javascript" src="/public/js/bbeeg/content/content-helper.js"></script>
+<script type="application/javascript" src="/public/js/bbeeg/content/content-status.js"></script>
 
 <script type="application/javascript">
     $(function() {
@@ -57,6 +58,7 @@
         </#if>
         contentHelper.loadDomains($("#domains"), $("#domainItemTemplate"), domains);
         contentHelper.loadTags($("#tags"), $("#tagItemTemplate"), tags);
+        $("#confirmationDialog").append("<p>" + contentHelper.getSaveConfirmationMessage(<#if content??>"${content.header().status()}"<#else>null</#if>) + "</p>");
     });
 </script>
 <script id="authorItemTemplate" type="text/x-jquery-tmpl">
@@ -84,11 +86,15 @@
         </div>
 
         <div class="create_buttons bottom_space">
-            <input id="saveBtn" type="submit" value="Enregistrer" <#if isInitialContent(content)>disabled</#if>/>
+            <button id="saveBtn" type="button" <#if isInitialContent(content)>disabled</#if>>Enregistrer</button>
             <button id="cancelBtn" type="button" >Annuler</button>
         </div>
 
         <div id="previsualizationContainer" class="previewCenter">
         </div>
     </form>
+
+    <div id="confirmationDialog" title="Confirmation">
+    </div>
+
 </#macro>

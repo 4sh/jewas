@@ -40,7 +40,7 @@
             }
         </script>
 
-        <div id="confirmationDialog" title="Succès">
+        <div id="saveSuccessDialog" title="Succès">
             <#if content??>
                 <p>Votre vidéo a été modifiée avec succès !</p>
             <#else>

@@ -34,7 +34,7 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
             // A value is specified and this this the same for both start and stop
             return false;
         }
-        // If no value specified, start and stop equals to 0 => Not an error beacause 
+        // If no value specified, start and stop equals to 0 => Not an error because
         // there are default behavior for that particular case.
         return true;
     }
@@ -129,7 +129,7 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
                     uploader.setAction('/content/content/EEG');
                     uploader.submit();
                 },
-                onSubmitCallback: function (uploader) {
+                onSubmitCallback: function () {
                     // Nothing to do for now
                 },
                 onCompleteCallback: function (uploader, response) {
@@ -185,7 +185,7 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
                     options.onChangeCallback(this);
                 }
             },
-            onSubmit: function(file, ext){
+            onSubmit: function(){
                 uploadStatus.text('Transfert en cours ');
                 interval = window.setInterval(function(){
                     var text = uploadStatus.text();
@@ -371,20 +371,13 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
                 selection[signalsToDisplay[i]] = true;
             }
             for (var j = 0; j < signals.length; j++) {
-                if (selection[signals[j].id]) {
-                    signals[j].selected = true;
-                } else {
-                    signals[j].selected = false;
-                }
+                signals[j].selected = selection[signals[j].id];
             }
             $("#signalItemTemplate").tmpl(signals).appendTo(multipleSelect);
             multipleSelect.trigger("liszt:updated");
         }
         // TODO : refactor to manage multiple montages
-        var operations = settings.montages[0].operations;
-        var displayOperations = (operations !== []);
-
-
+       // var operations = settings.montages[0].operations;
     }
 
     function buildEegSettings() {
@@ -417,7 +410,7 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
         $.ajaxPut(url + "?text=" + JSON.stringify(eegSettings),
             null,
             //eegSettings,
-            function(data){
+            function(){
                 if (!!callAfter) {
                     callAfter(contentId);
                 }
@@ -475,7 +468,7 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
                 }
             }
         );
-    };
+    }
 
     function addMontage(container) {
         var montage = $("#montageItemTemplate").tmpl(null);
@@ -487,7 +480,7 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
         montage.find('.montage-signalsToDisplay').chosen();
 
         //addMontageOperation($('#montages .montage'));
-    };
+    }
 
     function addMontageOperation(container) {
         var montageOperation = $("#montageOperationItemTemplate").tmpl(null);
@@ -506,11 +499,50 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
 
         montageOperation.find('.montage-operation-s1').chosen();
         montageOperation.find('.montage-operation-s2').chosen();
-    };
+    }
 
     function deleteMontageOperation(element) {
         $(element).remove();
-    };
+    }
+
+    function saveContent(form) {
+        var contentDetail = {
+            header:{
+                title:$("#title").val(),
+                description:$("#description").val(),
+                domains:getDomains($("#domains").val()),
+                tags:$("#tags").val()
+            }
+        };
+
+        var dataToSend = {
+            type:'EEG',
+            contentDetail:JSON.stringify(contentDetail)
+        };
+
+        $.ajaxPut(form.action,
+            dataToSend,
+            function (data) {
+                var contentId = data.id;
+                sendEegSettings(
+                    eegId,
+                    function () {
+                        $.ajaxPut("/content/eeg/" + eegId + "/" + contentId,
+                            null,
+                            function () {
+                                $("#saveSuccessDialog").dialog('open');
+                                setTimeout(function () {
+                                    $("#saveSuccessDialog").dialog('close');
+                                    window.location.href = "/content/" + contentId + "/view.html";
+                                }, 2000);
+                            }
+                        );
+                    }
+                );
+            }
+        );
+        return false;
+    }
 
     /* ***************************************************************************************************************
      *  Public methods
@@ -551,7 +583,7 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
      *****************************************************************************************************************/
 
     (function () {
-        $("#confirmationDialog").dialog({
+        $("#saveSuccessDialog").dialog({
             autoOpen: false,
             modal: false,
             show: 'drop',
@@ -564,46 +596,35 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
         $('#allSignals').live('click', (function() {
            displaySignalsCheckboxClickHandler($(this).attr('checked'))}));
 
-        $("#createContent").submit(function(){
-            var form = this;
-
-            var contentDetail = {
-                header: {
-                    title: $("#title").val(),
-                    description: $("#description").val(),
-                    domains: getDomains($("#domains").val()),
-                    tags: $("#tags").val()
-                }
-            }
-
-            var dataToSend = {
-                type : 'EEG',
-                contentDetail : JSON.stringify(contentDetail)
-            };
-
-            $.ajaxPut(form.action,
-                dataToSend,
-                function(data){
-                    var contentId = data.id;
-                    sendEegSettings(
-                        eegId,
-                        function () {
-                            $.ajaxPut("/content/eeg/" + eegId + "/" + contentId,
-                                null,
-                                function () {
-                                    $("#confirmationDialog").dialog('open');
-                                    setTimeout(function(){
-                                        $("#confirmationDialog").dialog('close');
-                                        window.location.href = "/content/" + contentId + "/view.html";
-                                    }, 2000);
-                                }
-                            );
+        $("#confirmationDialog").dialog({
+            autoOpen: false,
+            show: 'slide',
+            hide: 'slide',
+            width: '40%',
+            buttons: [
+                {
+                    text: "Ok",
+                    click:function () {
+                        var form = $("#createContent")[0];
+                        if (!!form) {
+                            saveContent(form);
+                        } else {
+                            console.error("Failed to locate 'HTML FORM' element");
                         }
-                    );
+                        $(this).dialog("close");
+                    }
+                },
+                {
+                    text: "Annuler",
+                    click: function() {
+                        $(this).dialog("close");
+                    }
                 }
-            );
+            ]
+        });
 
-            return false;
+        $("#saveBtn").click(function(){
+            $("#confirmationDialog").dialog('open');
         });
 
         eegUploader = null;

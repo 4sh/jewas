@@ -1,6 +1,37 @@
 var contentHelper = (function() {
 
     return {
+
+        /**
+         * Returns a message displayed n the save confirmation dialog depending on the given content status.
+         *
+         * @param contentStatus the status of the content being modified.
+         */
+        getSaveConfirmationMessage:function (contentStatus) {
+            var message = "";
+            if (contentStatus === null) {
+                // Creation of the content
+                contentStatus = ContentStatus.DRAFT;
+            }
+            switch (contentStatus) {
+                case ContentStatus.VALIDATED:
+                    message = "Une nouvelle version du contenu va être enregistrée en version brouillon. La version actuelle restera publiée tant que la publication de cette nouvelle version n'aura pas été effective.";
+                    break;
+                case ContentStatus.TO_BE_VALIDATED:
+                    message = "La version actuelle du contenu va être modifiée et son statut passera en brouillon. Il devra donc faire l'objet d'une nouvelle demande de publication.";
+                    break;
+                case ContentStatus.REJECTED:
+                    message = "Une nouvelle version du contenu va être enregistrée en version brouillon.";
+                    break;
+                case ContentStatus.DRAFT:
+                    message = "Le contenu va être enregistré sur la plateforme en version brouillon. Vous pouvez le modifier autant que vous le désirez avant de décider de sa publication.";
+                    break;
+                default:
+                    message = "";
+            }
+            return message;
+        },
+
         getIcon : function(type) {
             var className;
             switch (type) {

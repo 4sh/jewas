@@ -47,6 +47,40 @@ function ContentCreator(type, extensions, extensionsMsgError, previsualizationCo
         }
     }
 
+    function saveContent(form) {
+        var contentDetail = {
+            header: {
+                title: $("#title").val(),
+                description: $("#description").val(),
+                domains: getDomains($("#domains").val()),
+                tags: $("#tags").val()
+            }
+        }
+
+        var dataToSend = {
+            type : type,
+            contentDetail : JSON.stringify(contentDetail)
+        };
+
+        $.ajaxPut(form.action,
+            dataToSend,
+            function(data){
+
+                $.post("/content/" + data.id + "/content/" + currentUploadedFileId,
+                    null,
+                    function () {
+                        $("#saveSuccessDialog").dialog('open');
+                        setTimeout(function(){
+                            $("#saveSuccessDialog").dialog('close');
+                            window.location.href = "/content/" + data.id + "/view.html";
+                        }, 2000);
+                    }
+                );
+            }
+        );
+        return false;
+    }
+
     /** Public methods **/
 
     /**
@@ -75,6 +109,33 @@ function ContentCreator(type, extensions, extensionsMsgError, previsualizationCo
     (function () {
         $("#confirmationDialog").dialog({
             autoOpen: false,
+            show: 'slide',
+            hide: 'slide',
+            width: '40%',
+            buttons: [
+                {
+                    text: "Ok",
+                    click:function () {
+                        var form = $("#createContent")[0];
+                        if (!!form) {
+                            saveContent(form);
+                        } else {
+                            console.error("Failed to locate 'HTML FORM' element");
+                        }
+                        $(this).dialog("close");
+                    }
+                },
+                {
+                    text: "Annuler",
+                    click: function() {
+                        $(this).dialog("close");
+                    }
+                }
+            ]
+        });
+
+        $("#saveSuccessDialog").dialog({
+            autoOpen: false,
             modal: false,
             show: 'drop',
             hide: 'drop'
@@ -85,44 +146,8 @@ function ContentCreator(type, extensions, extensionsMsgError, previsualizationCo
         $("#domains").chosen();
         $("#tags").chosen();
 
-        $("#createContent").submit(function(){
-            var form = this;
-
-            var contentDetail = {
-                header: {
-                    title: $("#title").val(),
-                    description: $("#description").val(),
-                    domains: getDomains($("#domains").val()),
-                    tags: $("#tags").val()
-                }
-            }
-
-            var dataToSend = {
-                type : type,
-                contentDetail : JSON.stringify(contentDetail)
-            };
-
-            $.ajaxPut(form.action,
-                dataToSend,
-
-                function(data){
-
-                    $.post("/content/" + data.id + "/content/" + currentUploadedFileId,
-                        null,
-                        function () {
-                            $("#confirmationDialog").dialog('open');
-                            setTimeout(function(){
-                                $("#confirmationDialog").dialog('close');
-                                window.location.href = "/content/" + data.id + "/view.html";
-                            }, 2000);
-                        }
-                    );
-
-
-                }
-            );
-
-            return false;
+        $("#saveBtn").click(function(){
+            $("#confirmationDialog").dialog('open');
         });
 
         var btnUpload=$('#upload');

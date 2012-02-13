@@ -16,7 +16,7 @@
             }
         </script>
 
-        <div id="confirmationDialog" title="Succès">
+        <div id="saveSuccessDialog" title="Succès">
             <#if content??>
                 <p>Votre image a été modifiée avec succès !</p>
                 <#else>

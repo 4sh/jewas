@@ -6,7 +6,8 @@
             scripts=["/public/js/jewas/jewas-forms.js",
                      "/public/js/fileUpload/fileuploader.js",
                      "/public/js/bbeeg/content/create-eeg-content.js",
-                     "/public/js/bbeeg/content/content-helper.js"]
+                     "/public/js/bbeeg/content/content-helper.js",
+                     "/public/js/bbeeg/content/content-status.js"]
             stylesheets=["/public/css/fileUpload/fileuploader.css", "/public/css/bbeeg/create.css"]
 useChosen=true>
 
@@ -48,6 +49,8 @@ useChosen=true>
         </#if>
         contentHelper.loadDomains($("#domains"), $("#domainItemTemplate"), domains);
         contentHelper.loadTags($("#tags"), $("#tagItemTemplate"), tags);
+        $("#confirmationDialog").append("<p>" + contentHelper.getSaveConfirmationMessage(<#if content??>"${content.header().status()}"<#else>null</#if>) + "</p>");
+
     });
 </script>
 
@@ -169,8 +172,11 @@ useChosen=true>
     </div>
 </script>
 
-<div id="confirmationDialog" title="Succès">
+<div id="saveSuccessDialog" title="Succès">
     <p>Votre EEG a été créé avec succès !</p>
+</div>
+
+<div id="confirmationDialog" title="Confirmation">
 </div>
 
 <div class="create_center">
@@ -220,7 +226,7 @@ useChosen=true>
     <br /><br />
     <div class="create_buttons">
         <button id="previsualizeBtn" type="button"> Prévisualiser </button>
-        <input type="submit" value="Enregistrer" />
+        <button id="saveBtn" type="button">Enregistrer</button>
         <button id="cancelBtn" type="button" >Annuler</button>
     </div>
 </form>
