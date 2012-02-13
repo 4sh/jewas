@@ -4,6 +4,8 @@ import fr.fsh.bbeeg.tag.pojos.Tag;
 import jewas.persistence.QueryExecutionContext;
 import jewas.persistence.QueryTemplate;
 import jewas.persistence.rowMapper.RowMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.sql.ResultSet;
@@ -19,6 +21,11 @@ import java.util.List;
  */
 public class TagDao {
 
+    /**
+     * Class logger.
+     */
+    private static final Logger logger = LoggerFactory.getLogger(TagDao.class);
+
     private QueryTemplate<Tag> tagQueryTemplate;
 
     public TagDao(DataSource dataSource) {
@@ -30,11 +37,12 @@ public class TagDao {
         // Initializing QueryTemplates
         this.tagQueryTemplate =
                 new QueryTemplate<Tag>(dataSource, new TagRowMapper())
-                    .addQuery("selectAll", "SELECT * FROM TAGS")
-                    .addQuery("insert", "INSERT INTO TAGS (TAG, WEIGHT) VALUES (:tag, :weight)")
-                    .addQuery("updateWeight", "UPDATE TAGS SET WEIGHT = :weight WHERE TAG = :tag")
-                    .addQuery("findTagWeight", "SELECT WEIGHT FROM TAGS WHERE TAG = :tag")
-                    .addQuery("selectLimitedPopular", "SELECT * FROM (SELECT * FROM TAGS ORDER BY lower(TAG)) WHERE ROWNUM<= :limit");
+                    .addQuery("selectAll", "select * from TAGS")
+                    .addQuery("insert", "insert into TAGS (TAG, WEIGHT) values (:tag, :weight)")
+                    .addQuery("updateWeight", "update TAGS set WEIGHT = :weight where TAG = :tag")
+                    .addQuery("findTagWeight", "select WEIGHT from TAGS where TAG = :tag")
+                    .addQuery("delete", "delete from TAGS where TAG = :tag")
+                    .addQuery("selectLimitedPopular", "select * from (select * from TAGS order by lower(TAG)) where rownum <= :limit");
     }
 
     private class TagRowMapper implements RowMapper<Tag> {
@@ -46,10 +54,21 @@ public class TagDao {
         }
     }
 
+    /**
+     * Load the list with all tags registered in the system.
+     *
+     * @param tags the list of tags
+     */
     public void fetchAllTags(List<Tag> tags) {
         tagQueryTemplate.select(tags, "selectAll", new QueryExecutionContext().buildParams().toContext());
     }
 
+    /**
+     * Load the list of the most popular tags.
+     *
+     * @param tags the list of the most popular tags to be loaded.
+     * @param limit the number of tags to load.
+     */
     public void fetchPopularTags(List<Tag> tags, int limit) {
         tagQueryTemplate.select(tags, "selectLimitedPopular",
                 new QueryExecutionContext().buildParams()
@@ -57,6 +76,11 @@ public class TagDao {
                         .toContext());
     }
 
+    /**
+     * Creates a new tag entry if not existing yet in database, or add 1 to the given tag weight.
+     *
+     * @param tag the tag being updated
+     */
     public void createOrUpdateTag(String tag) {
         Long weight = tagQueryTemplate.selectLong("findTagWeight", new QueryExecutionContext().
                 buildParams().
@@ -74,6 +98,32 @@ public class TagDao {
                     buildParams().
                     string("tag", tag).
                     bigint("weight", weight + 1).
+                    toContext());
+        }
+    }
+
+    /**
+     * Deletes the given tag if its weight is 1 or decreases its weight by one.
+     *
+     * @param tag the tag that is being updated
+     */
+    public void deleteOrUpdateTag(String tag) {
+        Long weight = tagQueryTemplate.selectLong("findTagWeight", new QueryExecutionContext().
+                buildParams().
+                string("tag", tag).
+                toContext());
+        if (weight == null) {
+            logger.error("Tag weight is null for tag: {}", tag);
+        } else if (weight == 1) {
+            tagQueryTemplate.delete("delete", new QueryExecutionContext().
+                    buildParams().
+                    string("tag", tag).
+                    toContext());
+        } else {
+            tagQueryTemplate.update("updateWeight", new QueryExecutionContext().
+                    buildParams().
+                    string("tag", tag).
+                    bigint("weight", weight - 1).
                     toContext());
         }
     }

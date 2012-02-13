@@ -639,23 +639,34 @@
     /* CAI */
     Chosen.prototype.add_results_clear = function() {
       return this.search_results.find(".add-results").remove();
-    };   
+    };
+
+      function add_new_option(terms, select) {
+          console.log("Click to add item:", terms);
+
+          var option = document.createElement("option");
+          option.value = terms;
+          option.innerText = terms;
+          option.selected = true;
+
+          select.form_field_jq.append(option);
+          select.results_build();
+      }
+
     Chosen.prototype.add_new_option = function(terms) {
       var add_results_html;
       add_results_html = $('<li class="add-results active-result">' + this.extends_message + ' "<span></span>"</li>');
       add_results_html.find("span").first().html(terms);
       var t = this;
 
+    /*  add_results_html.keydown(function(event) {
+          if (event.keycode == 13) {
+            add_new_option(terms, t);
+            event.preventDefault();
+          }
+      });*/
       add_results_html.click(function() {
-          console.log("Click to add item:", terms);
-
-          var option = document.createElement("option");
-          option.value = null;
-          option.innerText = terms;
-          option.selected = true;
-
-          t.form_field_jq.append(option);
-          t.results_build();
+          add_new_option(terms, t)
       });
       return this.search_results.append(add_results_html);
     };

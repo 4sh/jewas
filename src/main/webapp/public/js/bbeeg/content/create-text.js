@@ -43,13 +43,13 @@ function TextContentCreator(saveButton, initialContent) {
 
     function saveContent(form) {
         var contentDetail = {
-            header: {
-                title: $("#title").val(),
-                description: $("#description").val(),
-                domains: getDomains($("#domains").val()),
-                tags: $("#tags").val()
+            header:{
+                title:$("#title").val(),
+                description:$("#description").val(),
+                domains:getDomains($("#domains").val()),
+                tags:$("#tags").val()
             }
-        }
+        };
 
         var dataToSend = {
             type : 'TEXT',

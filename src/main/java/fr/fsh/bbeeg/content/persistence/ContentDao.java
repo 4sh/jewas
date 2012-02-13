@@ -337,6 +337,7 @@ public class ContentDao {
         /* Update the content in the DB */
         List<String> tags = contentDetail.header().tags();
         Long contentId = contentDetail.header().id();
+        updateContentTags(contentDetail);
         contentHeaderQueryTemplate.update("updateContent",
                 new QueryExecutionContext().buildParams()
                         .string("title", contentDetail.header().title())
@@ -347,21 +348,53 @@ public class ContentDao {
                         .bigint("version", contentDetail.header().version())
                         .toContext());
 
-        List<Long> newDomainIds = new ArrayList<Long>();
+        updateContentDomains(contentDetail);
 
-        // Check tags
-        if (tags != null) {
-            for (String tag : tags) {
-                tagDao.createOrUpdateTag(tag);
+        // Insert into ES the content.
+        ContentDetail cd = getContentDetail(contentId);
+        if (cd != null) {
+            try {
+                esContentDao.insertContentInElasticSearch(cd);
+            } catch (IOException e) {
+                logger.error("Failed to insert content in elastic search for content: {}", contentId, e);
             }
         }
+    }
+
+    private void updateContentTags(ContentDetail contentDetail) {
+        List<String> tags = contentDetail.header().tags();
+        ContentDetail fromDB = getContentDetail(contentDetail.header().id());
+
+        // Check tags
+
+        List<String> persistedTags = fromDB.header().tags();
+
+        if (tags != null) {
+            for (String tag : tags) {
+                if (!persistedTags.contains(tag)) {
+                    tagDao.createOrUpdateTag(tag);
+                }
+            }
+        }
+        for (String tag : persistedTags) {
+            if (tags == null || !tags.contains(tag)) {
+                tagDao.deleteOrUpdateTag(tag);
+            }
+        }
+    }
+
+    /**
+     * Updates the domains linked to the updated content.
+     *
+     * @param contentDetail the content being updated
+     */
+    private void updateContentDomains(ContentDetail contentDetail) {
+        Long contentId = contentDetail.header().id();
         // Get current domain ids that are linked with the content.
         List<Long> domainsIds = getDomainIds(contentId);
 
         // Check added domains
         for (Domain domainToCheck : contentDetail.header().domains()) {
-            newDomainIds.add(domainToCheck.id());
-
             if (!domainsIds.contains(domainToCheck.id())) {
                 // Add new link with domains
                 contentHeaderQueryTemplate.insert("addLinkWithDomain",
@@ -390,16 +423,6 @@ public class ContentDao {
                                 .bigint("contentId", contentId)
                                 .bigint("domainId", domainIdToCheckForRemove)
                                 .toContext());
-            }
-        }
-
-        // Insert into ES the content.
-        ContentDetail cd = getContentDetail(contentId);
-        if (cd != null) {
-            try {
-                esContentDao.insertContentInElasticSearch(cd);
-            } catch (IOException e) {
-                logger.error("Failed to insert content in elastic search for content: %s", contentId, e);
             }
         }
     }
@@ -711,13 +734,14 @@ public class ContentDao {
 
     /**
      * Update the content status.
+     *
      * @param contentId the content to update.
      * @param newStatus the new status to apply to the content.
      */
     public void updateContentStatus(Long contentId, ContentStatus newStatus) {
         Date currentDate = new DateMidnight().toDate();
 
-        logger.info("Update status of content: %s ", contentId + " to: "  + newStatus);
+        logger.info("Update status of content: {} to {}", contentId, newStatus);
         contentHeaderQueryTemplate.update("updateStatus",
                 new QueryExecutionContext()
                         .buildParams()
