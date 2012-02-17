@@ -62,6 +62,6 @@
         </div>
 
         <#include "common/create-content.ftl">
-        <@createContent url="/content" type="VIDEO" extensions="mp4" extensionsMsgError="Seuls le format MP4 est supporté" createPrevisualizationObject="createVideoPrevisualizationObject"/>
+        <@createContent url="/content" type="VIDEO" extensions="3gp|3g2|asf|asx|avi|flv|mov|mp4|mpeg|ogv|rm|vob|wmv|" extensionsMsgError="Seuls les formats 3gp|3g2|asf|asx|avi|flv|mov|mp4|mpeg|ogv|rm|vob|wmv| sont supportés" createPrevisualizationObject="createVideoPrevisualizationObject"/>
     </div>
 </@mainTemplate>

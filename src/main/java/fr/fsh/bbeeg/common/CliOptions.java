@@ -17,6 +17,12 @@ public class CliOptions {
     @Parameter(names = "-visioEegInternalUrl", description = "Internal URL of the EEG visualizer", required = true)
     private String visioEegInternalUrl;
 
+    @Parameter(names = "-videoEncodingInput", description = "Path to the video encoding input directory", required = true)
+    private String videoEncodingInput;
+    
+    @Parameter(names = "-videoEncodingOutput", description = "Path to the video encoding output directory", required = true)
+    private String videoEncodingOutput;
+    
     @Parameter(names = "-contentFileRepository", description = "Repository of content files", required = true)
     private String contentFileRepository;
 
@@ -61,6 +67,14 @@ public class CliOptions {
 
     public String contentFileRepository() {
         return this.contentFileRepository;
+    }
+
+    public String videoEncodingInput() {
+        return this.videoEncodingInput;
+    }
+
+    public String videoEncodingOutput() {
+        return this.videoEncodingOutput;
     }
 
     public String tmpContentFileRepository() {

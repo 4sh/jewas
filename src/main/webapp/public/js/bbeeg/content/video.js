@@ -2,6 +2,10 @@
  * Event handler called by video tags (onError event handler).
  */
 function failed(e) {
+
+    // Launch event
+    var encodingErrorEvent = $.Event('videoEncodingError');
+    $(document).trigger(encodingErrorEvent);
     // video playback failed - show a message saying why
     var parentNode = e.target.parentNode;
     parentNode.removeChild(e.target);

@@ -2,6 +2,12 @@ function ContentCreator(type, extensions, extensionsMsgError, previsualizationCo
     var uploadedFiles = [];
     var currentUploadedFileId = "";
     var contentCreator = this;
+    /**
+     * Whether the uploaded file will need to be post-processed server side.
+     * (Only used for video files)
+     */
+    var postProcess = false;
+
 
     /** Private methods **/
     function getDomains(domainIds) {
@@ -65,8 +71,11 @@ function ContentCreator(type, extensions, extensionsMsgError, previsualizationCo
         $.ajaxPut(form.action,
             dataToSend,
             function(data){
-
-                $.post("/content/" + data.id + "/content/" + currentUploadedFileId,
+                var postUrl = "/content/" + data.id + "/content/" + currentUploadedFileId;
+                if (postProcess) {
+                    postUrl += "?postProcess=1";
+                }
+                $.post(postUrl,
                     null,
                     function () {
                         $("#saveSuccessDialog").dialog('open');
@@ -97,6 +106,15 @@ function ContentCreator(type, extensions, extensionsMsgError, previsualizationCo
         }
     }
 
+    /**
+     * Setter on post process property.
+     *
+     * @param _postProcess the boolean value of process
+     */
+    this.setPostProcess = function (_postProcess) {
+        postProcess = _postProcess;
+        return this;
+    }
 
     this.removeUploadedFiles = function () {
         $.ajaxDelete(
@@ -171,6 +189,8 @@ function ContentCreator(type, extensions, extensionsMsgError, previsualizationCo
                     uploadStatus.text(extensionsMsgError);
                     return false;
                 }
+                // on file upload, initialize post process variable.
+                postProcess = false;
                 uploadFileInfo.val(file);
                 uploader = this;
 

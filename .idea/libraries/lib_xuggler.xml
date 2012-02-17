@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="lib-xuggler">
+    <CLASSES>
+      <root url="file:///usr/local/lib" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

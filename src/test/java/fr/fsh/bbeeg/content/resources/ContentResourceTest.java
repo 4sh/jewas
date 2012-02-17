@@ -1,15 +1,22 @@
 package fr.fsh.bbeeg.content.resources;
 
+import org.junit.Test;
+
 /**
  * @author carmarolli
  */
 public class ContentResourceTest {
 
-    /*
-    To test:
+    private ContentResource contentResource;
 
 
-     */
+    @Test
+    public void updateContentOfContentTest() {
 
+
+
+
+
+    }
 
 }

@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/../VisioEEG/VisioEEG.iml" filepath="$PROJECT_DIR$/../VisioEEG/VisioEEG.iml" />
       <module fileurl="file://$PROJECT_DIR$/bb-eeg.iml" filepath="$PROJECT_DIR$/bb-eeg.iml" />
       <module fileurl="file://$PROJECT_DIR$/../jewas/jewas.iml" filepath="$PROJECT_DIR$/../jewas/jewas.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../videoConverter/videoConverter.iml" filepath="$PROJECT_DIR$/../videoConverter/videoConverter.iml" />
     </modules>
   </component>
 </project>

@@ -14,7 +14,7 @@
 <script type="application/javascript">
     $(function() {
 
-    var contentCreator = new ContentCreator("${type}",
+        var contentCreator = new ContentCreator("${type}",
                 "${extensions}",
                 "${extensionsMsgError}",
                 "previsualizationContainer",
@@ -25,6 +25,11 @@
                 <#else>
                     false
                 </#if>);
+
+
+        $(document).bind('videoEncodingError', function() {
+            contentCreator.setPostProcess(true);
+        });
 
          /* Mandatory fields handler registration */
         $("#title, #description").change(function() {

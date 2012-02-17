@@ -1,5 +1,6 @@
 package fr.fsh.bbeeg.content.resources;
 
+import fr.fsh.bbeeg.common.config.BBEEGConfiguration;
 import fr.fsh.bbeeg.common.persistence.TempFiles;
 import fr.fsh.bbeeg.common.resources.Count;
 import fr.fsh.bbeeg.common.resources.LimitedOrderedQueryObject;
@@ -140,18 +141,21 @@ public class ContentResource {
         return TempFiles.store(fileUpload, extension);
     }
 
-    public void updateContentOfContent(Long contentId, String fileId) {
+    public void updateContentOfContent(Long contentId, String fileId, Boolean postProcess) {
 
         Path targetPath;
         // First case, a file has been uploaded and is stored in the tmp folder for the moment.
         if (fileId != null && !fileId.isEmpty()) {
             Path sourcePath = TempFiles.getPath(fileId);
-            String[] fileNameParts = fileId.split("\\.");
-            String extension = fileNameParts[fileNameParts.length - 1];
-            String url = contentPath + contentId + "." + extension;
+            String url = contentPath + contentId + ".mp4";
             targetPath = Paths.get(url);
             try {
                 Files.move(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+                if (postProcess) {
+                    Files.copy(targetPath,
+                            Paths.get(BBEEGConfiguration.INSTANCE.cliOptions().videoEncodingInput() + "/" + contentId + ".mp4"),
+                            StandardCopyOption.REPLACE_EXISTING);
+                }
                 contentDao.updateContentOfContent(contentId, targetPath.toString());
             } catch (IOException e) {
                 logger.error("Failed to move content from : %s", sourcePath + " to: " + targetPath, e);
@@ -163,12 +167,15 @@ public class ContentResource {
             String fileUrl = contentDao.getContentUrl(contentId);
             if (fileUrl != null && !fileUrl.isEmpty()) {
                 Path sourcePath = Paths.get(fileUrl);
-                String[] fileNameParts = fileUrl.split("\\.");
-                String extension = fileNameParts[fileNameParts.length - 1];
-                String url = contentPath + contentId + "." + extension;
+                String url = contentPath + contentId + ".mp4";
                 targetPath = Paths.get(url);
                 try {
                     Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+                    if (postProcess) {
+                        Files.copy(sourcePath,
+                                Paths.get(BBEEGConfiguration.INSTANCE.cliOptions().videoEncodingInput() + "/" + fileId),
+                                StandardCopyOption.REPLACE_EXISTING);
+                    }
                     contentDao.updateContentOfContent(contentId, targetPath.toString());
                 } catch (IOException e) {
                     logger.error("Failed to move content from : %s", sourcePath + " to: " + targetPath, e);
@@ -180,17 +187,26 @@ public class ContentResource {
     public Path getContentOfContent(Long contentId) {
         String url = contentDao.getContentUrl(contentId);
 
-        if (url == null || "".equals(url)) {
+        if (url == null || url.isEmpty()) {
             return null;
         }
-
+        String filename = contentId + ".mp4";
+        Path sourcePath = Paths.get(BBEEGConfiguration.INSTANCE.cliOptions().videoEncodingOutput() + "/" + filename);
+        Path targetPath = Paths.get(url);
+        if (Files.exists(sourcePath)) {
+            try {
+                Files.move(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                logger.warn("Cannot move encoded video {} to content {}", sourcePath.toString(), contentId);
+            }
+        }
         return Paths.get(url);
     }
 
     public String getContentOfContentExtension(Long contentId) {
         String url = contentDao.getContentUrl(contentId);
 
-        if (url == null || "".equals(url)) {
+        if (url == null || url.isEmpty()) {
             return null;
         }
 

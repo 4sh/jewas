@@ -47,11 +47,8 @@ public class CreateContentOfTextRoute extends AbstractRoute {
                 super.onReady(request, bodyParameters);
 
                 TextQueryObject tqo = toContentObject(bodyParameters, TextQueryObject.class);
-
                 String fileName = TempFiles.store(tqo.text());
-
-                contentResource.updateContentOfContent(qo.id(), fileName);
-
+                contentResource.updateContentOfContent(qo.id(), fileName, false);
                 request.respondJson().object(new SuccessObject().success(true));
             }
         };

@@ -54,9 +54,9 @@ public class CreateContentOfContentRoute extends AbstractRoute {
             @Override
             public void onReady(HttpRequest request, BodyParameters bodyParameters) {
                 super.onReady(request, bodyParameters);
-
-                contentResource.updateContentOfContent(qo.contentId(), qo.fileId());
-
+                String postProcessParam = request.parameters().val("postProcess");
+                Boolean postProcess = (postProcessParam == null || postProcessParam.isEmpty() || 0 != Integer.parseInt(postProcessParam));
+                contentResource.updateContentOfContent(qo.contentId(), qo.fileId(), postProcess);
                 request.respondJson().object(new SuccessObject().success(true));
             }
         };
