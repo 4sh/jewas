@@ -1,0 +1,18 @@
+<dataset>
+    <CONTENT ID='0'
+             TITLE='Content title'
+             CREATION_DATE=''
+             LAST_MODIFICATION_DATE=''
+             PUBLICATION_START_DATE=''
+             PUBLICATION_END_DATE=''
+             STATUS='0'
+             DESCRIPTION='description content'
+             CONTENT_TYPE='0'
+             AUTHOR_REF=''
+             FILE_URI=''
+             CONTENT_ANCESTOR_REF='1000'
+             TAGS=''
+             POPULARITY=''
+             VERSION='0'
+            />
+</dataset>

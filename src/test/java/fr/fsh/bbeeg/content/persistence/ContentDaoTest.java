@@ -1,5 +1,6 @@
 package fr.fsh.bbeeg.content.persistence;
 
+import fr.fsh.bbeeg.common.AbstractBBEEGTest;
 import fr.fsh.bbeeg.content.persistence.mocks.DomainDaoMock;
 import fr.fsh.bbeeg.content.persistence.mocks.ElasticSearchDaoMock;
 import fr.fsh.bbeeg.content.persistence.mocks.TagDaoMock;
@@ -9,14 +10,10 @@ import fr.fsh.bbeeg.content.pojos.ContentHeader;
 import fr.fsh.bbeeg.content.pojos.ContentStatus;
 import fr.fsh.bbeeg.content.pojos.ContentType;
 import fr.fsh.bbeeg.user.pojos.User;
-import org.apache.commons.dbcp.BasicDataSource;
-import org.dbunit.IDatabaseTester;
-import org.dbunit.JdbcDatabaseTester;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ITable;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 import org.joda.time.DateMidnight;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Date;
@@ -25,55 +22,15 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-public class ContentDaoTest {
+public class ContentDaoTest extends AbstractBBEEGTest {
 
-    private static final String JDBC_URL = "jdbc:h2:mem:test";
-    private static final String DRIVER_CLASS = "org.h2.Driver";
-    private IDatabaseTester databaseTester;
-    private BasicDataSource dataSource;
     private ContentDao contentDao;
     private String expectedDataSetsPath = "/expectedDataSet/";
-
-
-    @Before
-    public void setUp() throws Exception
-    {
-        databaseTester = new JdbcDatabaseTester(DRIVER_CLASS,
-            JDBC_URL, "sa", "sa");
-
-        // Initialize dataSource
-        dataSource = new BasicDataSource();
-        dataSource.setUrl(JDBC_URL);
-        dataSource.setDriverClassName(DRIVER_CLASS);
-        dataSource.setUsername("sa");
-        dataSource.setPassword("sa");
-
-        // Call DB maintain here to create in memory database schema
-        //URL configurationUrl = new File("dbmaintain.properties").toURI().toURL();
-        //MainFactory mainFactory = new MainFactory(configurationUrl);
-        //DbMaintainer dbMaintainer = createDbMaintainer();
-        //dbMaintainer.updateDatabase(false);
-        DatabaseInitializator.initDB(JDBC_URL);
-
-        // initialize your dataset here
-        //IDataSet dataSet = null;
-        //new FlatXmlDataSetBuilder().build(new FileInputStream("dataset.dtd"));
-
-        //databaseTester.setDataSet( dataSet );
-	    // will call default setUpOperation
-        //databaseTester.onSetup();
-    }
-
-    protected void tearDown() throws Exception
-    {
-	// will call default tearDownOperation
-        databaseTester.onTearDown();
-    }
 
     @Test
     public void createContentTest() throws Exception {
         // Initialize ContentDao
-        contentDao = new ContentDao(dataSource, null, new UserDaoMock(), new DomainDaoMock(), new ElasticSearchDaoMock(), new TagDaoMock());
+        contentDao = new ContentDao(dataSource(), null, new UserDaoMock(), new DomainDaoMock(), new ElasticSearchDaoMock(), new TagDaoMock());
 
         // Setup
         Date today = new DateMidnight().toDate();
@@ -115,7 +72,7 @@ public class ContentDaoTest {
         contentDao.createContent(newVersion);
 
         // Fetch database data after executing your code
-        IDataSet databaseDataSet = databaseTester.getConnection().createDataSet();
+        IDataSet databaseDataSet = databaseTester().getConnection().createDataSet();
         ITable actualTable = databaseDataSet.getTable("CONTENT");
 
         // Load expected data from an XML dataset
@@ -142,12 +99,5 @@ public class ContentDaoTest {
         assertThat(expectedTable.getValue(0, "CONTENT_ANCESTOR_REF").toString(), is(equalTo(actualTable.getValue(0, "CONTENT_ANCESTOR_REF").toString())));
         assertThat(expectedTable.getValue(1, "CONTENT_ANCESTOR_REF").toString(), is(equalTo(actualTable.getValue(1, "CONTENT_ANCESTOR_REF").toString())));
 
-
-
-// status is DRAFT
-// titlte
-        //description
-        // creation Date
-        //
     }
 }
