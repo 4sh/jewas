@@ -28,6 +28,8 @@
     <![endif]-->
 
     <meta charset="UTF-8">
+    <!-- Enable Chrome Frame -->
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
 
     <link rel="shortcut icon" type="image/x-icon" href="/public/images/bbeeg/favicon.ico"/>
 
