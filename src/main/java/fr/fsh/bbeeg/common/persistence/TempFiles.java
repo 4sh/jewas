@@ -2,6 +2,8 @@ package fr.fsh.bbeeg.common.persistence;
 
 import fr.fsh.bbeeg.common.config.BBEEGConfiguration;
 import jewas.http.data.FileUpload;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -12,6 +14,12 @@ import java.nio.file.Paths;
  * @author driccio
  */
 public class TempFiles {
+
+    /**
+     * Class logger.
+     */
+    private static final Logger logger = LoggerFactory.getLogger(TempFiles.class);
+
     private static final String TMP_FILE_PREFIX = "tmp_";
 
     private static Integer generateId() {
@@ -42,7 +50,7 @@ public class TempFiles {
         try {
             Files.write(path, text.getBytes());
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Cannot write temp file {}", url);
         }
 
         return fileName;
