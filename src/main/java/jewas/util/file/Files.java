@@ -178,7 +178,7 @@ public class Files {
             throw new IllegalArgumentException("Cannot get extension from null filename.");
         }
         String[] fileNameParts = filename.split("\\.");
-        if (fileNameParts == null || fileNameParts.length == 0) {
+        if (fileNameParts == null || fileNameParts.length == 0 || fileNameParts.length == 1) {
             return "";
         }
         return fileNameParts[fileNameParts.length - 1];
