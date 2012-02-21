@@ -166,4 +166,21 @@ public class Files {
             }
         }
     }
+
+    /**
+     * Returns the extension of the given file name if it has one, return the empty string otherwise.
+     *
+     * @param filename the string from which to extract the file extension.
+     * @return a non null string containing the file extension if found, empty string otherwise.
+     */
+    public static String getFileExtension(String filename) {
+        if (filename == null) {
+            throw new IllegalArgumentException("Cannot get extension from null filename.");
+        }
+        String[] fileNameParts = filename.split("\\.");
+        if (fileNameParts == null || fileNameParts.length == 0) {
+            return "";
+        }
+        return fileNameParts[fileNameParts.length - 1];
+    }
 }
