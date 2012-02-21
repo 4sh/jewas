@@ -141,49 +141,57 @@ public class ContentResource {
         return TempFiles.store(fileUpload, extension);
     }
 
-    public void updateContentOfContent(Long contentId, String fileId, Boolean postProcess) {
+    /**
+     * Updates the file content related to the content identified by the given content id.
+     *
+     * @param contentId   the unique database id of the content.
+     * @param fileName    the file related to the current content.
+     * @param postProcess whether the file content will need to be need post processed once stored on the persistence context.
+     */
+    public void updateContentOfContent(Long contentId, String fileName, Boolean postProcess) {
 
-        Path targetPath;
-        // First case, a file has been uploaded and is stored in the tmp folder for the moment.
-        if (fileId != null && !fileId.isEmpty()) {
-            Path sourcePath = TempFiles.getPath(fileId);
-            String url = contentPath + contentId + ".mp4";
-            targetPath = Paths.get(url);
-            try {
-                Files.move(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
-                if (postProcess) {
-                    Files.copy(targetPath,
-                            Paths.get(BBEEGConfiguration.INSTANCE.cliOptions().videoEncodingInput() + "/" + contentId + ".mp4"),
-                            StandardCopyOption.REPLACE_EXISTING);
-                }
-                contentDao.updateContentOfContent(contentId, targetPath.toString());
-            } catch (IOException e) {
-                logger.error("Failed to move content from : %s", sourcePath + " to: " + targetPath, e);
+        Path sourcePath = TempFiles.getPath(fileName);
+        String extension = jewas.util.file.Files.getFileExtension(fileName);
+        String url = contentPath + contentId + "." + extension;
+        Path targetPath = Paths.get(url);
+
+        try {
+            Files.move(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+            if (postProcess) {
+                Files.copy(sourcePath,
+                        Paths.get(BBEEGConfiguration.INSTANCE.cliOptions().videoEncodingInput() + "/" + fileName),
+                        StandardCopyOption.REPLACE_EXISTING);
             }
-        } else {
-            // In that case, no file uploaded but this is edition and so, a file has already been written for this content, just copy it
-            // In fact, if no content duplication is needed, we stupidly overwrite the already present file by itself.
-            // In duplication mode, the content id has changed and so, the file is really duplicated.
-            String fileUrl = contentDao.getContentUrl(contentId);
-            if (fileUrl != null && !fileUrl.isEmpty()) {
-                Path sourcePath = Paths.get(fileUrl);
-                String url = contentPath + contentId + ".mp4";
-                targetPath = Paths.get(url);
-                try {
-                    Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
-                    if (postProcess) {
-                        Files.copy(sourcePath,
-                                Paths.get(BBEEGConfiguration.INSTANCE.cliOptions().videoEncodingInput() + "/" + fileId),
-                                StandardCopyOption.REPLACE_EXISTING);
-                    }
-                    contentDao.updateContentOfContent(contentId, targetPath.toString());
-                } catch (IOException e) {
-                    logger.error("Failed to move content from : %s", sourcePath + " to: " + targetPath, e);
-                }
-            }
+            contentDao.updateContentOfContent(contentId, targetPath.toString());
+        } catch (IOException e) {
+            logger.error("Failed to move content from : {} to: {}", sourcePath, targetPath);
+            logger.error(e.getMessage(), e);
         }
     }
 
+    /**
+     * In case of content duplication (after validated content modification),
+     * duplicates the ancestor content file and link it to the new content represented by the given id.
+     *
+     * @param duplicatedContentId the new content id
+     */
+    public void copyContentOfContent(Long duplicatedContentId) {
+
+        String fileName = contentDao.getContentUrl(duplicatedContentId);
+        Path sourcePath = Paths.get(fileName);
+
+        String extension = jewas.util.file.Files.getFileExtension(fileName);
+        String url = contentPath + duplicatedContentId + "." + extension;
+        Path targetPath = Paths.get(url);
+        try {
+            Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+            contentDao.updateContentOfContent(duplicatedContentId, targetPath.toString());
+        } catch (IOException e) {
+            logger.error("Failed to copy content from : {} to: {}", sourcePath, targetPath);
+            logger.error(e.getMessage(), e);
+        }
+    }
+    
     public Path getContentOfContent(Long contentId) {
         String url = contentDao.getContentUrl(contentId);
 
@@ -298,5 +306,5 @@ public class ContentResource {
     private void updateLastConsultationDate(Long contentId) {
         contentDao.updateLastConsultationDate(contentId, new DateTime().toDate());
     }
-
+   
 }

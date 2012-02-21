@@ -56,7 +56,11 @@ public class CreateContentOfContentRoute extends AbstractRoute {
                 super.onReady(request, bodyParameters);
                 String postProcessParam = request.parameters().val("postProcess");
                 Boolean postProcess = (postProcessParam == null || postProcessParam.isEmpty() || 0 != Integer.parseInt(postProcessParam));
-                contentResource.updateContentOfContent(qo.contentId(), qo.fileId(), postProcess);
+                if (qo.fileId() == null || qo.fileId().isEmpty()) {
+                    contentResource.copyContentOfContent(qo.contentId());
+                } else {
+                    contentResource.updateContentOfContent(qo.contentId(), qo.fileId(), postProcess);
+                }
                 request.respondJson().object(new SuccessObject().success(true));
             }
         };
