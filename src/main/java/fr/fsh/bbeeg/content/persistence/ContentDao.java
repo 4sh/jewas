@@ -79,7 +79,7 @@ public class ContentDao {
                                         "(select * from CONTENT where STATUS = :status " +
                                         "and (PUBLICATION_START_DATE <= :today or PUBLICATION_START_DATE is null) " +
                                         "and (:today <= PUBLICATION_END_DATE or PUBLICATION_END_DATE is null) " +
-                                        "order by ID desc) " +
+                                        "order by LAST_MODIFICATION_DATE desc) " +
                                         "where ROWNUM <= :limit")
                         .addQuery("selectLimitedPopular",
                                 "select * from " +
@@ -166,18 +166,6 @@ public class ContentDao {
         return contentDetail;
     }
 
-    public void fetchRecentContents(List<ContentHeader> contentHeaders, int limit) {
-        Date today = new DateMidnight().toDate();
-        contentHeaderQueryTemplate.select(contentHeaders, "selectLimitedRecent",
-                new QueryExecutionContext()
-                        .buildParams()
-                        .integer("status", ContentStatus.VALIDATED.ordinal())
-                        .date("today", today)
-                        .integer("limit", limit)
-                        .toContext()
-        );
-    }
-
     public int getHigherVersionNumber(Long ancestorId) {
         return contentHeaderQueryTemplate.selectLong("selectHigherVersionNumber",
                 new QueryExecutionContext().buildParams()
@@ -198,6 +186,18 @@ public class ContentDao {
                  .array("statuses", ContentStatus.VALIDATED.ordinal())
                  .toContext());
      }
+
+    public void fetchRecentContents(List<ContentHeader> contentHeaders, int limit) {
+        Date today = new DateMidnight().toDate();
+        contentHeaderQueryTemplate.select(contentHeaders, "selectLimitedRecent",
+                new QueryExecutionContext()
+                        .buildParams()
+                        .integer("status", ContentStatus.VALIDATED.ordinal())
+                        .date("today", today)
+                        .integer("limit", limit)
+                        .toContext()
+        );
+    }
 
     /**
      * Fetches the most popular contents which have been validated.
@@ -837,7 +837,7 @@ public class ContentDao {
      * @param commonAncestorId the common reference to the base version of the content to archive
      */
     public void archivePreviousVersion(Long commonAncestorId) {
-        logger.info("Archive previous status for content reference: %s", commonAncestorId.toString());
+        logger.info("Archive previous status for content reference: {}", commonAncestorId.toString());
         contentHeaderQueryTemplate.update("archiveLastValidatedVersion",
                 new QueryExecutionContext().buildParams()
                         .bigint("ancestorId", commonAncestorId)

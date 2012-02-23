@@ -30,6 +30,11 @@ public class AbstractBBEEGTest {
     private static BasicDataSource dataSource;
 
     /**
+     * The path to init data files.
+     */
+    private static String initDataSetFilesPath = "/initDataSet/";
+    
+    /**
      * Method executed before each test of class.
      *
      * @throws Exception
@@ -77,8 +82,12 @@ public class AbstractBBEEGTest {
         return this.databaseTester;
     }
 
-    protected BasicDataSource dataSource(){
+    public BasicDataSource dataSource(){
         return this.dataSource;
     }
 
+    public String initDataSetFilesPath() {
+        return this.initDataSetFilesPath;
+    }
+    
 }
