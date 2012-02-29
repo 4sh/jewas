@@ -25,10 +25,10 @@
             />
     <CONTENT_DOMAIN
         CONTENT_REF='1'
-        DOMAIN_REF='0'
+        DOMAIN_REF='1'
     />
     <CONTENT_DOMAIN
             CONTENT_REF='1'
-            DOMAIN_REF='1'
+            DOMAIN_REF='2'
     />
 </dataset>

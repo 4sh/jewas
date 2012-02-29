@@ -1,5 +1,3 @@
-import sun.security.krb5.internal.crypto.Des
-
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'maven'
