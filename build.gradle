@@ -42,28 +42,26 @@ def ENV_PROPERTIES = [
    nightly: [
            targetDir: ENV_DEMO_DEPLOY_ROOT_PATH+"/nightly",
            dbmaintainDir: ENV_DEMO_DEPLOY_ROOT_PATH + "/qa/dbmaintain/",
+           databaseSchema: "bbeeg-nightly",
            bbeegPort: 18086,
            visioEegRootUrl: "http://nightly.visio.bbeeg.4sh.fr",
            visioEegInternalUrl: "http://127.0.0.1:18087",
            cachedStaticResourcesRootDirectory: ENV_DEMO_DEPLOY_ROOT_PATH+"/nightly/bbeeg_cachedStaticResources",
            contentFileRepository: ENV_DEMO_DEPLOY_ROOT_PATH+"/nightly"+"/contents/",
            tmpContentFileRepository: ENV_DEMO_DEPLOY_ROOT_PATH+"/nightly"+"/tmp/",
-           h2ServerPort: 18082,
-           h2DbPath: ENV_DEMO_DEPLOY_ROOT_PATH+"/nightly/bbeegDB",
            elasticSearchAdress: "127.0.0.1",
            elasticSearchPort: 19200,
            specificJavaOpts: "-Xmx256m"
    ], qa: [
            targetDir: ENV_DEMO_DEPLOY_ROOT_PATH + "/qa",
            dbmaintainDir: ENV_DEMO_DEPLOY_ROOT_PATH + "/qa/dbmaintain/",
+           databaseSchema: "bbeeg-qa",
            bbeegPort: 28086,
            visioEegRootUrl: "http://qa.visio.bbeeg.4sh.fr",
            visioEegInternalUrl: "http://127.0.0.1:28087",
            cachedStaticResourcesRootDirectory: ENV_DEMO_DEPLOY_ROOT_PATH+"/qa/bbeeg_cachedStaticResources",
            contentFileRepository: ENV_DEMO_DEPLOY_ROOT_PATH+"/qa"+"/contents/",
            tmpContentFileRepository: ENV_DEMO_DEPLOY_ROOT_PATH+"/qa"+"/tmp/",
-           h2ServerPort: 28082,
-           h2DbPath: ENV_DEMO_DEPLOY_ROOT_PATH+"/qa/bbeegDB",
            elasticSearchAdress: "127.0.0.1",
            elasticSearchPort: 29200,
            specificJavaOpts: "-Xmx512m"
@@ -127,7 +125,6 @@ dependencies {
 
     testCompile(
             [group: 'com.h2database', name: 'h2', version: '1.3.158'],
-            [group: 'org.dbmaintain', name: 'dbmaintain', version: '2.4'],
             [group: 'junit', name: 'junit', version: '4.8.2', transitive: true],
             [group: 'org.dbunit', name: 'dbunit', version: '2.4.8']
     )
@@ -254,14 +251,13 @@ task startBBEEG(dependsOn: [initSsh, checkPropsForDeployment, startElasticSearch
     def visioEegInternalUrl = targetEnv.visioEegInternalUrl
     def contentFileRepository = targetEnv.contentFileRepository
     def tmpContentFileRepository = targetEnv.tmpContentFileRepository
-    def h2ServerPort = targetEnv.h2ServerPort
-    def h2DbPath = targetEnv.h2DbPath
     def elasticSearchPort = targetEnv.elasticSearchPort
     def elasticSearchAdress = targetEnv.elasticSearchAdress
     def cachedStaticResourcesRootDirectory = targetEnv.cachedStaticResourcesRootDirectory
     def specificJavaOpts = targetEnv.specificJavaOpts
     def java7Home = "/usr/lib/jvm/jdk1.7.0_01/"
     def javaOpts = "-Xms256m -Dfile.encoding=UTF-8 ${specificJavaOpts} "
+    def databaseSchema = targetEnv.databaseSchema;
 
     if(System.properties[DEBUG_PORT_SYS_PROPERTY] != null
         && !"".equals(System.properties[DEBUG_PORT_SYS_PROPERTY])){
@@ -278,8 +274,8 @@ task startBBEEG(dependsOn: [initSsh, checkPropsForDeployment, startElasticSearch
     ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 22,
 		command: """${java7Home}/jre/bin/java ${javaOpts} -jar "${deployDirectory}/bbeeg.jar" \
 		    -httpPort ${executionPort} -visioRootUrl ${visioRootUrl} -visioEegInternalUrl ${visioEegInternalUrl} \
+		    -databaseSchema ${databaseSchema}
 		    -contentFileRepository ${contentFileRepository} -tmpContentFileRepository ${tmpContentFileRepository} -cachedStaticResourcesRootDirectory ${cachedStaticResourcesRootDirectory} \
-		    -h2ServerPort ${h2ServerPort} -h2DbPath ${h2DbPath} \
 		    -elasticSearchAdress ${elasticSearchAdress} -elasticSearchPort ${elasticSearchPort} \
 		    > "${deployDirectory}/bbeeg.log" 2> "${deployDirectory}/bbeeg.err.log" \
 		    & echo \$! > "${deployDirectory}/bbeeg.pid" """,
