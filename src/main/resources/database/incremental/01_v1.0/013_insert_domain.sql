@@ -1,0 +1,17 @@
+INSERT INTO DOMAIN (I18N_KEY) VALUES ('domain.anatomie.cerebrale');
+INSERT INTO DOMAIN (I18N_KEY) VALUES ('domain.physiologie.cerebrale');
+INSERT INTO DOMAIN (I18N_KEY) VALUES ('domain.construction.cerveau');
+INSERT INTO DOMAIN (I18N_KEY) VALUES ('domain.adaptation.vie.extra.uterine');
+INSERT INTO DOMAIN (I18N_KEY) VALUES ('domain.examen.neurologique.nouveau.ne');
+INSERT INTO DOMAIN (I18N_KEY) VALUES ('domain.examens.complementaires.neurologiques');
+INSERT INTO DOMAIN (I18N_KEY) VALUES ('domain.suivi.developpement');
+INSERT INTO DOMAIN (I18N_KEY) VALUES ('domain.principes.electrophysiologiques');
+INSERT INTO DOMAIN (I18N_KEY) VALUES ('domain.enregistrement.eeg.polygraphique');
+INSERT INTO DOMAIN (I18N_KEY) VALUES ('domain.bases.interpretation');
+INSERT INTO DOMAIN (I18N_KEY) VALUES ('domain.eeg.nouveau.ne.terme');
+INSERT INTO DOMAIN (I18N_KEY) VALUES ('domain.maturation.eeg.nouveau.ne.premature');
+INSERT INTO DOMAIN (I18N_KEY) VALUES ('domain.prematurite');
+INSERT INTO DOMAIN (I18N_KEY) VALUES ('domain.atteintes.neurologiques.aigues');
+INSERT INTO DOMAIN (I18N_KEY) VALUES ('domain.maladies.neurologiques.revelation.neonatales');
+INSERT INTO DOMAIN (I18N_KEY) VALUES ('domain.convulsions.neonatales');
+COMMIT;

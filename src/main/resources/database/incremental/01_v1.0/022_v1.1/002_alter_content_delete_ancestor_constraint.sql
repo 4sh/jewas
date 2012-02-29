@@ -1,1 +1,0 @@
-ALTER TABLE CONTENT DROP CONSTRAINT content_ancestor_content_fk;

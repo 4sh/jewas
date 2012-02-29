@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS `CONTENT_COMMENT` (
+  `ID` bigint(20) NOT NULL auto_increment,
+  `CONTENT_REF` bigint(20) NOT NULL,
+  `PUBLICATION_COMMENTS` varchar(255),
+  `REJECTION_COMMENTS` varchar(255),
+  PRIMARY KEY (`ID`)
+);
