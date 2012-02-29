@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <CONTENT ID='0'
+             AUTHOR_REF='1'
+             CONTENT_TYPE='0'
+             CONTENT_ANCESTOR_REF='0'
+             CREATION_DATE='2011-12-15'
+             LAST_MODIFICATION_DATE='1212-12-12'
+             STATUS='6'
+             VERSION='0'
+            />
+    <CONTENT ID='1'
+             AUTHOR_REF='1'
+             CONTENT_TYPE='0'
+             CONTENT_ANCESTOR_REF='0'
+             CREATION_DATE='2011-12-15'
+             LAST_MODIFICATION_DATE='1212-12-12'
+             STATUS='2'
+             VERSION='1'
+            />
+    <CONTENT ID='2'
+             AUTHOR_REF='1'
+             CONTENT_TYPE='0'
+             CONTENT_ANCESTOR_REF='0'
+             CREATION_DATE='2011-12-15'
+             LAST_MODIFICATION_DATE='1212-12-12'
+             STATUS='0'
+             VERSION='2'
+            />
+</dataset>

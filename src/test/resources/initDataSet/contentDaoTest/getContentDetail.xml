@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <CONTENT ID='1'
+             AUTHOR_REF='1'
+             CONTENT_ANCESTOR_REF='0'
+             CONTENT_TYPE='0'
+             CREATION_DATE='2011-12-15'
+             DESCRIPTION='DESCRIPTION'
+             FILE_URI='FILE_URI'
+             LAST_CONSULTATION_DATE='1212-12-12 12:12:12'
+             LAST_MODIFICATION_DATE='1212-12-12'
+             POPULARITY='100'
+             PUBLICATION_END_DATE='1212-12-12'
+             PUBLICATION_START_DATE='1212-12-12'
+             STATUS='6'
+             TAGS='tag1;tag2;tag3;'
+             TITLE='TITLE'
+             VERSION='0'
+            />
+    <CONTENT_COMMENT
+            ID='0'
+            CONTENT_REF='1'
+            PUBLICATION_COMMENTS='PUBLICATION_COMMENTS'
+            REJECTION_COMMENTS='REJECTION_COMMENTS'
+            />
+    <CONTENT_DOMAIN
+        CONTENT_REF='1'
+        DOMAIN_REF='0'
+    />
+    <CONTENT_DOMAIN
+            CONTENT_REF='1'
+            DOMAIN_REF='1'
+    />
+</dataset>

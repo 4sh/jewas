@@ -33,14 +33,14 @@ import static org.junit.Assert.assertThat;
 public class ContentResourceTest extends AbstractBBEEGTest {
 
     private static final Logger logger = LoggerFactory.getLogger(ContentResourceTest.class);
-    
+
     private static String contentFileRepository = null;
     private static String tmpContentFileRepository = null;
-    
+
     private ContentResource contentResource;
     private String initDataSetsPath = "/initDataSet/";
     private String filename;
-    
+
     private static String getTestFileRepository(String fileRepository) {
         if (fileRepository == null) {
             throw new IllegalArgumentException("No file repository specified, cannot install test file repository");
@@ -58,15 +58,15 @@ public class ContentResourceTest extends AbstractBBEEGTest {
                 .tmpContentFileRepository(tmpContentFileRepository);
 
         BBEEGConfiguration.INSTANCE.cliOptions(options);
-        
+
         // Create test directories 
         contentFileRepository = Files.createTempDirectory("tmp").toString();
         tmpContentFileRepository = Files.createTempDirectory("tmp").toString();
     }
 
-   /**
-    * Test case : New file is uploaded and needs to be moved from tmp folder to content repository folder
-    */
+    /**
+     * Test case : New file is uploaded and needs to be moved from tmp folder to content repository folder
+     */
     @Test
     public void updateContentOfContentTest() throws Exception {
         try {
@@ -74,20 +74,17 @@ public class ContentResourceTest extends AbstractBBEEGTest {
             filename = TempFiles.store("Text content of the test file");
 
             // Initialize ContentDao
-            ContentDao contentDao = new ContentDao(dataSource(), null, new UserDaoMock(), new DomainDaoMock(), new ElasticSearchDaoMock(), new TagDaoMock());
+            ContentDao contentDao = new ContentDao(dataSource(), new UserDaoMock(), new DomainDaoMock(), new ElasticSearchDaoMock(), new TagDaoMock());
 
-            contentResource = new ContentResource(contentDao, new I18nDaoMock(), contentFileRepository);
+            contentResource = new ContentResource(contentDao, new ElasticSearchDaoMock(), new I18nDaoMock(), contentFileRepository);
 
             // Init database
             IDataSet dataSet = new FlatXmlDataSetBuilder().build(this.getClass().getResource(initDataSetsPath + "initUpdateContentOfContentTest.xml"));
             ITable actualTable = dataSet.getTable("CONTENT");
 
-            try
-            {
+            try {
                 DatabaseOperation.CLEAN_INSERT.execute(databaseTester().getConnection(), dataSet);
-            }
-            finally
-            {
+            } finally {
                 databaseTester().getConnection().close();
             }
 
@@ -113,7 +110,7 @@ public class ContentResourceTest extends AbstractBBEEGTest {
     }
 
     /**
-     * Test case : Test copy ancestor content file and link it to the descendant content.  
+     * Test case : Test copy ancestor content file and link it to the descendant content.
      */
     @Test
     public void copyContentOfContentTest() throws Exception {
@@ -132,20 +129,17 @@ public class ContentResourceTest extends AbstractBBEEGTest {
             assertThat(actualTable.getValue(0, "ID").toString(), is(equalTo("11")));
             assertThat(actualTable.getRowCount(), is(equalTo(1)));
 
-            try
-            {
+            try {
                 DatabaseOperation.CLEAN_INSERT.execute(databaseTester().getConnection(), dataSet);
-            }
-            finally
-            {
+            } finally {
                 databaseTester().getConnection().close();
             }
 
             Long contentId = Long.parseLong((String) actualTable.getValue(0, "ID"));
 
             /* Initialize ContentDao and ContentResource */
-            ContentDao contentDao = new ContentDao(dataSource(), null, new UserDaoMock(), new DomainDaoMock(), new ElasticSearchDaoMock(), new TagDaoMock());
-            contentResource = new ContentResource(contentDao, new I18nDaoMock(), contentFileRepository);
+            ContentDao contentDao = new ContentDao(dataSource(), new UserDaoMock(), new DomainDaoMock(), new ElasticSearchDaoMock(), new TagDaoMock());
+            contentResource = new ContentResource(contentDao, new ElasticSearchDaoMock(), new I18nDaoMock(), contentFileRepository);
 
             /* Update the FILE_URI in database because of the execution env dependency */
             contentDao.updateContentUrl(contentId, ancestorContentFileURI);

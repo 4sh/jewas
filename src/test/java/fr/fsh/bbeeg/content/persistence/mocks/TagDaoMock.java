@@ -22,4 +22,8 @@ public class TagDaoMock extends TagDao {
     public void createOrUpdateTag(String tag) {
 
     }
+    
+    public void deleteOrUpdateTag(String tag) {
+        
+    }
 }

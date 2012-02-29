@@ -12,7 +12,11 @@ public class AbstractBBEEGTest {
     /**
      * Tests database JDBC URL.
      */
-    private static final String JDBC_URL = "jdbc:h2:mem:test";
+    private static final String JDBC_URL = "jdbc:h2:mem:bbeeg;MODE=MySQL";
+
+    private static final String USERNAME = "bbeeg";
+
+    private static final String PASSWORD = "bbeeg";
 
     /**
      * Database driver class.
@@ -42,14 +46,14 @@ public class AbstractBBEEGTest {
     @BeforeClass
     public static void setUp() throws Exception {
         databaseTester = new JdbcDatabaseTester(DRIVER_CLASS,
-                JDBC_URL, "sa", "sa");
+                JDBC_URL, USERNAME, PASSWORD);
 
         // Initialize dataSource
         dataSource = new BasicDataSource();
         dataSource.setUrl(JDBC_URL);
         dataSource.setDriverClassName(DRIVER_CLASS);
-        dataSource.setUsername("sa");
-        dataSource.setPassword("sa");
+        dataSource.setUsername(USERNAME);
+        dataSource.setPassword(PASSWORD);
         dataSource.setDefaultAutoCommit(true);
         // Call DB maintain here to create in memory database schema
         //URL configurationUrl = new File("dbmaintain.properties").toURI().toURL();
