@@ -30,7 +30,6 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="jewas" exported="" />
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
@@ -42,10 +41,10 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/fr.4sh.jewas/jewas/0.1-SNAPSHOT/jar/ccb1be70a95528b9fc3a2a96173e18e786e6681e/jewas-0.1-SNAPSHOT.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/fr.4sh.jewas/jewas/0.1-SNAPSHOT/jar/4e7e51d5a5895d48551d896f1699e774dc0aa7ea/jewas-0.1-SNAPSHOT.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
@@ -531,17 +530,6 @@
     <orderEntry type="module-library" scope="TEST">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.dbmaintain/dbmaintain/2.4/jar/9330fc584eecafd3a8416debc4098ef01be3dffc/dbmaintain-2.4.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.dbmaintain/dbmaintain/2.4/source/a10bc050be758ea4fb984592d51e17a8adce76f/dbmaintain-2.4-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" scope="TEST">
-      <library>
-        <CLASSES>
           <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/junit/junit/4.8.2/jar/c94f54227b08100974c36170dcb53329435fe5ad/junit-4.8.2.jar!/" />
         </CLASSES>
         <JAVADOC />
@@ -569,17 +557,6 @@
         <JAVADOC />
         <SOURCES>
           <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/net.sourceforge.cobertura/cobertura/1.9.4.1/source/da5e7d36b91f9a182c59ad8718251000afd8c87e/cobertura-1.9.4.1-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" scope="TEST">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/ant/ant/1.6.5/jar/7d18faf23df1a5c3a43613952e0e8a182664564b/ant-1.6.5.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/ant/ant/1.6.5/source/9e0a847494563f35f9b02846a1c1eb4aa2ee5a9a/ant-1.6.5-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
