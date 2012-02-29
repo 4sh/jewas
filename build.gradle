@@ -2,7 +2,6 @@ import sun.security.krb5.internal.crypto.Des
 
 apply plugin: 'java'
 apply plugin: 'idea'
-apply plugin: 'sonar'
 apply plugin: 'maven'
 
 sourceCompatibility = 1.7
@@ -33,21 +32,16 @@ def TARGET_ENV_SYS_PROPERTY = "deploy.target.env"
 def SKIP_UPLOAD_SYS_PROPERTY = "deploy.skip.upload"
 // System property used to define an XDebug java port to launch remote app in debug mode
 def DEBUG_PORT_SYS_PROPERTY = "deploy.debug.port"
-// System property used to start NewRelic monitoring on app if needed
-def NEW_RELIC_MONITORING_SYS_PROPERTY = "monitor.with.new.relic"
-def NEW_RELIC_AGENT_PATH = "/home/bbeeg/tools/newrelic/newrelic.jar"
 
 if(!hasProperty("releasesRepoUsername")
         || !hasProperty("releasesRepoPassword")){
     ant.fail "You should define a ~/.gradle/gradle.properties containing properties 'releasesRepoUsername' and 'releasesRepoPassword' to access 4SH releases repository !"
 }
 
-org.apache.ivy.util.url.CredentialsStore.INSTANCE.addCredentials("Artifactory Realm", "repo.4sh.fr", releasesRepoUsername, releasesRepoPassword);
-
-
 def ENV_PROPERTIES = [
    nightly: [
            targetDir: ENV_DEMO_DEPLOY_ROOT_PATH+"/nightly",
+           dbmaintainDir: ENV_DEMO_DEPLOY_ROOT_PATH + "/qa/dbmaintain/",
            bbeegPort: 18086,
            visioEegRootUrl: "http://nightly.visio.bbeeg.4sh.fr",
            visioEegInternalUrl: "http://127.0.0.1:18087",
@@ -60,7 +54,8 @@ def ENV_PROPERTIES = [
            elasticSearchPort: 19200,
            specificJavaOpts: "-Xmx256m"
    ], qa: [
-           targetDir: ENV_DEMO_DEPLOY_ROOT_PATH+"/qa",
+           targetDir: ENV_DEMO_DEPLOY_ROOT_PATH + "/qa",
+           dbmaintainDir: ENV_DEMO_DEPLOY_ROOT_PATH + "/qa/dbmaintain/",
            bbeegPort: 28086,
            visioEegRootUrl: "http://qa.visio.bbeeg.4sh.fr",
            visioEegInternalUrl: "http://127.0.0.1:28087",
@@ -98,15 +93,14 @@ gradle.taskGraph.whenReady {taskGraph ->
 }
 
 repositories {
-    // looking into maven local repo only if localRepo system property is set to true
-    // Will be useful to test snapshot deps (like jewas) which are not yet deployed on artifactory...
-    if(System.properties["localRepo"] == true){
-        mavenLocal()
+    maven {
+        credentials {
+            username releasesRepoUsername
+            password releasesRepoPassword
+        }
+        url "http://repo.4sh.fr/libs/"
+        artifactUrls "http://repo.4sh.fr/libs/"
     }
-    mavenRepo(urls: "http://repo.4sh.fr/libs")
-   // mavenRepo(urls: "http://repo.4sh.fr/libs-release/")
-   // mavenRepo(urls: "http://repo.4sh.fr/libs-snapshot/")
-    mavenRepo urls: ["http://oss.sonatype.org/content/repositories/releases/"]
 }
 
 configurations {
@@ -117,7 +111,7 @@ configurations {
 
 dependencies {
     compile(
-            [group: 'com.h2database', name: 'h2', version: '1.3.158'],
+            [group: 'mysql', name: 'mysql-connector-java', version: '5.1.18'],
             [group: 'org.slf4j', name: 'slf4j-api', version: '1.6.4'],
             [group: 'fr.4sh.jewas', name: 'jewas', version: '0.1-SNAPSHOT', transitive: true],
             [group: 'com.beust', name:'jcommander', version: '1.17', transitive: true],
@@ -133,7 +127,7 @@ dependencies {
 
     testCompile(
             [group: 'com.h2database', name: 'h2', version: '1.3.158'],
-            //[group: 'org.dbmaintain', name: 'dbmaintain', version: '2.4'],
+            [group: 'org.dbmaintain', name: 'dbmaintain', version: '2.4'],
             [group: 'junit', name: 'junit', version: '4.8.2', transitive: true],
             [group: 'org.dbunit', name: 'dbunit', version: '2.4.8']
     )
@@ -274,11 +268,6 @@ task startBBEEG(dependsOn: [initSsh, checkPropsForDeployment, startElasticSearch
         javaOpts += " -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address="+System.properties[DEBUG_PORT_SYS_PROPERTY]+" -Xnoagent -Djava.compiler=NONE"
     }
 
-    if(System.properties[NEW_RELIC_MONITORING_SYS_PROPERTY] != null
-        && "true".equals(System.properties[NEW_RELIC_MONITORING_SYS_PROPERTY])){
-        javaOpts += " -javaagent:"+NEW_RELIC_AGENT_PATH
-    }
-
     ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 22,
 		command: """kill -9 \$(cat "${deployDirectory}/bbeeg.pid")""", trust: true, failonerror: false)
     ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 22,
@@ -306,6 +295,36 @@ task initializeIntTestContext << {
     ant.echo "TODO: unzip & start elastic search here !"
 }
 intTestClasses.dependsOn initializeIntTestContext
+
+task packageDBMaintainScripts(type: Zip) {
+    from 'src/main/resources/database/incremental/'
+    baseName = 'incremental'
+    version = ''
+    destinationDir = file("src/main/resources/database/")
+}
+
+task uploadDbMaintainScripts(dependsOn: [initSsh, packageDBMaintainScripts]) << {
+    def dbmaintainDir = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].dbmaintainDir;
+    println "Deploying dbmaintain scripts to $dbmaintainDir";
+
+    File f = file("src/main/resources/database/incremental.zip");
+    println f.name
+    ant.scp2(file: f,
+            remoteTofile: "${ENV_DEMO_USER}:${ENV_DEMO_PASS}@${ENV_DEMO_HOST}:${dbmaintainDir}" + f.name,
+            port: 22,
+            trust: true,
+            verbose: true);
+
+    ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 22,
+            command: "rm -rf ${dbmaintainDir}/${f.name}",
+            trust: true,
+            failonerror: true)
+
+    ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 22,
+            command: "unzip ${dbmaintainDir}/${f.name}",
+            trust: true,
+            failonerror: true)
+}
 
 // For cobertura ...
 if ("true".equals(System.getProperty(COVERAGE_SYS_PROPERTY))) {
@@ -349,16 +368,4 @@ if ("true".equals(System.getProperty(COVERAGE_SYS_PROPERTY))) {
         ignoreFailures = true
         systemProperties["net.sourceforge.cobertura.datafile"] = cobSerFile
     }
-}
-
-sonar {
-    serverUrl = "http://sonar.4sh.fr"
-
-    globalProperty "sonar.jdbc.url", "jdbc:mysql://sonar:3306/sonar"
-    globalProperty "sonar.jdbc.driverClassName", "com.mysql.jdbc.Driver"
-    globalProperty "sonar.jdbc.username", "sonar"
-    globalProperty "sonar.jdbc.password", "4SHsoar"
-
-    globalProperty "sonar.java.source", "1.7"
-    globalProperty "sonar.java.target", "1.7"
 }
