@@ -16,8 +16,6 @@ if(!hasProperty("releasesRepoUsername")
     ant.fail "You should define a ~/.gradle/gradle.properties containing properties 'releasesRepoUsername' and 'releasesRepoPassword' to access 4SH releases repository !"
 }
 
-//org.apache.ivy.util.url.CredentialsStore.INSTANCE.addCredentials("Artifactory Realm", "repo.4sh.fr", releasesRepoUsername, releasesRepoPassword);
-
 group = "fr.4sh.jewas"
 def versionBase = '0.1'
 
@@ -47,8 +45,6 @@ configurations {
 }
 
 repositories {
-     //mavenRepo urls: ["http://repo.4sh.fr/libs-release/"]
-     //mavenRepo urls: ["http://oss.sonatype.org/content/repositories/snapshots/"]
     maven {
         credentials {
             username releasesRepoUsername
@@ -58,12 +54,6 @@ repositories {
         artifactUrls "http://repo.4sh.fr/libs/"
     }
 }
-
-/*repositories {
-    mavenRepo urls: ["http://repo.4sh.fr/libs-release/"]
-    // for rest assured snapshot
-    mavenRepo urls: ["http://oss.sonatype.org/content/repositories/snapshots/"]
-}*/
 
 dependencies {
     compile(
@@ -88,8 +78,8 @@ dependencies {
     )
     testRuntime 'net.sourceforge.cobertura:cobertura:1.9.4.1'
     testRuntime 'fr.4sh.jewas.tests:resourcesInJarForTests:1.0'
-    // to use WebDav protocol on upload
-    deployerJars "org.apache.maven.wagon:wagon-webdav-jackrabbit:1.0"
+
+    deployerJars "org.apache.maven.wagon:wagon-http:1.0-beta-2"
 }
 task packageJavadoc(type: Jar, dependsOn:javadoc) {
     classifier = 'javadoc'
@@ -109,19 +99,15 @@ artifacts {
 }
 
 uploadArchives {
-   repositories {
-      deployer = mavenDeployer {
-        // you might use this configuration not to generate
-        // date based artefact names
-        // uniqueVersion = false
-        configureAuth = {
-           authentication(userName: releasesRepoUsername, password: releasesRepoPassword)
-        }
+    repositories.mavenDeployer {
         configuration = configurations.deployerJars
-        snapshotRepository(url: "dav:http://repo.4sh.fr/libs-snapshot-local", configureAuth)
-        repository(url: "dav:http://repo.4sh.fr/libs-release-local/", configureAuth)
-      }
-   }
+        snapshotRepository(url: "http://repo.4sh.fr/libs-snapshot-local") {
+            authentication(userName: releasesRepoUsername, password: releasesRepoPassword)
+        }
+        repository(url: "http://repo.4sh.fr/libs-release-local/") {
+            authentication(userName: releasesRepoUsername, password: releasesRepoPassword)
+        }
+    }
 }
 
 // Allows to generate USER_HOME idea variable uniformely on every OS
