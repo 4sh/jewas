@@ -42,7 +42,7 @@ def ENV_PROPERTIES = [
    nightly: [
            targetDir: ENV_DEMO_DEPLOY_ROOT_PATH+"/nightly",
            dbmaintainDir: ENV_DEMO_DEPLOY_ROOT_PATH + "/qa/dbmaintain/",
-           databaseSchema: "bbeeg-nightly",
+           databaseSchema: "bbeeg_nightly",
            bbeegPort: 18086,
            visioEegRootUrl: "http://nightly.visio.bbeeg.4sh.fr",
            visioEegInternalUrl: "http://127.0.0.1:18087",
@@ -55,7 +55,7 @@ def ENV_PROPERTIES = [
    ], qa: [
            targetDir: ENV_DEMO_DEPLOY_ROOT_PATH + "/qa",
            dbmaintainDir: ENV_DEMO_DEPLOY_ROOT_PATH + "/qa/dbmaintain/",
-           databaseSchema: "bbeeg-qa",
+           databaseSchema: "bbeeg_qa",
            bbeegPort: 28086,
            visioEegRootUrl: "http://qa.visio.bbeeg.4sh.fr",
            visioEegInternalUrl: "http://127.0.0.1:28087",
