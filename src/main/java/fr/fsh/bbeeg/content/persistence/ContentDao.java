@@ -13,12 +13,6 @@ import jewas.persistence.QueryExecutionContext;
 import jewas.persistence.QueryTemplate;
 import jewas.persistence.rowMapper.LongRowMapper;
 import jewas.persistence.rowMapper.RowMapper;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.action.search.SearchType;
-import org.elasticsearch.client.Client;
-import org.elasticsearch.index.query.*;
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.sort.SortOrder;
 import org.joda.time.DateMidnight;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,9 +22,6 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
-
-import static fr.fsh.bbeeg.content.pojos.SearchMode.values;
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * @author driccio
@@ -42,7 +33,6 @@ public class ContentDao {
      */
     private static final Logger logger = LoggerFactory.getLogger(ContentDao.class);
 
-    private Client client;
     private QueryTemplate<ContentHeader> contentHeaderQueryTemplate;
     private QueryTemplate<ContentDetail> contentDetailQueryTemplate;
     private QueryTemplate<Long> idQueryTemplate;
@@ -51,8 +41,7 @@ public class ContentDao {
     private TagDao tagDao;
     private ElasticSearchDao esContentDao;
 
-    public ContentDao(DataSource dataSource, Client _client, UserDao _userDao, DomainDao _domainDao, ElasticSearchDao _esContentDao, TagDao _tagDao) {
-        client = _client;
+    public ContentDao(DataSource dataSource, UserDao _userDao, DomainDao _domainDao, ElasticSearchDao _esContentDao, TagDao _tagDao) {
         userDao = _userDao;
         domainDao = _domainDao;
         esContentDao = _esContentDao;
@@ -73,35 +62,36 @@ public class ContentDao {
                         .addQuery("selectAll",
                                 "select * from CONTENT")
                         .addQuery("selectUrl",
-                                "select FILE_URI from Content where id = :id")
+                                "select FILE_URI from CONTENT where id = :id")
                         .addQuery("selectLimitedRecent",
-                                "select * from " +
-                                        "(select * from CONTENT where STATUS = :status " +
-                                        "and (PUBLICATION_START_DATE <= :today or PUBLICATION_START_DATE is null) " +
-                                        "and (:today <= PUBLICATION_END_DATE or PUBLICATION_END_DATE is null) " +
-                                        "order by LAST_MODIFICATION_DATE desc) " +
-                                        "where ROWNUM <= :limit")
+                                "select * from CONTENT where STATUS = :status " +
+                                "and (PUBLICATION_START_DATE <= :today or PUBLICATION_START_DATE is null) " +
+                                "and (:today <= PUBLICATION_END_DATE or PUBLICATION_END_DATE is null) " +
+                                "order by LAST_MODIFICATION_DATE desc " +
+                                "limit :limit")
                         .addQuery("selectLimitedPopular",
-                                "select * from " +
-                                        "(select * from CONTENT where STATUS = :status " +
-                                        "and (PUBLICATION_START_DATE <= :today or PUBLICATION_START_DATE is null) " +
-                                        "and (:today <= PUBLICATION_END_DATE or PUBLICATION_END_DATE is null) " +
-                                        "order by POPULARITY desc) " +
-                                        "where ROWNUM <= :limit")
+                                "select * from CONTENT where STATUS = :status " +
+                                "and (PUBLICATION_START_DATE <= :today or PUBLICATION_START_DATE is null) " +
+                                "and (:today <= PUBLICATION_END_DATE or PUBLICATION_END_DATE is null) " +
+                                "order by POPULARITY desc " +
+                                "limit :limit")
                         .addQuery("selectLimitedLastViewed",
-                                "select * from " +
-                                        "(select * from CONTENT where STATUS = :status " +
-                                        "and (PUBLICATION_START_DATE <= :today or PUBLICATION_START_DATE is null) " +
-                                        "and (:today <= PUBLICATION_END_DATE or PUBLICATION_END_DATE is null) " +
-                                        "order by LAST_CONSULTATION_DATE desc) " +
-                                        "where ROWNUM <= :limit")
+                                "select * from CONTENT c where STATUS = :status " +
+                                "and (PUBLICATION_START_DATE <= :today or PUBLICATION_START_DATE is null) " +
+                                "and (:today <= PUBLICATION_END_DATE or PUBLICATION_END_DATE is null) " +
+                                "order by LAST_CONSULTATION_DATE desc " +
+                                "limit :limit")
                         .addQuery("selectHigherVersionNumber",
                                 "select max(VERSION) from CONTENT where CONTENT_ANCESTOR_REF = :ancestorId")
                         .addQuery("count",
-                                "select count(*) as count from CONTENT where STATUS = :status")
+                                "select count(*) as count from CONTENT where STATUS = :status " +
+                                        "and (PUBLICATION_START_DATE <= :today or PUBLICATION_START_DATE is null) " +
+                                        "and (:today <= PUBLICATION_END_DATE or PUBLICATION_END_DATE is null)")
                         .addQuery("insert",
-                                "insert into CONTENT (ID, TITLE, DESCRIPTION, CREATION_DATE, LAST_MODIFICATION_DATE, STATUS, CONTENT_TYPE, AUTHOR_REF, CONTENT_ANCESTOR_REF, VERSION, TAGS) " +
-                                "values (CONTENT_SEQ.nextval, :title, :description, :creationDate, :lastModificationDate, 0, :contentType, :authorId, case when :ancestorId is null then (select CONTENT_SEQ.currVal) else :ancestorId end, :version, :tags)")
+                                "insert into CONTENT (TITLE, DESCRIPTION, CREATION_DATE, LAST_MODIFICATION_DATE, STATUS, CONTENT_TYPE, AUTHOR_REF, CONTENT_ANCESTOR_REF, VERSION, TAGS) " +
+                                "values (:title, :description, :creationDate, :lastModificationDate, 0, :contentType, :authorId, :ancestorId, :version, :tags)")
+                        .addQuery("updateAncestorId",
+                                "update CONTENT set CONTENT_ANCESTOR_REF = :ancestorId where ID = :id")
                         .addQuery("addLinkWithDomain",
                                 "insert into CONTENT_DOMAIN (CONTENT_REF, DOMAIN_REF) values (:contentId, :domainId)")
                         .addQuery("updateContentUrl",
@@ -116,7 +106,7 @@ public class ContentDao {
                                 "update CONTENT set STATUS = :status where VERSION = " +
                                     "(select max(VERSION) from CONTENT where CONTENT_ANCESTOR_REF = :ancestorId and STATUS = " + ContentStatus.VALIDATED.ordinal() + ")")
                         .addQuery("incrementPopularity",
-                                "update CONTENT set POPULARITY = POPULARITY + 1 where ID = :id and STATUS in :statuses")
+                                "update CONTENT set POPULARITY = POPULARITY + 1 where ID = :id")
                         .addQuery("updateLastConsultationDate",
                                 "update CONTENT set LAST_CONSULTATION_DATE = :lastConsultationDate where ID = :contentId")
                         .addQuery("removeLinkWithDomain",
@@ -129,9 +119,9 @@ public class ContentDao {
                         .addQuery("selectAll",
                                 "select c.*, cc.id as CONTENT_COMMENT_ID, PUBLICATION_COMMENTS, REJECTION_COMMENTS from CONTENT c left join CONTENT_COMMENT cc on c.ID = cc.CONTENT_REF")
                         .addQuery("insertPublicationComment",
-                                "insert into CONTENT_COMMENT (ID, CONTENT_REF, PUBLICATION_COMMENTS) values (CONTENT_COMMENT_SEQ.nextval, :id, :comment)")
+                                "insert into CONTENT_COMMENT (CONTENT_REF, PUBLICATION_COMMENTS) values (:id, :comment)")
                         .addQuery("insertRejectionComment",
-                                "insert into CONTENT_COMMENT (ID, CONTENT_REF, REJECTION_COMMENTS) values (CONTENT_COMMENT_SEQ.nextval, :id, :comment)")
+                                "insert into CONTENT_COMMENT (CONTENT_REF, REJECTION_COMMENTS) values (:id, :comment)")
                         .addQuery("updatePublicationComment",
                                 "update CONTENT_COMMENT set PUBLICATION_COMMENTS = :comment where CONTENT_REF = :id")
                         .addQuery("updateRejectionComment",
@@ -183,7 +173,6 @@ public class ContentDao {
          this.contentHeaderQueryTemplate.update("incrementPopularity", new QueryExecutionContext()
                  .buildParams()
                  .bigint("id", contentId)
-                 .array("statuses", ContentStatus.VALIDATED.ordinal())
                  .toContext());
      }
 
@@ -229,10 +218,12 @@ public class ContentDao {
     }
 
     public Count getTotalNumberOfContent() {
+        Date today = new DateMidnight().toDate();
         return new Count().count(
                 contentHeaderQueryTemplate.selectLong("count",
                         new QueryExecutionContext()
                                 .buildParams()
+                                .date("today", today)
                                 .integer("status", ContentStatus.VALIDATED.ordinal())
                                 .toContext()
                 ).intValue()
@@ -260,8 +251,14 @@ public class ContentDao {
                                 .bigint("version", contentDetail.header().version())
                                 .toContext(),
                         "id");
-
         contentDetail.header().id(Long.parseLong(genKeys.get("id")));
+        if (contentDetail.header().ancestorId() == null) {
+            contentHeaderQueryTemplate.update("updateAncestorId",
+                    new QueryExecutionContext().buildParams()
+                            .bigint("ancestorId", contentDetail.header().id())
+                            .bigint("id", contentDetail.header().id())
+                            .toContext());
+        }
 
         Collection<Domain> domains = contentDetail.header().domains();
         if (domains != null) {
@@ -365,9 +362,13 @@ public class ContentDao {
         List<String> tags = contentDetail.header().tags();
         ContentDetail fromDB = getContentDetail(contentDetail.header().id());
 
+        List<String> persistedTags = null;
         // Check tags
-
-        List<String> persistedTags = fromDB.header().tags();
+        if (fromDB == null) {
+            persistedTags = Collections.emptyList();
+        } else {
+            persistedTags = fromDB.header().tags();
+        }
 
         if (tags != null) {
             for (String tag : tags) {
@@ -429,7 +430,7 @@ public class ContentDao {
 
     private void fetchByIds(List<ContentHeader> contentHeaders, List<Long> contentIds) {
         // Fetch the contents from the database via the content ids.
-        if (!contentIds.isEmpty()) {
+        if (contentIds != null && !contentIds.isEmpty()) {
             for (Long contentId : contentIds) {
                     ContentHeader header = contentHeaderQueryTemplate.selectObject("selectById",
                             new QueryExecutionContext().buildParams()
@@ -444,239 +445,14 @@ public class ContentDao {
     }
 
     public void fetchSearch(List<ContentHeader> contentHeaders, SimpleSearchQueryObject query) {
-        Date serverTimestamp; // TODO: Don't forget to filter by server timestamp
-
-        if (query.serverTimestamp() == null) {
-            serverTimestamp = new DateMidnight().toDate();
-        } else {
-            serverTimestamp = query.serverTimestamp();
-        }
-
-        List<Integer> statuses = filterContentStatuses(values()[query.searchMode()]);
-
-        BoolQueryBuilder elasticSearchQuery = createElasticSearchQuery(statuses);
-        configureFullTextQuery(elasticSearchQuery, query.query());
-        configureAuthorsQuery(elasticSearchQuery, query.authors());
-
-        FilterBuilder filterBuilder = null;
-        if (SearchMode.ALL_VALIDATED.ordinal() == query.searchMode()) {
-            filterBuilder = configurePublicationDateFilter();
-        }
-
-        List<Long> contentIds;
-        if (filterBuilder == null) {
-            contentIds = searchInElasticSearch(query.startingOffset(), query.numberOfContents(), elasticSearchQuery);
-        } else {
-            QueryBuilder filteredQuery = QueryBuilders.filteredQuery(elasticSearchQuery, filterBuilder);
-            contentIds = searchInElasticSearch(query.startingOffset(), query.numberOfContents(), filteredQuery);
-        }
-        fetchByIds(contentHeaders, contentIds);
+        fetchByIds(contentHeaders, esContentDao.search(query));
     }
 
     public void fetchSearch(List<ContentHeader> contentHeaders, AdvancedSearchQueryObject query) {
-        Date serverTimestamp; // TODO: Don't forget to filter by server timestamp
-
-        if (query.serverTimestamp() == null) {
-            serverTimestamp = new DateMidnight().toDate();
-        } else {
-            serverTimestamp = query.serverTimestamp();
-        }
-
-        List<Integer> statuses = filterContentStatuses(values()[query.searchMode()]);
-
-        BoolQueryBuilder elasticSearchQuery = createElasticSearchQuery(statuses);
-        configureFullTextQuery(elasticSearchQuery, query.query());
-        configureAuthorsQuery(elasticSearchQuery, query.authors());
-        configureDomainsQuery(elasticSearchQuery, query.domains());
-        configureContentTypeQuery(elasticSearchQuery, query.searchTypes());
-
-
-        FilterBuilder filterBuilders = getAdvancedQueryFilterBuilders(query);
-
-        List<Long> contentIds;
-        if (filterBuilders == null) {
-            contentIds = searchInElasticSearch(query.startingOffset(), query.numberOfContents(), elasticSearchQuery);
-        } else {
-            QueryBuilder filteredQuery = QueryBuilders.filteredQuery(elasticSearchQuery, filterBuilders);
-            contentIds = searchInElasticSearch(query.startingOffset(), query.numberOfContents(), filteredQuery);
-        }
-        fetchByIds(contentHeaders, contentIds);
+        fetchByIds(contentHeaders, esContentDao.search(query));
    }
 
-    /**
-     * Build the dates filters with creation date filter and publication start and end dates filter for ALL_VALIDATED search mode
-     *
-     * @param query the query to performed
-     * @return a {@FilterBuilder}
-     */
-    private FilterBuilder getAdvancedQueryFilterBuilders(AdvancedSearchQueryObject query) {
-        FilterBuilder filterBuilder = null;
-        RangeFilterBuilder creationDateRangeFilter = configureCreationDateFilter(query.from(), query.to());
-        if (creationDateRangeFilter != null) {
-            filterBuilder = FilterBuilders.andFilter(creationDateRangeFilter);
-        }
-        if (SearchMode.ALL_VALIDATED.ordinal() == query.searchMode()) {
-            filterBuilder = FilterBuilders.andFilter(configurePublicationDateFilter());
-        }
-        return filterBuilder;
-    }
 
-    /**
-     * Build the publication start and end date elastic search range filter.
-     *
-     * @return a {@FilterBuilder}
-     */
-    private FilterBuilder configurePublicationDateFilter() {
-        Date today = new DateMidnight().toDate();
-
-        RangeFilterBuilder startPublicationRangeFilter = FilterBuilders.rangeFilter(ElasticSearchDao.ES_CONTENT_FIELD_PUBLICATION_START_DATE);
-        startPublicationRangeFilter.lte(today);
-
-        MissingFilterBuilder startPublicationMissing = FilterBuilders.missingFilter(ElasticSearchDao.ES_CONTENT_FIELD_PUBLICATION_START_DATE);
-
-        RangeFilterBuilder endPublicationRangeFilter = FilterBuilders.rangeFilter(ElasticSearchDao.ES_CONTENT_FIELD_PUBLICATION_END_DATE);
-        endPublicationRangeFilter.gte(today);
-
-        MissingFilterBuilder endPublicationMissing = FilterBuilders.missingFilter(ElasticSearchDao.ES_CONTENT_FIELD_PUBLICATION_END_DATE);
-
-        FilterBuilder startPublicationDateFilterBuilder = FilterBuilders.orFilter(startPublicationRangeFilter, startPublicationMissing);
-        FilterBuilder endPublicationDateFilterBuilder = FilterBuilders.orFilter(endPublicationRangeFilter, endPublicationMissing);
-        return FilterBuilders.andFilter(startPublicationDateFilterBuilder, endPublicationDateFilterBuilder);
-    }
-
-    private void configureAuthorsQuery(BoolQueryBuilder elasticSearchQuery, String[] authors) {
-        if (authors != null && authors.length > 0) {
-            elasticSearchQuery.must(QueryBuilders.termsQuery(ElasticSearchDao.ES_CONTENT_FIELD_AUTHOR, authors));
-        }
-    }
-
-    private BoolQueryBuilder createElasticSearchQuery(List<Integer> statuses) {
-        return boolQuery().must(inQuery(ElasticSearchDao.ES_CONTENT_FIELD_STATUS, statuses.toArray()));
-        //.must(QueryBuilders.rangeQuery(ES_CONTENT_LAST_MODIF_DATE).lt(serverTimestamp));
-        // TODO: Use serverTImeStamp to filter
-    }
-
-    /**
-     * Search in elastic search and returns the relational identifiers of the hits.
-     *
-     * @param startingOffset     the starting offset used to set the from property of the elastic search query
-     * @param numberOfContents   the limit of results to return
-     * @param elasticSearchQuery the elastic search
-     * @return a list of ids of matched contents in elastic search
-     */
-    private List<Long> searchInElasticSearch(Integer startingOffset, Integer numberOfContents, QueryBuilder elasticSearchQuery) {
-        SearchResponse sResponse = client.prepareSearch(esContentDao.indexName())
-                .setSearchType(SearchType.QUERY_THEN_FETCH)
-                .setQuery(elasticSearchQuery)
-                .setFrom(startingOffset)
-                .setSize(numberOfContents)
-                .addSort(ElasticSearchDao.ES_CONTENT_FIELD_LAST_MODIF_DATE, SortOrder.DESC)
-                .addSort("_score", SortOrder.DESC)
-                        //.setMinScore(0.3f)
-                .execute().actionGet();
-
-        // Get the content ids from the result.
-        List<Long> contentIds = new ArrayList<Long>();
-
-        for (SearchHit searchHit : sResponse.getHits()) {
-            contentIds.add(Long.parseLong(searchHit.id()));
-        }
-        return contentIds;
-    }
-
-    /**
-     * Returns a RangeFilterBuilder depending on the given range dates. If both dates are <code>null</code>, return <code>null</code>.
-     * @param from the from date filter
-     * @param to   the to date filter
-     */
-    private RangeFilterBuilder configureCreationDateFilter(Date from, Date to) {
-        RangeFilterBuilder rangeFilter = FilterBuilders.rangeFilter(ElasticSearchDao.ES_CONTENT_FIELD_CREATION_DATE);
-        if (from != null) {
-            rangeFilter.from(from);
-        }
-        if (to != null) {
-            rangeFilter.to(to);
-        }
-        if (from != null || to != null) {
-            return rangeFilter;
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Filter the content by status depending on the search mode.
-     * @param searchMode the current mode of the search. Must not be null.
-     * @return the list of statuses that will be accepted by the search.
-     */
-    private List<Integer> filterContentStatuses(SearchMode searchMode) {
-
-        if (searchMode.ordinal() >= values().length) {
-            // TODO: throw an exception
-        }
-
-        List<Integer> statuses = new ArrayList<Integer>();
-
-        switch (searchMode) {
-            case ALL_VALIDATED:
-                statuses.add(ContentStatus.VALIDATED.ordinal());
-                break;
-            case ONLY_USER_CONTENTS :
-                statuses.add(ContentStatus.DRAFT.ordinal());
-                statuses.add(ContentStatus.VALIDATED.ordinal());
-                statuses.add(ContentStatus.REJECTED.ordinal());
-                statuses.add(ContentStatus.TO_BE_VALIDATED.ordinal());
-                statuses.add(ContentStatus.TO_BE_DELETED.ordinal());
-                break;
-            case ONLY_CONTENTS_TO_TREAT:
-                statuses.add(ContentStatus.TO_BE_VALIDATED.ordinal());
-                statuses.add(ContentStatus.TO_BE_DELETED.ordinal());
-                break;
-            default:
-                // TODO
-        }
-        return statuses;
-    }
-
-    /**
-     * Contribute to the elastic search query adding full text search on 'title', 'description', 'fileContent' and 'tags'.
-     * @param elasticSearchQuery the elastic search query to contribute to.
-     * @param textToSearch the text to be searched
-     */
-    private void configureFullTextQuery(BoolQueryBuilder elasticSearchQuery,String textToSearch) {
-        if (textToSearch != null && !textToSearch.isEmpty()) {
-            elasticSearchQuery.must(QueryBuilders.disMaxQuery()
-                    .add(termQuery(ElasticSearchDao.ES_CONTENT_FIELD_TITLE, textToSearch).boost(5))
-                    .add(termQuery(ElasticSearchDao.ES_CONTENT_FIELD_DESCRIPTION, textToSearch).boost(3))
-                    .add(termQuery(ElasticSearchDao.ES_CONTENT_FIELD_FILECONTENT, textToSearch).boost(4))
-                    .add(termQuery(ElasticSearchDao.ES_CONTENT_FIELD_TAGS, textToSearch).boost(5)));
-        }
-    }
-    
-    /**
-     * Contribute to the elastic search query adding search criteria on 'domains'.
-     * The match is made on the intersection of the list of searched domains and found contents domain list.
-     *
-     * @param elasticSearchQuery the elastic search query to contribute to.
-     * @param domains            the domains used to filter the returned contents
-     */
-    private void configureDomainsQuery(BoolQueryBuilder elasticSearchQuery, String[] domains) {
-        if (domains != null && domains.length > 0) {
-            elasticSearchQuery.must(QueryBuilders.termsQuery(ElasticSearchDao.ES_CONTENT_FIELD_DOMAINS, domains));
-        }
-    }
-    
-    /**
-     * Contribute to the elastic search query adding search criteria on 'contentType'.
-     *
-     * @param elasticSearchQuery the elastic search query to contribute to.
-     * @param searchTypes        the content types used to filter the returned contents
-     */
-    private void configureContentTypeQuery(BoolQueryBuilder elasticSearchQuery, String[] searchTypes) {
-        if (searchTypes != null && searchTypes.length > 0) {
-            elasticSearchQuery.must(QueryBuilders.termsQuery(ElasticSearchDao.ES_CONTENT_FIELD_CONTENT_TYPE, searchTypes));
-        }
-    }
 
     public String getContentUrl(Long contentId) {
         return contentHeaderQueryTemplate.selectString("selectUrl",
@@ -837,7 +613,7 @@ public class ContentDao {
      * @param commonAncestorId the common reference to the base version of the content to archive
      */
     public void archivePreviousVersion(Long commonAncestorId) {
-        logger.info("Archive previous status for content reference: {}", commonAncestorId.toString());
+        logger.info("Archive previous status for content reference: {}", commonAncestorId);
         contentHeaderQueryTemplate.update("archiveLastValidatedVersion",
                 new QueryExecutionContext().buildParams()
                         .bigint("ancestorId", commonAncestorId)
@@ -851,12 +627,17 @@ public class ContentDao {
      * @param contentId the content identifier
      */
     public void updateLastConsultationDate(Long contentId, Date date) {
-         logger.info("Update the last consultation date for content: " + contentId);
+        logger.info("Update the last consultation date for content: {}", contentId);
         contentHeaderQueryTemplate.update("updateLastConsultationDate",
                 new QueryExecutionContext().buildParams()
                         .bigint("contentId", contentId)
                         .date("lastConsultationDate", date)
                         .toContext());
+    }
+
+    public void selectAll(List<ContentDetail> contents) {
+        contentDetailQueryTemplate.select(contents, "selectAll",
+                new QueryExecutionContext().buildParams().toContext());
     }
 
     private class ContentRowMapper implements RowMapper<ContentHeader> {

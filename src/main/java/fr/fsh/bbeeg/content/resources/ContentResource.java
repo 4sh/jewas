@@ -1,6 +1,7 @@
 package fr.fsh.bbeeg.content.resources;
 
 import fr.fsh.bbeeg.common.config.BBEEGConfiguration;
+import fr.fsh.bbeeg.common.persistence.ElasticSearchDao;
 import fr.fsh.bbeeg.common.persistence.TempFiles;
 import fr.fsh.bbeeg.common.resources.Count;
 import fr.fsh.bbeeg.common.resources.LimitedOrderedQueryObject;
@@ -19,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -37,11 +39,13 @@ public class ContentResource {
      */
     private final I18nDao i18nDao;
     private final ContentDao contentDao;
+    private final ElasticSearchDao elasticSearchDao;
     private final String contentPath;
 
-    public ContentResource(ContentDao _contentDao, I18nDao _i18nDao, String _contentPath) {
+    public ContentResource(ContentDao _contentDao, ElasticSearchDao _elasticSearchDao, I18nDao _i18nDao, String _contentPath) {
         this.i18nDao = _i18nDao;
         this.contentDao = _contentDao;
+        this.elasticSearchDao = _elasticSearchDao;
         this.contentPath = _contentPath;
     }
 
@@ -64,7 +68,9 @@ public class ContentResource {
 
     public ContentDetail getContentDetail(Long id) {
         ContentDetail contentDetail = contentDao.getContentDetail(id);
-        incrementPopularity(id);
+        if (ContentStatus.VALIDATED.equals(contentDetail.header().status())) {
+            incrementPopularity(contentDetail);
+        }
         updateLastConsultationDate(id);
         return contentDetail.url("/content/content/" + id);
     }
@@ -286,16 +292,29 @@ public class ContentResource {
     }
 
     public void reIndexAllInElasticSearch() {
-        contentDao.reIndexAllInElasticSearch();
+        logger.info("Start re-index contents from database into elastic search...");
+        List<ContentDetail> contents = new ArrayList<ContentDetail>();
+        contentDao.selectAll(contents);
+        for(ContentDetail contentDetail : contents) {
+            try {
+                elasticSearchDao.insertContentInElasticSearch(contentDetail);
+            } catch (IOException e) {
+                logger.error("Failed to insert content into elastic search. Content Id: " + contentDetail.header().id(), e);
+            }
+        }
+        logger.info("Re-index contents operation completed");
     }
 
     /**
-     * Increment the stored count of views for this content.
+     * Increment the stored count of views for this content only if it is in VALIDATED state.
      *
-     * @param contentId the content identifier.
+     * @param contentDetail the content.
      */
-    private void incrementPopularity(Long contentId) {
-        contentDao.incrementPopularity(contentId);
+    private void incrementPopularity(ContentDetail contentDetail) {
+        if (!ContentStatus.VALIDATED.equals(contentDetail.header().status())) {
+            throw new IllegalArgumentException("Should not increment popularity for a content which is not in VALIDATED status");
+        }
+        contentDao.incrementPopularity(contentDetail.header().id());
     }
 
     /**

@@ -27,8 +27,6 @@ public class ContentHeader {
     private List<Domain> domains;
     private List<String> tags;
 
-    // TODO: add index criteria
-
     public ContentHeader title(String _title){
         this.title = _title;
         return this;

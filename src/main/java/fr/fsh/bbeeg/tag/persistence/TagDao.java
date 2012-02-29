@@ -37,12 +37,19 @@ public class TagDao {
         // Initializing QueryTemplates
         this.tagQueryTemplate =
                 new QueryTemplate<Tag>(dataSource, new TagRowMapper())
-                    .addQuery("selectAll", "select * from TAGS")
-                    .addQuery("insert", "insert into TAGS (TAG, WEIGHT) values (:tag, :weight)")
-                    .addQuery("updateWeight", "update TAGS set WEIGHT = :weight where TAG = :tag")
-                    .addQuery("findTagWeight", "select WEIGHT from TAGS where TAG = :tag")
-                    .addQuery("delete", "delete from TAGS where TAG = :tag")
-                    .addQuery("selectLimitedPopular", "select * from (select * from TAGS order by lower(TAG)) where rownum <= :limit");
+                    .addQuery("selectAll",
+                            "select * from TAGS")
+                    .addQuery("insert",
+                            "insert into TAGS (TAG, WEIGHT) values (:tag, :weight)")
+                    .addQuery("updateWeight",
+                            "update TAGS set WEIGHT = :weight where TAG = :tag")
+                    .addQuery("findTagWeight",
+                            "select WEIGHT from TAGS where TAG = :tag")
+                    .addQuery("delete",
+                            "delete from TAGS where TAG = :tag")
+                    .addQuery("selectLimitedPopular",
+                            "select * from TAGS order by lower(TAG) " +
+                            "limit :limit");
     }
 
     private class TagRowMapper implements RowMapper<Tag> {

@@ -66,10 +66,10 @@ public class Assembler {
         domainDao = new DomainDao(dataSource, i18nDao);
         tagDao = new TagDao(dataSource);
         userDao = new UserDao(dataSource, domainDao);
-        contentDao = new ContentDao(dataSource, client, userDao, domainDao, esContentDao, tagDao);
+        contentDao = new ContentDao(dataSource, userDao, domainDao, esContentDao, tagDao);
         securityDao = new SecurityDao(dataSource);
 
-        contentResource = new ContentResource(contentDao, i18nDao,
+        contentResource = new ContentResource(contentDao, esContentDao, i18nDao,
                 BBEEGConfiguration.INSTANCE.cliOptions().contentFileRepository());
         domainResource = new DomainResource(domainDao);
         tagResource = new TagResource(tagDao);
@@ -83,10 +83,10 @@ public class Assembler {
 
     private DataSource createDatasource(CliOptions options) {
         BasicDataSource ds = new BasicDataSource();
-        ds.setUrl("jdbc:h2:file:"+options.h2DbPath());
-        ds.setDriverClassName("org.h2.Driver");
-        ds.setUsername("sa");
-        ds.setPassword("sa");
+        ds.setUrl("jdbc:mysql://localhost:3306/" + options.databaseSchema());
+        ds.setDriverClassName("com.mysql.jdbc.Driver");
+        ds.setUsername("bbeeg");
+        ds.setPassword("bbeeg");
         return ds;
     }
 

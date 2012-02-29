@@ -1,23 +1,32 @@
 package fr.fsh.bbeeg.common.persistence;
 
-import fr.fsh.bbeeg.content.pojos.ContentDetail;
+import fr.fsh.bbeeg.content.pojos.*;
 import fr.fsh.bbeeg.domain.pojos.Domain;
 import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
+import org.elasticsearch.index.query.*;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.sort.SortOrder;
 import org.elasticsearch.transport.RemoteTransportException;
+import org.joda.time.DateMidnight;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
+import static fr.fsh.bbeeg.content.pojos.SearchMode.values;
 import static org.elasticsearch.client.Requests.createIndexRequest;
 import static org.elasticsearch.client.Requests.putMappingRequest;
+import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * @author fcamblor
@@ -50,6 +59,241 @@ public class ElasticSearchDao {
         this.indexName = indexName;
         this.indexType = indexType;
         this.indexingExecutors = indexingExecutors;
+    }
+
+    public List<Long> search(SimpleSearchQueryObject query) {
+        Date serverTimestamp; // TODO: Don't forget to filter by server timestamp
+
+        if (query.serverTimestamp() == null) {
+            serverTimestamp = new DateMidnight().toDate();
+        } else {
+            serverTimestamp = query.serverTimestamp();
+        }
+
+        List<Integer> statuses = filterContentStatuses(values()[query.searchMode()]);
+
+        BoolQueryBuilder elasticSearchQuery = createElasticSearchQuery(statuses);
+        configureFullTextQuery(elasticSearchQuery, query.query());
+        configureAuthorsQuery(elasticSearchQuery, query.authors());
+
+        FilterBuilder filterBuilder = null;
+        if (SearchMode.ALL_VALIDATED.ordinal() == query.searchMode()) {
+            filterBuilder = configurePublicationDateFilter();
+        }
+
+        List<Long> contentIds;
+        if (filterBuilder == null) {
+            contentIds = searchInElasticSearch(query.startingOffset(), query.numberOfContents(), elasticSearchQuery);
+        } else {
+            QueryBuilder filteredQuery = QueryBuilders.filteredQuery(elasticSearchQuery, filterBuilder);
+            contentIds = searchInElasticSearch(query.startingOffset(), query.numberOfContents(), filteredQuery);
+        }
+        return contentIds;
+    }
+
+    public List<Long> search(AdvancedSearchQueryObject query) {
+        Date serverTimestamp; // TODO: Don't forget to filter by server timestamp
+
+        if (query.serverTimestamp() == null) {
+            serverTimestamp = new DateMidnight().toDate();
+        } else {
+            serverTimestamp = query.serverTimestamp();
+        }
+
+        List<Integer> statuses = filterContentStatuses(values()[query.searchMode()]);
+
+        BoolQueryBuilder elasticSearchQuery = createElasticSearchQuery(statuses);
+        configureFullTextQuery(elasticSearchQuery, query.query());
+        configureAuthorsQuery(elasticSearchQuery, query.authors());
+        configureDomainsQuery(elasticSearchQuery, query.domains());
+        configureContentTypeQuery(elasticSearchQuery, query.searchTypes());
+
+
+        FilterBuilder filterBuilders = getAdvancedQueryFilterBuilders(query);
+
+        List<Long> contentIds;
+        if (filterBuilders == null) {
+            contentIds = searchInElasticSearch(query.startingOffset(), query.numberOfContents(), elasticSearchQuery);
+        } else {
+            QueryBuilder filteredQuery = QueryBuilders.filteredQuery(elasticSearchQuery, filterBuilders);
+            contentIds = searchInElasticSearch(query.startingOffset(), query.numberOfContents(), filteredQuery);
+        }
+        return contentIds;
+    }
+
+    /**
+     * Build the dates filters with creation date filter and publication start and end dates filter for ALL_VALIDATED search mode
+     *
+     * @param query the query to performed
+     * @return a {@FilterBuilder}
+     */
+    private FilterBuilder getAdvancedQueryFilterBuilders(AdvancedSearchQueryObject query) {
+        FilterBuilder filterBuilder = null;
+        RangeFilterBuilder creationDateRangeFilter = configureCreationDateFilter(query.from(), query.to());
+        if (creationDateRangeFilter != null) {
+            filterBuilder = FilterBuilders.andFilter(creationDateRangeFilter);
+        }
+        if (SearchMode.ALL_VALIDATED.ordinal() == query.searchMode()) {
+            filterBuilder = FilterBuilders.andFilter(configurePublicationDateFilter());
+        }
+        return filterBuilder;
+    }
+
+    /**
+     * Build the publication start and end date elastic search range filter.
+     *
+     * @return a {@FilterBuilder}
+     */
+    private FilterBuilder configurePublicationDateFilter() {
+        Date today = new DateMidnight().toDate();
+
+        RangeFilterBuilder startPublicationRangeFilter = FilterBuilders.rangeFilter(ElasticSearchDao.ES_CONTENT_FIELD_PUBLICATION_START_DATE);
+        startPublicationRangeFilter.lte(today);
+
+        MissingFilterBuilder startPublicationMissing = FilterBuilders.missingFilter(ElasticSearchDao.ES_CONTENT_FIELD_PUBLICATION_START_DATE);
+
+        RangeFilterBuilder endPublicationRangeFilter = FilterBuilders.rangeFilter(ElasticSearchDao.ES_CONTENT_FIELD_PUBLICATION_END_DATE);
+        endPublicationRangeFilter.gte(today);
+
+        MissingFilterBuilder endPublicationMissing = FilterBuilders.missingFilter(ElasticSearchDao.ES_CONTENT_FIELD_PUBLICATION_END_DATE);
+
+        FilterBuilder startPublicationDateFilterBuilder = FilterBuilders.orFilter(startPublicationRangeFilter, startPublicationMissing);
+        FilterBuilder endPublicationDateFilterBuilder = FilterBuilders.orFilter(endPublicationRangeFilter, endPublicationMissing);
+        return FilterBuilders.andFilter(startPublicationDateFilterBuilder, endPublicationDateFilterBuilder);
+    }
+
+    private void configureAuthorsQuery(BoolQueryBuilder elasticSearchQuery, String[] authors) {
+        if (authors != null && authors.length > 0) {
+            elasticSearchQuery.must(QueryBuilders.termsQuery(ElasticSearchDao.ES_CONTENT_FIELD_AUTHOR, authors));
+        }
+    }
+
+    private BoolQueryBuilder createElasticSearchQuery(List<Integer> statuses) {
+        return boolQuery().must(inQuery(ElasticSearchDao.ES_CONTENT_FIELD_STATUS, statuses.toArray()));
+        //.must(QueryBuilders.rangeQuery(ES_CONTENT_LAST_MODIF_DATE).lt(serverTimestamp));
+        // TODO: Use serverTImeStamp to filter
+    }
+
+    /**
+     * Search in elastic search and returns the relational identifiers of the hits.
+     *
+     * @param startingOffset     the starting offset used to set the from property of the elastic search query
+     * @param numberOfContents   the limit of results to return
+     * @param elasticSearchQuery the elastic search
+     * @return a list of ids of matched contents in elastic search
+     */
+    private List<Long> searchInElasticSearch(Integer startingOffset, Integer numberOfContents, QueryBuilder elasticSearchQuery) {
+        SearchResponse sResponse = elasticSearchClient.prepareSearch(indexName())
+                .setSearchType(SearchType.QUERY_THEN_FETCH)
+                .setQuery(elasticSearchQuery)
+                .setFrom(startingOffset)
+                .setSize(numberOfContents)
+                .addSort(ElasticSearchDao.ES_CONTENT_FIELD_LAST_MODIF_DATE, SortOrder.DESC)
+                .addSort("_score", SortOrder.DESC)
+                        //.setMinScore(0.3f)
+                .execute().actionGet();
+
+        // Get the content ids from the result.
+        List<Long> contentIds = new ArrayList<Long>();
+
+        for (SearchHit searchHit : sResponse.getHits()) {
+            contentIds.add(Long.parseLong(searchHit.id()));
+        }
+        return contentIds;
+    }
+
+    /**
+     * Returns a RangeFilterBuilder depending on the given range dates. If both dates are <code>null</code>, return <code>null</code>.
+     * @param from the from date filter
+     * @param to   the to date filter
+     */
+    private RangeFilterBuilder configureCreationDateFilter(Date from, Date to) {
+        RangeFilterBuilder rangeFilter = FilterBuilders.rangeFilter(ElasticSearchDao.ES_CONTENT_FIELD_CREATION_DATE);
+        if (from != null) {
+            rangeFilter.from(from);
+        }
+        if (to != null) {
+            rangeFilter.to(to);
+        }
+        if (from != null || to != null) {
+            return rangeFilter;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Filter the content by status depending on the search mode.
+     * @param searchMode the current mode of the search. Must not be null.
+     * @return the list of statuses that will be accepted by the search.
+     */
+    private List<Integer> filterContentStatuses(SearchMode searchMode) {
+
+        if (searchMode.ordinal() >= values().length) {
+            // TODO: throw an exception
+        }
+
+        List<Integer> statuses = new ArrayList<Integer>();
+
+        switch (searchMode) {
+            case ALL_VALIDATED:
+                statuses.add(ContentStatus.VALIDATED.ordinal());
+                break;
+            case ONLY_USER_CONTENTS :
+                statuses.add(ContentStatus.DRAFT.ordinal());
+                statuses.add(ContentStatus.VALIDATED.ordinal());
+                statuses.add(ContentStatus.REJECTED.ordinal());
+                statuses.add(ContentStatus.TO_BE_VALIDATED.ordinal());
+                statuses.add(ContentStatus.TO_BE_DELETED.ordinal());
+                break;
+            case ONLY_CONTENTS_TO_TREAT:
+                statuses.add(ContentStatus.TO_BE_VALIDATED.ordinal());
+                statuses.add(ContentStatus.TO_BE_DELETED.ordinal());
+                break;
+            default:
+                // TODO
+        }
+        return statuses;
+    }
+
+    /**
+     * Contribute to the elastic search query adding full text search on 'title', 'description', 'fileContent' and 'tags'.
+     * @param elasticSearchQuery the elastic search query to contribute to.
+     * @param textToSearch the text to be searched
+     */
+    private void configureFullTextQuery(BoolQueryBuilder elasticSearchQuery,String textToSearch) {
+        if (textToSearch != null && !textToSearch.isEmpty()) {
+            elasticSearchQuery.must(QueryBuilders.disMaxQuery()
+                    .add(termQuery(ElasticSearchDao.ES_CONTENT_FIELD_TITLE, textToSearch).boost(5))
+                    .add(termQuery(ElasticSearchDao.ES_CONTENT_FIELD_DESCRIPTION, textToSearch).boost(3))
+                    .add(termQuery(ElasticSearchDao.ES_CONTENT_FIELD_FILECONTENT, textToSearch).boost(4))
+                    .add(termQuery(ElasticSearchDao.ES_CONTENT_FIELD_TAGS, textToSearch).boost(5)));
+        }
+    }
+
+    /**
+     * Contribute to the elastic search query adding search criteria on 'domains'.
+     * The match is made on the intersection of the list of searched domains and found contents domain list.
+     *
+     * @param elasticSearchQuery the elastic search query to contribute to.
+     * @param domains            the domains used to filter the returned contents
+     */
+    private void configureDomainsQuery(BoolQueryBuilder elasticSearchQuery, String[] domains) {
+        if (domains != null && domains.length > 0) {
+            elasticSearchQuery.must(QueryBuilders.termsQuery(ElasticSearchDao.ES_CONTENT_FIELD_DOMAINS, domains));
+        }
+    }
+
+    /**
+     * Contribute to the elastic search query adding search criteria on 'contentType'.
+     *
+     * @param elasticSearchQuery the elastic search query to contribute to.
+     * @param searchTypes        the content types used to filter the returned contents
+     */
+    private void configureContentTypeQuery(BoolQueryBuilder elasticSearchQuery, String[] searchTypes) {
+        if (searchTypes != null && searchTypes.length > 0) {
+            elasticSearchQuery.must(QueryBuilders.termsQuery(ElasticSearchDao.ES_CONTENT_FIELD_CONTENT_TYPE, searchTypes));
+        }
     }
 
     // This method is not optimized.

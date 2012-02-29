@@ -27,7 +27,7 @@ public class DomainDao {
                         .addQuery("selectById", "select * from Domain where id = :id")
                         .addQuery("selectByIds", "select * from Domain where id in :ids")
                         .addQuery("selectAll", "select * from Domain")
-                        .addQuery("selectLimitedPopular", // TODO: change request or remove it. Use elasticSearch insteed
+                        .addQuery("selectLimitedPopular",
                                 "select * from (select * from Domain) " +
                                         "where ROWNUM <= :limit");
     }

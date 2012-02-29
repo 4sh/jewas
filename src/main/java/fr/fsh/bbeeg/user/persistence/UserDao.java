@@ -25,12 +25,21 @@ public class UserDao {
 
         this.userQueryTemplate =
                 new QueryTemplate<User>(dataSource, new UserRowMapper())
-                        .addQuery("selectById", "select * from User where id = :id")
-                        .addQuery("selectByLogin", "select * from User where login = :login")
-                        .addQuery("selectLimitedAuthors", "select * from (select distinct(u.*) from User u " +
-                                "inner join Content c on c.author_ref = u.id and c.status = :status order by u.name asc)" +
-                                "where ROWNUM <= :limit")
-                        .addQuery("updateInfos", "update User set name = :lastName, surname = :firstName, email = :email where login = :login");
+                        .addQuery("selectById",
+                            "select * from User where id = :id")
+                        .addQuery("selectByLogin",
+                            "select * from User where login = :login")
+                        .addQuery("selectLimitedAuthors",
+                            "select distinct(u.id), u.login, u.name, u.surname, u.email from USER u " +
+                            "inner join CONTENT c on c.author_ref = u.id " +
+                            "and c.status = :status " +
+                            "order by u.name asc " +
+                            "limit :limit")
+                        .addQuery("updateInfos",
+                            "update User set name = :lastName, " +
+                            "surname = :firstName, " +
+                            "email = :email " +
+                            "where login = :login");
     }
 
     public User getUser(Long id) {

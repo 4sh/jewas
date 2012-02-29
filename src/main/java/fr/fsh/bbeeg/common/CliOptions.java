@@ -29,9 +29,6 @@ public class CliOptions {
     @Parameter(names = "-tmpContentFileRepository", description = "Repository of temporary content files", required = true)
     private String tmpContentFileRepository;
 
-    @Parameter(names = "-h2ServerPort", description = "Port of the h2 server", required = true)
-    private String h2ServerPort;
-
     @Parameter(names = "-elasticSearchAdress", description = "Ip adress of the elasticSearch server", required = true)
     private String elasticSearchAdress;
 
@@ -42,16 +39,14 @@ public class CliOptions {
             description = "Number of threads used to asynchronously index Elastic search contents")
     private int numberOfESContentIndexingThreads = 1;
 
+    @Parameter(names = "-databaseSchema", description="The database schema name")
+    private String databaseSchema;
+    
     @Parameter(names = "-cachedStaticResourcesRootDirectory",
             description = "Path for an empty directory where cached static resource files will be extracted",
             required = true /* Doesn't work if in dev mode (auto redeploy doesn't work),
             validateWith = EmptyDirectoryValidator.class */ )
     private File cachedStaticResourcesRootDirectory;
-
-    @Parameter(names = "-h2DbPath",
-            description = "Path where will reside h2 database file",
-            required = true)
-    private File h2DbPath;
 
     public int httpPort() {
         return this.httpPort;
@@ -81,10 +76,6 @@ public class CliOptions {
         return this.tmpContentFileRepository;
     }
 
-    public String h2ServerPort() {
-        return this.h2ServerPort;
-    }
-
     public String elasticSearchAdress() {
         return this.elasticSearchAdress;
     }
@@ -101,8 +92,8 @@ public class CliOptions {
         return this.cachedStaticResourcesRootDirectory;
     }
 
-    public File h2DbPath(){
-        return this.h2DbPath;
+    public String databaseSchema(){
+        return this.databaseSchema;
     }
 
     public static class EmptyDirectoryValidator implements IParameterValidator {

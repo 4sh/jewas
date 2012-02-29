@@ -47,9 +47,9 @@ public class Main {
         try {
             BBEEGConfiguration.INSTANCE.cliOptions(options);
 
-            org.h2.tools.Server.createWebServer("-webPort",
-                    BBEEGConfiguration.INSTANCE.cliOptions().h2ServerPort()).start();
-            Class.forName("org.h2.Driver");
+//            org.h2.tools.Server.createWebServer("-webPort",
+  //                  BBEEGConfiguration.INSTANCE.cliOptions().h2ServerPort()).start();
+  //          Class.forName("org.h2.Driver");
             Assembler assembler = new Assembler(options);
 
             final RestServer rs = RestServerFactory.createRestServer(options.httpPort());
