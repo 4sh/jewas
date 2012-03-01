@@ -23,7 +23,7 @@ public class SecurityDao {
         // Initializing QueryTemplates
         this.securityQueryTemplate =
                 new QueryTemplate<Security>(dataSource, new SecurityRowMapper())
-                        .addQuery("selectSecurity", "SELECT u.LOGIN, u.NAME, U.SURNAME, r.ROLENAME " +
+                        .addQuery("selectSecurity", "SELECT u.LOGIN, u.NAME, u.SURNAME, r.ROLENAME " +
                                 "FROM USER AS u INNER JOIN ROLE AS r ON u.ROLE_REF = r.ID " +
                                 "WHERE u.LOGIN = :login AND u.PASSWORD = :password")
                         .addQuery("selectFullSecurity", "SELECT u.LOGIN, u.NAME, u.SURNAME, r.ROLENAME " +
