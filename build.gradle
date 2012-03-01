@@ -290,7 +290,7 @@ task startBBEEG(dependsOn: [initSsh, checkPropsForDeployment, startElasticSearch
 		    -contentFileRepository ${contentFileRepository} \
 		    -tmpContentFileRepository ${tmpContentFileRepository} \
 		    -cachedStaticResourcesRootDirectory ${cachedStaticResourcesRootDirectory} \
-		    -elasticSearchAdress ${elasticSearchAdress}
+		    -elasticSearchAdress ${elasticSearchAdress} \
 		    -elasticSearchPort ${elasticSearchPort} \
 		    -videoEncodingInput ${videoEncodingInput} \
             -videoEncodingOutput ${videoEncodingOutput} \
