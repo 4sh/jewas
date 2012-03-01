@@ -58,8 +58,8 @@ def ENV_PROPERTIES = [
            visioEegRootUrl: "http://qa.visio.bbeeg.4sh.fr",
            visioEegInternalUrl: "http://127.0.0.1:28087",
            cachedStaticResourcesRootDirectory: ENV_DEMO_DEPLOY_ROOT_PATH+"/qa/bbeeg_cachedStaticResources",
-           contentFileRepository: ENV_DEMO_DEPLOY_ROOT_PATH+"/qa"+"/contents/",
-           tmpContentFileRepository: ENV_DEMO_DEPLOY_ROOT_PATH+"/qa"+"/tmp/",
+           contentFileRepository: ENV_DEMO_DEPLOY_ROOT_PATH+"/qa/contents/",
+           tmpContentFileRepository: ENV_DEMO_DEPLOY_ROOT_PATH+"/qa/tmp/",
            elasticSearchAdress: "127.0.0.1",
            elasticSearchPort: 29200,
            specificJavaOpts: "-Xmx512m"
@@ -280,7 +280,7 @@ task startBBEEG(dependsOn: [initSsh, checkPropsForDeployment, startElasticSearch
     ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 22,
 		command: """${java7Home}/jre/bin/java ${javaOpts} -jar "${deployDirectory}/bbeeg.jar" \
 		    -httpPort ${executionPort} -visioRootUrl ${visioRootUrl} -visioEegInternalUrl ${visioEegInternalUrl} \
-		    -databaseSchema ${databaseSchema}
+		    -databaseSchema ${databaseSchema} \
 		    -contentFileRepository ${contentFileRepository} -tmpContentFileRepository ${tmpContentFileRepository} -cachedStaticResourcesRootDirectory ${cachedStaticResourcesRootDirectory} \
 		    -elasticSearchAdress ${elasticSearchAdress} -elasticSearchPort ${elasticSearchPort} \
 		    > "${deployDirectory}/bbeeg.log" 2> "${deployDirectory}/bbeeg.err.log" \
