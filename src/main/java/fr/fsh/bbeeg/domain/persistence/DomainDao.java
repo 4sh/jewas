@@ -24,11 +24,11 @@ public class DomainDao {
 
         this.domainQueryTemplate =
                 new QueryTemplate<Domain>(dataSource, new DomainToReadRowMapper())
-                        .addQuery("selectById", "select * from Domain where id = :id")
-                        .addQuery("selectByIds", "select * from Domain where id in :ids")
-                        .addQuery("selectAll", "select * from Domain")
+                        .addQuery("selectById", "select * from DOMAIN where ID = :id")
+                        .addQuery("selectByIds", "select * from DOMAIN where ID in :ids")
+                        .addQuery("selectAll", "select * from DOMAIN")
                         .addQuery("selectLimitedPopular",
-                                "select * from (select * from Domain) " +
+                                "select * from (select * from DOMAIN) " +
                                         "where ROWNUM <= :limit");
     }
 

@@ -62,7 +62,7 @@ public class ContentDao {
                         .addQuery("selectAll",
                                 "select * from CONTENT")
                         .addQuery("selectUrl",
-                                "select FILE_URI from CONTENT where id = :id")
+                                "select FILE_URI from CONTENT where ID = :id")
                         .addQuery("selectLimitedRecent",
                                 "select * from CONTENT where STATUS = :status " +
                                 "and (PUBLICATION_START_DATE <= :today or PUBLICATION_START_DATE is null) " +

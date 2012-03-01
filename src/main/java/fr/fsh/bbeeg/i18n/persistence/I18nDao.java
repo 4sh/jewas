@@ -17,7 +17,7 @@ public class I18nDao {
     public I18nDao(DataSource dataSource) {
         this.i18nQueryTemplate =
                 new QueryTemplate<String>(dataSource, new I18nRowMapper())
-                        .addQuery("selectByKeyAndLanguage", "select label from I18N_TABLE where I18N_KEY = :key and language = :language");
+                        .addQuery("selectByKeyAndLanguage", "select LABEL from I18N_TABLE where I18N_KEY = :key and LANGUAGE = :language");
     }
 
     /**

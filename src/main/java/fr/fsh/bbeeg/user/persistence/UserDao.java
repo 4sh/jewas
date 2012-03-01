@@ -26,20 +26,20 @@ public class UserDao {
         this.userQueryTemplate =
                 new QueryTemplate<User>(dataSource, new UserRowMapper())
                         .addQuery("selectById",
-                            "select * from User where id = :id")
+                            "select * from USER where ID = :id")
                         .addQuery("selectByLogin",
-                            "select * from User where login = :login")
+                            "select * from USER where LOGIN = :login")
                         .addQuery("selectLimitedAuthors",
-                            "select distinct(u.id), u.login, u.name, u.surname, u.email from USER u " +
-                            "inner join CONTENT c on c.author_ref = u.id " +
-                            "and c.status = :status " +
-                            "order by u.name asc " +
+                            "select distinct(u.ID), u.LOGIN, u.NAME, u.SURNAME, u.EMAIL from USER u " +
+                            "inner join CONTENT c on c.AUTHOR_REF = u.ID " +
+                            "and c.STATUS = :status " +
+                            "order by u.NAME asc " +
                             "limit :limit")
                         .addQuery("updateInfos",
-                            "update User set name = :lastName, " +
-                            "surname = :firstName, " +
-                            "email = :email " +
-                            "where login = :login");
+                            "update USER set NAME = :lastName, " +
+                            "SURNAME = :firstName, " +
+                            "EMAIL = :email " +
+                            "where LOGIN = :login");
     }
 
     public User getUser(Long id) {
