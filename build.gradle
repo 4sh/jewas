@@ -62,6 +62,8 @@ def ENV_PROPERTIES = [
            tmpContentFileRepository: ENV_DEMO_DEPLOY_ROOT_PATH+"/qa/tmp/",
            elasticSearchAdress: "127.0.0.1",
            elasticSearchPort: 29200,
+           videoEncodingInput: ENV_DEMO_DEPLOY_ROOT_PATH + "/qa/videoConverter/in",
+           videoEncodingOutput: ENV_DEMO_DEPLOY_ROOT_PATH + "/qa/videoConverter/out",
            specificJavaOpts: "-Xmx512m"
    ]
 ]
@@ -256,6 +258,8 @@ task startBBEEG(dependsOn: [initSsh, checkPropsForDeployment, startElasticSearch
     def visioRootUrl = targetEnv.visioEegRootUrl
     def visioEegInternalUrl = targetEnv.visioEegInternalUrl
     def contentFileRepository = targetEnv.contentFileRepository
+    def videoEncodingInput = targetEnv.videoEncodingInput
+    def videoEncodingOutput = targetEnv.videoEncodingOutput
     def tmpContentFileRepository = targetEnv.tmpContentFileRepository
     def elasticSearchPort = targetEnv.elasticSearchPort
     def elasticSearchAdress = targetEnv.elasticSearchAdress
@@ -279,10 +283,17 @@ task startBBEEG(dependsOn: [initSsh, checkPropsForDeployment, startElasticSearch
     // TODO: pass the http port here...
     ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 22,
 		command: """${java7Home}/jre/bin/java ${javaOpts} -jar "${deployDirectory}/bbeeg.jar" \
-		    -httpPort ${executionPort} -visioRootUrl ${visioRootUrl} -visioEegInternalUrl ${visioEegInternalUrl} \
+		    -httpPort ${executionPort} \
+		    -visioRootUrl ${visioRootUrl} \
+		    -visioEegInternalUrl ${visioEegInternalUrl} \
 		    -databaseSchema ${databaseSchema} \
-		    -contentFileRepository ${contentFileRepository} -tmpContentFileRepository ${tmpContentFileRepository} -cachedStaticResourcesRootDirectory ${cachedStaticResourcesRootDirectory} \
-		    -elasticSearchAdress ${elasticSearchAdress} -elasticSearchPort ${elasticSearchPort} \
+		    -contentFileRepository ${contentFileRepository} \
+		    -tmpContentFileRepository ${tmpContentFileRepository} \
+		    -cachedStaticResourcesRootDirectory ${cachedStaticResourcesRootDirectory} \
+		    -elasticSearchAdress ${elasticSearchAdress}
+		    -elasticSearchPort ${elasticSearchPort} \
+		    -videoEncodingInput ${videoEncodingInput} \
+            -videoEncodingOutput ${videoEncodingOutput} \
 		    > "${deployDirectory}/bbeeg.log" 2> "${deployDirectory}/bbeeg.err.log" \
 		    & echo \$! > "${deployDirectory}/bbeeg.pid" """,
         trust: true, failonerror: true)
