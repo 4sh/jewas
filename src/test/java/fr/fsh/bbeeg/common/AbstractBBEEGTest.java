@@ -4,8 +4,8 @@ import fr.fsh.bbeeg.content.persistence.DatabaseInitializator;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.dbunit.IDatabaseTester;
 import org.dbunit.JdbcDatabaseTester;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 
 public class AbstractBBEEGTest {
 
@@ -43,8 +43,8 @@ public class AbstractBBEEGTest {
      *
      * @throws Exception
      */
-    @BeforeClass
-    public static void setUp() throws Exception {
+    @Before
+    public void beforeTest() throws Exception {
         databaseTester = new JdbcDatabaseTester(DRIVER_CLASS,
                 JDBC_URL, USERNAME, PASSWORD);
 
@@ -60,7 +60,7 @@ public class AbstractBBEEGTest {
         //MainFactory mainFactory = new MainFactory(configurationUrl);
         //DbMaintainer dbMaintainer = createDbMaintainer();
         //dbMaintainer.updateDatabase(false);
-        DatabaseInitializator.initDB(JDBC_URL);
+        DatabaseInitializator.initDB(JDBC_URL, USERNAME, PASSWORD);
 
         // initialize your dataset here
         //IDataSet dataSet = null;
@@ -76,8 +76,9 @@ public class AbstractBBEEGTest {
      *
      * @throws Exception
      */
-    @AfterClass
-    public static void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
+        DatabaseInitializator.cleanupDB(JDBC_URL, USERNAME, PASSWORD);
         // will call default tearDownOperation
         databaseTester.onTearDown();
     }

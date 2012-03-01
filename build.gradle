@@ -79,15 +79,18 @@ gradle.taskGraph.whenReady {taskGraph ->
         versionForManifest = versionBase + "-" + timestamp
     }
     jar {
-      manifest {
-        attributes 'Main-Class': 'fr.fsh.bbeeg.Main'
-        attributes 'Implementation-Title': 'BB-EEG'
-        attributes 'Implementation-Version': versionForManifest
-        attributes 'Implementation-Vendor': '4SH France'
-      }
+        manifest {
+            attributes 'Main-Class': 'fr.fsh.bbeeg.Main'
+            attributes 'Implementation-Title': 'BB-EEG'
+            attributes 'Implementation-Version': versionForManifest
+            attributes 'Implementation-Vendor': '4SH France'
+        }
     }
 }
 
+/**
+ * Manage 4SH repositories connection.
+ */
 repositories {
     maven {
         credentials {
@@ -110,7 +113,7 @@ dependencies {
             [group: 'mysql', name: 'mysql-connector-java', version: '5.1.18'],
             [group: 'org.slf4j', name: 'slf4j-api', version: '1.6.4'],
             [group: 'fr.4sh.jewas', name: 'jewas', version: '0.1-SNAPSHOT', transitive: true],
-            [group: 'com.beust', name:'jcommander', version: '1.17', transitive: true],
+            [group: 'com.beust', name: 'jcommander', version: '1.17', transitive: true],
             [group: 'commons-dbcp', name: 'commons-dbcp', version: '1.4'],
             [group: 'org.elasticsearch', name: 'elasticsearch', version: '0.17.6'],
             [group: 'org.elasticsearch', name: 'elasticsearch-mapper-attachments', version: '0.17.6'],
@@ -142,6 +145,11 @@ sourceSets {
         resources {
             srcDir "src/integration-test/resources"
         }
+    }
+    // Warning: this configuration is due to gradle way the manifest.mf is accessed in Java.
+    // When tests are run with gradle, the manifest.mf is not copied with the classes which leads to 'FileNotFoundException'
+    main {
+        output.resourcesDir = sourceSets.main.output.classesDir
     }
 }
 

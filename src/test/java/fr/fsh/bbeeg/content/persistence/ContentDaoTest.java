@@ -36,6 +36,14 @@ public class ContentDaoTest extends AbstractBBEEGTest {
         // Initialize ContentDao
         contentDao = new ContentDao(dataSource(), new UserDaoMock(), new DomainDaoMock(), new ElasticSearchDaoMock(), new TagDaoMock());
 
+        String[] tables =  {"CONTENT"};
+        IDataSet databaseDataSet = databaseTester().getConnection().createDataSet(tables);
+        try {
+            DatabaseOperation.DELETE_ALL.execute(databaseTester().getConnection(), databaseDataSet);
+        } finally {
+            databaseTester().getConnection().close();
+        }
+
         // Setup
         String description = "description content";
         String title = "Content title";
@@ -74,7 +82,6 @@ public class ContentDaoTest extends AbstractBBEEGTest {
         contentDao.createContent(newVersion);
 
         // Fetch database data after executing your code
-        IDataSet databaseDataSet = databaseTester().getConnection().createDataSet();
         ITable actualTable = databaseDataSet.getTable("CONTENT");
 
         // Load expected data from an XML dataset

@@ -10,8 +10,8 @@ import java.sql.SQLException;
 
 public class DatabaseInitializator {
 
-    public static void initDB(String jdbcURL) throws SQLException, IOException {
-        Connection dbInitializationConnection = DriverManager.getConnection(jdbcURL, "bbeeg", "bbeeg");
+    public static void initDB(String jdbcURL, String username, String password) throws SQLException, IOException {
+        Connection dbInitializationConnection = DriverManager.getConnection(jdbcURL, username, password);
         ScriptRunner sr = new ScriptRunner(dbInitializationConnection, true, true);
         String scriptsLocation = "/database/incremental/01_v1.0/";
 
@@ -36,4 +36,12 @@ public class DatabaseInitializator {
             // V1.1
     }
 
+    public static void cleanupDB(String jdbcURL, String username, String password) throws SQLException, IOException {
+        Connection dbInitializationConnection = DriverManager.getConnection(jdbcURL, username, password);
+        ScriptRunner sr = new ScriptRunner(dbInitializationConnection, true, true);
+        String scriptsLocation = "/scripts/";
+
+        sr.runScript(new InputStreamReader(DatabaseInitializator.class.getResourceAsStream(scriptsLocation + "cleanUp.sql")));
+    }
+    
 }
