@@ -1,3 +1,5 @@
+import com.sun.tools.javac.util.Convert
+
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'maven'
@@ -17,17 +19,22 @@ def COVERAGE_SYS_PROPERTY = "test.coverage.activated"
 // TODO: implement the war file related build ?
 // Useless property (for the moment...)
 def STANDALONE_PACKAGING = true
-// Root directory on demo environnment, where will be hosted every targetEnvironnment directories
+// Root directory on demo environment, where will be hosted every targetEnvironment directories
 def ENV_DEMO_DEPLOY_ROOT_PATH = "/home/bbeeg/dist";
 // Demo connection properties
 def ENV_DEMO_HOST = '192.168.0.200'
 def ENV_DEMO_USER = "bbeeg"
 def ENV_DEMO_PASS = "4SHbbfr"
-// System property used to define target execution environnment used for deployment
-// See ENV_PROPERTIES map for the possible values to set in this system property
+
+/*
+ * System property used to define target execution environment used for deployment
+ * See ENV_PROPERTIES map for the possible values to set in this system property
+ */
 def TARGET_ENV_SYS_PROPERTY = "deploy.target.env"
+
 // System property used to skip upload of artefact during start* tasks
 def SKIP_UPLOAD_SYS_PROPERTY = "deploy.skip.upload"
+
 // System property used to define an XDebug java port to launch remote app in debug mode
 def DEBUG_PORT_SYS_PROPERTY = "deploy.debug.port"
 
@@ -37,39 +44,44 @@ if(!hasProperty("releasesRepoUsername")
 }
 
 def ENV_PROPERTIES = [
-   nightly: [
-           targetDir: ENV_DEMO_DEPLOY_ROOT_PATH+"/nightly",
-           dbmaintainDir: ENV_DEMO_DEPLOY_ROOT_PATH + "/qa/dbmaintain/",
-           databaseSchema: "bbeeg_nightly",
-           bbeegPort: 18086,
-           visioEegRootUrl: "http://nightly.visio.bbeeg.4sh.fr",
-           visioEegInternalUrl: "http://127.0.0.1:18087",
-           cachedStaticResourcesRootDirectory: ENV_DEMO_DEPLOY_ROOT_PATH+"/nightly/bbeeg_cachedStaticResources",
-           contentFileRepository: ENV_DEMO_DEPLOY_ROOT_PATH+"/nightly"+"/contents/",
-           tmpContentFileRepository: ENV_DEMO_DEPLOY_ROOT_PATH+"/nightly"+"/tmp/",
-           elasticSearchAdress: "127.0.0.1",
-           elasticSearchPort: 19200,
-           specificJavaOpts: "-Xmx256m"
-   ], qa: [
-           targetDir: ENV_DEMO_DEPLOY_ROOT_PATH + "/qa",
-           dbmaintainDir: ENV_DEMO_DEPLOY_ROOT_PATH + "/qa/dbmaintain/",
-           databaseSchema: "bbeeg_qa",
-           bbeegPort: 28086,
-           visioEegRootUrl: "http://qa.visio.bbeeg.4sh.fr",
-           visioEegInternalUrl: "http://127.0.0.1:28087",
-           cachedStaticResourcesRootDirectory: ENV_DEMO_DEPLOY_ROOT_PATH+"/qa/bbeeg_cachedStaticResources",
-           contentFileRepository: ENV_DEMO_DEPLOY_ROOT_PATH+"/qa/contents/",
-           tmpContentFileRepository: ENV_DEMO_DEPLOY_ROOT_PATH+"/qa/tmp/",
-           elasticSearchAdress: "127.0.0.1",
-           elasticSearchPort: 29200,
-           videoEncodingInput: ENV_DEMO_DEPLOY_ROOT_PATH + "/qa/videoConverter/in",
-           videoEncodingOutput: ENV_DEMO_DEPLOY_ROOT_PATH + "/qa/videoConverter/out",
-           specificJavaOpts: "-Xmx512m"
-   ]
+        test: [
+                rootEnvDir: ENV_DEMO_DEPLOY_ROOT_PATH + "/test",
+                contentFileRepository: ENV_DEMO_DEPLOY_ROOT_PATH + "/test/data/contents/",
+                tmpContentFileRepository: ENV_DEMO_DEPLOY_ROOT_PATH + "/test/data/tmpContents/",
+                cachedStaticResourcesRootDirectory: ENV_DEMO_DEPLOY_ROOT_PATH + "/test/apps/bbeeg/bbeeg_cachedStaticResources",
+                logDirectory: ENV_DEMO_DEPLOY_ROOT_PATH + "/log",
+                videoEncodingInput: ENV_DEMO_DEPLOY_ROOT_PATH + "/test/apps/videoConverter/in",
+                videoEncodingOutput: ENV_DEMO_DEPLOY_ROOT_PATH + "/test/apps/videoConverter/out",
+                dbmaintainDir: ENV_DEMO_DEPLOY_ROOT_PATH + "/test/dbmaintain/",
+                databaseSchema: "bbeeg_test",
+                visioEegRootUrl: "http://test.visio.bbeeg.4sh.fr",
+                visioEegInternalUrl: "http://127.0.0.1:18087",
+                elasticSearchAdress: "127.0.0.1",
+                elasticSearchPort: 19200,
+                bbeegPort: 18086,
+                specificJavaOpts: "-Xmx256m"
+        ],
+        qa: [
+                rootEnvDir: ENV_DEMO_DEPLOY_ROOT_PATH + "/qa",
+                contentFileRepository: ENV_DEMO_DEPLOY_ROOT_PATH + "/qa/data/contents/",
+                tmpContentFileRepository: ENV_DEMO_DEPLOY_ROOT_PATH + "/qa/data/tmpContents/",
+                cachedStaticResourcesRootDirectory: ENV_DEMO_DEPLOY_ROOT_PATH + "/qa/apps/bbeeg/bbeeg_cachedStaticResources",
+                logDirectory: ENV_DEMO_DEPLOY_ROOT_PATH + "/log",
+                videoEncodingInput: ENV_DEMO_DEPLOY_ROOT_PATH + "/qa/apps/videoConverter/in",
+                videoEncodingOutput: ENV_DEMO_DEPLOY_ROOT_PATH + "/qa/apps/videoConverter/out",
+                dbmaintainDir: ENV_DEMO_DEPLOY_ROOT_PATH + "/qa/dbmaintain/",
+                databaseSchema: "bbeeg_qa",
+                visioEegRootUrl: "http://qa.visio.bbeeg.4sh.fr",
+                visioEegInternalUrl: "http://127.0.0.1:28087",
+                elasticSearchAdress: "127.0.0.1",
+                elasticSearchPort: 29200,
+                bbeegPort: 28086,
+                specificJavaOpts: "-Xmx512m"
+        ]
 ]
 
 group = "fr.4sh.bbeeg"
-def versionBase = "1.0.beta"
+def versionBase = "1.1.beta"
 
 // handles releases gracefully
 gradle.taskGraph.whenReady {taskGraph ->
@@ -110,6 +122,9 @@ configurations {
     ssh
 }
 
+/*
+ * Dependencies management.
+ */
 dependencies {
     compile(
             [group: 'mysql', name: 'mysql-connector-java', version: '5.1.18'],
@@ -155,7 +170,7 @@ sourceSets {
     }
 }
 
-// Allows to generate USER_HOME idea variable uniformely on every OS
+/* Allows to generate USER_HOME idea variable which helps to have same idea.iml file on every OS */
 ideaModule {
     variables.put("USER_HOME", file(System.getProperty("user.home")))
 }
@@ -176,10 +191,11 @@ if(STANDALONE_PACKAGING){
     }
 }
 
+/* Check that the TARGET_ENV_SYS_PROPERTY is correctly defined */
 task checkPropsForDeployment << {
-    if(System.properties[TARGET_ENV_SYS_PROPERTY] == null
-            || !ENV_PROPERTIES.containsKey(System.properties[TARGET_ENV_SYS_PROPERTY])){
-        throw new IllegalArgumentException("You should define <"+TARGET_ENV_SYS_PROPERTY+"> system property !")
+    if (System.properties[TARGET_ENV_SYS_PROPERTY] == null
+            || !ENV_PROPERTIES.containsKey(System.properties[TARGET_ENV_SYS_PROPERTY])) {
+        throw new IllegalArgumentException("You should define <" + TARGET_ENV_SYS_PROPERTY + "> system property !")
     }
 }
 
@@ -194,7 +210,8 @@ task initSsh << {
 
 task uploadOnDemo(dependsOn: [initSsh, checkPropsForDeployment, test, build]) << {
     if(!"true".equals(System.properties[SKIP_UPLOAD_SYS_PROPERTY])){
-        def deployDirectory = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].targetDir
+
+        def deployDirectory = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].rootEnvDir + "/apps/bbeeg"
 
         println "Deploying BB-EEG to $deployDirectory"
 
@@ -215,7 +232,7 @@ task uploadOnDemo(dependsOn: [initSsh, checkPropsForDeployment, test, build]) <<
 }
 
 task bootstrapElasticSearch() << {
-    def deployDirectory = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].targetDir
+    def deployDirectory = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].rootEnvDir
 
     // Installing needed plugins
     ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 22,
@@ -225,11 +242,12 @@ task bootstrapElasticSearch() << {
 }
 
 task startElasticSearch(dependsOn: [initSsh, checkPropsForDeployment]) << {
-    def deployDirectory = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].targetDir
-    def executionPort = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].elasticSearchPort
+    def deployDirectory = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].rootEnvDir + "/apps/elasticsearch";
+    def executionPort = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].elasticSearchPort;
+    def logDirectory = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].logDirectory;
 
     ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 22,
-		command: """kill -9 \$(cat "${deployDirectory}/elasticsearch.pid")""", trust: true, failonerror: false)
+            command: """kill -9 \$(cat "${deployDirectory}/elasticsearch.pid")""", trust: true, failonerror: false)
 
     // Waiting 5s after kill of elastic search
     Object.sleep(5000)
@@ -237,23 +255,20 @@ task startElasticSearch(dependsOn: [initSsh, checkPropsForDeployment]) << {
     ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 22,
             command: """mv ${deployDirectory}/elasticsearch/data ${deployDirectory}/elasticsearch/data-${timestamp}""", trust: true, failonerror: false)
 
-    // Waiting 5s after remove data folder of elastic search
-    //Object.sleep(5000)
-
     ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 22,
-		command: """${deployDirectory}/elasticsearch/bin/elasticsearch \
+            command: """${deployDirectory}/elasticsearch/bin/elasticsearch \
 		    -f -Des.transport.tcp.port=${executionPort} -Des.index.store.type=memory -Xms512m -Xmx512m  \
-		    > "${deployDirectory}/elasticsearch.log" 2> "${deployDirectory}/elasticsearch.err.log" \
+		    > "${logDirectory}/elasticsearch.log" 2> "${logDirectory}/elasticsearch.err.log" \
 		    & echo \$! > "${deployDirectory}/elasticsearch.pid" """,
-        trust: true, failonerror: true)
-    
+            trust: true, failonerror: true)
+
     // Waiting 5s after start of elastic search
     Object.sleep(5000)
 }
 
 task startBBEEG(dependsOn: [initSsh, checkPropsForDeployment, startElasticSearch]) << {
     def targetEnv = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]]
-    def deployDirectory = targetEnv.targetDir
+    def deployDirectory = targetEnv.rootEnvDir + "/apps/bbeeg"
     def executionPort = targetEnv.bbeegPort
     def visioRootUrl = targetEnv.visioEegRootUrl
     def visioEegInternalUrl = targetEnv.visioEegInternalUrl
@@ -268,6 +283,7 @@ task startBBEEG(dependsOn: [initSsh, checkPropsForDeployment, startElasticSearch
     def java7Home = "/usr/lib/jvm/jdk1.7.0_01/"
     def javaOpts = "-Xms256m -Dfile.encoding=UTF-8 ${specificJavaOpts} "
     def databaseSchema = targetEnv.databaseSchema;
+    def logDirectory = targetEnv.logDirectory;
 
     if(System.properties[DEBUG_PORT_SYS_PROPERTY] != null
         && !"".equals(System.properties[DEBUG_PORT_SYS_PROPERTY])){
@@ -294,7 +310,7 @@ task startBBEEG(dependsOn: [initSsh, checkPropsForDeployment, startElasticSearch
 		    -elasticSearchPort ${elasticSearchPort} \
 		    -videoEncodingInput ${videoEncodingInput} \
             -videoEncodingOutput ${videoEncodingOutput} \
-		    > "${deployDirectory}/bbeeg.log" 2> "${deployDirectory}/bbeeg.err.log" \
+		    > "${logDirectory}/bbeeg.log" 2> "${logDirectory}/bbeeg.err.log" \
 		    & echo \$! > "${deployDirectory}/bbeeg.pid" """,
         trust: true, failonerror: true)
 }
