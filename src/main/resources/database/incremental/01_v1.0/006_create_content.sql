@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS `CONTENT` (
   `ID` bigint(20) NOT NULL auto_increment,
-  `CONTENT_ANCESTOR_REF` bigint(20) NOT NULL,
+  `CONTENT_ANCESTOR_REF` bigint(20),
   `VERSION` bigint(10) NOT NULL,
   `TITLE` varchar(64) NOT NULL,
   `STATUS` INT(2) NOT NULL,

@@ -95,7 +95,7 @@ public class ContentDao {
                         .addQuery("addLinkWithDomain",
                                 "insert into CONTENT_DOMAIN (CONTENT_REF, DOMAIN_REF) values (:contentId, :domainId)")
                         .addQuery("updateContentUrl",
-                                "update content set FILE_URI = :url, LAST_MODIFICATION_DATE = :lastModificationDate where ID = :id")
+                                "update CONTENT set FILE_URI = :url, LAST_MODIFICATION_DATE = :lastModificationDate where ID = :id")
                         .addQuery("updateContent",
                                 "update CONTENT set TITLE = :title, DESCRIPTION = :description, STATUS = 0, LAST_MODIFICATION_DATE = :lastModificationDate, VERSION = :version, TAGS = :tags where ID = :id")
                         .addQuery("updateStatus",
