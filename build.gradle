@@ -167,9 +167,9 @@ sourceSets {
     // When tests are run with gradle, the manifest.mf is not copied with the classes which leads to 'FileNotFoundException'
     main {
         output.resourcesDir = sourceSets.main.output.classesDir
-        resources {
-            exclude '**/conf/**/logback.xml'
-        }
+       // resources {
+       //     exclude '**/conf/**/logback.xml'
+       // }
     }
 }
 
