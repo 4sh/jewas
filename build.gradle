@@ -282,7 +282,7 @@ task startBBEEG(dependsOn: [initSsh, checkPropsForDeployment, startElasticSearch
     def cachedStaticResourcesRootDirectory = targetEnv.cachedStaticResourcesRootDirectory
     def specificJavaOpts = targetEnv.specificJavaOpts
     def java7Home = "/usr/lib/jvm/jdk1.7.0_01/"
-    def javaOpts = "-Xms256m -Dfile.encoding=UTF-8 ${specificJavaOpts} -D" + TARGET_ROOT_SYS_PROPERTY + "=${TARGET_ROOT_SYS_PROPERTY} -D" + TARGET_ENV_SYS_PROPERTY + "=${TARGET_ENV_SYS_PROPERTY}"
+    def javaOpts = "-Xms256m -Dfile.encoding=UTF-8 ${specificJavaOpts} -D${TARGET_ROOT_SYS_PROPERTY}=" + System.properties[TARGET_ROOT_SYS_PROPERTY] + "-D${TARGET_ENV_SYS_PROPERTY}=" + System.properties[TARGET_ENV_SYS_PROPERTY];
     def databaseSchema = targetEnv.databaseSchema;
 
     if(System.properties[DEBUG_PORT_SYS_PROPERTY] != null
