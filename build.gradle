@@ -186,7 +186,6 @@ if(STANDALONE_PACKAGING){
             resources {
                 srcDir "src/main/java"
                 srcDir "src/main/webapp"
-                srcDir "src/main/resources"
             }
         }
     }
