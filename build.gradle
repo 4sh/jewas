@@ -186,6 +186,7 @@ if(STANDALONE_PACKAGING){
             resources {
                 srcDir "src/main/java"
                 srcDir "src/main/webapp"
+                srcDir "src/main/resources"
             }
         }
     }
@@ -284,7 +285,6 @@ task startBBEEG(dependsOn: [initSsh, checkPropsForDeployment, startElasticSearch
     def java7Home = "/usr/lib/jvm/jdk1.7.0_01/"
     def javaOpts = "-Xms256m -Dfile.encoding=UTF-8 ${specificJavaOpts} "
     def databaseSchema = targetEnv.databaseSchema;
-    def logDirectory = targetEnv.logDirectory;
 
     if(System.properties[DEBUG_PORT_SYS_PROPERTY] != null
         && !"".equals(System.properties[DEBUG_PORT_SYS_PROPERTY])){
@@ -310,8 +310,7 @@ task startBBEEG(dependsOn: [initSsh, checkPropsForDeployment, startElasticSearch
 		    -elasticSearchAdress ${elasticSearchAdress} \
 		    -elasticSearchPort ${elasticSearchPort} \
 		    -videoEncodingInput ${videoEncodingInput} \
-            -videoEncodingOutput ${videoEncodingOutput} \
-		    & echo \$! > "${deployDirectory}/bbeeg.pid" """,
+            -videoEncodingOutput ${videoEncodingOutput} & echo \$! > "${deployDirectory}/bbeeg.pid" """,
         trust: true, failonerror: true)
 }
 
