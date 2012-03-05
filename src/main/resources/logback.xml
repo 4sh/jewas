@@ -56,7 +56,6 @@
     <logger name="fr.fsh.bbeeg" level="DEBUG"/>
 
     <root level="DEBUG">
-        <appender-ref ref="STDOUT"/>
         <appender-ref ref="debugFile"/>
         <appender-ref ref="infoFile"/>
         <appender-ref ref="errorFile"/>
