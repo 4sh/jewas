@@ -189,6 +189,7 @@ if(STANDALONE_PACKAGING){
             resources {
                 srcDir "src/main/java"
                 srcDir "src/main/webapp"
+                srcDir "src/main/resources/conf/" + System.properties[TARGET_ENV_SYS_PROPERTY]
             }
         }
     }
@@ -211,17 +212,7 @@ task initSsh << {
     	classpath: configurations.ssh.asPath)
 }
 
-
-task initconfig(type: Copy, dependsOn: [checkPropsForDeployment, processResources]) {
-    def environment = System.properties[TARGET_ENV_SYS_PROPERTY];
-    from('src/main/resources/conf/' + environment) {
-        include '**/*.properties'
-        include '**/*.xml'
-    }
-    into 'build/classes/main'
-}
-
-task uploadOnDemo(dependsOn: [initSsh, checkPropsForDeployment, initconfig, test, build]) << {
+task uploadOnDemo(dependsOn: [initSsh, checkPropsForDeployment, test, build]) << {
 
     if(!"true".equals(System.properties[SKIP_UPLOAD_SYS_PROPERTY])){
 
