@@ -1,3 +1,5 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'maven'
@@ -165,6 +167,9 @@ sourceSets {
     // When tests are run with gradle, the manifest.mf is not copied with the classes which leads to 'FileNotFoundException'
     main {
         output.resourcesDir = sourceSets.main.output.classesDir
+        resources {
+            exclude '**/conf/**/logback.xml'
+        }
     }
 }
 
@@ -206,7 +211,18 @@ task initSsh << {
     	classpath: configurations.ssh.asPath)
 }
 
-task uploadOnDemo(dependsOn: [initSsh, checkPropsForDeployment, test, build]) << {
+
+task initconfig(type: Copy, dependsOn: [checkPropsForDeployment, processResources]) {
+    def environment = System.properties[TARGET_ENV_SYS_PROPERTY];
+    from('src/main/resources/conf/' + environment) {
+        include '**/*.properties'
+        include '**/*.xml'
+    }
+    into 'build/classes/main'
+}
+
+task uploadOnDemo(dependsOn: [initSsh, checkPropsForDeployment, initconfig, test, build]) << {
+
     if(!"true".equals(System.properties[SKIP_UPLOAD_SYS_PROPERTY])){
 
         def deployDirectory = ENV_PROPERTIES[System.properties[TARGET_ENV_SYS_PROPERTY]].rootEnvDir + "/apps/bbeeg"
@@ -255,7 +271,7 @@ task startElasticSearch(dependsOn: [initSsh, checkPropsForDeployment]) << {
 
     ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 22,
             command: """${deployDirectory}/elasticsearch/bin/elasticsearch \
-		    -f -Des.transport.tcp.port=${executionPort} -Des.index.store.type=memory -Xms512m -Xmx512m  \
+		    -f -Des.transport.tcp.port=${executionPort} -Des.index.store.type=memory -Xms512m -Xmx512m -XX:MaxDirectMemorySize=256m \
 		    > "${logDirectory}/elasticsearch.log" 2> "${logDirectory}/elasticsearch.err.log" \
 		    & echo \$! > "${deployDirectory}/elasticsearch.pid" """,
             trust: true, failonerror: true)
