@@ -20,7 +20,7 @@ def COVERAGE_SYS_PROPERTY = "test.coverage.activated"
 // Useless property (for the moment...)
 def STANDALONE_PACKAGING = true
 // Root directory on demo environment, where will be hosted every targetEnvironment directories
-def ENV_DEMO_DEPLOY_ROOT_PATH = "/home/bbeeg/dist";
+def TARGET_ROOT_SYS_PROPERTY = "deploy.target.root";
 // Demo connection properties
 def ENV_DEMO_HOST = '192.168.0.200'
 def ENV_DEMO_USER = "bbeeg"
@@ -45,14 +45,14 @@ if(!hasProperty("releasesRepoUsername")
 
 def ENV_PROPERTIES = [
         test: [
-                rootEnvDir: ENV_DEMO_DEPLOY_ROOT_PATH + "/test",
-                contentFileRepository: ENV_DEMO_DEPLOY_ROOT_PATH + "/test/data/contents/",
-                tmpContentFileRepository: ENV_DEMO_DEPLOY_ROOT_PATH + "/test/data/tmpContents/",
-                cachedStaticResourcesRootDirectory: ENV_DEMO_DEPLOY_ROOT_PATH + "/test/apps/bbeeg/bbeeg_cachedStaticResources",
-                logDirectory: ENV_DEMO_DEPLOY_ROOT_PATH + "/test/log",
-                videoEncodingInput: ENV_DEMO_DEPLOY_ROOT_PATH + "/test/apps/videoConverter/in",
-                videoEncodingOutput: ENV_DEMO_DEPLOY_ROOT_PATH + "/test/apps/videoConverter/out",
-                dbmaintainDir: ENV_DEMO_DEPLOY_ROOT_PATH + "/test/dbmaintain/",
+                rootEnvDir: TARGET_ROOT_SYS_PROPERTY + "/test",
+                contentFileRepository: TARGET_ROOT_SYS_PROPERTY + "/test/data/contents/",
+                tmpContentFileRepository: TARGET_ROOT_SYS_PROPERTY + "/test/data/tmpContents/",
+                cachedStaticResourcesRootDirectory: TARGET_ROOT_SYS_PROPERTY + "/test/apps/bbeeg/bbeeg_cachedStaticResources",
+                logDirectory: TARGET_ROOT_SYS_PROPERTY + "/test/log",
+                videoEncodingInput: TARGET_ROOT_SYS_PROPERTY + "/test/apps/videoConverter/in",
+                videoEncodingOutput: TARGET_ROOT_SYS_PROPERTY + "/test/apps/videoConverter/out",
+                dbmaintainDir: TARGET_ROOT_SYS_PROPERTY + "/test/dbmaintain/",
                 databaseSchema: "bbeeg_test",
                 visioEegRootUrl: "http://test.visio.bbeeg.4sh.fr",
                 visioEegInternalUrl: "http://127.0.0.1:18087",
@@ -62,14 +62,14 @@ def ENV_PROPERTIES = [
                 specificJavaOpts: "-Xmx256m"
         ],
         qa: [
-                rootEnvDir: ENV_DEMO_DEPLOY_ROOT_PATH + "/qa",
-                contentFileRepository: ENV_DEMO_DEPLOY_ROOT_PATH + "/qa/data/contents/",
-                tmpContentFileRepository: ENV_DEMO_DEPLOY_ROOT_PATH + "/qa/data/tmpContents/",
-                cachedStaticResourcesRootDirectory: ENV_DEMO_DEPLOY_ROOT_PATH + "/qa/apps/bbeeg/bbeeg_cachedStaticResources",
-                logDirectory: ENV_DEMO_DEPLOY_ROOT_PATH + "/qa/log",
-                videoEncodingInput: ENV_DEMO_DEPLOY_ROOT_PATH + "/qa/apps/videoConverter/in",
-                videoEncodingOutput: ENV_DEMO_DEPLOY_ROOT_PATH + "/qa/apps/videoConverter/out",
-                dbmaintainDir: ENV_DEMO_DEPLOY_ROOT_PATH + "/qa/dbmaintain/",
+                rootEnvDir: TARGET_ROOT_SYS_PROPERTY + "/qa",
+                contentFileRepository: TARGET_ROOT_SYS_PROPERTY + "/qa/data/contents/",
+                tmpContentFileRepository: TARGET_ROOT_SYS_PROPERTY + "/qa/data/tmpContents/",
+                cachedStaticResourcesRootDirectory: TARGET_ROOT_SYS_PROPERTY + "/qa/apps/bbeeg/bbeeg_cachedStaticResources",
+                logDirectory: TARGET_ROOT_SYS_PROPERTY + "/qa/log",
+                videoEncodingInput: TARGET_ROOT_SYS_PROPERTY + "/qa/apps/videoConverter/in",
+                videoEncodingOutput: TARGET_ROOT_SYS_PROPERTY + "/qa/apps/videoConverter/out",
+                dbmaintainDir: TARGET_ROOT_SYS_PROPERTY + "/qa/dbmaintain/",
                 databaseSchema: "bbeeg_qa",
                 visioEegRootUrl: "http://qa.visio.bbeeg.4sh.fr",
                 visioEegInternalUrl: "http://127.0.0.1:28087",
@@ -167,9 +167,6 @@ sourceSets {
     // When tests are run with gradle, the manifest.mf is not copied with the classes which leads to 'FileNotFoundException'
     main {
         output.resourcesDir = sourceSets.main.output.classesDir
-       // resources {
-       //     exclude '**/conf/**/logback.xml'
-       // }
     }
 }
 
@@ -189,7 +186,6 @@ if(STANDALONE_PACKAGING){
             resources {
                 srcDir "src/main/java"
                 srcDir "src/main/webapp"
-                srcDir "src/main/resources/conf/" + System.properties[TARGET_ENV_SYS_PROPERTY]
             }
         }
     }
@@ -315,7 +311,6 @@ task startBBEEG(dependsOn: [initSsh, checkPropsForDeployment, startElasticSearch
 		    -elasticSearchPort ${elasticSearchPort} \
 		    -videoEncodingInput ${videoEncodingInput} \
             -videoEncodingOutput ${videoEncodingOutput} \
-		    > "${logDirectory}/bbeeg.log" 2> "${logDirectory}/bbeeg.err.log" \
 		    & echo \$! > "${deployDirectory}/bbeeg.pid" """,
         trust: true, failonerror: true)
 }
