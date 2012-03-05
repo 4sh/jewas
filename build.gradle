@@ -299,6 +299,8 @@ task startBBEEG(dependsOn: [initSsh, checkPropsForDeployment, startElasticSearch
     // TODO: pass the http port here...
     ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 22,
 		command: """${java7Home}/jre/bin/java ${javaOpts} -jar "${deployDirectory}/bbeeg.jar" \
+		    -D""" + TARGET_ROOT_SYS_PROPERTY + """=${TARGET_ROOT_SYS_PROPERTY} \
+		    -D""" + TARGET_ENV_SYS_PROPERTY + """=${TARGET_ENV_SYS_PROPERTY} \
 		    -httpPort ${executionPort} \
 		    -visioRootUrl ${visioRootUrl} \
 		    -visioEegInternalUrl ${visioEegInternalUrl} \
