@@ -1,6 +1,6 @@
 <#include "../common/mainTemplate.ftl">
 
-<@mainTemplate title="Ecran d'accueil"
+<@mainTemplate title="Dashboard"
         selectedMenuItem="dashboard"
         scripts=["/public/js/tabs/tabs.js",
                  "/public/js/jqcloud/jqcloud-0.2.1.js",
@@ -64,13 +64,19 @@
 
     </script>
 
+<div id="dashboard_menu">
+    <a href="/home.html">
+        Plan des connaissances
+    </a>
+    <a href="">Cours & Tests</a>
+    <a href="">
+        Contenus
+    </a>
+    <div id="dashboard_menuright">
+    </div>
+</div>
     <div id="userInformations" class="columnleft">
         <div id="dashboard">
-            <div id="dashboard_menu">
-                <h2>Cours & Tests | Contenus</h2>
-                <div id="dashboard_menuright">
-                </div>
-            </div>
             <div class="dashboard-group dashboard-group-linestart">
                 <div class="box">
                     <div id="myContentsPanelLastViewed">
