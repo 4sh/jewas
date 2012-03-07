@@ -3,7 +3,7 @@
     <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
     <option name="MAIN_CLASS_NAME" value="fr.fsh.bbeeg.Main" />
     <option name="VM_PARAMETERS" value="" />
-    <option name="PROGRAM_PARAMETERS" value="-visioRootUrl http://localhost:8087 -visioEegInternalUrl http://localhost:8087 -h2ServerPort 8082 -cachedStaticResourcesRootDirectory $PROJECT_DIR$/out/production/bb-eeg -contentFileRepository $USER_HOME$/.bbeeg/content/ -tmpContentFileRepository $USER_HOME$/.bbeeg/tmp/ -elasticSearchPort 9300 -elasticSearchAdress localhost -h2DbPath $USER_HOME$/bbeegDB/bbeegDB -videoEncodingInput $USER_HOME$/.videoConverter/in -videoEncodingOutput $USER_HOME$/.videoConverter/out" />
+    <option name="PROGRAM_PARAMETERS" value="-visioRootUrl http://localhost:8087 -visioEegInternalUrl http://localhost:8087 -cachedStaticResourcesRootDirectory $PROJECT_DIR$/out/production/bb-eeg -contentFileRepository $USER_HOME$/.bbeeg/content/ -tmpContentFileRepository $USER_HOME$/.bbeeg/tmp/ -elasticSearchPort 9300 -databaseSchema bbeeg -elasticSearchAdress localhost -videoEncodingInput $USER_HOME$/.videoConverter/in -videoEncodingOutput $USER_HOME$/.videoConverter/out" />
     <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
     <option name="ALTERNATIVE_JRE_PATH" value="" />
@@ -11,7 +11,10 @@
     <option name="ENV_VARIABLES" />
     <option name="PASS_PARENT_ENVS" value="true" />
     <module name="bb-eeg" />
-    <envs />
+    <envs>
+      <env name="deploy.target.env" value="dev" />
+      <env name="deploy.target.root" value="$USER_HOME$/.bbeeg/" />
+    </envs>
     <RunnerSettings RunnerId="Debug">
       <option name="DEBUG_PORT" value="59196" />
       <option name="TRANSPORT" value="0" />

@@ -11,7 +11,10 @@
     <option name="ENV_VARIABLES" />
     <option name="PASS_PARENT_ENVS" value="true" />
     <module name="VisioEEG" />
-    <envs />
+    <envs>
+      <env name="deploy.target.env" value="dev" />
+      <env name="deploy.target.root" value="$USER_HOME$/.bbeeg/" />
+    </envs>
     <RunnerSettings RunnerId="Debug">
       <option name="DEBUG_PORT" value="51936" />
       <option name="TRANSPORT" value="0" />

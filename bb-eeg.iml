@@ -44,11 +44,11 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/fr.4sh.jewas/jewas/0.1-SNAPSHOT/jar/4e7e51d5a5895d48551d896f1699e774dc0aa7ea/jewas-0.1-SNAPSHOT.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/fr.4sh.jewas/jewas/0.1-SNAPSHOT/jar/34faca94255ab41345e21bc273907f5a353d9ba5/jewas-0.1-SNAPSHOT.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/fr.4sh.jewas/jewas/0.1-SNAPSHOT/source/7fbff2699441d6a98691ab68a7344b34fc9d2678/jewas-0.1-SNAPSHOT-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/fr.4sh.jewas/jewas/0.1-SNAPSHOT/source/e097bfa67012feb21a94e1a8746a1cce54e4b6a0/jewas-0.1-SNAPSHOT-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
