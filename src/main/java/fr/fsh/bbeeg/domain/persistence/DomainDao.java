@@ -68,6 +68,7 @@ public class DomainDao {
 
     /**
      * Fetch all the domains ordered by their level in the domain hierarchy.
+     *
      * @param domains the collection of loaded domains.
      */
     public void fetchAllDomainHierarchy(List<Domain> domains) {
