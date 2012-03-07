@@ -6,6 +6,7 @@ import fr.fsh.bbeeg.common.CliOptions;
 import fr.fsh.bbeeg.common.config.BBEEGConfiguration;
 import fr.fsh.bbeeg.content.routes.*;
 import fr.fsh.bbeeg.domain.routes.GetAllDomainsRoute;
+import fr.fsh.bbeeg.domain.routes.GetDomainsHierarchyRoute;
 import fr.fsh.bbeeg.domain.routes.GetPopularDomainRoute;
 import fr.fsh.bbeeg.security.routes.GetConnectedUserRoute;
 import fr.fsh.bbeeg.security.routes.GetLoginRoute;
@@ -64,6 +65,7 @@ public class Main {
                     new SecurityRoute(),
                 new GetLogoutRoute(),
                 new SimpleHtmlRoute("/dashboard/dashboard.html", "dashboard/dashboard.ftl"),
+                new SimpleHtmlRoute("/home.html", "home.ftl"),
                 new GetConnectedUserRoute(assembler.connectedUserResource()),
                 new GetSimpleSearchContent(assembler.contentResource()),
                 new GetSearchScreenRoute(),
@@ -94,6 +96,7 @@ public class Main {
                 new GetTotalNumberOfContentRoute(assembler.contentResource()),
                 new GetUserAuthorRoute(assembler.userResource()),
                 new GetAllDomainsRoute(assembler.domainResource()),
+                new GetDomainsHierarchyRoute(assembler.domainResource()),
                 new GetAllTagsRoute(assembler.tagResource()),
                 new GetPopularDomainRoute(assembler.domainResource()),
                 new GetPopularTagRoute(assembler.tagResource()),

@@ -36,7 +36,7 @@ public class GetLoginRoute extends AbstractRoute {
                             new ConnectionResultObject<ConnectionResultObject.SuccessObject>();
 
                     resultObject.status(ConnectionResultObject.ConnectionStatus.SUCCESS)
-                            .object(new ConnectionResultObject.SuccessObject().url("/dashboard/dashboard.html"));
+                            .object(new ConnectionResultObject.SuccessObject().url("home.html"));
 
                     JsonResponse jsonResponse = request.respondJson();
                     Date date = new Date();
