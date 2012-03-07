@@ -38,8 +38,8 @@ public class DatabaseInitializator {
             scriptsLocation = "/database/incremental/01_v1.0/019_v1.1/";
             sr.runScript(new InputStreamReader(DatabaseInitializator.class.getResourceAsStream(scriptsLocation + "020_alter_domain.sql")));
             sr.runScript(new InputStreamReader(DatabaseInitializator.class.getResourceAsStream(scriptsLocation + "021_delete_content_domain.sql")));
-            sr.runScript(new InputStreamReader(DatabaseInitializator.class.getResourceAsStream(h2SpecificScripts + "022_h2_specific.sql")));
-            sr.runScript(new InputStreamReader(DatabaseInitializator.class.getResourceAsStream(scriptsLocation + "023_delete_domain.sql")));
+            sr.runScript(new InputStreamReader(DatabaseInitializator.class.getResourceAsStream(scriptsLocation + "022_delete_domain.sql")));
+            sr.runScript(new InputStreamReader(DatabaseInitializator.class.getResourceAsStream(h2SpecificScripts + "023_h2_specific.sql")));
             sr.runScript(new InputStreamReader(DatabaseInitializator.class.getResourceAsStream(scriptsLocation + "024_insert_domain.sql")));
             sr.runScript(new InputStreamReader(DatabaseInitializator.class.getResourceAsStream(scriptsLocation + "025_insert_i18n.sql")));
 
