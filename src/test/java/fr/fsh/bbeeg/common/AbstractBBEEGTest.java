@@ -37,7 +37,7 @@ public class AbstractBBEEGTest {
      * The path to init data files.
      */
     private static String initDataSetFilesPath = "/initDataSet/";
-    
+
     /**
      * Method executed before each test of class.
      *

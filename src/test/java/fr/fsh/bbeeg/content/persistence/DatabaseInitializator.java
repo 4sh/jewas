@@ -14,6 +14,7 @@ public class DatabaseInitializator {
         Connection dbInitializationConnection = DriverManager.getConnection(jdbcURL, username, password);
         ScriptRunner sr = new ScriptRunner(dbInitializationConnection, true, true);
         String scriptsLocation = "/database/incremental/01_v1.0/";
+        String h2SpecificScripts = "/scripts/";
 
             sr.runScript(new InputStreamReader(DatabaseInitializator.class.getResourceAsStream(scriptsLocation + "001_create_content_status.sql")));
             sr.runScript(new InputStreamReader(DatabaseInitializator.class.getResourceAsStream(scriptsLocation + "002_create_i18n.sql")));
@@ -34,6 +35,14 @@ public class DatabaseInitializator {
             sr.runScript(new InputStreamReader(DatabaseInitializator.class.getResourceAsStream(scriptsLocation + "017_alter_content_domain.sql")));
             sr.runScript(new InputStreamReader(DatabaseInitializator.class.getResourceAsStream(scriptsLocation + "018_alter_content_comment.sql")));
             // V1.1
+            scriptsLocation = "/database/incremental/01_v1.0/019_v1.1/";
+            sr.runScript(new InputStreamReader(DatabaseInitializator.class.getResourceAsStream(scriptsLocation + "020_alter_domain.sql")));
+            sr.runScript(new InputStreamReader(DatabaseInitializator.class.getResourceAsStream(h2SpecificScripts + "021_h2_specific.sql")));
+            sr.runScript(new InputStreamReader(DatabaseInitializator.class.getResourceAsStream(scriptsLocation + "022_delete_content_domain.sql")));
+            sr.runScript(new InputStreamReader(DatabaseInitializator.class.getResourceAsStream(scriptsLocation + "023_delete_domain.sql")));
+            sr.runScript(new InputStreamReader(DatabaseInitializator.class.getResourceAsStream(scriptsLocation + "024_insert_domain.sql")));
+            sr.runScript(new InputStreamReader(DatabaseInitializator.class.getResourceAsStream(scriptsLocation + "025_insert_i18n.sql")));
+
     }
 
     public static void cleanupDB(String jdbcURL, String username, String password) throws SQLException, IOException {

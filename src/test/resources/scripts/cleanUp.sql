@@ -1,5 +1,6 @@
 drop table CONTENT_STATUS;
 drop table CONTENT_DOMAIN;
+drop table DOMAIN;
 drop table CONTENT_COMMENT;
 drop table CONTENT;
 drop table USER;
