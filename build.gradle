@@ -351,7 +351,7 @@ task uploadDbMaintainScripts(dependsOn: [initSsh, packageDBMaintainScripts]) << 
             verbose: true);
 
     ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 22,
-            command: "unzip ${dbmaintainDir}/${f.name}",
+            command: "unzip -u ${dbmaintainDir}/${f.name} -d ${dbmaintainDir}/incremental",
             trust: true,
             failonerror: true)
 
