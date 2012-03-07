@@ -33,4 +33,36 @@ public class DomainResource {
     public void fetchAllDomains(List<Domain> results) {
         domainDao.fetchAllDomains(results);
     }
+
+    /**
+     * Fetch all the domains and fill the hierarchy relations
+     *
+     * @param results the collection of domains.
+     */
+    public void fetchAllDomainHierarchy(List<Domain> results) {
+        domainDao.fetchAllDomainHierarchy(results);
+        if (results != null && !results.isEmpty()) {
+            buildDomainHierarchy(results, results.get(0));
+        }
+    }
+
+    /**
+     * Build the children collection of each of the given domains.
+     *
+     * @param domains the list of domains to treat.
+     * @param root    the root of the domain hierarchy
+     */
+    private void buildDomainHierarchy(List<Domain> domains, Domain root) {
+        Domain commonAncestor = root;
+        for (Domain child : domains) {
+            if (child.parentRef() == commonAncestor.id()) {
+                if (root.children() == null) {
+                    root.children(new ArrayList<Domain>());
+                }
+                root.children().add(child);
+                buildDomainHierarchy(domains, child);
+            }
+        }
+    }
+    
 }

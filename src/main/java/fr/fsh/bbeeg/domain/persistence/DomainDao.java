@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author driccio
+ * @author carmarolli
  */
 public class DomainDao {
     private QueryTemplate<Domain> domainQueryTemplate;
@@ -24,12 +24,16 @@ public class DomainDao {
 
         this.domainQueryTemplate =
                 new QueryTemplate<Domain>(dataSource, new DomainToReadRowMapper())
-                        .addQuery("selectById", "select * from DOMAIN where ID = :id")
-                        .addQuery("selectByIds", "select * from DOMAIN where ID in :ids")
-                        .addQuery("selectAll", "select * from DOMAIN")
+                        .addQuery("selectById",
+                                "select * from DOMAIN where ID = :id")
+                        .addQuery("selectByIds",
+                                "select * from DOMAIN where ID in :ids")
+                        .addQuery("selectAll",
+                                "select * from DOMAIN")
+                        .addQuery("selectAllHierarchy",
+                                "select * from DOMAIN order by LEVEL asc")
                         .addQuery("selectLimitedPopular",
-                                "select * from (select * from DOMAIN) " +
-                                        "where ROWNUM <= :limit");
+                                "select * from DOMAIN limit :limit");
     }
 
     public Domain getDomain(Long domainId) {
@@ -62,6 +66,16 @@ public class DomainDao {
         );
     }
 
+    /**
+     * Fetch all the domains ordered by their level in the domain hierarchy.
+     * @param domains the collection of loaded domains.
+     */
+    public void fetchAllDomainHierarchy(List<Domain> domains) {
+        domainQueryTemplate.select(domains, "selectAllHierarchy",
+                new QueryExecutionContext().buildParams().toContext()
+        );
+    }
+
     public void fetchPopularDomains(List<Domain> domains, int limit) {
         domainQueryTemplate.select(domains, "selectLimitedPopular",
                 new QueryExecutionContext().buildParams()
@@ -74,9 +88,10 @@ public class DomainDao {
         @Override
         public Domain processRow(ResultSet rs) throws SQLException {
             return new Domain()
-                    .id(rs.getLong("id"))
-                    .label(i18nDao.translation(rs.getString("I18N_KEY"), "fr"));
+                    .id(rs.getLong("ID"))
+                    .label(i18nDao.translation(rs.getString("I18N_KEY"), "fr"))
+                    .parentRef(rs.getLong("PARENT_REF"))
+                    .level(rs.getInt("LEVEL"));
         }
     }
-
 }
