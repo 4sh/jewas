@@ -338,12 +338,6 @@ task uploadDbMaintainScripts(dependsOn: [initSsh, packageDBMaintainScripts]) << 
     println "Deploying dbmaintain scripts to $dbmaintainDir";
 
     File f = file("src/main/resources/database/incremental.zip");
-    println f.name
-    ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 22,
-            command: "rm -rf ${dbmaintainDir}/${f.name}",
-            trust: true,
-            failonerror: true)
-
     ant.scp2(file: f,
             remoteTofile: "${ENV_DEMO_USER}:${ENV_DEMO_PASS}@${ENV_DEMO_HOST}:${dbmaintainDir}" + f.name,
             port: 22,
@@ -351,7 +345,7 @@ task uploadDbMaintainScripts(dependsOn: [initSsh, packageDBMaintainScripts]) << 
             verbose: true);
 
     ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 22,
-            command: "unzip -u ${dbmaintainDir}/${f.name} -d ${dbmaintainDir}/incremental",
+            command: "unzip -ou ${dbmaintainDir}/${f.name} -d ${dbmaintainDir}/incremental",
             trust: true,
             failonerror: true)
 
