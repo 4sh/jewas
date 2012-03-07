@@ -1,0 +1,26 @@
+#knowledgeMap {
+    /* TODO background-image: url('/public/images/visionneuse/background_visionneuse.jpg'); */
+    /*background-image: url('/public/images/visionneuse/background_visionneuse.jpg');*/
+    background-repeat: no-repeat;
+    /*    width: 642px;
+    height: 653px;
+    padding-left: 11px;
+    padding-top: 15px;*/
+    width: 678px;
+    height: 625px;
+    padding-left: 3px;
+    padding-top: 10px;
+    margin-top: 5px;
+    background-color: #eaeaea;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    border: 1px solid #ffffff;
+    -webkit-box-shadow: 0 0 7px rgba(0,0,0,.3);
+    -moz-box-shadow   : 0 0 7px rgba(0,0,0,.3);
+    -o-box-shadow     : 0 0 7px rgba(0,0,0,.3);
+    box-shadow        : 0 0 7px rgba(0,0,0,.3);
+    background-image: url('/public/images/bbeeg/background_login.png');
+    background-repeat : no-repeat;
+    background-position: bottom right;
+}

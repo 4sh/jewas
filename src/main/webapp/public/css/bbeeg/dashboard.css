@@ -9,7 +9,7 @@
 	height:644px;
 	background-repeat: no-repeat;
 	border:none;
-	padding:12px 25px 27px 24px;
+	padding:0px 25px 27px 24px;
 }
 
 #dashboard h3{
@@ -20,15 +20,33 @@
 }
 
 /*
-#dashboard a {
-	color:#ffffff;
-	text-decoration:none;
-}
+
 #dashboard a:hover {color: #93e4eb;}
 #dashboard a:active {color: #b3feff;}
 */
 
 #dashboard_menu {
+    margin-bottom: 10px;
+}
+
+#dashboard_menu a {
+    color: #222526;
+    font-size: 120%;
+    font-weight: bold;
+    margin-bottom: 10px;
+    margin-right: 10px;
+}
+
+#dashboard_menu, h2 {
+    display: inline;
+    margin-right: 10px;
+}
+#dashboard_menu > a:hover {
+    color: #93e4eb; !important
+}
+
+#dashboard_menu > a:active {
+    color: #b3feff; !important
 }
 
 #dashboard_menuright{
