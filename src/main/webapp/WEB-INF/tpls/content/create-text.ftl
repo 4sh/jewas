@@ -47,7 +47,7 @@
                 ;
 
                 /* Mandatory fields handler registration */
-                $("#title, #description, #content").change(function () {
+                $("#title, #description").keyup(function () {
                     contentCreator.refreshSubmitButton();
                 });
 

@@ -32,7 +32,7 @@
         });
 
          /* Mandatory fields handler registration */
-        $("#title, #description").change(function() {
+        $("#title, #description").keyup(function() {
             contentCreator.refreshSubmitButton();
         });
 
