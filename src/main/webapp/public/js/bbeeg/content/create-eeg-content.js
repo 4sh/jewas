@@ -326,10 +326,9 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
         $.ajax({
           url: '/visio/eeg/settings/' + eegId,
           dataType: 'json',
-          success: function (infos) {
+          success: function (data) {
               // TODO: Check why there is a need here to parse JSON string
-              infos = $.parseJSON(infos);
-              callback(infos);
+              callback(data);
             }
         });
     }
@@ -559,10 +558,12 @@ function EegContentCreator(eegUploaderId, previsualizationInfos) {
         $.getJSON(
         '/content/eeg/informations/' + eegId,
         function success(data) {
-            eegInformations = $.parseJSON(data);
+            eegInformations = data;
             signals  = [];
-            for (var i = 0; i < eegInformations.signalsLabel.length; i++) {
-                signals.push({id: i, label: eegInformations.signalsLabel[i]});
+            if (eegInformations.signalsLabels != null) {
+                for (var i = 0; i < eegInformations.signalsLabel.length; i++) {
+                    signals.push({id: i, label: eegInformations.signalsLabel[i]});
+                }
             }
             addVideo($('#videos'));
             addMontage($('#displayConfig'));
