@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
 
     <link rel="stylesheet" href="/public/css/bbeeg/bbeeg.css"/>
+    <link rel="stylesheet" href="/public/css/bbeeg/login.css"/>
 
     <script type="application/javascript"
             src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
@@ -16,22 +17,26 @@
         }
 
         function validate() {
+            // Show spinner
+            $(".spinner").css('display', 'inline');
             $.ajax(
                 {
-                    type: "GET",
-                    url: '/connection',
-                    dataType: 'json',
-                    data: $('#loginForm').serialize(),
-                    success: function success(response) {
-                    if (response.status === "SUCCESS") {
-                        window.location = response.object.url;
-                    } else {
-                        $('#msg').text(response.object.msg);
-                    }
-                    setTimeout(cleanMessageError, 5000);
+                    type:"GET",
+                    url:'/connection',
+                    dataType:'json',
+                    data:$('#loginForm').serialize(),
+                    success:function success(response) {
+                        if (response.status === "SUCCESS") {
+                            window.location = response.object.url;
+                        } else {
+                            $(".spinner").css('display', 'none');
+                            $('#msg').text(response.object.msg);
+                        }
+                        setTimeout(cleanMessageError, 5000);
                     }
                 }
             );
+
         }
 
         $(function() {
@@ -100,7 +105,7 @@
                             </div>
                         </div>
                         <div class="button_login">
-                            <button id="connectionButton" type="button"> Connexion </button>
+                            <button id="connectionButton" type="button"><img src="/public/images/ajax/indicator.gif" class="spinner" /> Connexion </button>
                         </div>
                     </form>
                 </div>
