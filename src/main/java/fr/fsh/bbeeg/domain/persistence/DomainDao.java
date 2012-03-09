@@ -29,7 +29,7 @@ public class DomainDao {
                         .addQuery("selectByIds",
                                 "select * from DOMAIN where ID in :ids")
                         .addQuery("selectAll",
-                                "select * from DOMAIN")
+                                "select * from DOMAIN where ID not in (select distinct PARENT_REF from DOMAIN where PARENT_REF is not null)")
                         .addQuery("selectAllHierarchy",
                                 "select * from DOMAIN order by LEVEL asc")
                         .addQuery("selectLimitedPopular",
