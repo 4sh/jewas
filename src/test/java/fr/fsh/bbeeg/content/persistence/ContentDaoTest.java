@@ -140,7 +140,7 @@ public class ContentDaoTest extends AbstractBBEEGTest {
         assertThat(1 + "", is(equalTo(actualTable.getValue(1, "VERSION"))));
         assertThat(2 + "", is(equalTo(actualTable.getValue(2, "VERSION"))));
 
-        this.contentDao.archivePreviousVersion(commonAncestorId);
+        this.contentDao.archiveContent(1L);
 
         IDataSet afterExecutionDataSet = databaseTester().getConnection().createDataSet();
         ITable contentTable = afterExecutionDataSet.getTable("CONTENT");

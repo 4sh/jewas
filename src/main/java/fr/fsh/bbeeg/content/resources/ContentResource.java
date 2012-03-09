@@ -12,6 +12,8 @@ import fr.fsh.bbeeg.user.pojos.User;
 import jewas.http.data.FileUpload;
 import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -148,6 +150,22 @@ public class ContentResource {
     }
 
     /**
+     * Prevent XSS atacks from HMTL stored
+     * @param unsafe
+     * @return
+     */
+    public String sanitizeHTMLString(String unsafe) {
+        Whitelist bbeegWhiteList = Whitelist.relaxed()
+                .addTags("hr", "span")
+                .addAttributes("span", "style")
+                .addAttributes("hr", "style")
+                .addAttributes("div", "style")
+                .addAttributes("p", "style");
+        String safe = Jsoup.clean(unsafe, bbeegWhiteList);
+        return safe;
+    }
+    
+    /**
      * Updates the file content related to the content identified by the given content id.
      *
      * @param contentId   the unique database id of the content.
@@ -264,8 +282,13 @@ public class ContentResource {
         // Archive old content if necessary
         if (ContentStatus.VALIDATED.equals(newStatus)) {
             ContentDetail contentDetail = contentDao.getContentDetail(contentId);
-            if (contentDetail.header().version() > 0 && contentDetail.header().ancestorId() != null) {
-                contentDao.archivePreviousVersion(contentDetail.header().ancestorId());
+            Long ancestorId = contentDetail.header().ancestorId();
+            if (contentDetail.header().version() > 0 && ancestorId != null) {
+                logger.info("Archive previous validated version for content reference: {}", ancestorId);
+                Long lastValidatedContentId = contentDao.getLastValidatedVersionContent(ancestorId);
+                if (lastValidatedContentId != null) {
+                    contentDao.archiveContent(lastValidatedContentId);
+                }
             }
         }
 

@@ -83,6 +83,8 @@ public class ContentDao {
                                 "limit :limit")
                         .addQuery("selectHigherVersionNumber",
                                 "select max(VERSION) from CONTENT where CONTENT_ANCESTOR_REF = :ancestorId")
+                        .addQuery("selectLastValidatedVersionContentId",
+                                "select ID from CONTENT where CONTENT_ANCESTOR_REF = :ancestorId and STATUS = :status")
                         .addQuery("count",
                                 "select count(*) as count from CONTENT where STATUS = :status " +
                                         "and (PUBLICATION_START_DATE <= :today or PUBLICATION_START_DATE is null) " +
@@ -102,9 +104,8 @@ public class ContentDao {
                                 "update CONTENT set STATUS = :status, LAST_MODIFICATION_DATE = :lastModificationDate where ID = :id")
                         .addQuery("updatePublicationDates",
                                 "update CONTENT set PUBLICATION_START_DATE = :startPublicationDate, PUBLICATION_END_DATE = :endPublicationDate where ID = :id")
-                        .addQuery("archiveLastValidatedVersion",
-                                "update CONTENT set STATUS = :status where VERSION = " +
-                                    "(select max(VERSION) from CONTENT where CONTENT_ANCESTOR_REF = :ancestorId and STATUS = " + ContentStatus.VALIDATED.ordinal() + ")")
+                        .addQuery("archiveContent",
+                                "update CONTENT set STATUS = :status where ID = :contentId")
                         .addQuery("incrementPopularity",
                                 "update CONTENT set POPULARITY = POPULARITY + 1 where ID = :id")
                         .addQuery("updateLastConsultationDate",
@@ -164,6 +165,14 @@ public class ContentDao {
 
     }
 
+    public Long getLastValidatedVersionContent(Long ancestorId) {
+        return contentHeaderQueryTemplate.selectLong("selectLastValidatedVersionContentId",
+                new QueryExecutionContext().buildParams()
+                        .bigint("ancestorId", ancestorId)
+                        .integer("status", ContentStatus.VALIDATED.ordinal())
+                        .toContext());
+    }
+    
      /**
       * Increments by one the number of times this content has been visualized.
       * @param contentId the identifier of the content
@@ -608,15 +617,14 @@ public class ContentDao {
     }
 
     /**
-     * Find the previous version of the given content reference which was VALIDATED and changes its status to ARCHIVED.
+     * Archive the content represented by the given content identifier.
      *
-     * @param commonAncestorId the common reference to the base version of the content to archive
+     * @param contentId the identifier of the content to archive
      */
-    public void archivePreviousVersion(Long commonAncestorId) {
-        logger.info("Archive previous status for content reference: {}", commonAncestorId);
-        contentHeaderQueryTemplate.update("archiveLastValidatedVersion",
+    public void archiveContent(Long contentId) {
+        contentHeaderQueryTemplate.update("archiveContent",
                 new QueryExecutionContext().buildParams()
-                        .bigint("ancestorId", commonAncestorId)
+                        .bigint("contentId", contentId)
                         .bigint("status", ContentStatus.ARCHIVED.ordinal())
                         .toContext());
     }
