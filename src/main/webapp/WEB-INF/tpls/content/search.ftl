@@ -317,6 +317,12 @@
 
 <!-- Action dialogs definitions -->
 <div style="visibility: hidden">
+    <div id="acceptActionDialog" title="Supprimer">
+        <p class="dialogMessage"></p>
+    </div>
+</div>
+
+<div style="visibility: hidden">
     <div id="deleteActionDialog" title="Supprimer">
         <p class="dialogMessage"></p>
     </div>

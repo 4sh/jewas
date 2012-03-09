@@ -351,28 +351,47 @@ var contentLifeCycleHelper = (function() {
                         
                     }
                 };
-                openActionDialog("deleteActionDialog", dialogOptions);
+                openActionDialog("acceptActionDialog", dialogOptions);
             } else {
                 console.error("Invalid deletion of content:", contentId);
             }
         },
 
-        acceptAction: function (containerId, contentId, status) {
-            var newStatus = null;
+        acceptAction:function (containerId, contentId, status) {
+            if (this.isAcceptAuthorized(status)) {
+                var dialogMessage = "<b>Etes-vous sûr de vouloir valider ce contenu ?</b></br>";
+                if (status === ContentStatus.TO_BE_VALIDATED) {
+                    dialogMessage += "Après validation, ce contenu sera consultable par l'ensemble des utilisateurs de la plateforme dans la limite définie par ses dates de publication.";
+                } else if (status === ContentStatus.TO_BE_DELETED) {
+                    dialogMessage += "Après validation, le contenu ne sera plus disponible sur la plateforme.";
+                }
+                var dialogOptions = {
+                    dialogMessage:dialogMessage,
+                    validateAction:function () {
+                        var newStatus = null;
 
-            if (status === ContentStatus.TO_BE_VALIDATED) {
-                newStatus = ContentStatus.VALIDATED;
+                        if (status === ContentStatus.TO_BE_VALIDATED) {
+                            newStatus = ContentStatus.VALIDATED;
+                        } else {
+                            if (status === ContentStatus.TO_BE_DELETED) {
+                                newStatus = ContentStatus.DELETED;
+                            }
+                            else {
+                                $("#updateStatusImpossible").dialog({show:'slide', hide:'slide'});
+                            }
+                        }
+
+                        if (newStatus !== null) {
+                            sendUpdateStatus(containerId, contentId, new UpdateStatusData().newStatus(newStatus));
+                        }
+                    },
+                    cancelAction:function () {
+
+                    }
+                };
+                openActionDialog("deleteActionDialog", dialogOptions);
             } else {
-                if (status === ContentStatus.TO_BE_DELETED) {
-                    newStatus = ContentStatus.DELETED;
-                }
-                else {
-                    $("#updateStatusImpossible").dialog({show: 'slide', hide: 'slide'});
-                }
-            }
-
-            if (newStatus !== null) {
-                sendUpdateStatus(containerId, contentId, new UpdateStatusData().newStatus(newStatus));
+                console.error("Invalid validation of content:", contentId);
             }
         },
 
