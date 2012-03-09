@@ -18,7 +18,14 @@
             </div>
 
             <div class="view_author"><img src="/public/images/bbeeg/author.png"/><a href="mailto:${content.header().author().email()}">${content.header().author().firstName()} ${content.header().author().lastName()}</a></div>
-            <div class="view_calendar"><img src="/public/images/bbeeg/calendar.png"/> ${content.header().creationDate()} </div>
+            <div class="view_calendar">
+                <span class="view_content_date">
+                    <img src="/public/images/bbeeg/calendar.png"/> ${content.header().creationDate()}
+                </span>
+                <span class="view_content_date">
+                    <img src="/public/images/bbeeg/edit_date.png"/> ${content.header().lastModificationDate()}
+                </span>
+            </div>
 
             <div class="view_domain"><b>Domaine(s) :</b>
                 <#list content.header().domains() as item>

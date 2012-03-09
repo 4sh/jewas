@@ -55,9 +55,17 @@
     float: left;
 }
 
+.view_author > a {
+    margin-left: 4px;
+}
+
 .view_calendar {
     width: 250px;
     float: left;
+}
+
+.view_content_date {
+    padding-right: 10px;
 }
 
 .view_domain, .view_keyword {
