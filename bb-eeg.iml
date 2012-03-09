@@ -24,6 +24,17 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.jsoup/jsoup/1.6.1/jar/70f0dfbe511d84ee7d0dda238a52746751787c47/jsoup-1.6.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.jsoup/jsoup/1.6.1/source/c99ecd66a78769494f30a375f45a19333980cc9/jsoup-1.6.1-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
           <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/mysql/mysql-connector-java/5.1.18/jar/85dfedad243dc0303ad7ae3a323c39421d220690/mysql-connector-java-5.1.18.jar!/" />
         </CLASSES>
         <JAVADOC />
@@ -44,11 +55,11 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/fr.4sh.jewas/jewas/0.1-SNAPSHOT/jar/34faca94255ab41345e21bc273907f5a353d9ba5/jewas-0.1-SNAPSHOT.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/fr.4sh.jewas/jewas/0.1-SNAPSHOT/jar/c54ecb6d83d0fbb8cdb7d0ef0f6fd279c32e6d9b/jewas-0.1-SNAPSHOT.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/fr.4sh.jewas/jewas/0.1-SNAPSHOT/source/e097bfa67012feb21a94e1a8746a1cce54e4b6a0/jewas-0.1-SNAPSHOT-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/fr.4sh.jewas/jewas/0.1-SNAPSHOT/source/47394ea506fe5fcdfb60c2027df624240acc987a/jewas-0.1-SNAPSHOT-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
