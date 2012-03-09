@@ -81,11 +81,16 @@
     float: left;
 }
 
+.view_content_date {
+    padding-right: 10px;
+}
+
 .view_domain, .view_keyword {
     width: 290px;
     height: 40px;
     float: left;
     padding-top: 3px;
+    overflow-y: hidden;
 }
 
 .domain {

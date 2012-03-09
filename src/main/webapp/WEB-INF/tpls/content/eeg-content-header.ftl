@@ -32,8 +32,15 @@
                 </div>
 
                 <div class="view_author"><img src="/public/images/bbeeg/author.png"/> ${content.header().author().firstName()} ${content.header().author().lastName()}</div>
-                <div class="view_calendar"><img src="/public/images/bbeeg/calendar.png"/> ${content.header().creationDate()} </div>
-
+                <div class="view_calendar">
+                    <span class="view_content_date">
+                        <img src="/public/images/bbeeg/calendar.png"/> ${content.header().creationDate()?date}
+                    </span>
+                    <span class="view_content_date">
+                        <img src="/public/images/bbeeg/edit_date.png"/> ${content.header().lastModificationDate()?date}
+                    </span>
+                </div>
+                
                 <div class="description_toggle">
                     <div class="view_domain"><b>Domaine(s) :</b>
                         <#list content.header().domains() as item>
