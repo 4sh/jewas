@@ -14,6 +14,7 @@ import jewas.persistence.QueryTemplate;
 import jewas.persistence.rowMapper.LongRowMapper;
 import jewas.persistence.rowMapper.RowMapper;
 import org.joda.time.DateMidnight;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -240,7 +241,7 @@ public class ContentDao {
     }
 
     public Long createContent(ContentDetail contentDetail) {
-        Date currentDate = new DateMidnight().toDate();
+        Date currentDate = new DateTime().toDate();
 
         contentDetail.header().creationDate(currentDate).lastModificationDate(currentDate);
 
@@ -314,7 +315,7 @@ public class ContentDao {
     }
 
     public void updateContentUrl(Long contentId, String url) {
-        Date currentDate = new DateMidnight().toDate();
+        Date currentDate = new DateTime().toDate();
         contentHeaderQueryTemplate.update("updateContentUrl",
                 new QueryExecutionContext().buildParams()
                         .string("url", url)
@@ -338,7 +339,7 @@ public class ContentDao {
     }
 
     public void updateContent(ContentDetail contentDetail) {
-        Date currentDate = new DateMidnight().toDate();
+        Date currentDate = new DateTime().toDate();
 
         /* Update the content in the DB */
         List<String> tags = contentDetail.header().tags();

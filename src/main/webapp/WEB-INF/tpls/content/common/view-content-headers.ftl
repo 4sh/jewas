@@ -20,10 +20,10 @@
             <div class="view_author"><img src="/public/images/bbeeg/author.png"/><a href="mailto:${content.header().author().email()}">${content.header().author().firstName()} ${content.header().author().lastName()}</a></div>
             <div class="view_calendar">
                 <span class="view_content_date">
-                    <img src="/public/images/bbeeg/calendar.png"/> ${content.header().creationDate()}
+                    <img src="/public/images/bbeeg/calendar.png"/> ${content.header().creationDate()?date}
                 </span>
                 <span class="view_content_date">
-                    <img src="/public/images/bbeeg/edit_date.png"/> ${content.header().lastModificationDate()}
+                    <img src="/public/images/bbeeg/edit_date.png"/> ${content.header().lastModificationDate()?date}
                 </span>
             </div>
 
