@@ -4,12 +4,7 @@ import fr.fsh.bbeeg.common.persistence.TempFiles;
 import fr.fsh.bbeeg.common.resources.ObjectId;
 import fr.fsh.bbeeg.common.resources.SuccessObject;
 import fr.fsh.bbeeg.content.resources.ContentResource;
-import jewas.http.AbstractRoute;
-import jewas.http.HttpMethodMatcher;
-import jewas.http.HttpRequest;
-import jewas.http.Parameters;
-import jewas.http.PatternUriPathMatcher;
-import jewas.http.RequestHandler;
+import jewas.http.*;
 import jewas.http.data.BodyParameters;
 import jewas.http.impl.AbstractRequestHandler;
 
@@ -47,7 +42,7 @@ public class CreateContentOfTextRoute extends AbstractRoute {
                 super.onReady(request, bodyParameters);
 
                 TextQueryObject tqo = toContentObject(bodyParameters, TextQueryObject.class);
-                String fileName = TempFiles.store(tqo.text());
+                String fileName = TempFiles.store(contentResource.sanitizeHTMLString(tqo.text()));
                 contentResource.updateContentOfContent(qo.id(), fileName, false);
                 request.respondJson().object(new SuccessObject().success(true));
             }

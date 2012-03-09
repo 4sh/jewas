@@ -12,9 +12,11 @@
 </#if>
 
 <@mainTemplate title="Création d'un contenu" selectedMenuItem=""
-               stylesheets=["/public/css/bbeeg/create.css"]
+               stylesheets=["/public/css/bbeeg/create.css",
+                            "/public/css/tinyeditor/style.css"]
                scripts=[chosenJS,
                         "/public/js/jewas/jewas-forms.js",
+                        "/public/js/tinyeditor/tinyeditor.js",
                         "/public/js/bbeeg/content/create-text.js",
                         "/public/js/bbeeg/content/content-status.js",
                         "/public/js/bbeeg/content/content-helper.js"]
@@ -66,9 +68,11 @@
                     $.ajax({
                         url:"${content.url()}",
                         success:function (data) {
-                            $("#content").append(data);
+                            $("#content").val(data);
+                            contentCreator.initialyzeTextEditor();
                         }
                     });
+
                     // Load the domains
                     <#list content.header().domains() as item>
                         domains.push(${item.id()?c});
@@ -77,6 +81,8 @@
                     <#list content.header().tags() as item>
                         tags.push("${item}");
                     </#list>
+                <#else>
+                    contentCreator.initialyzeTextEditor();
                 </#if>
                 contentHelper.loadDomains($("#domains"), $("#domainItemTemplate"), domains);
                 contentHelper.loadTags($("#tags"), $("#tagItemTemplate"), tags);

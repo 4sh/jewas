@@ -144,7 +144,7 @@
                 </div>
             </div>
         </div>
-
+        <hr/>
         <div id="columnrightbottom">
             <div class="box">
                 <div id="domainsPanel" class="panel">
