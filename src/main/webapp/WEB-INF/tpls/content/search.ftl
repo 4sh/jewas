@@ -354,7 +354,7 @@
     <br/>
     <p>{{= title}}</p>
     <br/>
-    <textarea {{if contentStatus !== ContentStatus.DRAFT}}disabled{{/if}} rows="10" cols="50"style="width:100%"></textarea>
+       <textarea {{if textReadOnly}}disabled{{/if}} rows="10" cols="50"style="width:100%"></textarea>
     <br/>
     <br/>
     <div id="publicationDates">

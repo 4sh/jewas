@@ -56,13 +56,14 @@ var contentLifeCycleHelper = (function() {
      * @param action the action on which the dialog must display information (can be 'publication' or 'rejection')
      * @param contentInfo the content information (id and current status)
      */
-    function loadPublicationRejectionDialogContent(dialogId, action, contentInfo) {
+    function loadPublicationRejectionDialogContent(dialogId, action, contentInfo, textReadOnly) {
         var dialog = $("#" + dialogId);
         dialog.children().remove();
 
         var templateParams = {
             contentStatus: contentInfo.status,
-            title: action === "publication" ? "Demande de publication :" : "Motif de rejet :"
+            title: action === "publication" ? "Demande de publication :" : "Motif de rejet :",
+            textReadOnly: textReadOnly
         };
 
         $("#publicationRejectionTemplate").tmpl(templateParams).appendTo(dialog);
@@ -409,7 +410,7 @@ var contentLifeCycleHelper = (function() {
                 id: contentId,
                 status: status
             };
-            loadPublicationRejectionDialogContent("rejectReasonDialog", "rejection", contentInfo);
+            loadPublicationRejectionDialogContent("rejectReasonDialog", "rejection", contentInfo, false);
             openActionDialog("rejectReasonDialog", dialogOptions);
         },
 
@@ -425,7 +426,7 @@ var contentLifeCycleHelper = (function() {
                     id: contentId,
                     status: contentStatus
                 };
-                loadPublicationRejectionDialogContent("publishContentDialog", "publication", contentInfo);
+                loadPublicationRejectionDialogContent("publishContentDialog", "publication", contentInfo, true);
             });
         },
 
@@ -440,7 +441,7 @@ var contentLifeCycleHelper = (function() {
                     id: contentId,
                     status: contentStatus
                 };
-                loadPublicationRejectionDialogContent("rejectReasonDialog", "rejection", contentInfo);
+                loadPublicationRejectionDialogContent("rejectReasonDialog", "rejection", contentInfo, true);
             });
         }
 
