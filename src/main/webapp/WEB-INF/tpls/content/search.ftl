@@ -365,9 +365,12 @@
             {{/if}}
         </div>
         {{if contentStatus === ContentStatus.DRAFT}}
-            <p>Le contenu sera disponible sur la plateforme après acceptation du modérateur selon la plage de publication définie.</p>
+            <p class='search-publicationDates-tip'>Les dates de publication sont facultatives, si non spécifiées le contenu sera disponible jusqu'à sa suppression.</p>
         {{/if}}
-        </div>
+    </div>
+    {{if contentStatus === ContentStatus.DRAFT}}
+        <p class='search-publicationDates-message'>Le contenu sera disponible sur la plateforme après acceptation du modérateur selon la plage de publication définie.</p>
+    {{/if}}
     </div>
 </script>
 </@mainTemplate>
