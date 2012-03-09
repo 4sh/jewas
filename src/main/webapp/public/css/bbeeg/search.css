@@ -102,6 +102,10 @@
     float: left;
 }
 
+.content-result-author > a {
+    margin-left: 4px;
+}
+
 .content-result-creation-date {
     width: 130px; float:left;
 }

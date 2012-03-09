@@ -241,6 +241,7 @@
             <div class="content-result-title"><a href="/content/{{= id}}/view.html">{{= title}}</a></div>
             <div class="content-result-author"><img src="/public/images/bbeeg/author.png"/><a href="mailto:{{= author.email}}">{{= author.firstName}} {{= author.lastName}}</a> </div>
             <div class="content-result-creation-date"><img src="/public/images/bbeeg/calendar.png"/> {{= creationDate}}</div>
+            <div class="content-result-creation-date"><img src="/public/images/bbeeg/edit_date.png"/> {{= lastModificationDate}}</div>
         </div>
 
         <div class="right_part">
