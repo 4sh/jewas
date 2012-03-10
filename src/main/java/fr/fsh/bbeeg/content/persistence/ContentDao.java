@@ -310,6 +310,11 @@ public class ContentDao {
             } catch (IOException e) {
                 logger.error("Failed to insert content into elastic search. Content Id: " + contentDetail.header().id(), e);
             }
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
         }
         logger.info("Re-index contents operation completed");
     }

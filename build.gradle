@@ -259,7 +259,7 @@ task startElasticSearch(dependsOn: [initSsh, checkPropsForDeployment]) << {
 
     ant.ssh(host: ENV_DEMO_HOST, username: ENV_DEMO_USER, password: ENV_DEMO_PASS, port: 22,
             command: """${deployDirectory}/elasticsearch/bin/elasticsearch \
-		    -f -Des.transport.tcp.port=${executionPort} -Des.index.store.type=memory -XX:MaxDirectMemorySize=256m \
+		    -f -Des.transport.tcp.port=${executionPort} -Des.index.store.type=memory -XX:MaxDirectMemorySize=512m \
 		    > "${logDirectory}/elasticsearch.log" 2> "${logDirectory}/elasticsearch.err.log" \
 		    & echo \$! > "${deployDirectory}/elasticsearch.pid" """,
             trust: true, failonerror: true)
