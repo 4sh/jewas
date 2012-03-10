@@ -182,8 +182,8 @@ public class ContentResource {
         try {
             Files.move(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
             if (postProcess) {
-                Files.copy(sourcePath,
-                        Paths.get(BBEEGConfiguration.INSTANCE.cliOptions().videoEncodingInput() + "/" + fileName),
+                Files.copy(targetPath,
+                        Paths.get(BBEEGConfiguration.INSTANCE.cliOptions().videoEncodingInput() + "/" + contentId + "." + extension),
                         StandardCopyOption.REPLACE_EXISTING);
             }
             contentDao.updateContentOfContent(contentId, targetPath.toString());
