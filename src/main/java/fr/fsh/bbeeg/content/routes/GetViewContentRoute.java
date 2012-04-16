@@ -3,12 +3,9 @@ package fr.fsh.bbeeg.content.routes;
 import fr.fsh.bbeeg.common.resources.ObjectId;
 import fr.fsh.bbeeg.content.pojos.ContentDetail;
 import fr.fsh.bbeeg.content.resources.ContentResource;
-import jewas.http.AbstractRoute;
-import jewas.http.HttpMethodMatcher;
-import jewas.http.HttpRequest;
-import jewas.http.Parameters;
-import jewas.http.PatternUriPathMatcher;
-import jewas.http.RequestHandler;
+import fr.fsh.bbeeg.security.resources.ConnectedUserResource;
+import fr.fsh.bbeeg.security.resources.HttpRequestHelper;
+import jewas.http.*;
 import jewas.http.impl.AbstractRequestHandler;
 import jewas.template.Templates;
 
@@ -34,7 +31,9 @@ public class GetViewContentRoute extends AbstractRoute {
             @Override
             public void onRequest(HttpRequest request) {
                 Map<String, Object> params = new HashMap<String, Object>();
-                ContentDetail contentDetail = contentResource.getContentDetail(oi.id());
+                ContentDetail contentDetail = contentResource.viewContent(oi.id(),
+                        ConnectedUserResource.instance.getUser(HttpRequestHelper.getSecurityToken(request)).id());
+                //ContentDetail contentDetail = contentResource.getContentDetail(oi.id());
                 params.put("content", contentDetail);
 
                 String template;

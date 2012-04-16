@@ -50,7 +50,7 @@ public class ContentDao {
 
         init(dataSource);
     }
-
+    
     private void init(DataSource dataSource) {
 
         // Initializing QueryTemplates
@@ -127,8 +127,10 @@ public class ContentDao {
                         .addQuery("updatePublicationComment",
                                 "update CONTENT_COMMENT set PUBLICATION_COMMENTS = :comment where CONTENT_REF = :id")
                         .addQuery("updateRejectionComment",
-                                "update CONTENT_COMMENT set REJECTION_COMMENTS = :comment where CONTENT_REF = :id");
-
+                                "update CONTENT_COMMENT set REJECTION_COMMENTS = :comment where CONTENT_REF = :id")
+                        .addQuery("insertMapping",
+                                "insert into PREFERENCES (ITEM_ID, USER_ID) values (:content, :user)" +
+                                        " ON DUPLICATE KEY UPDATE USER_ID = :user");
 
         this.idQueryTemplate =
                 new QueryTemplate<Long>(dataSource, new LongRowMapper())
@@ -566,6 +568,20 @@ public class ContentDao {
                 .bigint("id", contentId)
                 .toContext());
     }
+
+    /**
+     *  Update the mapping table dedicated to machine learning
+     *  @param userID the user considered in the mapping
+     *  @param contentID the content considered in the mapping
+     */
+    public void addMapping(long userID, long contentID){
+        contentDetailQueryTemplate.insert("insertMapping",new QueryExecutionContext()
+                .buildParams()
+                .bigint("user", userID)
+                .bigint("content", contentID)
+                .toContext());
+    }
+
 
     /**
      * Update publication comments.

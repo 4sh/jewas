@@ -8,6 +8,7 @@ import fr.fsh.bbeeg.content.routes.*;
 import fr.fsh.bbeeg.domain.routes.GetAllDomainsRoute;
 import fr.fsh.bbeeg.domain.routes.GetDomainsHierarchyRoute;
 import fr.fsh.bbeeg.domain.routes.GetPopularDomainRoute;
+import fr.fsh.bbeeg.learning.recommend.Recommend;
 import fr.fsh.bbeeg.security.routes.GetConnectedUserRoute;
 import fr.fsh.bbeeg.security.routes.GetLoginRoute;
 import fr.fsh.bbeeg.security.routes.GetLogoutRoute;
@@ -38,6 +39,7 @@ public class Main {
         CliOptions options = new CliOptions();
         try {
             JCommander jcommander = new JCommander(options, args);
+
         }catch(ParameterException e){
             System.err.println(e.getMessage());
             new JCommander(options).usage();
@@ -115,6 +117,11 @@ public class Main {
                 new RemoveUploadedFilesRoute()
             ).start();
             System.out.println("Ready, if you dare");
+
+
+            Recommend recommend = new Recommend(assembler.dataSource(),assembler.machineLearningResource());
+            recommend.testRecommend(1,0.4,0.1,0.5);
+            
         }catch(Throwable t){
             t.printStackTrace(System.err);
             System.exit(-1);

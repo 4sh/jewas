@@ -9,6 +9,8 @@ import fr.fsh.bbeeg.content.resources.EegResource;
 import fr.fsh.bbeeg.domain.persistence.DomainDao;
 import fr.fsh.bbeeg.domain.resources.DomainResource;
 import fr.fsh.bbeeg.i18n.persistence.I18nDao;
+import fr.fsh.bbeeg.learning.persistence.MachineLearningDao;
+import fr.fsh.bbeeg.learning.resources.MachineLearningResource;
 import fr.fsh.bbeeg.security.persistence.SecurityDao;
 import fr.fsh.bbeeg.security.resources.ConnectedUserResource;
 import fr.fsh.bbeeg.security.resources.SecurityResource;
@@ -42,6 +44,7 @@ public class Assembler {
     private TagDao tagDao;
     private I18nDao i18nDao;
     private SecurityDao securityDao;
+    private MachineLearningDao mlDao;
 
     /* Resources */
     private ContentResource contentResource;
@@ -51,6 +54,7 @@ public class Assembler {
     private ConnectedUserResource connectedUserResource;
     private EegResource eegResource;
     private SecurityResource securityResource;
+    private MachineLearningResource mlResource;
 
     public Assembler(CliOptions options) {
         dataSource = createDatasource(options);
@@ -68,6 +72,7 @@ public class Assembler {
         userDao = new UserDao(dataSource, domainDao);
         contentDao = new ContentDao(dataSource, userDao, domainDao, esContentDao, tagDao);
         securityDao = new SecurityDao(dataSource);
+        mlDao = new MachineLearningDao(dataSource);
 
         contentResource = new ContentResource(contentDao, esContentDao, i18nDao,
                 BBEEGConfiguration.INSTANCE.cliOptions().contentFileRepository());
@@ -78,17 +83,23 @@ public class Assembler {
         eegResource = new EegResource(contentDao,
                 BBEEGConfiguration.INSTANCE.cliOptions().contentFileRepository());
         securityResource = new SecurityResource(securityDao);
+        mlResource = new MachineLearningResource(mlDao);
 
     }
 
     private DataSource createDatasource(CliOptions options) {
         BasicDataSource ds = new BasicDataSource();
-        ds.setUrl("jdbc:mysql://localhost:3306/" + options.databaseSchema());
+        ds.setUrl("jdbc:mysql://mysql-dev:3306/" + options.databaseSchema());
         ds.setDriverClassName("com.mysql.jdbc.Driver");
-        ds.setUsername("bbeeg");
-        ds.setPassword("bbeeg");
+        ds.setUsername("root");
+        ds.setPassword("4shbordeaux");
         return ds;
     }
+    /* ***** DataSource ***** */
+    public DataSource dataSource(){
+        return dataSource;
+    }
+
 
     /* ***** Resources ***** */
     public ContentResource contentResource() {
@@ -117,5 +128,9 @@ public class Assembler {
 
     public ConnectedUserResource connectedUserResource() {
         return connectedUserResource;
+    }
+
+    public MachineLearningResource machineLearningResource(){
+        return mlResource;
     }
 }

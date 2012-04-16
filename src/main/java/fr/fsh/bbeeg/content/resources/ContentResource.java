@@ -72,6 +72,7 @@ public class ContentResource {
         ContentDetail contentDetail = contentDao.getContentDetail(id);
         if (ContentStatus.VALIDATED.equals(contentDetail.header().status())) {
             incrementPopularity(contentDetail);
+
         }
         updateLastConsultationDate(id);
         return contentDetail.url("/content/content/" + id);
@@ -340,6 +341,18 @@ public class ContentResource {
         contentDao.incrementPopularity(contentDetail.header().id());
     }
 
+    
+    /**
+     * Adds user-content mapping in the dedicated table
+     *
+     * @param userID the user
+     * @param contentID the content
+     */
+    private void addMapping(Long userID, Long contentID){
+        contentDao.addMapping(userID,contentID);
+    }
+    
+
     /**
      * Update the stored last consultation date for this content.
      *
@@ -348,5 +361,13 @@ public class ContentResource {
     private void updateLastConsultationDate(Long contentId) {
         contentDao.updateLastConsultationDate(contentId, new DateTime().toDate());
     }
-   
+
+    
+    public ContentDetail viewContent(Long contentID, Long userID){
+        ContentDetail contentDetail = getContentDetail(contentID);
+        incrementPopularity(contentDetail);
+        addMapping(userID,contentID);
+        return contentDetail;
+    }
+
 }

@@ -32,7 +32,7 @@ public class GetPopularTagRoute extends AbstractRoute {
         return new AbstractRequestHandler() {
             @Override
             public void onRequest(HttpRequest request) {
-                List<Tag> results = new ArrayList<Tag>();
+                    List<Tag> results = new ArrayList<Tag>();
                 tagResource.getPopularTags(results, qo);
                 request.respondJson().object(results, new TypeToken<List<Tag>>() {
                 }.getType());
