@@ -1,5 +1,6 @@
 package jewas.http.impl;
 
+import jewas.http.FileResponse;
 import jewas.http.HttpRequest;
 import jewas.http.HttpStatus;
 import jewas.http.RequestHandler;
@@ -8,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -59,7 +61,13 @@ public class FileRequestHandler extends AbstractRequestHandler {
                     Files.copyStreamTo(classloaderStream, fileSystemStream);
                 }
             }
-            request.respondFile().file(extractedFileInCache.toPath());
+            FileResponse fileResponse = request.respondFile();
+            if(headers != null){
+                for(Map.Entry<String, String> headerEntry : headers.entrySet()){
+                    fileResponse.addHeader(headerEntry.getKey(), headerEntry.getValue());
+                }
+            }
+            fileResponse.file(extractedFileInCache.toPath());
         } catch (IOException e) {
             logger.error("Error opening :" + extractedFileInCache.getAbsolutePath(), e);
             request.respondError(HttpStatus.NOT_FOUND);

@@ -6,13 +6,17 @@ import jewas.http.data.BodyParameters;
 import jewas.http.data.FormBodyParameters;
 import jewas.http.data.HttpData;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author fcamblor
  * Base implementation for most of your request handlers
  */
 public class AbstractRequestHandler implements RequestHandler {
+    Map<String, String> headers = null;
+
     /**
      * Callback called just after uri parameters have been parsed
      * Should generally be overloaded on GET routes which will rely on request
@@ -42,5 +46,10 @@ public class AbstractRequestHandler implements RequestHandler {
      */
     @Override
     public void onReady(HttpRequest request, BodyParameters bodyParameters) {
+    }
+
+    public RequestHandler withHeaders(Map<String, String> headers) {
+        this.headers = new HashMap<>(headers);
+        return this;
     }
 }

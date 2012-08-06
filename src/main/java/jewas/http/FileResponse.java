@@ -14,6 +14,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class FileResponse {
+    // TODO: Extract common abstract HttpResponse class from FileResponse/HtmlResponse/JsonResponse
+    // with HttpResponse wrapping and delegation (addHeader() for instance)
+    // + use this generic abstract response in AbstractRequestHandler
 	private HttpRequest httpRequest;
     private HttpResponse httpResponse;
     private ContentType contentType;
@@ -133,5 +136,9 @@ public class FileResponse {
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
+    }
+
+    public void addHeader(String key, String value) {
+        httpResponse.addHeader(key, value);
     }
 }
