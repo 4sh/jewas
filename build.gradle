@@ -103,7 +103,6 @@ uploadArchives {
 }
 
 release {
-    usesSnapshot = true
     useAutomaticVersion = true
 }
 createReleaseTag.dependsOn uploadArchives
