@@ -102,6 +102,11 @@ uploadArchives {
     }
 }
 
+release {
+
+}
+createReleaseTag.dependsOn uploadArchives
+
 // Allows to generate USER_HOME idea variable uniformely on every OS
 ideaModule {
     variables.put("USER_HOME", file(System.getProperty("user.home")))
