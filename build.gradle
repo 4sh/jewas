@@ -2,6 +2,8 @@ apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'sonar'
 apply plugin: 'maven'
+// For gradle release
+apply from: "https://launchpad.net/gradle-release/trunk/1.0pre/+download/apply.groovy"
 
 // For cobertura
 def cobSerFile = "${project.buildDir}/reports/tests/cobertura.ser"
@@ -17,7 +19,6 @@ if(!hasProperty("releasesRepoUsername")
 }
 
 group = "fr.4sh.jewas"
-def versionBase = '0.1'
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
@@ -25,15 +26,6 @@ targetCompatibility = 1.7
 if(System.getProperty("jdk") != null){
     sourceCompatibility = System.getProperty("jdk")
     targetCompatibility = System.getProperty("jdk")
-}
-
-// handles releases gracefully
-gradle.taskGraph.whenReady {taskGraph ->
-   if (taskGraph.hasTask(':release')) {
-      version = versionBase
-   } else {
-      version = versionBase + '-SNAPSHOT'
-   }
 }
 
 test {
