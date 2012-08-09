@@ -19,7 +19,7 @@ if(!hasProperty("releasesRepoUsername")
 }
 
 group = "fr.4sh.jewas"
-archivesBaseName = "jewastest"
+archivesBaseName = "jewas"
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
