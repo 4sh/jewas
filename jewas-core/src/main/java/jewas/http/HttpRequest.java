@@ -1,6 +1,8 @@
 package jewas.http;
 
 
+import org.jboss.netty.handler.codec.http.Cookie;
+
 import java.nio.ByteBuffer;
 
 public interface HttpRequest {
@@ -8,6 +10,9 @@ public interface HttpRequest {
 	public String uri();
 	public Headers headers();
 	public String path();
+
+    public Cookie cookie(String name);
+    public void addCookie(Cookie cookie);
 
     /**
      * @deprecated Should not be used directly

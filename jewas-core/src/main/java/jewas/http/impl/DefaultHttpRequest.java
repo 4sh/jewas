@@ -23,6 +23,7 @@ public final class DefaultHttpRequest implements HttpRequest {
     private final String uri;
 	private final Headers headers;
     private final ByteBuffer content;
+    private final Map<String, Cookie> cookies;
 
 	// computed fields
 	private final String path;
@@ -45,7 +46,14 @@ public final class DefaultHttpRequest implements HttpRequest {
         this.content = content;
         this.path = path;
 
-        parameters = new Parameters(uriAttributes);
+        this.parameters = new Parameters(uriAttributes);
+
+        this.cookies = new HashMap<>();
+        if(cookies != null){
+            for(Cookie cookie : cookies){
+                this.cookies.put(cookie.getName(), cookie);
+            }
+        }
 	}
 	
 	@Override
@@ -54,7 +62,17 @@ public final class DefaultHttpRequest implements HttpRequest {
 		return this;
 	}
 
-	public void endContent() {
+    @Override
+    public Cookie cookie(String name) {
+        return cookies.get(name);
+    }
+
+    @Override
+    public void addCookie(Cookie cookie) {
+        response().addCookie(cookie);
+    }
+
+    public void endContent() {
 		for (ContentHandler h : handlers) {
 			h.onContentEnd(this);
 		}
@@ -114,7 +132,7 @@ public final class DefaultHttpRequest implements HttpRequest {
 		return path;
 	}
 
-	public Parameters parameters() {
+    public Parameters parameters() {
 		return parameters;
 	}
 

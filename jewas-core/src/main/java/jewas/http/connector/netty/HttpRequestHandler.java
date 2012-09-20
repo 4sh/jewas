@@ -1,14 +1,15 @@
 package jewas.http.connector.netty;
 
-import jewas.http.ContentType;
-import jewas.http.HttpStatus;
-import jewas.http.RequestHandler;
+import jewas.http.*;
 import jewas.http.data.BodyParameters;
 import jewas.http.data.NamedString;
 import jewas.http.impl.DefaultHttpRequest;
 import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.*;
 import org.jboss.netty.handler.codec.http.*;
+import org.jboss.netty.handler.codec.http.HttpHeaders;
+import org.jboss.netty.handler.codec.http.HttpRequest;
+import org.jboss.netty.handler.codec.http.HttpResponse;
 import org.jboss.netty.handler.ssl.SslHandler;
 import org.jboss.netty.handler.stream.ChunkedFile;
 import org.jboss.netty.util.CharsetUtil;
@@ -23,6 +24,7 @@ import java.util.*;
 
 import static org.jboss.netty.handler.codec.http.HttpHeaders.Names.CONTENT_TYPE;
 import static org.jboss.netty.handler.codec.http.HttpResponseStatus.CONTINUE;
+import static org.jboss.netty.handler.codec.http.HttpResponseStatus.PARTIAL_CONTENT;
 import static org.jboss.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
 public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
@@ -60,6 +62,31 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
         }
     }
 
+    private static Set<Cookie> decodeCookiesFrom(HttpMessage message, String headerName){
+        Set<Cookie> cookies;
+        String value = message.getHeader(headerName);
+        if (value == null) {
+            cookies = new HashSet<>();
+        } else {
+            CookieDecoder decoder = new CookieDecoder();
+            cookies = decoder.decode(value);
+        }
+        return cookies;
+    }
+
+    private static void encodeCookies(HttpMessage message, String headerName, Collection<Cookie> cookies){
+        if(cookies == null){
+            return;
+        }
+
+        CookieEncoder encoder = new CookieEncoder(true);
+        for(Cookie cookie : cookies){
+            encoder.addCookie(cookie);
+        }
+
+        message.setHeader(headerName, encoder.encode());
+    }
+
     @Override
     public void messageReceived(ChannelHandlerContext ctx, final MessageEvent e) throws Exception {
         // Have we chunked previous response ?
@@ -76,14 +103,7 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
             List<Map.Entry<String, String>> headers = request.getHeaders();
 
             // cookies
-            Set<Cookie> cookies;
-            String value = request.getHeader(HttpHeaders.Names.COOKIE);
-            if (value == null) {
-                cookies = Collections.emptySet();
-            } else {
-                CookieDecoder decoder = new CookieDecoder();
-                cookies = decoder.decode(value);
-            }
+            Set<Cookie> cookies = decodeCookiesFrom(request, HttpHeaders.Names.COOKIE);
 
             // uri params
             QueryStringDecoder decoderQuery = new QueryStringDecoder(request
@@ -113,10 +133,17 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
                     decoderQuery.getPath(),
             		new jewas.http.HttpResponse() {
 						private HttpResponse nettyResponse;
+                        // Lazy list because in some cases, nettyResponse is not yet initialized
+                        // when we want to add cookies
+                        private Set<Cookie> lazyCookies = new HashSet<>();
 
 						@Override
 						public jewas.http.HttpResponse status(HttpStatus status) {
 							nettyResponse = new DefaultHttpResponse(HTTP_1_1, HttpResponseStatus.valueOf(status.code()));
+                            for(Cookie lazyCookie : lazyCookies){
+                                addCookie(lazyCookie);
+                            }
+                            lazyCookies = null;
 							return this;
 						}
 
@@ -197,6 +224,18 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
                         @Override
                         public jewas.http.HttpResponse addHeader(String header, Object value) {
                             nettyResponse.addHeader(header, value);
+                            return this;
+                        }
+
+                        @Override
+                        public jewas.http.HttpResponse addCookie(Cookie cookie) {
+                            if(nettyResponse == null){
+                                lazyCookies.add(cookie);
+                            } else {
+                                Set<Cookie> cookies = decodeCookiesFrom(nettyResponse, HttpHeaders.Names.SET_COOKIE);
+                                cookies.add(cookie);
+                                encodeCookies(nettyResponse, HttpHeaders.Names.SET_COOKIE, cookies);
+                            }
                             return this;
                         }
                     },

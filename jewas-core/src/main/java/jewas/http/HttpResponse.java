@@ -1,5 +1,7 @@
 package jewas.http;
 
+import org.jboss.netty.handler.codec.http.Cookie;
+
 import java.nio.file.Path;
 
 public interface HttpResponse {
@@ -9,4 +11,5 @@ public interface HttpResponse {
     HttpResponse content(Path path);
 
     HttpResponse addHeader(String header, Object value);
+    HttpResponse addCookie(Cookie cookie);
 }
