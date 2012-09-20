@@ -1,8 +1,15 @@
 archivesBaseName = "jewas-josso"
 
+repositories {
+    maven {
+        url "http://repository.josso.org/m2-release-repository/"
+        artifactUrls "http://repository.josso.org/m2-release-repository/"
+    }
+}
+
 dependencies {
     compile(
-            [group: "fr.4sh.jewas", name: 'jewas', version: '0.3-SNAPSHOT', transitive: true],
+            [group: "fr.4sh.jewas", name: 'jewas-core', version: '0.3-SNAPSHOT', transitive: true],
             [group: "org.josso", name: 'josso-agent', version: '1.8.7', transitive: true]
     )
     runtime(
