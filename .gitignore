@@ -1,4 +1,4 @@
-/.gradle
-/build
-/libs/netty
-/src/main/resources/rebel.xml
+/**/.gradle
+/**/build
+/jewas-core/libs/netty
+/**/src/main/resources/rebel.xml

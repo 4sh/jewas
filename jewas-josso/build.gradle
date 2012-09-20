@@ -1,0 +1,15 @@
+archivesBaseName = "jewas-josso"
+
+dependencies {
+    compile(
+            [group: "fr.4sh.jewas", name: 'jewas', version: '0.3-SNAPSHOT', transitive: true],
+            [group: "org.josso", name: 'josso-agent', version: '1.8.7', transitive: true]
+    )
+    runtime(
+    )
+    testCompile(
+    )
+    testRuntime 'net.sourceforge.cobertura:cobertura:1.9.4.1'
+
+    deployerJars "org.apache.maven.wagon:wagon-http:1.0-beta-2"
+}

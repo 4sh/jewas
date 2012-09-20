@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/.gradle" />
+      <excludeFolder url="file://$MODULE_DIR$/build" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="gradle-1.0-milestone-3" level="application" />
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/fr.4sh.jewas/jewas/0.3-SNAPSHOT/jar/e4d7b8a2a8c12a0654072d6830c55724bb1596e4/jewas-0.3-SNAPSHOT.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/fr.4sh.jewas/jewas/0.3-SNAPSHOT/source/64f94755573499728e421a66f6aeede224ef648f/jewas-0.3-SNAPSHOT-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/com.google.code.gson/gson/1.7.1/jar/697e3a1fa094a983cd12f7f6f61abf9c6ea52e2/gson-1.7.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/com.google.code.gson/gson/1.7.1/source/51f6f78aec2d30d0c2bfb4a5f00d456a6f7a5e7e/gson-1.7.1-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/joda-time/joda-time/1.6.2/jar/7a0525fe460ef5b99ea3152e6d2c0e4f24f04c51/joda-time-1.6.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/joda-time/joda-time/1.6.2/source/462b1672787aa4aabf1dab6f9752c2cc14bfd652/joda-time-1.6.2-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.jboss.netty/netty/4.0.0.Alpha0-4sh/bundle/4eeb526e7bbd6f1b50be098cb6e41f9c6e897fe3/netty-4.0.0.Alpha0-4sh.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.jboss.netty/netty/4.0.0.Alpha0-4sh/source/ebcca325efec9a4ff7c3f3ace3edc153e4752b0b/netty-4.0.0.Alpha0-4sh-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.slf4j/slf4j-api/1.6.4/jar/2396d74b12b905f780ed7966738bb78438e8371a/slf4j-api-1.6.4.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.slf4j/slf4j-api/1.6.4/source/a045ecb292c2b2559e8e9778303a08c91f537c68/slf4j-api-1.6.4-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/ch.qos.logback/logback-core/1.0.0/jar/b2893bbe71342232031f97faa1cf7bb4d99faced/logback-core-1.0.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/ch.qos.logback/logback-core/1.0.0/source/6b0ad3360ba11612e75aea121c3979a5a6750f90/logback-core-1.0.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/ch.qos.logback/logback-classic/1.0.0/jar/2577f6b69bbab34bb55634a4500b1b877aeffb7c/logback-classic-1.0.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/ch.qos.logback/logback-classic/1.0.0/source/eebfd12633815cc6ac32968896436bbf74390688/logback-classic-1.0.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.freemarker/freemarker/2.3.9/jar/db28580c15e4b54a2329a019c6427bec808070e/freemarker-2.3.9.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.freemarker/freemarker/2.3.9/source/3e33e6ef0c3677b97d56a1e15b35c6886660b40c/freemarker-2.3.9-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/../unresolved dependency - org.josso#josso-agent;1.8.7" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/net.sourceforge.cobertura/cobertura/1.9.4.1/jar/c72a431cb65bdce793bb147915c2e311941fcb11/cobertura-1.9.4.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/net.sourceforge.cobertura/cobertura/1.9.4.1/source/da5e7d36b91f9a182c59ad8718251000afd8c87e/cobertura-1.9.4.1-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/oro/oro/2.0.8/jar/5592374f834645c4ae250f4c9fbb314c9369d698/oro-2.0.8.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/oro/oro/2.0.8/source/3598e790ecd76ff7eb249853d4d00822ae1a5e71/oro-2.0.8-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/asm/asm/3.0/jar/d1616c03f056291a2314510dea75739b15b4d415/asm-3.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/asm/asm/3.0/source/f0c69d3809861b943404ebe564df944cbb7cde93/asm-3.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/asm/asm-tree/3.0/jar/6fff655717d1e1871decfe9f8e46a531e8df3a31/asm-tree-3.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/log4j/log4j/1.2.9/jar/55856d711ab8b88f8c7b04fd85ff1643ffbfde7c/log4j-1.2.9.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/log4j/log4j/1.2.9/source/b70470eb359ebea0bff6525c0bdec37528348ec0/log4j-1.2.9-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.apache.ant/ant-launcher/1.7.0/jar/e7e30789211e074aa70ef3eaea59bd5b22a7fa7a/ant-launcher-1.7.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.apache.ant/ant/1.7.0/jar/9746af1a485e50cf18dcb232489032a847067066/ant-1.7.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.apache.ant/ant/1.7.0/source/58ec0e378f1d33cb72a92ee3a9442909789090db/ant-1.7.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+  </component>
+</module>
+
