@@ -15,13 +15,17 @@ public class RedirectRoute extends AbstractRoute {
         this.redirectLocation = redirectLocation;
     }
 
-    @Override
-    protected RequestHandler onMatch(HttpRequest request, Parameters parameters) {
+    public RequestHandler redirectRequestHandler(HttpRequest request){
         return new AbstractRequestHandler() {
             @Override
             public void onRequest(HttpRequest request) {
                 request.redirect().location(redirectLocation);
             }
         };
+    }
+
+    @Override
+    protected RequestHandler onMatch(HttpRequest request, Parameters parameters) {
+        return redirectRequestHandler(request);
     }
 }
