@@ -18,7 +18,7 @@ import java.nio.ByteBuffer;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public final class DefaultHttpRequest implements HttpRequest {
+public final class DefaultHttpRequest extends HttpRequest {
 	private final HttpMethod method;
     private final String uri;
 	private final Headers headers;
