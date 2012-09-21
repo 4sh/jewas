@@ -33,6 +33,11 @@ public class Sessions {
         session.put(name, value);
     }
 
+    public static void remove(HttpRequest request, String name) {
+        Map<String, Serializable> session = get(request);
+        session.remove(name);
+    }
+
     /**
      * Will retrieve session map for given request
      */
@@ -59,8 +64,11 @@ public class Sessions {
             // and thus, we could reach this block where session id is not yet created
             // then, 2 session ids would be generated for the same user, and the latest written cookie will correspond
             // to the *good* unerlying map.
+            //
             // Problem is, here, that without any sessionId being set yet, we can't identify 2 different requests being sent
             // by the same client. So we cannot even add a synchronized block allowing to stop 2 different requests from the same host
+            // But we can consider it wil likely be *very* rare to be in such a case because, generally, we always have
+            // 1 request which loads the page (and then, generate sessionId), then N calls (for assets loading)
             String sessionId = generateUniqueSessionId();
             session = new ConcurrentHashMap<>();
             SESSIONS_BY_COOKIE.putIfAbsent(new CookieSessionKey(sessionId), session);
