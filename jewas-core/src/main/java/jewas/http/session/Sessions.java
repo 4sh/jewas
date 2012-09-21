@@ -54,8 +54,12 @@ public class Sessions {
         // If session is not yet present, this is the first time we make a request on the site
         // => we should create the session cookie and initialize the session map
         if(session == null){
-            String sessionId = generateUniqueSessionId();
             // Initializing session
+            // Note that there could be a race condition here where the same user could make 2 parallel "starting" queries
+            // and thus, we could reach this block where session id is not yet created
+            // then, 2 session ids would be generated for the same user, and the latest written cookie will correspond
+            // to the *good* unerlying map.
+            String sessionId = generateUniqueSessionId();
             session = new ConcurrentHashMap<>();
             SESSIONS_BY_COOKIE.putIfAbsent(new CookieSessionKey(sessionId), session);
             // Storing cookie in request (for subsquent calls to get() in current request) and response
