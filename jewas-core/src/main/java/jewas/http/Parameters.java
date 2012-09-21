@@ -24,6 +24,10 @@ public class Parameters {
 		return new Parameters(p);
 	}
 
+    public boolean nullVal(String name){
+        return val(name) == Strings.NULL;
+    }
+
 	public String val(String name) {
 		List<String> vals = params.get(name);
 		if (vals == null || vals.isEmpty()) {
