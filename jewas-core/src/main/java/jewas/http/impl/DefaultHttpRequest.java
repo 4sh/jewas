@@ -72,6 +72,11 @@ public final class DefaultHttpRequest implements HttpRequest {
         response().addCookie(cookie);
     }
 
+    @Override
+    public void addRequestCookie(Cookie cookie) {
+        cookies.put(cookie.getName(), cookie);
+    }
+
     public void endContent() {
 		for (ContentHandler h : handlers) {
 			h.onContentEnd(this);

@@ -15,10 +15,11 @@ import java.util.concurrent.ConcurrentMap;
  * Quick and dirty implementation of session management based on a cookie
  * I'm not really proud of the way it is implemented (there are lots of improvements which could be brought,
  * particularly on thread safety and performance)
+ * TODO: Add SESSIONS_BY_COOKIE serialization on netty server stop + deserialization in a static block
  */
 public class Sessions {
     private static final ConcurrentMap<CookieSessionKey, ConcurrentMap<String, Serializable>> SESSIONS_BY_COOKIE =
-            new ConcurrentHashMap<CookieSessionKey, ConcurrentMap<String, Serializable>>();
+            new ConcurrentHashMap<>();
 
     private static final String SESSION_ID_COOKIE_KEY = "sessionId";
 
@@ -54,12 +55,14 @@ public class Sessions {
         // => we should create the session cookie and initialize the session map
         if(session == null){
             String sessionId = generateUniqueSessionId();
-            Cookie sessionCookie = new DefaultCookie(SESSION_ID_COOKIE_KEY, sessionId);
             // Initializing session
             session = new ConcurrentHashMap<>();
-            SESSIONS_BY_COOKIE.put(new CookieSessionKey(sessionId), session);
-            // Storing cookie in response
+            SESSIONS_BY_COOKIE.putIfAbsent(new CookieSessionKey(sessionId), session);
+            // Storing cookie in request (for subsquent calls to get() in current request) and response
+            // (for future requests)
+            Cookie sessionCookie = new DefaultCookie(SESSION_ID_COOKIE_KEY, sessionId);
             request.addResponseCookie(sessionCookie);
+            request.addRequestCookie(sessionCookie);
         }
 
         return session;

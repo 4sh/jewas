@@ -13,6 +13,7 @@ public interface HttpRequest {
 
     public Cookie cookie(String name);
     public void addResponseCookie(Cookie cookie);
+    void addRequestCookie(Cookie sessionCookie);
 
     /**
      * @deprecated Should not be used directly
@@ -29,4 +30,5 @@ public interface HttpRequest {
 
 	public HttpRequest addContentHandler(ContentHandler h);
 	public void respondError(HttpStatus status);
+
 }
