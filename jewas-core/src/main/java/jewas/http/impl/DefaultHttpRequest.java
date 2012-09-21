@@ -68,7 +68,7 @@ public final class DefaultHttpRequest implements HttpRequest {
     }
 
     @Override
-    public void addCookie(Cookie cookie) {
+    public void addResponseCookie(Cookie cookie) {
         response().addCookie(cookie);
     }
 

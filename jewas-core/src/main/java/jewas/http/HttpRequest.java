@@ -12,7 +12,7 @@ public interface HttpRequest {
 	public String path();
 
     public Cookie cookie(String name);
-    public void addCookie(Cookie cookie);
+    public void addResponseCookie(Cookie cookie);
 
     /**
      * @deprecated Should not be used directly

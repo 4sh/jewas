@@ -45,7 +45,7 @@ public class Sessions {
         if(sessionCookie == null || session == null){
             String sessionId = generateUniqueSessionId();
             sessionCookie = new DefaultCookie(SESSION_ID_COOKIE_KEY, sessionId);
-            request.addCookie(sessionCookie);
+            request.addResponseCookie(sessionCookie);
             // Initializing session
             session = new HashMap<>();
             SESSIONS_BY_COOKIE.put(new CookieSessionKey(sessionId), session);
