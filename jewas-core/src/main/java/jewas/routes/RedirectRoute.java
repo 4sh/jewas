@@ -8,6 +8,17 @@ import jewas.http.impl.AbstractRequestHandler;
  */
 public class RedirectRoute extends AbstractRoute {
 
+    public static class RedirectRequestHandler extends AbstractRequestHandler {
+        private String redirectUrl;
+        public RedirectRequestHandler(String redirectUrl){
+            this.redirectUrl = redirectUrl;
+        }
+        @Override
+        public void onRequest(HttpRequest request) {
+            request.redirect().location(redirectUrl);
+        }
+    }
+
     private String redirectLocation;
 
     public RedirectRoute(String uri, String redirectLocation){
@@ -15,17 +26,8 @@ public class RedirectRoute extends AbstractRoute {
         this.redirectLocation = redirectLocation;
     }
 
-    public RequestHandler redirectRequestHandler(HttpRequest request){
-        return new AbstractRequestHandler() {
-            @Override
-            public void onRequest(HttpRequest request) {
-                request.redirect().location(redirectLocation);
-            }
-        };
-    }
-
     @Override
     protected RequestHandler onMatch(HttpRequest request, Parameters parameters) {
-        return redirectRequestHandler(request);
+        return new RedirectRequestHandler(redirectLocation);
     }
 }
