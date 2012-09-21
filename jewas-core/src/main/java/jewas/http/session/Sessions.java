@@ -7,6 +7,8 @@ import org.jboss.netty.handler.codec.http.DefaultCookie;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * @author fcamblor
@@ -15,8 +17,8 @@ import java.util.*;
  * particularly on thread safety and performance)
  */
 public class Sessions {
-    private static final Map<CookieSessionKey, Map<String, Serializable>> SESSIONS_BY_COOKIE =
-            Collections.synchronizedMap(new HashMap<CookieSessionKey, Map<String, Serializable>>());
+    private static final ConcurrentMap<CookieSessionKey, ConcurrentMap<String, Serializable>> SESSIONS_BY_COOKIE =
+            new ConcurrentHashMap<CookieSessionKey, ConcurrentMap<String, Serializable>>();
 
     private static final String SESSION_ID_COOKIE_KEY = "sessionId";
 
@@ -26,34 +28,48 @@ public class Sessions {
     }
 
     public static void set(HttpRequest request, String name, Serializable value) {
-        get(request).put(name, value);
+        Map<String, Serializable> session = get(request);
+        session.put(name, value);
     }
 
+    /**
+     * Will retrieve session map for given request
+     */
     protected static Map<String, Serializable> get(HttpRequest request){
+        // On every get, we should ensure there isn't any obsolete key in static session map
         cleanObsoleteSessions();
 
-        Map<String, Serializable> session = null;
+        ConcurrentMap<String, Serializable> session = null;
 
-        Cookie sessionCookie = request.cookie(SESSION_ID_COOKIE_KEY);
-        if(sessionCookie != null){
-            String sessionId = sessionCookie.getValue();
+        // Is there a session id sent in the request ?
+        // If this is the case, we should try to retrieve corresponding session map
+        // The retrieved session map could be null if, for instance, it was previously cleaned
+        Cookie requestSessionCookie = request.cookie(SESSION_ID_COOKIE_KEY);
+        if(requestSessionCookie != null){
+            String sessionId = requestSessionCookie.getValue();
             session = SESSIONS_BY_COOKIE.get(new CookieSessionKey(sessionId));
         }
 
-        // If session cookie is not yet present, this is the first time we make a request on the site
-        // => we should create the session cookie
-        if(sessionCookie == null || session == null){
+        // If session is not yet present, this is the first time we make a request on the site
+        // => we should create the session cookie and initialize the session map
+        if(session == null){
             String sessionId = generateUniqueSessionId();
-            sessionCookie = new DefaultCookie(SESSION_ID_COOKIE_KEY, sessionId);
-            request.addResponseCookie(sessionCookie);
+            Cookie sessionCookie = new DefaultCookie(SESSION_ID_COOKIE_KEY, sessionId);
             // Initializing session
-            session = new HashMap<>();
+            session = new ConcurrentHashMap<>();
             SESSIONS_BY_COOKIE.put(new CookieSessionKey(sessionId), session);
+            // Storing cookie in response
+            request.addResponseCookie(sessionCookie);
         }
 
         return session;
     }
 
+    /**
+     * Simple implementation will browser every keys, see if they are expired and remove it if this is the case
+     * The implementation is not really efficient since it browse every keys, but don't know how to have a better
+     * implementation
+     */
     private static void cleanObsoleteSessions() {
         List<CookieSessionKey> obsoleteKeys = new ArrayList<>();
         for(CookieSessionKey key : SESSIONS_BY_COOKIE.keySet()){
@@ -61,9 +77,7 @@ public class Sessions {
                 obsoleteKeys.add(key);
             }
         }
-        for(CookieSessionKey obsoleteKey : obsoleteKeys){
-            SESSIONS_BY_COOKIE.remove(obsoleteKey);
-        }
+        SESSIONS_BY_COOKIE.keySet().removeAll(obsoleteKeys);
     }
 
     private static String generateUniqueSessionId() {
