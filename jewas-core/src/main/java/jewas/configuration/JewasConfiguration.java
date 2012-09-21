@@ -5,7 +5,6 @@ package jewas.configuration;
  * User: driccio
  * Date: 19/07/11
  * Time: 11:10
- * To change this template use File | Settings | File Templates.
  */
 public abstract class JewasConfiguration {
     /**
@@ -35,7 +34,7 @@ public abstract class JewasConfiguration {
      * @param defaultValue the default value
      * @return the value of the given key if defined, else the default value.
      */
-    private static String getValueOfKeyOrDefaultValue(String key, String defaultValue) {
+    static String getValueOfKeyOrDefaultValue(String key, String defaultValue) {
         String value = delegate.getProperties().getProperty(key);
 
         if (value == null) {
