@@ -1,9 +1,6 @@
 package jewas.http;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import jewas.lang.Strings;
 
@@ -45,4 +42,8 @@ public class Parameters {
 			return vals;
 		}
 	}
+
+    public Set<String> names(){
+        return params.keySet();
+    }
 }
