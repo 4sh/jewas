@@ -4,18 +4,28 @@ package jewas.http;
 import org.jboss.netty.handler.codec.http.Cookie;
 
 import java.nio.ByteBuffer;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 public abstract class HttpRequest {
 	public abstract HttpMethod method();
 	public abstract String uri();
-	public abstract Headers headers();
 	public abstract String path();
 
+    public abstract void addResponseHeader(String name, String value);
+	public abstract Headers headers();
+
+    public abstract void responseContentType(ContentType contentType);
+
     public abstract Cookie cookie(String name);
+    public abstract Collection<Cookie> cookies();
     public abstract void addResponseCookie(Cookie cookie);
     public abstract void addRequestCookie(Cookie sessionCookie);
+
+    public abstract void attribute(String name, Object value);
+    public abstract Object attribute(String name);
+    public abstract Object removeAttribute(String name);
 
     /**
      * @deprecated Should not be used directly

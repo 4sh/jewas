@@ -1,16 +1,9 @@
 package jewas.http.impl;
 
-import jewas.http.ContentHandler;
-import jewas.http.FileResponse;
-import jewas.http.Headers;
-import jewas.http.HtmlResponse;
+import jewas.http.*;
 import jewas.http.HttpMethod;
 import jewas.http.HttpRequest;
 import jewas.http.HttpResponse;
-import jewas.http.HttpStatus;
-import jewas.http.JsonResponse;
-import jewas.http.Parameters;
-import jewas.http.RedirectResponse;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.handler.codec.http.*;
 
@@ -24,6 +17,7 @@ public final class DefaultHttpRequest extends HttpRequest {
 	private final Headers headers;
     private final ByteBuffer content;
     private final Map<String, Cookie> cookies;
+    private final Map<String, Object> attributes;
 
 	// computed fields
 	private final String path;
@@ -54,6 +48,8 @@ public final class DefaultHttpRequest extends HttpRequest {
                 this.cookies.put(cookie.getName(), cookie);
             }
         }
+
+        this.attributes = new HashMap<>();
 	}
 	
 	@Override
@@ -61,6 +57,11 @@ public final class DefaultHttpRequest extends HttpRequest {
 		handlers.add(h);
 		return this;
 	}
+
+    @Override
+    public Collection<Cookie> cookies(){
+        return Collections.unmodifiableCollection(cookies.values());
+    }
 
     @Override
     public Cookie cookie(String name) {
@@ -73,8 +74,33 @@ public final class DefaultHttpRequest extends HttpRequest {
     }
 
     @Override
+    public void addResponseHeader(String name, String value) {
+        response().addHeader(name, value);
+    }
+
+    @Override
+    public void responseContentType(ContentType contentType) {
+        response().contentType(contentType);
+    }
+
+    @Override
     public void addRequestCookie(Cookie cookie) {
         cookies.put(cookie.getName(), cookie);
+    }
+
+    @Override
+    public void attribute(String name, Object value) {
+        this.attributes.put(name, value);
+    }
+
+    @Override
+    public Object attribute(String name) {
+        return this.attributes.get(name);
+    }
+
+    @Override
+    public Object removeAttribute(String name) {
+        return this.attributes.remove(name);
     }
 
     public void endContent() {
