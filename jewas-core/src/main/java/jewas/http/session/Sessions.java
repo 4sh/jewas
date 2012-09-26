@@ -18,42 +18,26 @@ import java.util.concurrent.ConcurrentMap;
  * TODO: Add SESSIONS_BY_COOKIE serialization on netty server stop + deserialization in a static block
  */
 public class Sessions {
-    private static final ConcurrentMap<CookieSessionKey, ConcurrentMap<String, Serializable>> SESSIONS_BY_COOKIE =
+    private static final ConcurrentMap<CookieSessionKey, HttpSession> SESSIONS_BY_COOKIE =
             new ConcurrentHashMap<>();
 
     private static final String SESSION_ID_COOKIE_KEY = "sessionId";
 
-    public static Serializable get(HttpRequest request, String attributeName){
-        Map<String, Serializable> session = get(request);
-        return session.get(attributeName);
-    }
-
-    public static void set(HttpRequest request, String name, Serializable value) {
-        Map<String, Serializable> session = get(request);
-        session.put(name, value);
-    }
-
-    public static void remove(HttpRequest request, String name) {
-        Map<String, Serializable> session = get(request);
-        session.remove(name);
-    }
-
     /**
      * Will retrieve session map for given request
      */
-    protected static Map<String, Serializable> get(HttpRequest request){
+    public static HttpSession get(HttpRequest request){
         // On every get, we should ensure there isn't any obsolete key in static session map
         cleanObsoleteSessions();
 
-        ConcurrentMap<String, Serializable> session = null;
+        HttpSession session = null;
 
         // Is there a session id sent in the request ?
         // If this is the case, we should try to retrieve corresponding session map
         // The retrieved session map could be null if, for instance, it was previously cleaned
-        Cookie requestSessionCookie = request.cookie(SESSION_ID_COOKIE_KEY);
-        if(requestSessionCookie != null){
-            String sessionId = requestSessionCookie.getValue();
-            session = SESSIONS_BY_COOKIE.get(new CookieSessionKey(sessionId));
+        String cookieSessionId = getId(request);
+        if(cookieSessionId != null){
+            session = SESSIONS_BY_COOKIE.get(new CookieSessionKey(cookieSessionId));
         }
 
         // If session is not yet present, this is the first time we make a request on the site
@@ -70,7 +54,7 @@ public class Sessions {
             // But we can consider it wil likely be *very* rare to be in such a case because, generally, we always have
             // 1 request which loads the page (and then, generate sessionId), then N calls (for assets loading)
             String sessionId = generateUniqueSessionId();
-            session = new ConcurrentHashMap<>();
+            session = new HttpSession(sessionId);
             SESSIONS_BY_COOKIE.putIfAbsent(new CookieSessionKey(sessionId), session);
             // Storing cookie in request (for subsquent calls to get() in current request) and response
             // (for future requests)
@@ -103,5 +87,14 @@ public class Sessions {
             existingSessionIds.add(key.cookieId());
         }
         return Tokens.generateUniqueToken(existingSessionIds);
+    }
+
+    public static void invalidate(String sessionId) {
+        SESSIONS_BY_COOKIE.remove(new CookieSessionKey(sessionId));
+    }
+
+    public static String getId(HttpRequest request) {
+        Cookie cookie = request.cookie(SESSION_ID_COOKIE_KEY);
+        return cookie==null?null:cookie.getValue();
     }
 }
