@@ -23,6 +23,11 @@ public abstract class JewasConfiguration {
     private static final String TEMPLATE_PATH_DEFAULT_VALUE = "templates/";
 
     /**
+     * The current server name viewed by the client
+     */
+    public static final String SERVER_NAME = "server.name";
+
+    /**
      * The delegate to use to get the properties.
      */
     protected static JewasConfigurationDelegate delegate =
@@ -45,10 +50,16 @@ public abstract class JewasConfiguration {
     }
 
     /**
-     *
      * @return the path of the templates folder.
      */
     public static String getTemplatesPath() {
         return getValueOfKeyOrDefaultValue(TEMPLATE_PATH_KEY, TEMPLATE_PATH_DEFAULT_VALUE);
+    }
+
+    /**
+     * Public server name of current app
+     */
+    public static String serverName() {
+        return JewasConfiguration.getValueOfKeyOrDefaultValue(SERVER_NAME, null);
     }
 }
