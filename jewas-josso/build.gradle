@@ -8,10 +8,13 @@ repositories {
 }
 
 dependencies {
-    compile(
-            [group: "fr.4sh.jewas", name: 'jewas-core', version: '0.3-SNAPSHOT', transitive: true],
-            [group: "org.josso", name: 'josso-agent', version: '1.8.7', transitive: true]
-    )
+    compile project(':jewas-core')
+    // Fixed commons-logging-api since the one used in josso-agent is 1.0.4
+    compile group: "commons-logging", name: 'commons-logging-api', version: '1.1', transitive: true
+    compile group: "org.josso", name: 'josso-agent', version: '1.8.6', transitive: true
+    compile group: "org.josso", name: 'josso-protocol-client', version: '1.8.6', transitive: true
+    compile group: "commons-discovery", name: 'commons-discovery', version: '0.5', transitive: true
+
     runtime(
     )
     testCompile(

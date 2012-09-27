@@ -1,20 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="Spring" name="Spring">
+      <configuration>
+        <fileset id="fileset1" name="Xml Application Context" removed="false">
+          <file>file://$MODULE_DIR$/src/main/resources/josso-agent-config.xml</file>
+        </fileset>
+      </configuration>
+    </facet>
+  </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/resources" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/.gradle" />
       <excludeFolder url="file://$MODULE_DIR$/build" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="jewas-core" />
     <orderEntry type="library" name="gradle-1.0-milestone-3" level="application" />
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.josso/josso-agent/1.8.7/jar/69aa86b84d1bd663b2f86e74a9d73b0ea7a958ab/josso-agent-1.8.7.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/commons-logging/commons-logging-api/1.1/jar/7d4cf5231d46c8524f9b9ed75bb2d1c69ab93322/commons-logging-api-1.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -23,77 +32,29 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/com.google.code.gson/gson/1.7.1/jar/697e3a1fa094a983cd12f7f6f61abf9c6ea52e2/gson-1.7.1.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.josso/josso-agent/1.8.6/jar/6a83363d77b6d5212ce5575ec4153843511acc15/josso-agent-1.8.6.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/com.google.code.gson/gson/1.7.1/source/51f6f78aec2d30d0c2bfb4a5f00d456a6f7a5e7e/gson-1.7.1-sources.jar!/" />
-        </SOURCES>
+        <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/joda-time/joda-time/1.6.2/jar/7a0525fe460ef5b99ea3152e6d2c0e4f24f04c51/joda-time-1.6.2.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.josso/josso-protocol-client/1.8.6/jar/48c7a65d9ec35ef4b45237fc6be2347352e2ce6f/josso-protocol-client-1.8.6.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/joda-time/joda-time/1.6.2/source/462b1672787aa4aabf1dab6f9752c2cc14bfd652/joda-time-1.6.2-sources.jar!/" />
-        </SOURCES>
+        <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.jboss.netty/netty/4.0.0.Alpha0-4sh/bundle/4eeb526e7bbd6f1b50be098cb6e41f9c6e897fe3/netty-4.0.0.Alpha0-4sh.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/commons-discovery/commons-discovery/0.5/jar/3a8ac816bbe02d2f88523ef22cbf2c4abd71d6a8/commons-discovery-0.5.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.jboss.netty/netty/4.0.0.Alpha0-4sh/source/ebcca325efec9a4ff7c3f3ace3edc153e4752b0b/netty-4.0.0.Alpha0-4sh-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.slf4j/slf4j-api/1.6.4/jar/2396d74b12b905f780ed7966738bb78438e8371a/slf4j-api-1.6.4.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.slf4j/slf4j-api/1.6.4/source/a045ecb292c2b2559e8e9778303a08c91f537c68/slf4j-api-1.6.4-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/ch.qos.logback/logback-core/1.0.0/jar/b2893bbe71342232031f97faa1cf7bb4d99faced/logback-core-1.0.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/ch.qos.logback/logback-core/1.0.0/source/6b0ad3360ba11612e75aea121c3979a5a6750f90/logback-core-1.0.0-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/ch.qos.logback/logback-classic/1.0.0/jar/2577f6b69bbab34bb55634a4500b1b877aeffb7c/logback-classic-1.0.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/ch.qos.logback/logback-classic/1.0.0/source/eebfd12633815cc6ac32968896436bbf74390688/logback-classic-1.0.0-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.freemarker/freemarker/2.3.9/jar/db28580c15e4b54a2329a019c6427bec808070e/freemarker-2.3.9.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.freemarker/freemarker/2.3.9/source/3e33e6ef0c3677b97d56a1e15b35c6886660b40c/freemarker-2.3.9-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/commons-discovery/commons-discovery/0.5/source/b1bf6c41283cc1fff79c62995880341d7b018641/commons-discovery-0.5-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -120,15 +81,6 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/commons-logging/commons-logging-api/1.0.4/jar/544f72427e94a5c55b65a9b81c55c54059b4f993/commons-logging-api-1.0.4.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
           <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/commons-modeler/commons-modeler/1.1/jar/879390c9e0d9a5052fca54f275d853b89b667691/commons-modeler-1.1.jar!/" />
         </CLASSES>
         <JAVADOC />
@@ -138,7 +90,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.josso/josso-common/1.8.7/jar/e89d7e41cfba128d944e71cee6fa723921259a5c/josso-common-1.8.7.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.josso/josso-common/1.8.6/jar/bba3c0974d8d74bde52da8baf9a9596bb8804088/josso-common-1.8.6.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -213,7 +165,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.josso/josso-core/1.8.7/jar/86c62613fcb5af58e97a6f01efc3ac482dddd93a/josso-core-1.8.7.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.josso/josso-core/1.8.6/jar/ec0bc7b64eed25bedb94717547cf1c3ce3eb2f14/josso-core-1.8.6.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -230,6 +182,63 @@
         </SOURCES>
       </library>
     </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.apache.axis/axis/1.4/jar/94a9ce681a42d0352b3ad22659f67835e560d107/axis-1.4.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.apache.axis/axis/1.4/source/442ab1fe3e66b6d5c916ae3f203fbfa618515f1c/axis-1.4-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.apache.axis/axis-jaxrpc/1.4/jar/b393f1f0c0d95b68c86d0b1ab2e687bb71f3c075/axis-jaxrpc-1.4.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.apache.axis/axis-ant/1.4/jar/4200087029ba7bc85351e136fdbbb7eb5d289380/axis-ant-1.4.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.apache.axis/axis-saaj/1.4/jar/581149d1f391258754354f2acf2b56665d53de2e/axis-saaj-1.4.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/axis/axis-wsdl4j/1.5.1/jar/bd804633b9c2cf06258641febc31a8ff3b0906bc/axis-wsdl4j-1.5.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.josso/josso-ws/1.8.6/jar/d4cc8f05c887f723e6e3f214718d782d4ca88fff/josso-ws-1.8.6.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module" module-name="jewas-core" exported="" />
     <orderEntry type="module-library" scope="TEST">
       <library>
         <CLASSES>
