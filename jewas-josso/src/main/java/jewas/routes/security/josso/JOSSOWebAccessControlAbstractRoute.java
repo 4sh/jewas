@@ -1,14 +1,12 @@
 package jewas.routes.security.josso;
 
-import jewas.configuration.JewasConfiguration;
 import jewas.configuration.JossoJewasConfiguration;
 import jewas.http.HttpRequest;
 import jewas.http.RequestHandler;
 import jewas.http.Route;
 import jewas.http.session.Sessions;
 import jewas.routes.RedirectRoute;
-import org.josso.agent.Constants;
-import org.josso.agent.SingleSignOnEntry;
+import org.josso.agent.*;
 import org.josso.agent.http.JOSSOSecurityContext;
 import org.josso.agent.http.WebAccessControlUtil;
 
@@ -19,28 +17,39 @@ import java.io.Serializable;
  */
 public abstract class JOSSOWebAccessControlAbstractRoute implements Route {
 
-    private static final String KEY_USER_INFOS = "jewas.user.infos";
     private static final String KEY_JOSSO_SAVED_REQUEST_URI = "jewas.josso.savedRequest";
 
-    private String jossoAuthentUrl;
+    private JewasSSOAgent agent;
 
-    public JOSSOWebAccessControlAbstractRoute(final String jossoAuthentUrl, String gatewayWebservice){
-        this.jossoAuthentUrl = jossoAuthentUrl;
+    public JOSSOWebAccessControlAbstractRoute(String gatewayWebservice) {
+        Lookup lookup = Lookup.getInstance();
+        lookup.init("josso-agent-config.xml"); // For spring compatibility ...
+
+        // We need at least an abstract SSO Agent
+        try {
+            agent = (JewasSSOAgent) lookup.lookupSSOAgent();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        // TODO: To remove !
+        agent.setDebug(1);
+        agent.start();
     }
 
     @Override
     public RequestHandler match(HttpRequest request) {
         // If session is already open, current route should not be triggered
-        if(sessionOpened(request)){
+        if (JossoUser.sessionOpened(request)) {
             return null;
         } else {
             // Here, token should be provided by JOSSO after authentication
-            if(tokenProvided(request)){
+            if (tokenProvided(request)) {
                 // TODO: Call JOSSO webservice to verify token already exists (and retrieve user information)
                 // then store it into the session in order to have sessionOpened() returns true
                 // If token is invalid, we should redirect on JOSSO
                 String token = retrieveToken(request);
-                if(askForAuthentication(request, token)){
+                if (askForAuthentication(request, token)) {
                     // No problem here, route's job is finished and we should redirect on
                     // saved url
                     String originalUri = savedRequestUri(request);
@@ -57,8 +66,9 @@ public abstract class JOSSOWebAccessControlAbstractRoute implements Route {
     }
 
     private RequestHandler redirectToJosso(HttpRequest request) {
+        String jossoAuthentUrl = this.agent.getGatewayLoginUrl();
         StringBuilder jossoRedirectUrl = new StringBuilder(jossoAuthentUrl)
-                .append(jossoAuthentUrl.contains("?")?"&":"?")
+                .append(jossoAuthentUrl.contains("?") ? "&" : "?")
                 .append(org.josso.gateway.signon.Constants.PARAM_JOSSO_BACK_TO)
                 .append("=")
                 .append(JossoJewasConfiguration.jossoBackUrl());
@@ -69,9 +79,9 @@ public abstract class JOSSOWebAccessControlAbstractRoute implements Route {
         return new RedirectRoute.RedirectRequestHandler(jossoRedirectUrl.toString());
     }
 
-    protected boolean askForAuthentication(HttpRequest request, String token){
-        SingleSignOnEntry jossoResponse = jossoAuthentication(token);
-        if(jossoResponse != null){
+    protected boolean askForAuthentication(HttpRequest request, String token) {
+        SingleSignOnEntry jossoResponse = jossoAuthentication(request, token);
+        if (jossoResponse != null) {
             Serializable userInfos = createUserInfos(jossoResponse);
             storeUserInfosInSession(request, userInfos);
             return true;
@@ -80,12 +90,29 @@ public abstract class JOSSOWebAccessControlAbstractRoute implements Route {
         }
     }
 
-    protected void storeUserInfosInSession(HttpRequest request, Serializable userInfos){
-        Sessions.set(request, KEY_USER_INFOS, userInfos);
+    protected void storeUserInfosInSession(HttpRequest request, Serializable userInfos) {
+        JossoUser.set(request, userInfos);
     }
 
-    protected SingleSignOnEntry jossoAuthentication(String token){
-        return null;
+    protected SingleSignOnEntry jossoAuthentication(HttpRequest request, String token) {
+        // Take the node from the request first and store it if found.
+        String nodeId = request.parameters().val("josso_node");
+        if (nodeId != null) {
+            agent.setAttribute(request, "JOSSO_NODE", nodeId);
+        } else {
+            nodeId = agent.getAttribute(request, "JOSSO_NODE");
+            if (!"".equals(nodeId)) {
+                nodeId = null;
+            }
+        }
+
+        SSOPartnerAppConfig cfg = agent.extractPartnerAppConfig(request);
+        String cfgId = cfg.getId();
+        LocalSession session = new LocalSessionImpl(request);
+
+        HttpSSOAgentRequest ssoRequest = new HttpSSOAgentRequest(cfgId, SSOAgentRequest.ACTION_RELAY, "-", session, token, nodeId);
+        ssoRequest.setRequest(request);
+        return agent.processRequest(ssoRequest);
     }
 
     private boolean tokenProvided(HttpRequest request) {
@@ -96,24 +123,21 @@ public abstract class JOSSOWebAccessControlAbstractRoute implements Route {
         return request.parameters().val(Constants.JOSSO_ASSERTION_ID_PARAMETER);
     }
 
-    private static boolean sessionOpened(HttpRequest request) {
-        return userInfos(request) != null;
-    }
-
-    public static void savedRequestUri(HttpRequest request, String requestUri){
-        if(requestUri == null){
-            Sessions.remove(request, KEY_JOSSO_SAVED_REQUEST_URI);
+    public static void savedRequestUri(HttpRequest request, String requestUri) {
+        if (requestUri == null) {
+            Sessions.get(request).remove(KEY_JOSSO_SAVED_REQUEST_URI);
         } else {
-            Sessions.set(request, KEY_JOSSO_SAVED_REQUEST_URI, requestUri);
+            Sessions.get(request).set(KEY_JOSSO_SAVED_REQUEST_URI, requestUri);
         }
     }
 
     public static String savedRequestUri(HttpRequest request) {
-        return (String) Sessions.get(request, KEY_JOSSO_SAVED_REQUEST_URI);
+        return (String) Sessions.get(request).get(KEY_JOSSO_SAVED_REQUEST_URI);
     }
 
-    public static Serializable userInfos(HttpRequest request){
-        return Sessions.get(request, KEY_USER_INFOS);
+    public static JOSSOSecurityContext getSecurityContext(HttpRequest request) {
+        return (JOSSOSecurityContext) Sessions.get(request).get(WebAccessControlUtil.KEY_JOSSO_SECURITY_CONTEXT);
+
     }
 
     /**
@@ -121,9 +145,4 @@ public abstract class JOSSOWebAccessControlAbstractRoute implements Route {
      * user object which will be stored in the session
      */
     protected abstract Serializable createUserInfos(SingleSignOnEntry jossoResponse);
-
-    public static JOSSOSecurityContext getSecurityContext(HttpRequest request){
-        return (JOSSOSecurityContext) Sessions.get(request, WebAccessControlUtil.KEY_JOSSO_SECURITY_CONTEXT);
-
-    }
 }
