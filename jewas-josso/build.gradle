@@ -1,12 +1,5 @@
 archivesBaseName = "jewas-josso"
 
-repositories {
-    maven {
-        url "http://repository.josso.org/m2-release-repository/"
-        artifactUrls "http://repository.josso.org/m2-release-repository/"
-    }
-}
-
 dependencies {
     compile project(':jewas-core')
     // Fixed commons-logging-api since the one used in josso-agent is 1.0.4
