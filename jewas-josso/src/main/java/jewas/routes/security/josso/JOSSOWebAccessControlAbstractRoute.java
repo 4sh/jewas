@@ -83,6 +83,10 @@ public abstract class JOSSOWebAccessControlAbstractRoute implements Route {
         SingleSignOnEntry jossoResponse = jossoAuthentication(request, token);
         if (jossoResponse != null) {
             Serializable userInfos = createUserInfos(jossoResponse);
+            if (userInfos == null) {
+                return false;
+            }
+
             storeUserInfosInSession(request, userInfos);
             return true;
         } else {
