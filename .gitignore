@@ -1,5 +1,7 @@
 /.gradle
 /build
+/jewas-core/build
+/jewas-josso/build
 /.idea/misc.xml
 /.idea/workspace.xml
 /out
