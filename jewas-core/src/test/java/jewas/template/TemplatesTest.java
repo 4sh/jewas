@@ -2,6 +2,7 @@ package jewas.template;
 
 import jewas.configuration.JewasConfigurationForTest;
 import jewas.util.file.Files;
+import jewas.util.properties.ChainedProperties;
 import junit.framework.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -22,7 +23,11 @@ public class TemplatesTest {
     @Test
     @Ignore("Ignored : doesn't pass when executed through gradle")
     public void shouldProcessATemplateWithGivenParameters() throws IOException {
-        JewasConfigurationForTest.override("jewas/configuration/jewasForTemplate.conf");
+        JewasConfigurationForTest.override(
+                new ChainedProperties()
+                        .chainProperties("jewas/configuration/jewasForTemplate.conf", "jewas-test-global", true)
+                        .load()
+        );
 
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("user", "JewasUser");

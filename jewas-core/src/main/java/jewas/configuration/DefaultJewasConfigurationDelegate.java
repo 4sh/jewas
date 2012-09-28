@@ -1,11 +1,8 @@
 package jewas.configuration;
 
-import jewas.util.file.Files;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Properties;
 
 /**
@@ -13,7 +10,7 @@ import java.util.Properties;
  * User: driccio
  * Date: 22/07/11
  * Time: 08:49
- *
+ * <p/>
  * The default implementation fo {@link JewasConfigurationDelegate}.
  */
 public class DefaultJewasConfigurationDelegate implements JewasConfigurationDelegate {
@@ -28,18 +25,11 @@ public class DefaultJewasConfigurationDelegate implements JewasConfigurationDele
      */
     private Properties properties;
 
-    public DefaultJewasConfigurationDelegate(String path) {
-        properties = new Properties();
-
-        try(InputStream is = Files.getInputStreamFromPath(path))
-        {
-            properties.load(is);
-        } catch (IOException e) {
-            logger.error("Cannot get input stream from: " + path);
-        }
+    public DefaultJewasConfigurationDelegate(Properties props) {
+        properties = props;
     }
 
     public Properties getProperties() {
-       return properties;
+        return properties;
     }
 }

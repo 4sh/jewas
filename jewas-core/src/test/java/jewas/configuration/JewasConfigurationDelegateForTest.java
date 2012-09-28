@@ -1,8 +1,5 @@
 package jewas.configuration;
 
-import jewas.util.file.Files;
-
-import java.io.IOException;
 import java.util.Properties;
 
 /**
@@ -10,10 +7,10 @@ import java.util.Properties;
  * User: driccio
  * Date: 22/07/11
  * Time: 09:13
- *
+ * <p/>
  * The implement of {@link JewasConfigurationDelegate} to use for test.
  */
-public class JewasConfigurationDelegateForTest implements JewasConfigurationDelegate{
+public class JewasConfigurationDelegateForTest implements JewasConfigurationDelegate {
     private static Properties properties;
 
     /**
@@ -28,16 +25,11 @@ public class JewasConfigurationDelegateForTest implements JewasConfigurationDele
 
     /**
      * Load new properties from the given path.
-     * @param path the path
+     *
+     * @param props the properties to override
      */
-    public static void override(String path) {
-        properties = new Properties();
-
-        try {
-            properties.load(Files.getInputStreamFromPath(path));
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
-        }
+    public static void override(Properties props) {
+        properties = props;
     }
 
     /**

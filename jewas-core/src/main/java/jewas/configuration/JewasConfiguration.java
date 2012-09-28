@@ -1,5 +1,7 @@
 package jewas.configuration;
 
+import jewas.util.properties.ChainedProperties;
+
 /**
  * Created by IntelliJ IDEA.
  * User: driccio
@@ -31,11 +33,18 @@ public abstract class JewasConfiguration {
      * The delegate to use to get the properties.
      */
     protected static JewasConfigurationDelegate delegate =
-            new DefaultJewasConfigurationDelegate(APPLICATION_CONFIGURATION_FILE_PATH);
+            new DefaultJewasConfigurationDelegate(
+                    new ChainedProperties()
+                            .chainProperties("conf/jewas.conf", "jewas-global", true)
+                            .chainProperties("conf/jewas-${env}.conf", "jewas-env", false)
+                            .chainProperties("conf/jewas-${user.name}.conf", "jewas-user", false)
+                            .load()
+            );
 
     /**
      * Get the value of the given key if defined, else the default value.
-     * @param key the key
+     *
+     * @param key          the key
      * @param defaultValue the default value
      * @return the value of the given key if defined, else the default value.
      */
