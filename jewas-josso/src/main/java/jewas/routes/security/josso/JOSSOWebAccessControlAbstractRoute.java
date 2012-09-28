@@ -21,7 +21,7 @@ public abstract class JOSSOWebAccessControlAbstractRoute implements Route {
 
     private JewasSSOAgent agent;
 
-    public JOSSOWebAccessControlAbstractRoute(String gatewayWebservice) {
+    public JOSSOWebAccessControlAbstractRoute() {
         Lookup lookup = Lookup.getInstance();
         lookup.init("josso-agent-config.xml"); // For spring compatibility ...
 
