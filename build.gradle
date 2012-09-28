@@ -1,15 +1,16 @@
-if(!hasProperty("releasesRepoUsername")
-        || !hasProperty("releasesRepoPassword")){
+if (!hasProperty("releasesRepoUsername")
+        || !hasProperty("releasesRepoPassword")) {
     ant.fail "You should define a ~/.gradle/gradle.properties containing properties 'releasesRepoUsername' and 'releasesRepoPassword' to access 4SH releases repository !"
 }
+
+// For gradle release
+apply from: "https://launchpad.net/gradle-release/trunk/1.0pre/+download/apply.groovy"
 
 subprojects {
     apply plugin: 'java'
     apply plugin: 'idea'
     apply plugin: 'sonar'
     apply plugin: 'maven'
-    // For gradle release
-    apply from: "https://launchpad.net/gradle-release/trunk/1.0pre/+download/apply.groovy"
 
     // For cobertura
     def cobSerFile = "${project.buildDir}/reports/tests/cobertura.ser"
@@ -24,7 +25,7 @@ subprojects {
     sourceCompatibility = 1.7
     targetCompatibility = 1.7
 
-    if(System.getProperty("jdk") != null){
+    if (System.getProperty("jdk") != null) {
         sourceCompatibility = System.getProperty("jdk")
         targetCompatibility = System.getProperty("jdk")
     }
@@ -34,7 +35,7 @@ subprojects {
     }
 
     configurations {
-       deployerJars
+        deployerJars
     }
 
     repositories {
@@ -48,21 +49,21 @@ subprojects {
         }
     }
 
-    task packageJavadoc(type: Jar, dependsOn:javadoc) {
+    task packageJavadoc(type: Jar, dependsOn: javadoc) {
         classifier = 'javadoc'
         from javadoc.destinationDir
     }
 
     task packageSources(type: Jar) {
-       from sourceSets.main.allSource
-       classifier = 'sources'
+        from sourceSets.main.allSource
+        classifier = 'sources'
     }
     artifacts {
-       archives(packageJavadoc) {
-          type = 'javadoc'
-          extension = 'jar'
-       }
-       archives(packageSources)
+        archives(packageJavadoc) {
+            type = 'javadoc'
+            extension = 'jar'
+        }
+        archives(packageSources)
     }
 
     uploadArchives {
