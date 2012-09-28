@@ -36,8 +36,8 @@ public abstract class JewasConfiguration {
             new DefaultJewasConfigurationDelegate(
                     new ChainedProperties()
                             .chainProperties("conf/jewas.conf", "jewas-global", true)
-                            .chainProperties("conf/jewas-${env}.conf", "jewas-env", false)
-                            .chainProperties("conf/jewas-${user.name}.conf", "jewas-user", false)
+                            .chainProperties("conf/envspecific/jewas-${env}.conf", "jewas-env", false)
+                            .chainProperties("conf/devspecific/jewas-${user.name}.conf", "jewas-user", false)
                             .load()
             );
 
