@@ -10,11 +10,6 @@ import jewas.util.properties.ChainedProperties;
  */
 public abstract class JewasConfiguration {
     /**
-     * The default application configuration file path to use.
-     */
-    private static final String APPLICATION_CONFIGURATION_FILE_PATH = "conf/jewas.conf";
-
-    /**
      * The key to use in the application configuration file to define the template folder.
      */
     private static final String TEMPLATE_PATH_KEY = "templates.path";
@@ -35,9 +30,10 @@ public abstract class JewasConfiguration {
     protected static JewasConfigurationDelegate delegate =
             new DefaultJewasConfigurationDelegate(
                     new ChainedProperties()
-                            .chainProperties("conf/jewas.conf", "jewas-global", true)
-                            .chainProperties("conf/envspecific/jewas-${env}.conf", "jewas-env", false)
-                            .chainProperties("conf/devspecific/jewas-${user.name}.conf", "jewas-user", false)
+                            // WARNING : If this section is updated, think about updating josso-agent.config.xml file accordingly !
+                            .chainProperties("conf/jewas.properties", "jewas-global", true)
+                            .chainProperties("conf/envspecific/jewas-${deploy.target.env}.properties", "jewas-env", false)
+                            .chainProperties("conf/devspecific/jewas-${user.name}.properties", "jewas-user", false)
                             .load()
             );
 

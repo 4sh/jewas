@@ -7,10 +7,13 @@
     <bean id="properties" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="locations">
             <list>
-                <value>classpath:conf/jewas.conf</value>
+                <value>classpath:conf/jewas.properties</value>
+                <value>classpath:conf/envspecific/jewas-${deploy.target.env}.properties</value>
+                <value>classpath:conf/devspecific/jewas-${user.name}.properties</value>
             </list>
         </property>
-        <property name="ignoreResourceNotFound" value="false"/>
+        <!-- jewas-* file are not mandatory -->
+        <property name="ignoreResourceNotFound" value="true"/>
         <!-- Set to true to insert properties into envProperties bean -->
         <property name="ignoreUnresolvablePlaceholders" value="true"/>
     </bean>
