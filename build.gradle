@@ -4,7 +4,7 @@ if (!hasProperty("releasesRepoUsername")
 }
 
 // For gradle release
-apply from: "https://launchpad.net/gradle-release/trunk/1.0/+download/apply.groovy"
+apply from: "https://launchpad.net/gradle-release/trunk/1.0pre/+download/apply.groovy"
 
 subprojects {
     apply plugin: 'java'
