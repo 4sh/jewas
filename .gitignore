@@ -1,4 +1,7 @@
-/**/.gradle
-/**/build
+/.gradle
+/build
+/.idea/misc.xml
+/.idea/workspace.xml
+/out
 /jewas-core/libs/netty
-/**/src/main/resources/rebel.xml
+rebel.xml
