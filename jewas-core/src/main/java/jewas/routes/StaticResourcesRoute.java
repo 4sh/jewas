@@ -1,7 +1,9 @@
 package jewas.routes;
 
 import jewas.http.*;
-import jewas.http.impl.FileRequestHandler;
+import jewas.http.impl.ResourceRequestHandler;
+import jewas.resources.ClasspathResource;
+import jewas.resources.Resource;
 
 import java.io.File;
 
@@ -53,10 +55,10 @@ public class StaticResourcesRoute extends AbstractRoute {
     }
 
     protected RequestHandler onMatch(HttpRequest request, Parameters parameters) {
-        return new FileRequestHandler(this.cachedResourcesFileSystemRootDir, currentResourcePath(request, parameters));
+        return new ResourceRequestHandler(this.cachedResourcesFileSystemRootDir, createResource(request, parameters));
     }
 
-    protected String currentResourcePath(HttpRequest request, Parameters parameters){
-        return pathPrefix+parameters.val("path");
+    protected Resource createResource(HttpRequest request, Parameters parameters){
+        return new ClasspathResource(pathPrefix+parameters.val("path"));
     }
 }
