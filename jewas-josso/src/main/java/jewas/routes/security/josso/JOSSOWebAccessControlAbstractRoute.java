@@ -2,10 +2,12 @@ package jewas.routes.security.josso;
 
 import jewas.configuration.JossoJewasConfiguration;
 import jewas.http.HttpRequest;
+import jewas.http.PatternUriPathMatcher;
 import jewas.http.RequestHandler;
 import jewas.http.Route;
 import jewas.http.session.Sessions;
 import jewas.routes.RedirectRoute;
+import org.jboss.netty.handler.codec.http.Cookie;
 import org.josso.agent.*;
 import org.josso.agent.http.JOSSOSecurityContext;
 import org.josso.agent.http.WebAccessControlUtil;
@@ -19,9 +21,18 @@ public abstract class JOSSOWebAccessControlAbstractRoute implements Route {
 
     private static final String KEY_JOSSO_SAVED_REQUEST_URI = "jewas.josso.savedRequest";
 
+    private PatternUriPathMatcher logoutUriPathMatcher;
+    private boolean invalidateSessionOnLogout;
     private JewasSSOAgent agent;
 
-    public JOSSOWebAccessControlAbstractRoute() {
+    public JOSSOWebAccessControlAbstractRoute(String logoutPath) {
+        this(logoutPath, true);
+    }
+
+    public JOSSOWebAccessControlAbstractRoute(String logoutPath, boolean invalidateSessionOnLogout) {
+        this.logoutUriPathMatcher = new PatternUriPathMatcher(logoutPath);
+        this.invalidateSessionOnLogout = invalidateSessionOnLogout;
+
         Lookup lookup = Lookup.getInstance();
         lookup.init("josso-agent-config.xml"); // For spring compatibility ...
 
@@ -39,9 +50,15 @@ public abstract class JOSSOWebAccessControlAbstractRoute implements Route {
 
     @Override
     public RequestHandler match(HttpRequest request) {
-        // If session is already open, current route should not be triggered
+        // If session is already open, current route should not be triggered...
         if (JossoUser.sessionOpened(request)) {
-            return null;
+            // ... except if we are on logout url !
+            if (logoutUriPathMatcher.match(request.path()) != null) {
+                return handleLogout(request);
+            } else {
+                // Current match should not match : we should proceed to the next route !
+                return null;
+            }
         } else {
             // Here, token should be provided by JOSSO after authentication
             if (tokenProvided(request)) {
@@ -65,18 +82,41 @@ public abstract class JOSSOWebAccessControlAbstractRoute implements Route {
         }
     }
 
+    protected RequestHandler handleLogout(HttpRequest request) {
+        String jossoRedirectUrl = createJossoUrl(request, this.agent.getGatewayLogoutUrl());
+
+        // Clearing previous COOKIE ...
+        Cookie ssoCookie = agent.newJossoCookie(agent.extractContextPath(request), "-", agent.secureRequest(request));
+        request.addResponseCookie(ssoCookie);
+
+        // Removing user infos
+        removeUserInfosInSession(request);
+
+        agent.prepareNonCacheResponse(request);
+
+        return new RedirectRoute.RedirectRequestHandler(jossoRedirectUrl);
+    }
+
     private RequestHandler redirectToJosso(HttpRequest request) {
-        String jossoAuthentUrl = this.agent.getGatewayLoginUrl();
-        StringBuilder jossoRedirectUrl = new StringBuilder(jossoAuthentUrl)
-                .append(jossoAuthentUrl.contains("?") ? "&" : "?")
-                .append(org.josso.gateway.signon.Constants.PARAM_JOSSO_BACK_TO)
-                .append("=")
-                .append(JossoJewasConfiguration.jossoBackUrl());
+        String jossoRedirectUrl = createJossoUrl(request, this.agent.getGatewayLoginUrl());
 
         // Before redirecting, we should store current url in the session
         savedRequestUri(request, request.fullUri());
 
-        return new RedirectRoute.RedirectRequestHandler(jossoRedirectUrl.toString());
+        return new RedirectRoute.RedirectRequestHandler(jossoRedirectUrl);
+    }
+
+    private String createJossoUrl(HttpRequest request, String jossoBaseUrl) {
+        return new StringBuilder(jossoBaseUrl)
+                .append(jossoBaseUrl.contains("?") ? "&" : "?")
+                .append(org.josso.gateway.signon.Constants.PARAM_JOSSO_BACK_TO)
+                .append("=")
+                .append(JossoJewasConfiguration.jossoBackUrl())
+                .append("&")
+                .append(org.josso.gateway.signon.Constants.PARAM_JOSSO_PARTNERAPP_ID)
+                .append("=")
+                .append(this.agent.extractPartnerAppConfig(request).getId())
+                .toString();
     }
 
     protected boolean askForAuthentication(HttpRequest request, String token) {
@@ -91,6 +131,13 @@ public abstract class JOSSOWebAccessControlAbstractRoute implements Route {
             return true;
         } else {
             return false;
+        }
+    }
+
+    protected void removeUserInfosInSession(HttpRequest request) {
+        JossoUser.remove(request);
+        if (invalidateSessionOnLogout) {
+            Sessions.invalidate(Sessions.getId(request));
         }
     }
 
