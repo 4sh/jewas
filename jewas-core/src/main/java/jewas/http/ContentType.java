@@ -9,6 +9,7 @@ public enum ContentType {
     APP_OGG("application/ogg", "ogg"),
     APP_PDF("application/pdf", "pdf"),
     APP_JSON("application/json", "json"),
+    APP_MSI("application/x-msi", "msi"),
     APP_XML("application/xml", "xml"),
     APP_ZIP("application/zip", "zip"),
 
