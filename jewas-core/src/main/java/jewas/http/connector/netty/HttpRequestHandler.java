@@ -1,15 +1,14 @@
 package jewas.http.connector.netty;
 
-import jewas.http.*;
+import jewas.http.ContentType;
+import jewas.http.HttpStatus;
+import jewas.http.RequestHandler;
 import jewas.http.data.BodyParameters;
 import jewas.http.data.NamedString;
 import jewas.http.impl.DefaultHttpRequest;
 import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.*;
 import org.jboss.netty.handler.codec.http.*;
-import org.jboss.netty.handler.codec.http.HttpHeaders;
-import org.jboss.netty.handler.codec.http.HttpRequest;
-import org.jboss.netty.handler.codec.http.HttpResponse;
 import org.jboss.netty.handler.ssl.SslHandler;
 import org.jboss.netty.handler.stream.ChunkedFile;
 import org.jboss.netty.util.CharsetUtil;
@@ -24,36 +23,36 @@ import java.util.*;
 
 import static org.jboss.netty.handler.codec.http.HttpHeaders.Names.CONTENT_TYPE;
 import static org.jboss.netty.handler.codec.http.HttpResponseStatus.CONTINUE;
-import static org.jboss.netty.handler.codec.http.HttpResponseStatus.PARTIAL_CONTENT;
 import static org.jboss.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
 public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
     private final Logger logger = LoggerFactory.getLogger(HttpRequestHandler.class);
 
-	private final RequestHandler handler;
+    private final RequestHandler handler;
     private final List<jewas.http.data.HttpData> contentData = new ArrayList<jewas.http.data.HttpData>();
 
     private volatile boolean readingChunks;
 
-	private DefaultHttpRequest request;
+    private DefaultHttpRequest request;
 
     private static final HttpDataFactory factory = new DefaultHttpDataFactory(
             DefaultHttpDataFactory.MINSIZE); // Disk if size exceed MINSIZE
 
     private HttpPostRequestDecoder decoder = null;
+
     static {
         DiskFileUpload.deleteOnExitTemporaryFile = true; // should delete file
-                                                         // on exit (in normal
-                                                         // exit)
+        // on exit (in normal
+        // exit)
         DiskFileUpload.baseDirectory = null; // system temp directory
         DiskAttribute.deleteOnExitTemporaryFile = true; // should delete file on
-                                                        // exit (in normal exit)
+        // exit (in normal exit)
         DiskAttribute.baseDirectory = null; // system temp directory
     }
-	
+
     public HttpRequestHandler(RequestHandler handler) {
-		this.handler = handler;
-	}
+        this.handler = handler;
+    }
 
     @Override
     public void channelClosed(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
@@ -62,7 +61,7 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
         }
     }
 
-    private static Set<Cookie> decodeCookiesFrom(HttpMessage message, String headerName){
+    private static Set<Cookie> decodeCookiesFrom(HttpMessage message, String headerName) {
         Set<Cookie> cookies;
         String value = message.getHeader(headerName);
         if (value == null) {
@@ -74,13 +73,13 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
         return cookies;
     }
 
-    private static void encodeCookies(HttpMessage message, String headerName, Collection<Cookie> cookies){
-        if(cookies == null){
+    private static void encodeCookies(HttpMessage message, String headerName, Collection<Cookie> cookies) {
+        if (cookies == null) {
             return;
         }
 
         CookieEncoder encoder = new CookieEncoder(true);
-        for(Cookie cookie : cookies){
+        for (Cookie cookie : cookies) {
             encoder.addCookie(cookie);
         }
 
@@ -108,15 +107,15 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
             // uri params
             QueryStringDecoder decoderQuery = new QueryStringDecoder(request
                     .getUri());
-            Map<String, List<String> > uriAttributes = decoderQuery
+            Map<String, List<String>> uriAttributes = decoderQuery
                     .getParameters();
 
             // Overriding method attribute if __httpMethod special parameter has been set
             // @see js/jewas-forms.js
             String methodName = null;
-            if("post".equalsIgnoreCase(request.getMethod().getName())
+            if ("post".equalsIgnoreCase(request.getMethod().getName())
                     && uriAttributes.containsKey("__httpMethod")
-                    && !uriAttributes.get("__httpMethod").isEmpty()){
+                    && !uriAttributes.get("__httpMethod").isEmpty()) {
                 String overridenHttpMethod = uriAttributes.get("__httpMethod").get(0);
                 methodName = overridenHttpMethod;
                 uriAttributes.remove("__httpMethod");
@@ -131,39 +130,45 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
                     cookies,
                     uriAttributes,
                     decoderQuery.getPath(),
-            		new jewas.http.HttpResponse() {
-						private HttpResponse nettyResponse;
+                    new jewas.http.HttpResponse() {
+                        private HttpResponse nettyResponse;
                         // Lazy list because in some cases, nettyResponse is not yet initialized
                         // when we want to add cookies
                         private Set<Cookie> lazyCookies = new HashSet<>();
+                        // Same as above
+                        private Map<String, Object> lazyHeaders = new HashMap<>();
 
-						@Override
-						public jewas.http.HttpResponse status(HttpStatus status) {
-							nettyResponse = new DefaultHttpResponse(HTTP_1_1, HttpResponseStatus.valueOf(status.code()));
-                            for(Cookie lazyCookie : lazyCookies){
+                        @Override
+                        public jewas.http.HttpResponse status(HttpStatus status) {
+                            nettyResponse = new DefaultHttpResponse(HTTP_1_1, HttpResponseStatus.valueOf(status.code()));
+                            for (Cookie lazyCookie : lazyCookies) {
                                 addCookie(lazyCookie);
                             }
                             lazyCookies = null;
-							return this;
-						}
+                            for (Map.Entry<String, Object> header : lazyHeaders.entrySet()) {
+                                addHeader(header.getKey(), header.getValue());
+                            }
+                            lazyHeaders = null;
+                            return this;
+                        }
 
-						@Override
-						public jewas.http.HttpResponse contentType(ContentType contentType) {
-							nettyResponse.setHeader(CONTENT_TYPE, contentType.value());
-							return this;
-						}
+                        @Override
+                        public jewas.http.HttpResponse contentType(ContentType contentType) {
+                            nettyResponse.setHeader(CONTENT_TYPE, contentType.value());
+                            return this;
+                        }
 
-						@Override
-						public jewas.http.HttpResponse content(String content) {
-							return content(content.getBytes(CharsetUtil.UTF_8));
-						}
+                        @Override
+                        public jewas.http.HttpResponse content(String content) {
+                            return content(content.getBytes(CharsetUtil.UTF_8));
+                        }
 
                         private jewas.http.HttpResponse content(byte[] content) {
                             nettyResponse.setContent(ChannelBuffers.copiedBuffer(content));
 
-							ChannelFuture future = e.getChannel().write(nettyResponse);
-							future.addListener(ChannelFutureListener.CLOSE);
-							return this;
+                            ChannelFuture future = e.getChannel().write(nettyResponse);
+                            future.addListener(ChannelFutureListener.CLOSE);
+                            return this;
                         }
 
                         @Override
@@ -223,13 +228,17 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
 
                         @Override
                         public jewas.http.HttpResponse addHeader(String header, Object value) {
-                            nettyResponse.addHeader(header, value);
+                            if (nettyResponse == null) {
+                                lazyHeaders.put(header, value);
+                            } else {
+                                nettyResponse.addHeader(header, value);
+                            }
                             return this;
                         }
 
                         @Override
                         public jewas.http.HttpResponse addCookie(Cookie cookie) {
-                            if(nettyResponse == null){
+                            if (nettyResponse == null) {
                                 lazyCookies.add(cookie);
                             } else {
                                 Set<Cookie> cookies = decodeCookiesFrom(nettyResponse, HttpHeaders.Names.SET_COOKIE);
@@ -310,7 +319,7 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
         }
     }
 
-        /**
+    /**
      * Example of reading all InterfaceHttpData from finished transfer
      *
      * @param channel
@@ -325,7 +334,7 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
             Channels.close(channel);
             return;
         }
-        for (InterfaceHttpData data: datas) {
+        for (InterfaceHttpData data : datas) {
             writeHttpData(data);
         }
         // TODO: manage streamed body parameters
@@ -419,7 +428,7 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
         e.getChannel().write(response);
     }
 
-    private void endOfReadContent(BodyParameters.Types bodyParameterType){
+    private void endOfReadContent(BodyParameters.Types bodyParameterType) {
         handler.onReady(this.request, bodyParameterType.createBodyParameters(contentData));
         // Notifying request that end of content is reached
         // Wondering if it is still useful...
