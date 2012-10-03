@@ -352,7 +352,7 @@ public abstract class JewasSSOAgent extends AbstractSSOAgent {
     public Cookie newJossoCookie(String path, String value, boolean secure) {
         // Some browsers don't like cookies without paths. This is useful for partner applications configured in the root context
         if (path == null || "".equals(path))
-            path = "/";
+            path = JewasConfiguration.contextPath();
 
         Cookie ssoCookie = new DefaultCookie(org.josso.gateway.Constants.JOSSO_SINGLE_SIGN_ON_COOKIE, value);
         ssoCookie.setMaxAge(-1);
@@ -372,8 +372,7 @@ public abstract class JewasSSOAgent extends AbstractSSOAgent {
     }
 
     protected String extractContextPath(HttpRequest request) {
-        // In jewas, there isn't any context path
-        return "/";
+        return JewasConfiguration.contextPath();
     }
 
     /**

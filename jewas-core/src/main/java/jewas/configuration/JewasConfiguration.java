@@ -67,4 +67,9 @@ public abstract class JewasConfiguration {
     public static String serverName() {
         return JewasConfiguration.getValueOfKeyOrDefaultValue(SERVER_NAME, null);
     }
+
+    public static String contextPath() {
+        // In jewas, there isn't any context path
+        return "/";
+    }
 }
