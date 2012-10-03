@@ -1,71 +1,69 @@
 package jewas.http.impl;
 
 import jewas.http.*;
-import jewas.http.HttpMethod;
-import jewas.http.HttpRequest;
-import jewas.http.HttpResponse;
 import org.jboss.netty.buffer.ChannelBuffer;
-import org.jboss.netty.handler.codec.http.*;
+import org.jboss.netty.handler.codec.http.Cookie;
 
 import java.nio.ByteBuffer;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public final class DefaultHttpRequest extends HttpRequest {
-	private final HttpMethod method;
+    private final HttpMethod method;
     private final String uri;
-	private final Headers headers;
+    private final Headers headers;
     private final ByteBuffer content;
     private final Map<String, Cookie> cookies;
     private final Map<String, Object> attributes;
 
-	// computed fields
-	private final String path;
-	private final Parameters parameters;
-	
+    // computed fields
+    private final String path;
+    private final Parameters parameters;
 
-	// fields which state is mutable
-	private final HttpResponse response;
-	private final List<ContentHandler> handlers = new CopyOnWriteArrayList<ContentHandler>();
-	
-	public DefaultHttpRequest(
+
+    // fields which state is mutable
+    private final HttpResponse response;
+    private final List<ContentHandler> handlers = new CopyOnWriteArrayList<ContentHandler>();
+
+    public DefaultHttpRequest(
             String uri, String method, List<Map.Entry<String, String>> headers,
-            Set<Cookie> cookies, Map<String, List<String> > uriAttributes,
+            Set<Cookie> cookies, Map<String, List<String>> uriAttributes,
             String path, HttpResponse response, ByteBuffer content) {
-		super();
-		this.uri = uri;
+        super();
+        this.uri = uri;
         this.method = HttpMethod.valueOf(method);
-		this.headers = new Headers(headers);
-		this.response = response;
+        this.headers = new Headers(headers);
+        this.response = response;
         this.content = content;
         this.path = path;
 
         this.parameters = new Parameters(uriAttributes);
 
         this.cookies = new HashMap<>();
-        if(cookies != null){
-            for(Cookie cookie : cookies){
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
                 this.cookies.put(cookie.getName(), cookie);
             }
         }
 
         this.attributes = new HashMap<>();
-	}
-	
-	@Override
-	public HttpRequest addContentHandler(ContentHandler h) {
-		handlers.add(h);
-		return this;
-	}
+    }
 
     @Override
-    public Collection<Cookie> cookies(){
+    public HttpRequest addContentHandler(ContentHandler h) {
+        handlers.add(h);
+        return this;
+    }
+
+    @Override
+    public Collection<Cookie> cookies() {
         return Collections.unmodifiableCollection(cookies.values());
     }
 
     @Override
     public Cookie cookie(String name) {
-        return cookies.get(name);
+        Cookie requestCookie = cookies.get(name);
+        return requestCookie == null ? response().cookie(name) : requestCookie;
     }
 
     @Override
@@ -104,22 +102,22 @@ public final class DefaultHttpRequest extends HttpRequest {
     }
 
     public void endContent() {
-		for (ContentHandler h : handlers) {
-			h.onContentEnd(this);
-		}
-	}
+        for (ContentHandler h : handlers) {
+            h.onContentEnd(this);
+        }
+    }
 
-	public void offerContent(ChannelBuffer content) {
-		for (ContentHandler h : handlers) {
-			h.onContentAvailable(this, content);
-		}
-	}
+    public void offerContent(ChannelBuffer content) {
+        for (ContentHandler h : handlers) {
+            h.onContentAvailable(this, content);
+        }
+    }
 
-     // TODO: Why not having a method renderJson(object) like in Play!
-	@Override
-	public JsonResponse respondJson() {
-		return new JsonResponse(this, response());
-	}
+    // TODO: Why not having a method renderJson(object) like in Play!
+    @Override
+    public JsonResponse respondJson() {
+        return new JsonResponse(this, response());
+    }
 
     @Override
     public HtmlResponse respondHtml() {
@@ -137,35 +135,35 @@ public final class DefaultHttpRequest extends HttpRequest {
     }
 
     @Override
-	public void respondError(HttpStatus status) {
+    public void respondError(HttpStatus status) {
         // TODO: improve this error handling
         // For example, by giving, in dev mode, every available routes
-		response().status(status).content("No route found for your path <"+this.path()+">");
-	}
+        response().status(status).content("No route found for your path <" + this.path() + ">");
+    }
 
-	private HttpResponse response() {
-		return response;
-	}
+    private HttpResponse response() {
+        return response;
+    }
 
-	public HttpMethod method() {
-		return method;
-	}
+    public HttpMethod method() {
+        return method;
+    }
 
-	public String uri() {
-		return uri;
-	}
+    public String uri() {
+        return uri;
+    }
 
-	public Headers headers() {
-		return headers;
-	}
+    public Headers headers() {
+        return headers;
+    }
 
-	public String path() {
-		return path;
-	}
+    public String path() {
+        return path;
+    }
 
     public Parameters parameters() {
-		return parameters;
-	}
+        return parameters;
+    }
 
     public ByteBuffer content() {
         return content;

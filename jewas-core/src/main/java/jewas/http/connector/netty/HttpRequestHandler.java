@@ -247,6 +247,22 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
                             }
                             return this;
                         }
+
+                        @Override
+                        public Cookie cookie(String name) {
+                            Set<Cookie> existingCookies = null;
+                            if (nettyResponse == null) {
+                                existingCookies = lazyCookies;
+                            } else {
+                                existingCookies = decodeCookiesFrom(nettyResponse, HttpHeaders.Names.SET_COOKIE);
+                            }
+                            for (Cookie existingCookie : existingCookies) {
+                                if (name.equals(existingCookie.getName())) {
+                                    return existingCookie;
+                                }
+                            }
+                            return null;
+                        }
                     },
                     // TODO: to remove !!!
                     request.getContent().toByteBuffer());
