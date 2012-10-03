@@ -1,5 +1,6 @@
 package jewas.routes.security.josso;
 
+import jewas.configuration.JewasConfiguration;
 import jewas.configuration.JossoJewasConfiguration;
 import jewas.http.HttpRequest;
 import jewas.http.PatternUriPathMatcher;
@@ -11,6 +12,8 @@ import org.jboss.netty.handler.codec.http.Cookie;
 import org.josso.agent.*;
 import org.josso.agent.http.JOSSOSecurityContext;
 import org.josso.agent.http.WebAccessControlUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 
@@ -18,6 +21,8 @@ import java.io.Serializable;
  * @author fcamblor
  */
 public abstract class JOSSOWebAccessControlAbstractRoute implements Route {
+
+    private static final Logger LOG = LoggerFactory.getLogger(JOSSOWebAccessControlAbstractRoute.class);
 
     private static final String KEY_JOSSO_SAVED_REQUEST_URI = "jewas.josso.savedRequest";
 
@@ -62,15 +67,22 @@ public abstract class JOSSOWebAccessControlAbstractRoute implements Route {
         } else {
             // Here, token should be provided by JOSSO after authentication
             if (tokenProvided(request)) {
-                // TODO: Call JOSSO webservice to verify token already exists (and retrieve user information)
+                // Call JOSSO webservice to verify token already exists (and retrieve user information)
                 // then store it into the session in order to have sessionOpened() returns true
                 // If token is invalid, we should redirect on JOSSO
                 String token = retrieveToken(request);
                 if (askForAuthentication(request, token)) {
-                    // No problem here, route's job is finished and we should redirect on
-                    // saved url
+                    // No problem here, route's job is finished and we should redirect on saved url
                     String originalUri = savedRequestUri(request);
                     savedRequestUri(request, null); // Removing saved request uri
+                    if (originalUri == null) {
+                        // It should not happen...
+                        // ... except if user takes a really long time logging onto JOSSO
+                        // Enough time to expire current app session
+                        LOG.warn("Original url where to redirect after JOSSO successful authentication not found : falling back to root url...");
+                        originalUri = JewasConfiguration.contextPath();
+                    }
+
                     return new RedirectRoute.RedirectRequestHandler(originalUri);
                 } else {
                     return redirectToJosso(request);
