@@ -16,9 +16,9 @@ public class PatternUriPathMatcher implements UriPathMatcher {
 
         while (m.find()) {
             if (m.end() == pattern.length()) {
-                m.appendReplacement(sb, "(?:/([\\\\w\\\\.\\\\_\\\\-\\\\d/]+))?");
+                m.appendReplacement(sb, "(?:/([\\\\w\\\\.\\\\_\\\\-\\\\d@/]+))?");
             } else {
-                m.appendReplacement(sb, "(?:/([\\\\w\\\\.\\\\_\\\\-\\\\d]+))?");
+                m.appendReplacement(sb, "(?:/([\\\\w\\\\.\\\\_\\\\-\\\\d@]+))?");
             }
             groupNames.add(m.group(1));
         }
