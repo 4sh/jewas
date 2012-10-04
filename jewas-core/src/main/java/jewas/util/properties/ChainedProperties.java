@@ -67,7 +67,7 @@ public class ChainedProperties {
                 result.load(configStream);
             } catch (IOException e) {
                 if (config.failIfMissingResource) {
-                    throw new IllegalStateException("Error while loading " + config.name + " configuration file (" + config.path + ")");
+                    throw new IllegalStateException("Error while loading " + config.name + " configuration file (" + config.extrapolatedPath() + ")");
                 }
             }
         }
