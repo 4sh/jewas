@@ -8,7 +8,10 @@ import jewas.resources.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -59,7 +62,7 @@ public class ResourceRequestHandler extends AbstractRequestHandler {
             if (Files.notExists(extractedFileInCache)) {
                 Path parentDirectoryInCache = extractedFileInCache.getParent();
                 if(Files.notExists(parentDirectoryInCache)){
-                    Files.createDirectory(parentDirectoryInCache);
+                    Files.createDirectories(parentDirectoryInCache);
                 }
 
                 // Let's extract resource and copy it in cached folder
