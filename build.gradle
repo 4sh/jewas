@@ -83,8 +83,6 @@ subprojects {
     }
 
     release {
-        // Hack allowing to skip the "next version" prompt
-        project.setProperty("gradle.release.useAutomaticVersion", "true");
         // Define here custom commit messages
         newVersionCommitMessage = "Re-snapshoted project to version "
         preTagCommitMessage = "Preparing version for release "
