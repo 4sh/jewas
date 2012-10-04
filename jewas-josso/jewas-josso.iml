@@ -23,7 +23,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/commons-logging/commons-logging-api/1.1/jar/7d4cf5231d46c8524f9b9ed75bb2d1c69ab93322/commons-logging-api-1.1.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-14/filestore/commons-logging/commons-logging-api/1.1/jar/7d4cf5231d46c8524f9b9ed75bb2d1c69ab93322/commons-logging-api-1.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -32,7 +32,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.josso/josso-agent/1.8.6/jar/6a83363d77b6d5212ce5575ec4153843511acc15/josso-agent-1.8.6.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-14/filestore/org.josso/josso-agent/1.8.6/jar/6a83363d77b6d5212ce5575ec4153843511acc15/josso-agent-1.8.6.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -41,7 +41,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.josso/josso-protocol-client/1.8.6/jar/48c7a65d9ec35ef4b45237fc6be2347352e2ce6f/josso-protocol-client-1.8.6.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-14/filestore/org.josso/josso-protocol-client/1.8.6/jar/48c7a65d9ec35ef4b45237fc6be2347352e2ce6f/josso-protocol-client-1.8.6.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -50,29 +50,29 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/commons-discovery/commons-discovery/0.5/jar/3a8ac816bbe02d2f88523ef22cbf2c4abd71d6a8/commons-discovery-0.5.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-14/filestore/commons-discovery/commons-discovery/0.5/jar/3a8ac816bbe02d2f88523ef22cbf2c4abd71d6a8/commons-discovery-0.5.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/commons-discovery/commons-discovery/0.5/source/b1bf6c41283cc1fff79c62995880341d7b018641/commons-discovery-0.5-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-14/filestore/commons-discovery/commons-discovery/0.5/source/b1bf6c41283cc1fff79c62995880341d7b018641/commons-discovery-0.5-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/commons-logging/commons-logging/1.1.1/jar/5043bfebc3db072ed80fbd362e7caf00e885d8ae/commons-logging-1.1.1.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-14/filestore/commons-logging/commons-logging/1.1.1/jar/5043bfebc3db072ed80fbd362e7caf00e885d8ae/commons-logging-1.1.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/commons-logging/commons-logging/1.1.1/source/f3f156cbff0e0fb0d64bfce31a352cce4a33bc19/commons-logging-1.1.1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-14/filestore/commons-logging/commons-logging/1.1.1/source/f3f156cbff0e0fb0d64bfce31a352cce4a33bc19/commons-logging-1.1.1-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/commons-digester/commons-digester/1.2/jar/647b58a436e9dc8ae3a2f728a4bf2105bff755e3/commons-digester-1.2.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-14/filestore/commons-digester/commons-digester/1.2/jar/647b58a436e9dc8ae3a2f728a4bf2105bff755e3/commons-digester-1.2.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -81,7 +81,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/commons-modeler/commons-modeler/1.1/jar/879390c9e0d9a5052fca54f275d853b89b667691/commons-modeler-1.1.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-14/filestore/commons-modeler/commons-modeler/1.1/jar/879390c9e0d9a5052fca54f275d853b89b667691/commons-modeler-1.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -90,7 +90,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.josso/josso-common/1.8.6/jar/bba3c0974d8d74bde52da8baf9a9596bb8804088/josso-common-1.8.6.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-14/filestore/org.josso/josso-common/1.8.6/jar/bba3c0974d8d74bde52da8baf9a9596bb8804088/josso-common-1.8.6.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -99,73 +99,73 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.springframework/spring-core/2.5.5/jar/1b3b0fad8e30ebb9560a81989f5b5bfb28915109/spring-core-2.5.5.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-14/filestore/org.springframework/spring-core/2.5.5/jar/1b3b0fad8e30ebb9560a81989f5b5bfb28915109/spring-core-2.5.5.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.springframework/spring-core/2.5.5/source/50c8ba4c15e7598119d60df38b05ae7eb4655b99/spring-core-2.5.5-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-14/filestore/org.springframework/spring-core/2.5.5/source/50c8ba4c15e7598119d60df38b05ae7eb4655b99/spring-core-2.5.5-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.springframework/spring-beans/2.5.5/jar/6dc365922794e122bd2fbe102bc42de60fe8a744/spring-beans-2.5.5.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-14/filestore/org.springframework/spring-beans/2.5.5/jar/6dc365922794e122bd2fbe102bc42de60fe8a744/spring-beans-2.5.5.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.springframework/spring-beans/2.5.5/source/b67abfb70136797c32d8d872c21d85d31d148a84/spring-beans-2.5.5-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-14/filestore/org.springframework/spring-beans/2.5.5/source/b67abfb70136797c32d8d872c21d85d31d148a84/spring-beans-2.5.5-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/aopalliance/aopalliance/1.0/jar/235ba8b489512805ac13a8f9ea77a1ca5ebe3e8/aopalliance-1.0.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-14/filestore/aopalliance/aopalliance/1.0/jar/235ba8b489512805ac13a8f9ea77a1ca5ebe3e8/aopalliance-1.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/aopalliance/aopalliance/1.0/source/4a4b6d692e17846a9f3da036438a7ac491d3c814/aopalliance-1.0-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-14/filestore/aopalliance/aopalliance/1.0/source/4a4b6d692e17846a9f3da036438a7ac491d3c814/aopalliance-1.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.springframework/spring-context/2.5.5/jar/e3676c2f4c662bae8dce52d38777f858b09c718c/spring-context-2.5.5.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-14/filestore/org.springframework/spring-context/2.5.5/jar/e3676c2f4c662bae8dce52d38777f858b09c718c/spring-context-2.5.5.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.springframework/spring-context/2.5.5/source/94a10f064accd56fa548fb60ac185664977745bf/spring-context-2.5.5-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-14/filestore/org.springframework/spring-context/2.5.5/source/94a10f064accd56fa548fb60ac185664977745bf/spring-context-2.5.5-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.apache.xbean/xbean-spring/3.4.3/bundle/a87026dea0c864c160ccb538631adc7b9ea0188/xbean-spring-3.4.3.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-14/filestore/org.apache.xbean/xbean-spring/3.4.3/bundle/a87026dea0c864c160ccb538631adc7b9ea0188/xbean-spring-3.4.3.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.apache.xbean/xbean-spring/3.4.3/source/e73c49af505ca0cbbbc43985635eec3b203b7c48/xbean-spring-3.4.3-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-14/filestore/org.apache.xbean/xbean-spring/3.4.3/source/e73c49af505ca0cbbbc43985635eec3b203b7c48/xbean-spring-3.4.3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/commons-codec/commons-codec/1.3/jar/fd32786786e2adb664d5ecc965da47629dca14ba/commons-codec-1.3.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-14/filestore/commons-codec/commons-codec/1.3/jar/fd32786786e2adb664d5ecc965da47629dca14ba/commons-codec-1.3.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/commons-codec/commons-codec/1.3/source/ee264b5d7a0f939d5999398c7f1ade031db3fcec/commons-codec-1.3-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-14/filestore/commons-codec/commons-codec/1.3/source/ee264b5d7a0f939d5999398c7f1ade031db3fcec/commons-codec-1.3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.josso/josso-core/1.8.6/jar/ec0bc7b64eed25bedb94717547cf1c3ce3eb2f14/josso-core-1.8.6.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-14/filestore/org.josso/josso-core/1.8.6/jar/ec0bc7b64eed25bedb94717547cf1c3ce3eb2f14/josso-core-1.8.6.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -174,29 +174,29 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.springframework/spring-aop/2.5.5/jar/ef625c76fc317e29126e08d92323afb83124ddc5/spring-aop-2.5.5.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-14/filestore/org.springframework/spring-aop/2.5.5/jar/ef625c76fc317e29126e08d92323afb83124ddc5/spring-aop-2.5.5.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.springframework/spring-aop/2.5.5/source/690db5ec7111c8b16c61f9776404fbc612fabbca/spring-aop-2.5.5-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-14/filestore/org.springframework/spring-aop/2.5.5/source/690db5ec7111c8b16c61f9776404fbc612fabbca/spring-aop-2.5.5-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.apache.axis/axis/1.4/jar/94a9ce681a42d0352b3ad22659f67835e560d107/axis-1.4.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-14/filestore/org.apache.axis/axis/1.4/jar/94a9ce681a42d0352b3ad22659f67835e560d107/axis-1.4.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.apache.axis/axis/1.4/source/442ab1fe3e66b6d5c916ae3f203fbfa618515f1c/axis-1.4-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-14/filestore/org.apache.axis/axis/1.4/source/442ab1fe3e66b6d5c916ae3f203fbfa618515f1c/axis-1.4-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.apache.axis/axis-jaxrpc/1.4/jar/b393f1f0c0d95b68c86d0b1ab2e687bb71f3c075/axis-jaxrpc-1.4.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-14/filestore/org.apache.axis/axis-jaxrpc/1.4/jar/b393f1f0c0d95b68c86d0b1ab2e687bb71f3c075/axis-jaxrpc-1.4.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -205,7 +205,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.apache.axis/axis-ant/1.4/jar/4200087029ba7bc85351e136fdbbb7eb5d289380/axis-ant-1.4.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-14/filestore/org.apache.axis/axis-ant/1.4/jar/4200087029ba7bc85351e136fdbbb7eb5d289380/axis-ant-1.4.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -214,7 +214,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.apache.axis/axis-saaj/1.4/jar/581149d1f391258754354f2acf2b56665d53de2e/axis-saaj-1.4.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-14/filestore/org.apache.axis/axis-saaj/1.4/jar/581149d1f391258754354f2acf2b56665d53de2e/axis-saaj-1.4.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -223,7 +223,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/axis/axis-wsdl4j/1.5.1/jar/bd804633b9c2cf06258641febc31a8ff3b0906bc/axis-wsdl4j-1.5.1.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-14/filestore/axis/axis-wsdl4j/1.5.1/jar/bd804633b9c2cf06258641febc31a8ff3b0906bc/axis-wsdl4j-1.5.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -232,7 +232,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.josso/josso-ws/1.8.6/jar/d4cc8f05c887f723e6e3f214718d782d4ca88fff/josso-ws-1.8.6.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-14/filestore/org.josso/josso-ws/1.8.6/jar/d4cc8f05c887f723e6e3f214718d782d4ca88fff/josso-ws-1.8.6.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -242,40 +242,40 @@
     <orderEntry type="module-library" scope="TEST">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/net.sourceforge.cobertura/cobertura/1.9.4.1/jar/c72a431cb65bdce793bb147915c2e311941fcb11/cobertura-1.9.4.1.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-14/filestore/net.sourceforge.cobertura/cobertura/1.9.4.1/jar/c72a431cb65bdce793bb147915c2e311941fcb11/cobertura-1.9.4.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/net.sourceforge.cobertura/cobertura/1.9.4.1/source/da5e7d36b91f9a182c59ad8718251000afd8c87e/cobertura-1.9.4.1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-14/filestore/net.sourceforge.cobertura/cobertura/1.9.4.1/source/da5e7d36b91f9a182c59ad8718251000afd8c87e/cobertura-1.9.4.1-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" scope="TEST">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/oro/oro/2.0.8/jar/5592374f834645c4ae250f4c9fbb314c9369d698/oro-2.0.8.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-14/filestore/oro/oro/2.0.8/jar/5592374f834645c4ae250f4c9fbb314c9369d698/oro-2.0.8.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/oro/oro/2.0.8/source/3598e790ecd76ff7eb249853d4d00822ae1a5e71/oro-2.0.8-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-14/filestore/oro/oro/2.0.8/source/3598e790ecd76ff7eb249853d4d00822ae1a5e71/oro-2.0.8-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" scope="TEST">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/asm/asm/3.0/jar/d1616c03f056291a2314510dea75739b15b4d415/asm-3.0.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-14/filestore/asm/asm/3.0/jar/d1616c03f056291a2314510dea75739b15b4d415/asm-3.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/asm/asm/3.0/source/f0c69d3809861b943404ebe564df944cbb7cde93/asm-3.0-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-14/filestore/asm/asm/3.0/source/f0c69d3809861b943404ebe564df944cbb7cde93/asm-3.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" scope="TEST">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/asm/asm-tree/3.0/jar/6fff655717d1e1871decfe9f8e46a531e8df3a31/asm-tree-3.0.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-14/filestore/asm/asm-tree/3.0/jar/6fff655717d1e1871decfe9f8e46a531e8df3a31/asm-tree-3.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -284,18 +284,18 @@
     <orderEntry type="module-library" scope="TEST">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/log4j/log4j/1.2.9/jar/55856d711ab8b88f8c7b04fd85ff1643ffbfde7c/log4j-1.2.9.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-14/filestore/log4j/log4j/1.2.9/jar/55856d711ab8b88f8c7b04fd85ff1643ffbfde7c/log4j-1.2.9.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/log4j/log4j/1.2.9/source/b70470eb359ebea0bff6525c0bdec37528348ec0/log4j-1.2.9-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-14/filestore/log4j/log4j/1.2.9/source/b70470eb359ebea0bff6525c0bdec37528348ec0/log4j-1.2.9-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" scope="TEST">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.apache.ant/ant-launcher/1.7.0/jar/e7e30789211e074aa70ef3eaea59bd5b22a7fa7a/ant-launcher-1.7.0.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-14/filestore/org.apache.ant/ant-launcher/1.7.0/jar/e7e30789211e074aa70ef3eaea59bd5b22a7fa7a/ant-launcher-1.7.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -304,11 +304,11 @@
     <orderEntry type="module-library" scope="TEST">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.apache.ant/ant/1.7.0/jar/9746af1a485e50cf18dcb232489032a847067066/ant-1.7.0.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-14/filestore/org.apache.ant/ant/1.7.0/jar/9746af1a485e50cf18dcb232489032a847067066/ant-1.7.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-8/filestore/org.apache.ant/ant/1.7.0/source/58ec0e378f1d33cb72a92ee3a9442909789090db/ant-1.7.0-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-14/filestore/org.apache.ant/ant/1.7.0/source/58ec0e378f1d33cb72a92ee3a9442909789090db/ant-1.7.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>

@@ -6,6 +6,10 @@ if (!hasProperty("releasesRepoUsername")
 // For gradle release
 apply from: "https://launchpad.net/gradle-release/trunk/1.0pre/+download/apply.groovy"
 
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.2'
+}
+
 subprojects {
     apply plugin: 'java'
     apply plugin: 'idea'
@@ -14,7 +18,7 @@ subprojects {
 
     // For cobertura
     def cobSerFile = "${project.buildDir}/reports/tests/cobertura.ser"
-    def srcOriginal = "${sourceSets.main.classesDir}"
+    def srcOriginal = "${sourceSets.main.output.classesDir}"
     def srcCopy = "${srcOriginal}-copy"
     def COVERAGE_SYS_PROPERTY = "test.coverage.activated"
     // Sysprop allowing to ignore test failures during the build
@@ -89,8 +93,8 @@ subprojects {
     createReleaseTag.dependsOn uploadArchives
 
     // Allows to generate USER_HOME idea variable uniformely on every OS
-    ideaModule {
-        variables.put("USER_HOME", file(System.getProperty("user.home")))
+    idea {
+        pathVariables("USER_HOME": file(System.getProperty("user.home")))
     }
 
     // For cobertura ...
