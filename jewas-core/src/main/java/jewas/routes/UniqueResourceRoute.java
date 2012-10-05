@@ -1,8 +1,7 @@
 package jewas.routes;
 
+import jewas.configuration.JewasConfiguration;
 import jewas.http.*;
-import jewas.http.impl.ResourceRequestHandler;
-import jewas.resources.FilesystemResource;
 import jewas.resources.Resource;
 
 import java.io.File;
@@ -15,6 +14,10 @@ import java.io.File;
 public class UniqueResourceRoute extends StaticResourcesRoute {
 
     private Resource resource;
+
+    public UniqueResourceRoute(String uri, Resource resource) {
+        this(uri, resource, JewasConfiguration.cachedResourcesDirectory());
+    }
 
     public UniqueResourceRoute(String uri, Resource resource, File cachedResourcesFileSystemRootDir) {
         this(HttpMethodMatcher.ALL, new PatternUriPathMatcher(uri), resource, cachedResourcesFileSystemRootDir);

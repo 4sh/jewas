@@ -2,6 +2,10 @@ package jewas.configuration;
 
 import jewas.util.properties.ChainedProperties;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 /**
  * Created by IntelliJ IDEA.
  * User: driccio
@@ -18,6 +22,12 @@ public abstract class JewasConfiguration {
      * The default value of the template folder.
      */
     private static final String TEMPLATE_PATH_DEFAULT_VALUE = "templates/";
+
+    /**
+     * Key for the temporary cached resources directory jewas will use to cache resources on filesystem
+     * Path for an empty directory where cached static resource files will be extracted
+     */
+    private static final String CACHED_RESOURCES_DIRECTORY_KEY = "cached.resources.directory";
 
     /**
      * The current server name viewed by the client
@@ -71,5 +81,14 @@ public abstract class JewasConfiguration {
     public static String contextPath() {
         // In jewas, there isn't any context path
         return "/";
+    }
+
+    public static File cachedResourcesDirectory(){
+        String cachedResourcesPath = getValueOfKeyOrDefaultValue(CACHED_RESOURCES_DIRECTORY_KEY, null);
+        if(cachedResourcesPath == null){
+            return null;
+        }
+        Path cachedResourcesDirectory = Paths.get(cachedResourcesPath);
+        return cachedResourcesDirectory.toFile();
     }
 }

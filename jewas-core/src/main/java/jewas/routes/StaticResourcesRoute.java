@@ -1,5 +1,6 @@
 package jewas.routes;
 
+import jewas.configuration.JewasConfiguration;
 import jewas.http.*;
 import jewas.http.impl.ResourceRequestHandler;
 import jewas.resources.ClasspathResource;
@@ -20,6 +21,10 @@ public class StaticResourcesRoute extends AbstractRoute {
     time it is accessed */
     private File cachedResourcesFileSystemRootDir;
 
+    public StaticResourcesRoute(String urlPrefix){
+        this(urlPrefix, JewasConfiguration.cachedResourcesDirectory());
+    }
+
     /**
      * @param urlPrefix The url prefix for static resource paths
      * @param cachedResourcesFileSystemRootDir Path where cached file resources will be extracted to be served
@@ -27,6 +32,10 @@ public class StaticResourcesRoute extends AbstractRoute {
      */
     public StaticResourcesRoute(String urlPrefix, File cachedResourcesFileSystemRootDir){
         this(urlPrefix, "", cachedResourcesFileSystemRootDir);
+    }
+
+    public StaticResourcesRoute(String urlPrefix, String pathPrefix) {
+        this(urlPrefix, pathPrefix, JewasConfiguration.cachedResourcesDirectory());
     }
 
     /**
