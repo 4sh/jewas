@@ -4,7 +4,7 @@ import jewas.util.file.Files;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
+import java.net.URL;
 
 /**
  * @author fcamblor
@@ -18,5 +18,9 @@ public class ClasspathResource extends AbstractResource {
     @Override
     public InputStream in() throws IOException {
         return Files.getInputStreamFromPath(this.path());
+    }
+
+    public URL url() throws IOException {
+        return Files.getResourceFromPath(AbstractResource.class, path());
     }
 }
