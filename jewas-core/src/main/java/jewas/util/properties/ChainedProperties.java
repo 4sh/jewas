@@ -40,7 +40,7 @@ public class ChainedProperties {
                     throw new IllegalArgumentException("Unknown property <" + envVarName + "> for ChainedProperties path <" + path + "> !");
                 }
 
-                extrapolatedPathMatcher.appendReplacement(extrapolatedPath, envVarValue);
+                extrapolatedPathMatcher.appendReplacement(extrapolatedPath, envVarValue.replaceAll("\\$", "\\\\\\$"));
             }
             extrapolatedPathMatcher.appendTail(extrapolatedPath);
 
