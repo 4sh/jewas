@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -23,9 +22,8 @@ import java.util.Map;
  * User: driccio
  * Date: 19/07/11
  * Time: 16:50
- *
+ * <p/>
  * ResourceRequestHandler is a {@link RequestHandler} to use to load static resources.
- *
  */
 public class ResourceRequestHandler extends AbstractRequestHandler {
 
@@ -40,8 +38,8 @@ public class ResourceRequestHandler extends AbstractRequestHandler {
     Resource resource;
 
     /**
-     *  Directory that will be used to extract files from jar to the filesystem the first
-     *  time it is accessed
+     * Directory that will be used to extract files from jar to the filesystem the first
+     * time it is accessed
      */
     File cachedResourcesFileSystemRootDir;
 
@@ -52,6 +50,7 @@ public class ResourceRequestHandler extends AbstractRequestHandler {
 
     /**
      * Loads the static file from the path into the given request.
+     *
      * @param request the {@link HttpRequest}
      */
     @Override
@@ -61,19 +60,18 @@ public class ResourceRequestHandler extends AbstractRequestHandler {
         try {
             if (Files.notExists(extractedFileInCache)) {
                 Path parentDirectoryInCache = extractedFileInCache.getParent();
-                if(Files.notExists(parentDirectoryInCache)){
+                if (Files.notExists(parentDirectoryInCache)) {
                     Files.createDirectories(parentDirectoryInCache);
                 }
 
                 // Let's extract resource and copy it in cached folder
-                try(InputStream resourceStream = resource.in();
-                    OutputStream fileSystemStream = Files.newOutputStream(extractedFileInCache)){
+                try (InputStream resourceStream = resource.in()) {
                     Files.copy(resourceStream, extractedFileInCache, StandardCopyOption.REPLACE_EXISTING);
                 }
             }
             FileResponse fileResponse = request.respondFile();
-            if(headers != null){
-                for(Map.Entry<String, String> headerEntry : headers.entrySet()){
+            if (headers != null) {
+                for (Map.Entry<String, String> headerEntry : headers.entrySet()) {
                     fileResponse.addHeader(headerEntry.getKey(), headerEntry.getValue());
                 }
             }
