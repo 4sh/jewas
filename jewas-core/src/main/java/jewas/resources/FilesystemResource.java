@@ -1,11 +1,10 @@
 package jewas.resources;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 
 /**
  * @author fcamblor
@@ -21,6 +20,16 @@ public class FilesystemResource extends AbstractResource {
 
     @Override
     public InputStream in() throws IOException {
-        return Files.newInputStream(Paths.get(rootDirectory.getAbsolutePath(), path()));
+        return Files.newInputStream(absolutePath());
+    }
+
+    public Path absolutePath() {
+        return rootDirectory.toPath().resolve(path());
+    }
+
+    @Override
+    public Path pathInCache(File cachedResourcesFileSystemRootDir) {
+        // We shouldn't use the cache for file system resources
+        return absolutePath();
     }
 }
