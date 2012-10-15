@@ -47,7 +47,13 @@ public abstract class ThreadedDirectoryWatcher {
         getExecutorService().submit(new Runnable() {
             @Override
             public void run() {
-                _startWatching();
+                try {
+                    _startWatching();
+                } catch (Exception e) {
+                    LOG.error("Exception thrown during file watcher of " + watchingDirectory + " in " + watcherFamily + " family !");
+                } finally {
+                    stopWatching();
+                }
             }
         });
     }
@@ -60,6 +66,7 @@ public abstract class ThreadedDirectoryWatcher {
 
             watchingDirectory.register(watcher, events);
 
+            onInit();
             while (!Thread.currentThread().isInterrupted()) {
                 WatchKey key = null;
                 try {
@@ -69,6 +76,9 @@ public abstract class ThreadedDirectoryWatcher {
                     LOG.error("Interrupted exception during watch of directory " + watchingDirectory, e);
                     this.watcher = null;
                     Thread.currentThread().interrupt();
+                } catch (Exception e) {
+                    LOG.error("Exception thrown during file watcher of " + watchingDirectory + " in " + watcherFamily + " family !");
+                    throw e;
                 } finally {
                     if (key != null) {
                         // Reset the key -- this step is critical if you want to
@@ -78,12 +88,10 @@ public abstract class ThreadedDirectoryWatcher {
                     }
                 }
             }
-
         } catch (IOException e) {
             LOG.error("Error while registering EEG Importer watcher in " + watchingDirectory, e);
             throw new RuntimeException(e);
         }
-
     }
 
     protected void handleWatchKey(WatchKey key) {
@@ -156,5 +164,14 @@ public abstract class ThreadedDirectoryWatcher {
         }
     }
 
+    /**
+     * Method called before entering events loop on watching directory
+     */
+    protected void onInit() {
+    }
+
+    /**
+     * Method called when watching event is fired on current watching directory
+     */
     protected abstract void onFired(Path eventPath, WatchEvent.Kind<?> kind);
 }
