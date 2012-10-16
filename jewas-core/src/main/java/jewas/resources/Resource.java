@@ -11,7 +11,7 @@ import java.nio.file.Path;
 public interface Resource {
     String path();
 
-    InputStream in() throws IOException;
+    InputStream newInputStream() throws IOException;
 
     Path pathInCache(File cachedResourcesFileSystemRootDir);
 }

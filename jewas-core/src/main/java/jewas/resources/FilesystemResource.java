@@ -19,7 +19,7 @@ public class FilesystemResource extends AbstractResource {
     }
 
     @Override
-    public InputStream in() throws IOException {
+    public InputStream newInputStream() throws IOException {
         return Files.newInputStream(absolutePath());
     }
 

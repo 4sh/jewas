@@ -16,7 +16,7 @@ public class ClasspathResource extends AbstractResource {
     }
 
     @Override
-    public InputStream in() throws IOException {
+    public InputStream newInputStream() throws IOException {
         return Files.getInputStreamFromPath(this.path());
     }
 

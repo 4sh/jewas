@@ -57,6 +57,7 @@ public class ResourceRequestHandler extends AbstractRequestHandler {
         Path extractedFileInCache = resource.pathInCache(cachedResourcesFileSystemRootDir);
 
         try {
+            // Creating file in filesystem cache if it doesn't yet exist
             if (Files.notExists(extractedFileInCache)) {
                 Path parentDirectoryInCache = extractedFileInCache.getParent();
                 if (Files.notExists(parentDirectoryInCache)) {
@@ -64,7 +65,7 @@ public class ResourceRequestHandler extends AbstractRequestHandler {
                 }
 
                 // Let's extract resource and copy it in cached folder
-                try (InputStream resourceStream = resource.in()) {
+                try (InputStream resourceStream = resource.newInputStream()) {
                     Files.copy(resourceStream, extractedFileInCache, StandardCopyOption.REPLACE_EXISTING);
                 }
             }
