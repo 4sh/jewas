@@ -1,5 +1,6 @@
 package jewas.http.impl;
 
+import jewas.configuration.JewasConfiguration;
 import jewas.http.FileResponse;
 import jewas.http.HttpRequest;
 import jewas.http.HttpStatus;
@@ -15,6 +16,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Created by IntelliJ IDEA.
@@ -32,6 +35,12 @@ public class ResourceRequestHandler extends AbstractRequestHandler {
     private Logger logger = LoggerFactory.getLogger(ResourceRequestHandler.class);
 
     /**
+     * Will retain information of if a cached resource has already been checked for compliance
+     * with the non cached one
+     */
+    private static final ConcurrentMap<String, Boolean> SAME_CACHED_FILE_CHECK_ON_PATH = new ConcurrentHashMap<String, Boolean>();
+
+    /**
      * The resource to load.
      */
     Resource resource;
@@ -45,6 +54,16 @@ public class ResourceRequestHandler extends AbstractRequestHandler {
     public ResourceRequestHandler(File cachedResourcesFileSystemRootDir, Resource resource) {
         this.resource = resource;
         this.cachedResourcesFileSystemRootDir = cachedResourcesFileSystemRootDir;
+    }
+
+    protected static boolean checkForCachedFileValidityNeededOn(Resource resource) {
+        if (JewasConfiguration.devMode()) {
+            return true;
+        }
+        if (SAME_CACHED_FILE_CHECK_ON_PATH.putIfAbsent(resource.path(), Boolean.FALSE) == null) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -67,8 +86,30 @@ public class ResourceRequestHandler extends AbstractRequestHandler {
                 // Let's extract resource and copy it in cached folder
                 try (InputStream resourceStream = resource.newInputStream()) {
                     Files.copy(resourceStream, extractedFileInCache, StandardCopyOption.REPLACE_EXISTING);
+                    SAME_CACHED_FILE_CHECK_ON_PATH.putIfAbsent(resource.path(), Boolean.TRUE);
                 }
             }
+
+            // Checking if current cached resource has already been checked for compliance with non cached resource
+            if (checkForCachedFileValidityNeededOn(resource)) {
+                boolean sameFiles;
+                try (InputStream cachedFileStream = Files.newInputStream(extractedFileInCache);
+                     InputStream resourceStream = resource.newInputStream();) {
+                    sameFiles = jewas.util.file.Files.sameStreams(cachedFileStream, resourceStream);
+                }
+
+                // If file differ, we should replace the cached one !
+                if (!sameFiles) {
+                    logger.info("Replacing outdated resource " + resource.path() + " in cache");
+                    // Let's extract resource and copy it in cached folder
+                    try (InputStream resourceStream = resource.newInputStream()) {
+                        Files.copy(resourceStream, extractedFileInCache, StandardCopyOption.REPLACE_EXISTING);
+                    }
+                }
+
+                SAME_CACHED_FILE_CHECK_ON_PATH.replace(resource.path(), Boolean.TRUE);
+            }
+
             FileResponse fileResponse = request.respondFile();
             if (headers != null) {
                 for (Map.Entry<String, String> headerEntry : headers.entrySet()) {

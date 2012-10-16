@@ -2,6 +2,7 @@ package jewas.util.file;
 
 import java.io.*;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Stack;
 
@@ -16,6 +17,7 @@ public class Files {
 
     /**
      * Get a file from the same archive as Files.class file
+     *
      * @param path the path
      * @return the inputstream at the given path
      * @throws IOException a {@link IOException}
@@ -27,8 +29,9 @@ public class Files {
 
     /**
      * Get a inputstream from a given path inside the same archive where resides the given clazz
+     *
      * @param clazz The classloader we will look for path file
-     * @param path the path
+     * @param path  the path
      * @return the inputstream at the given path
      * @throws IOException a {@link IOException}
      */
@@ -38,8 +41,9 @@ public class Files {
 
     /**
      * Get an resource from a given path inside the same archive where resides the given clazz
+     *
      * @param clazz The classloader we will look for path file
-     * @param path the path
+     * @param path  the path
      * @return the inputstream at the given path
      * @throws IOException a {@link IOException}
      */
@@ -49,40 +53,39 @@ public class Files {
         }
 
         Enumeration<URL> resources = clazz.getClassLoader().getResources(path);
-        if(!resources.hasMoreElements()){
+        if (!resources.hasMoreElements()) {
             throw new FileNotFoundException("The path: " + path + " was not found in the classpath.");
         }
 
         URL resource = resources.nextElement();
 
         // If there is more than 1 resource matching path in the classpath ...
-        if(resources.hasMoreElements()){
+        if (resources.hasMoreElements()) {
             URL currentResource = resource;
             resource = null;
             // Trying to find the first resource matching path _and_ where resides clazz
-            while(currentResource != null){
+            while (currentResource != null) {
 
                 String resourcePath = currentResource.toString();
                 StringBuilder classPath = new StringBuilder();
                 classPath.append(resourcePath.substring(0, resourcePath.length() - path.length()))
-                         .append(clazz.getCanonicalName().replaceAll("\\.", "/"))
-                         .append(".class");
+                        .append(clazz.getCanonicalName().replaceAll("\\.", "/"))
+                        .append(".class");
 
                 URL classUrl = new URL(classPath.toString());
                 boolean classFoundInClasspath = false;
-                try (InputStream  tmpStream = classUrl.openStream())
-                {
+                try (InputStream tmpStream = classUrl.openStream()) {
                     classFoundInClasspath = true;
-                } catch(IOException e){
+                } catch (IOException e) {
                     classFoundInClasspath = false;
-                } 
+                }
 
-                if(classFoundInClasspath){
+                if (classFoundInClasspath) {
                     resource = currentResource;
                     break;
                 }
 
-                if(!resources.hasMoreElements()){
+                if (!resources.hasMoreElements()) {
                     currentResource = null;
                 } else {
                     currentResource = resources.nextElement();
@@ -99,6 +102,7 @@ public class Files {
 
     /**
      * Get the bytes array that correspond to the given file.
+     *
      * @param stream a stream
      * @return the bytes array that correspond to the given file
      * @throws IOException an {@link IOException}
@@ -113,11 +117,11 @@ public class Files {
         byte[] chunks = new byte[1024];
 
         int bytesRead = -1;
-        while((bytesRead = stream.read(chunks)) == 1024){
+        while ((bytesRead = stream.read(chunks)) == 1024) {
             baos.write(chunks);
         }
 
-        if(bytesRead != -1){
+        if (bytesRead != -1) {
             baos.write(chunks, 0, bytesRead);
         }
 
@@ -131,7 +135,7 @@ public class Files {
         byte[] buf = new byte[8192];
         long count = 0;
         int bytesRead = 0;
-        while(-1 != (bytesRead = in.read(buf))) {
+        while (-1 != (bytesRead = in.read(buf))) {
             out.write(buf, 0, bytesRead);
             count += bytesRead;
         }
@@ -140,6 +144,7 @@ public class Files {
 
     /**
      * Get the string that correspond to the content of the given file.
+     *
      * @param stream the {@link InputStream}
      * @return the string that correspond to the content of the given file.
      */
@@ -153,13 +158,13 @@ public class Files {
     public static void touchFileWithParents(File f) throws IOException {
         Stack<File> filesToCreate = new Stack<File>();
         File currentFile = f;
-        while(!currentFile.exists()){
+        while (!currentFile.exists()) {
             filesToCreate.push(currentFile);
             currentFile = currentFile.getParentFile();
         }
-        while(!filesToCreate.empty()){
+        while (!filesToCreate.empty()) {
             currentFile = filesToCreate.pop();
-            if(filesToCreate.empty()){ // Last chunk of path : it will be a file
+            if (filesToCreate.empty()) { // Last chunk of path : it will be a file
                 currentFile.createNewFile();
             } else { // otherwise, it will be a folder
                 currentFile.mkdir();
@@ -182,5 +187,33 @@ public class Files {
             return "";
         }
         return fileNameParts[fileNameParts.length - 1];
+    }
+
+    /**
+     * Beware : given stream will be read (eventually to the end) during this method call !
+     * So, you should just open the stream _before_ the method call, and close them after
+     * the method call, like this :
+     * <code>
+     * boolean result;
+     * try(InputStream s1 = ....; InputStream s2 = ....;){
+     * result = Files.sameStreams(s1,s2);
+     * }
+     * </code>
+     *
+     * @throws IOException
+     */
+    public static boolean sameStreams(InputStream f1stream, InputStream f2stream) throws IOException {
+        byte[] buf1 = new byte[8192];
+        byte[] buf2 = new byte[8192];
+        int bytesRead1 = 0;
+        int bytesRead2 = 0;
+        while ((bytesRead1 = f1stream.read(buf1)) == (bytesRead2 = f2stream.read(buf2))
+                && (-1 != bytesRead1)) {
+            if (!Arrays.equals(buf1, buf2)) {
+                return false;
+            }
+        }
+
+        return bytesRead1 == -1 && bytesRead2 == -1;
     }
 }

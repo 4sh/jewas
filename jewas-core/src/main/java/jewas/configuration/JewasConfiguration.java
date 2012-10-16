@@ -35,6 +35,11 @@ public abstract class JewasConfiguration {
     public static final String SERVER_NAME = "server.name";
 
     /**
+     * Development mode
+     */
+    public static final String DEV_MODE = "dev.mode";
+
+    /**
      * The delegate to use to get the properties.
      */
     protected static JewasConfigurationDelegate delegate =
@@ -83,9 +88,13 @@ public abstract class JewasConfiguration {
         return "/";
     }
 
-    public static File cachedResourcesDirectory(){
+    public static boolean devMode() {
+        return Boolean.valueOf(getValueOfKeyOrDefaultValue(DEV_MODE, Boolean.FALSE.toString()));
+    }
+
+    public static File cachedResourcesDirectory() {
         String cachedResourcesPath = getValueOfKeyOrDefaultValue(CACHED_RESOURCES_DIRECTORY_KEY, null);
-        if(cachedResourcesPath == null){
+        if (cachedResourcesPath == null) {
             return null;
         }
         Path cachedResourcesDirectory = Paths.get(cachedResourcesPath);
