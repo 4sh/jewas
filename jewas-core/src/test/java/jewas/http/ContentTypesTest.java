@@ -26,6 +26,8 @@ public class ContentTypesTest {
 
     @Before
     public void startServer() {
+        System.setProperty("deploy.target.env", "test");
+
         // Restserver without any route
         restServer = RestServerFactory.createRestServer(SERVER_PORT);
         restServer.addRoutes(
@@ -42,10 +44,10 @@ public class ContentTypesTest {
     }
 
     @Test
-    public void shouldJsUriBeOfJavascriptContentType(){
+    public void shouldJsUriBeOfJavascriptContentType() {
         expect().
-            contentType("application/javascript").
-        when().
-            get("/public/test.js");
+                contentType("application/javascript").
+                when().
+                get("/public/test.js");
     }
 }
