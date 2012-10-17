@@ -58,6 +58,10 @@ public class Json {
         }
     }
 
+    public Gson newGson() {
+        return gson.create();
+    }
+
     public Object fromJsonString(String jsonString, Class clazz) {
         if (Strings.isNullOrEmptyString(jsonString)) {
             return Objects.NULL;
