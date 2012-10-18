@@ -141,14 +141,18 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
                         @Override
                         public jewas.http.HttpResponse status(HttpStatus status) {
                             nettyResponse = new DefaultHttpResponse(HTTP_1_1, HttpResponseStatus.valueOf(status.code()));
-                            for (Cookie lazyCookie : lazyCookies) {
-                                addCookie(lazyCookie);
+                            if(lazyCookies != null){
+                                for (Cookie lazyCookie : lazyCookies) {
+                                    addCookie(lazyCookie);
+                                }
+                                lazyCookies = null;
                             }
-                            lazyCookies = null;
-                            for (Map.Entry<String, Object> header : lazyHeaders.entrySet()) {
-                                addHeader(header.getKey(), header.getValue());
+                            if(lazyHeaders != null){
+                                for (Map.Entry<String, Object> header : lazyHeaders.entrySet()) {
+                                    addHeader(header.getKey(), header.getValue());
+                                }
+                                lazyHeaders = null;
                             }
-                            lazyHeaders = null;
                             return this;
                         }
 
