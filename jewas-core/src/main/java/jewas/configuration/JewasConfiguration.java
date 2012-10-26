@@ -35,6 +35,11 @@ public abstract class JewasConfiguration {
     public static final String SERVER_NAME = "server.name";
 
     /**
+     * Allows to provide accessible cross domains to current app
+     */
+    public static final String ALLOWED_CROSS_DOMAINS = "http.access.control.allow.origin";
+
+    /**
      * Development mode
      */
     public static final String DEV_MODE = "dev.mode";
@@ -99,5 +104,9 @@ public abstract class JewasConfiguration {
         }
         Path cachedResourcesDirectory = Paths.get(cachedResourcesPath);
         return cachedResourcesDirectory.toFile();
+    }
+
+    public static String allowedCrossDomains() {
+        return getValueOfKeyOrDefaultValue(ALLOWED_CROSS_DOMAINS, null);
     }
 }

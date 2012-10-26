@@ -1,5 +1,6 @@
 package jewas.http.connector.netty;
 
+import jewas.configuration.JewasConfiguration;
 import jewas.http.ContentType;
 import jewas.http.HttpStatus;
 import jewas.http.RequestHandler;
@@ -168,6 +169,12 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
                         }
 
                         private jewas.http.HttpResponse content(byte[] content) {
+                            // TODO : Provide a Jewas filter feature allowing to make this from application scope ?
+                            // Providing cross domains header
+                            if(JewasConfiguration.allowedCrossDomains() != null){
+                                addHeader(jewas.http.HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, JewasConfiguration.allowedCrossDomains());
+                            }
+
                             nettyResponse.setContent(ChannelBuffers.copiedBuffer(content));
 
                             ChannelFuture future = e.getChannel().write(nettyResponse);
