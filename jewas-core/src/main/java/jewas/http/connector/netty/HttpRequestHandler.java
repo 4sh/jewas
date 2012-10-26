@@ -142,6 +142,13 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
                         @Override
                         public jewas.http.HttpResponse status(HttpStatus status) {
                             nettyResponse = new DefaultHttpResponse(HTTP_1_1, HttpResponseStatus.valueOf(status.code()));
+
+                            // TODO : Provide a Jewas filter feature allowing to make this from application scope ?
+                            // Providing cross domains header
+                            if(JewasConfiguration.allowedCrossDomains() != null){
+                                addHeader(jewas.http.HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, JewasConfiguration.allowedCrossDomains());
+                            }
+
                             if(lazyCookies != null){
                                 for (Cookie lazyCookie : lazyCookies) {
                                     addCookie(lazyCookie);
@@ -169,12 +176,6 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
                         }
 
                         private jewas.http.HttpResponse content(byte[] content) {
-                            // TODO : Provide a Jewas filter feature allowing to make this from application scope ?
-                            // Providing cross domains header
-                            if(JewasConfiguration.allowedCrossDomains() != null){
-                                addHeader(jewas.http.HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, JewasConfiguration.allowedCrossDomains());
-                            }
-
                             nettyResponse.setContent(ChannelBuffers.copiedBuffer(content));
 
                             ChannelFuture future = e.getChannel().write(nettyResponse);
