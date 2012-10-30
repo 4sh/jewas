@@ -50,7 +50,7 @@ public abstract class ThreadedDirectoryWatcher {
                 try {
                     _startWatching();
                 } catch (Exception e) {
-                    LOG.error("Exception thrown during file watcher of " + watchingDirectory + " in " + watcherFamily + " family !");
+                    LOG.error("Exception thrown during file watcher of " + watchingDirectory + " in " + watcherFamily + " family !", e);
                 } finally {
                     stopWatching();
                 }
@@ -72,12 +72,17 @@ public abstract class ThreadedDirectoryWatcher {
                 try {
                     key = watcher.take();
                     handleWatchKey(key);
+                } catch (ClosedWatchServiceException e) {
+                    // We shouldn't throw anything here : it can be "normal" to have the watch service closed
+                    // during stopWatching() call
+                    LOG.debug("Closed watcher of " + watchingDirectory + " in " + watcherFamily + " family !");
+                    Thread.currentThread().interrupt();
                 } catch (InterruptedException e) {
                     LOG.error("Interrupted exception during watch of directory " + watchingDirectory, e);
                     this.watcher = null;
                     Thread.currentThread().interrupt();
                 } catch (Exception e) {
-                    LOG.error("Exception thrown during file watcher of " + watchingDirectory + " in " + watcherFamily + " family !");
+                    LOG.error("Exception thrown during file watcher of " + watchingDirectory + " in " + watcherFamily + " family !", e);
                     throw e;
                 } finally {
                     if (key != null) {
