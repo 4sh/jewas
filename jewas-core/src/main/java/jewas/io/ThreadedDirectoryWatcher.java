@@ -53,6 +53,7 @@ public abstract class ThreadedDirectoryWatcher {
                     LOG.error("Exception thrown during file watcher of " + watchingDirectory + " in " + watcherFamily + " family !", e);
                 } finally {
                     stopWatching();
+                    LOG.debug("Stopping file watcher of " + watchingDirectory + " in " + watcherFamily + " family !");
                 }
             }
         });
