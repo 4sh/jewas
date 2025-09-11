@@ -111,8 +111,8 @@ repositories {
             username releasesRepoUsername
             password releasesRepoPassword
         }
-        url "http://repo.4sh.fr/libs/"
-        artifactUrls "http://repo.4sh.fr/libs/"
+        url "http://newrepo.4sh.fr/libs/"
+        artifactUrls "http://newrepo.4sh.fr/libs/"
     }
 }
 
