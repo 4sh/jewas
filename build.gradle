@@ -48,8 +48,8 @@ subprojects {
                 username releasesRepoUsername
                 password releasesRepoPassword
             }
-            url "http://repo.4sh.fr/libs/"
-            artifactUrls "http://repo.4sh.fr/libs/"
+            url "http://newrepo.4sh.fr/libs/"
+            artifactUrls "http://newrepo.4sh.fr/libs/"
         }
     }
 
@@ -73,10 +73,10 @@ subprojects {
     uploadArchives {
         repositories.mavenDeployer {
             configuration = configurations.deployerJars
-            snapshotRepository(url: "http://repo.4sh.fr/libs-snapshot-local") {
+            snapshotRepository(url: "http://newrepo.4sh.fr/libs-snapshot-local") {
                 authentication(userName: releasesRepoUsername, password: releasesRepoPassword)
             }
-            repository(url: "http://repo.4sh.fr/libs-release-local/") {
+            newrepository(url: "http://newrepo.4sh.fr/libs-release-local/") {
                 authentication(userName: releasesRepoUsername, password: releasesRepoPassword)
             }
         }
